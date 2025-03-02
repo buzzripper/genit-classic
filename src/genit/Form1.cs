@@ -1,17 +1,12 @@
 ﻿using Dyvenix.Genit.Config;
-using Dyvenix.Genit.DocModel;
+using Dyvenix.Genit.Generators;
+using Dyvenix.Genit.Models;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 using System.Windows.Forms;
-using Syncfusion.Windows.Forms.Diagram;
-using Dyvenix.Genit.Diagram;
-using System.Net.Http.Headers;
-using Dyvenix.Genit.Generators;
 
 namespace Dyvenix.Genit;
 

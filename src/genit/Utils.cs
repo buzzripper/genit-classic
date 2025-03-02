@@ -1,4 +1,4 @@
-﻿using Dyvenix.Genit.DocModel;
+﻿using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
 
@@ -27,6 +27,37 @@ namespace Dyvenix.Genit
 			};
 			doc.DbContexts.Add(dbContext);
 
+			var logLevelEnumMdl = new EnumModel {
+				Id = Guid.NewGuid(),
+				Name = "LogLevel",
+				IsExternal = false,
+				Namespace = ""
+			};
+			logLevelEnumMdl.Members.Add("Verbose");
+			logLevelEnumMdl.Members.Add("Debug");
+			logLevelEnumMdl.Members.Add("Info");
+			logLevelEnumMdl.Members.Add("Error");
+			logLevelEnumMdl.Members.Add("Fatal");
+			dbContext.Enums.Add(logLevelEnumMdl);
+
+			var appUser = CreateAppUserEntityModel();
+			dbContext.Entities.Add(appUser);
+			var accessClaim = CreateAccessClaimEntityModel(appUser.Id);
+			dbContext.Entities.Add(accessClaim);
+
+			var assoc = new AssocModel {
+				Id = Guid.NewGuid(),
+				PropertyName = "Claims",
+				RelatedId = accessClaim.Id,
+				Cardinality = CardinalityModel.OneToMany
+			};
+			appUser.Assocs.Add(assoc);
+
+			return doc;
+		}
+
+		private static EntityModel CreateAppUserEntityModel()
+		{
 			var entity = new EntityModel {
 				Id = Guid.NewGuid(),
 				Name = "AppUser",
@@ -40,8 +71,6 @@ namespace Dyvenix.Genit
 				UseListSorting = true,
 				AddlUsings = new List<string> { "System.Data", "System.Text" }
 			};
-			entity.Attributes.Add("Foo");
-			entity.Attributes.Add("Bar");
 
 			var prop = new PropertyModel {
 				Id = Guid.NewGuid(),
@@ -59,12 +88,10 @@ namespace Dyvenix.Genit
 				MultiIndex1Unique = false,
 				MultiIndex2 = false,
 				MultiIndex2Unique = false,
-				
+
 				IsSortCol = false,
 				IsSortDesc = false
 			};
-			prop.Attributes.Add("Yes");
-			prop.Attributes.Add("No");
 			entity.Properties.Add(prop);
 
 			prop = new PropertyModel {
@@ -83,7 +110,7 @@ namespace Dyvenix.Genit
 				MultiIndex1Unique = false,
 				MultiIndex2 = false,
 				MultiIndex2Unique = false,
-				
+
 				IsSortCol = false,
 				IsSortDesc = false
 			};
@@ -105,7 +132,7 @@ namespace Dyvenix.Genit
 				MultiIndex1Unique = false,
 				MultiIndex2 = false,
 				MultiIndex2Unique = false,
-				
+
 				IsSortCol = false,
 				IsSortDesc = false
 			};
@@ -127,7 +154,7 @@ namespace Dyvenix.Genit
 				MultiIndex1Unique = false,
 				MultiIndex2 = false,
 				MultiIndex2Unique = false,
-				
+
 				IsSortCol = false,
 				IsSortDesc = false
 			};
@@ -149,15 +176,186 @@ namespace Dyvenix.Genit
 				MultiIndex1Unique = false,
 				MultiIndex2 = false,
 				MultiIndex2Unique = false,
-				
+
 				IsSortCol = false,
 				IsSortDesc = false
 			};
 			entity.Properties.Add(prop);
 
-			dbContext.Entities.Add(entity);
+			prop = new PropertyModel {
+				Id = Guid.NewGuid(),
+				Name = "DateCreated",
+				Type = PropertyType.DateTimeType,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
 
-			return doc;
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel {
+				Id = Guid.NewGuid(),
+				Name = "IsActive",
+				Type = PropertyType.boolType,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel {
+				Id = Guid.NewGuid(),
+				Name = "ActivityCount",
+				Type = PropertyType.intType,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			return entity;
+		}
+
+		private static EntityModel CreateAccessClaimEntityModel(Guid appUserId)
+		{
+			var entity = new EntityModel {
+				Id = Guid.NewGuid(),
+				Name = "AccessClaim",
+				Schema = "",
+				TableName = "",
+				Enabled = true,
+				Namespace = "",
+				InclSingleQuery = true,
+				InclListQuery = true,
+				UseListPaging = true,
+				UseListSorting = true
+				//AddlUsings = new List<string> { "System.Data", "System.Text" }
+			};
+
+			var prop = new PropertyModel {
+				Id = Guid.NewGuid(),
+				Name = "Id",
+				Type = PropertyType.GuidType,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = true,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = true,
+				IsIndexUnique = true,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel {
+				Id = Guid.NewGuid(),
+				Name = "AppUserId",
+				Type = PropertyType.GuidType,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = true,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel {
+				Id = Guid.NewGuid(),
+				Name = "ClaimName",
+				Type = PropertyType.stringType,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 50,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel {
+				Id = Guid.NewGuid(),
+				Name = "ClaimValue",
+				Type = PropertyType.stringType,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 50,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			return entity;
 		}
 	}
 }

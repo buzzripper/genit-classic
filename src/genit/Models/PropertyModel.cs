@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Dyvenix.Genit.DocModel;
+namespace Dyvenix.Genit.Models;
 
 public class PropertyModel
 {

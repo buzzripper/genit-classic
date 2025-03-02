@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Dyvenix.Genit.DocModel;
+namespace Dyvenix.Genit.Models;
 
 public class EntityModel
 {
@@ -20,4 +20,5 @@ public class EntityModel
 	public bool UseListSorting { get; set; }
 
 	public List<PropertyModel> Properties { get; set; } = new List<PropertyModel>();
+	public List<AssocModel> Assocs { get; set; } = new List<AssocModel>();
 }

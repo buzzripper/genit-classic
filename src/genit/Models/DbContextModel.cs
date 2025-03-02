@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Dyvenix.Genit.DocModel;
+namespace Dyvenix.Genit.Models;
 
 public class DbContextModel
 {
@@ -14,5 +14,5 @@ public class DbContextModel
 	public List<string> AddlContextUsings { get; set; }
 
 	public List<EntityModel> Entities { get; set; } = new List<EntityModel>();
-	public List<Enum> Enums { get; set; } = new List<Enum>();
+	public List<EnumModel> Enums { get; set; } = new List<EnumModel>();
 }

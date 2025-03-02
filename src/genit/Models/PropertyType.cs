@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Dyvenix.Genit.DocModel;
+﻿namespace Dyvenix.Genit.Models;
 
 public enum PropertyType
 {

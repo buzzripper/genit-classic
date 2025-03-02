@@ -1,27 +1,15 @@
-﻿using Dyvenix.Genit.DocModel;
+﻿using Dyvenix.Genit.Extensions;
+using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.CodeDom;
-using Microsoft.CSharp;
-using System.CodeDom.Compiler;
-using Syncfusion.Windows.Forms;
-using System.Text.Json.Serialization;
-using Dyvenix.Genit.Extensions;
 
 namespace Dyvenix.Genit.Generators;
 
 public class EntityGenerator
 {
-	//private List<string> _header = new List<string>();
-	//private List<string> _usings = new List<string>();
-	//private List<string> _ns = new List<string>();
-	//private List<string> _classDecl = new List<string>();
-	//private List<string> _properties = new List<string>();
-
 	public bool InclHeader { get; set; }
 	public string OutputRootFolder { get; set; }
 	public bool Enabled { get; set; }
@@ -33,9 +21,18 @@ public class EntityGenerator
 
 		var entities = dbContextMdl.Entities;
 
-		if (!this.Enabled || !entities.Any(e => e.Enabled))
+		if (!this.Enabled)
 			return;
 
+		if (dbContextMdl.Entities.Any(e => e.Enabled))
+			this.GenerateEntities(dbContextMdl, dbContextMdl.Entities);
+
+		if (!dbContextMdl.Enums.All(e => e.IsExternal))
+			this.GenerateEnums(dbContextMdl, dbContextMdl.Enums);
+	}
+
+	private void GenerateEntities(DbContextModel dbContextMdl, List<EntityModel> entities)
+	{
 		foreach (var entity in entities) {
 			if (!entity.Enabled)
 				continue;
@@ -101,6 +98,28 @@ public class EntityGenerator
 				usings.AddIfNotExists(usingStr);
 	}
 
+	private void GenerateAssocs(PropertyModel prop, List<AssocModel> assocs, List<string> usings)
+	{
+		var tabCount = 1;
+
+		if (prop.Attributes.Any())
+			foreach (var attr in prop.Attributes)
+				propList.Add($"{Tabs(tabCount)}[{attr}]");
+
+		if (prop.EnumType != null) {
+			propList.Add($"{Tabs(tabCount)}[JsonConverter(typeof(JsonStringEnumConverter))]");
+			propList.Add($"{Tabs(tabCount)}public {prop.EnumType} {prop.Name} {{ get; set; }}");
+			usings.AddIfNotExists("System.Text.Json.Serialization");
+
+		} else {
+			propList.Add($"{Tabs(tabCount)}public {FormatTypeName(prop.Type.ToString())} {prop.Name} {{ get; set; }}");
+		}
+
+		if (prop.AddlUsings.Any())
+			foreach (var usingStr in prop.AddlUsings)
+				usings.AddIfNotExists(usingStr);
+	}
+
 	private void GenerateFile(StringBuilder sb, string fileTitle)
 	{
 		var outputFile = Path.Combine(this.OutputRootFolder, $"{fileTitle}.cs");
@@ -130,33 +149,48 @@ public class EntityGenerator
 		return typeName?.Replace("Type", string.Empty);
 	}
 
-	//public string GenerateCSharpCode(CodeTypeDeclaration domClass, string folderPath)
-	//{
-	//	CodeCompileUnit compileUnit = new CodeCompileUnit();
+	private void GenerateEnums(DbContextModel dbContextMdl, List<EnumModel> enumMdls)
+	{
+		foreach (var enumMdl in enumMdls) {
+			if (enumMdl.IsExternal)
+				continue;
 
-	//	// Generate the code with the C# code provider.
-	//	CSharpCodeProvider provider = new CSharpCodeProvider();
+			var header = new List<string>();
+			if (InclHeader)
+				this.GenerateHeader(header);
 
-	//	// Build the output file name.
-	//	string sourceFile;
-	//	if (provider.FileExtension[0] == '.') {
-	//		sourceFile = "HelloWorld" + provider.FileExtension;
-	//	} else {
-	//		sourceFile = "HelloWorld." + provider.FileExtension;
-	//	}
+			var usings = new List<string>();
+			usings.Add("System");
 
-	//	// Create a TextWriter to a StreamWriter to the output file.
-	//	using (StreamWriter sw = new StreamWriter(sourceFile, false)) {
-	//		IndentedTextWriter tw = new IndentedTextWriter(sw, "    ");
+			// Enum declaration
+			var enumStart = new List<string>();
+			enumStart.Add("");
+			var ns = string.IsNullOrEmpty(enumMdl.Namespace) ? dbContextMdl.EntitiesNamespace : enumMdl.Namespace;
+			enumStart.Add($"namespace {ns};");
+			enumStart.Add("");
+			if (enumMdl.IsFlags)
+				enumStart.Add("[Flags]");
+			enumStart.Add($"public enum {enumMdl.Name}");
+			enumStart.Add("{");
 
-	//		// Generate source code using the code provider.
-	//		provider.GenerateCodeFromCompileUnit(compileunit, tw,
-	//			new CodeGeneratorOptions());
+			var propList = new List<string>();
+			foreach (var member in enumMdl.Members)
+				propList.Add($"{Tabs(1)}{member},");
 
-	//		// Close the output file.
-	//		tw.Close();
-	//	}
+			var classEnd = new List<string>();
+			classEnd.Add("}");
 
-	//	return sourceFile;
-	//}
+			var sb = new StringBuilder();
+			sb.AppendLine(string.Join(Environment.NewLine, header));
+			usings.ForEach(u => sb.AppendLine($"using {u};"));
+			sb.AppendLine(string.Join(Environment.NewLine, enumStart));
+			sb.AppendLine(string.Join(Environment.NewLine, propList));
+			sb.AppendLine(string.Join(Environment.NewLine, classEnd));
+
+			var outputFile = Path.Combine(this.OutputRootFolder, $"{enumMdl.Name}.cs");
+			if (File.Exists(outputFile))
+				File.Delete(outputFile);
+			File.WriteAllText(outputFile, sb.ToString());
+		}
+	}
 }

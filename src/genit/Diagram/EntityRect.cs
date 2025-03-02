@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web;
-using Syncfusion.Windows.Forms.Diagram;
+﻿using Syncfusion.Windows.Forms.Diagram;
+using System;
 using System.Runtime.Serialization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dyvenix.Genit.Diagram;
 

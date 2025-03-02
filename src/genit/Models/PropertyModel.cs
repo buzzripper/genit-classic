@@ -6,15 +6,26 @@ namespace Dyvenix.Genit.Models;
 
 public class PropertyModel
 {
-	public Guid Id { get; set; }
+	[JsonConstructor]
+	public PropertyModel(EntityModel entityModel, Guid id)
+	{
+		Id = id;
+		Entity = entityModel;
+	}
+
+	[JsonIgnore]
+	public EntityModel Entity { get; set; }
+
+	public Guid Id { get; private set; }
 	public string Name { get; set; }
 	[JsonConverter(typeof(JsonStringEnumConverter))]
-	public PropertyType Type { get; set; }
+	public PrimitveType PrimitiveType { get; set; }
 	public EnumModel EnumType { get; set; }
 	public bool Nullable { get; set; }
 	public bool IsPrimaryKey { get; set; }
 	public bool IsIdentity { get; set; }
 	public int? MaxLength { get; set; }
+	public Guid? FKAssocId { get; set; }
 
 	public bool IsIndexed { get; set; }
 	public bool IsIndexUnique { get; set; }

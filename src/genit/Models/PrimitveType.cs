@@ -1,7 +1,8 @@
 ﻿namespace Dyvenix.Genit.Models;
 
-public enum PropertyType
+public enum PrimitveType
 {
+	unknown,
 	stringType,
 	intType,
 	boolType,

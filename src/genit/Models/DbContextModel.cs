@@ -15,4 +15,5 @@ public class DbContextModel
 
 	public List<EntityModel> Entities { get; set; } = new List<EntityModel>();
 	public List<EnumModel> Enums { get; set; } = new List<EnumModel>();
+	public List<AssocModel> Assocs { get; set; } = new List<AssocModel>();
 }

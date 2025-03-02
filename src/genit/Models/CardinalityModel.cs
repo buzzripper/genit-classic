@@ -10,6 +10,6 @@ namespace Dyvenix.Genit.Models
     {
         OneToOne,
         OneToMany,
-        ManyToMany
+        //ManyToMany
     }
 }

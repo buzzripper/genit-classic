@@ -53,13 +53,7 @@ partial class Form1
 		btnNew = new System.Windows.Forms.ToolStripButton();
 		btnOpen = new System.Windows.Forms.ToolStripButton();
 		btnSave = new System.Windows.Forms.ToolStripButton();
-		printToolStripButton = new System.Windows.Forms.ToolStripButton();
 		toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-		cutToolStripButton = new System.Windows.Forms.ToolStripButton();
-		copyToolStripButton = new System.Windows.Forms.ToolStripButton();
-		pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
-		toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-		toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 		btnGenerate = new System.Windows.Forms.ToolStripButton();
 		openFileDlg = new System.Windows.Forms.OpenFileDialog();
 		saveFileDlg = new System.Windows.Forms.SaveFileDialog();
@@ -206,10 +200,11 @@ partial class Form1
 		// 
 		// toolStrip1
 		// 
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, printToolStripButton, toolStripSeparator, cutToolStripButton, copyToolStripButton, pasteToolStripButton, toolStripSeparator1, toolStripSeparator2, btnGenerate });
+		toolStrip1.ImageScalingSize = new System.Drawing.Size(48, 48);
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate });
 		toolStrip1.Location = new System.Drawing.Point(0, 24);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(1048, 25);
+		toolStrip1.Size = new System.Drawing.Size(1048, 31);
 		toolStrip1.TabIndex = 37;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -219,7 +214,7 @@ partial class Form1
 		btnNew.Image = (System.Drawing.Image)resources.GetObject("btnNew.Image");
 		btnNew.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnNew.Name = "btnNew";
-		btnNew.Size = new System.Drawing.Size(23, 22);
+		btnNew.Size = new System.Drawing.Size(28, 28);
 		btnNew.Text = "&New";
 		// 
 		// btnOpen
@@ -228,7 +223,7 @@ partial class Form1
 		btnOpen.Image = (System.Drawing.Image)resources.GetObject("btnOpen.Image");
 		btnOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnOpen.Name = "btnOpen";
-		btnOpen.Size = new System.Drawing.Size(23, 22);
+		btnOpen.Size = new System.Drawing.Size(28, 28);
 		btnOpen.Text = "&Open";
 		btnOpen.Click += uiOpen_Click;
 		// 
@@ -238,70 +233,22 @@ partial class Form1
 		btnSave.Image = (System.Drawing.Image)resources.GetObject("btnSave.Image");
 		btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnSave.Name = "btnSave";
-		btnSave.Size = new System.Drawing.Size(23, 22);
+		btnSave.Size = new System.Drawing.Size(28, 28);
 		btnSave.Text = "&Save";
 		btnSave.Click += uiSave_Click;
-		// 
-		// printToolStripButton
-		// 
-		printToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		printToolStripButton.Image = (System.Drawing.Image)resources.GetObject("printToolStripButton.Image");
-		printToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-		printToolStripButton.Name = "printToolStripButton";
-		printToolStripButton.Size = new System.Drawing.Size(23, 22);
-		printToolStripButton.Text = "&Print";
-		printToolStripButton.Click += printToolStripButton_Click;
 		// 
 		// toolStripSeparator
 		// 
 		toolStripSeparator.Name = "toolStripSeparator";
-		toolStripSeparator.Size = new System.Drawing.Size(6, 25);
-		// 
-		// cutToolStripButton
-		// 
-		cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		cutToolStripButton.Image = (System.Drawing.Image)resources.GetObject("cutToolStripButton.Image");
-		cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-		cutToolStripButton.Name = "cutToolStripButton";
-		cutToolStripButton.Size = new System.Drawing.Size(23, 22);
-		cutToolStripButton.Text = "C&ut";
-		// 
-		// copyToolStripButton
-		// 
-		copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		copyToolStripButton.Image = (System.Drawing.Image)resources.GetObject("copyToolStripButton.Image");
-		copyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-		copyToolStripButton.Name = "copyToolStripButton";
-		copyToolStripButton.Size = new System.Drawing.Size(23, 22);
-		copyToolStripButton.Text = "&Copy";
-		// 
-		// pasteToolStripButton
-		// 
-		pasteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		pasteToolStripButton.Image = (System.Drawing.Image)resources.GetObject("pasteToolStripButton.Image");
-		pasteToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-		pasteToolStripButton.Name = "pasteToolStripButton";
-		pasteToolStripButton.Size = new System.Drawing.Size(23, 22);
-		pasteToolStripButton.Text = "&Paste";
-		// 
-		// toolStripSeparator1
-		// 
-		toolStripSeparator1.Name = "toolStripSeparator1";
-		toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-		// 
-		// toolStripSeparator2
-		// 
-		toolStripSeparator2.Name = "toolStripSeparator2";
-		toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+		toolStripSeparator.Size = new System.Drawing.Size(6, 31);
 		// 
 		// btnGenerate
 		// 
-		btnGenerate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 		btnGenerate.Image = (System.Drawing.Image)resources.GetObject("btnGenerate.Image");
 		btnGenerate.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnGenerate.Name = "btnGenerate";
-		btnGenerate.Size = new System.Drawing.Size(23, 22);
-		btnGenerate.Text = "toolStripButton1";
+		btnGenerate.Size = new System.Drawing.Size(82, 28);
+		btnGenerate.Text = "Generate";
 		btnGenerate.Click += uiGenerate_Click;
 		// 
 		// openFileDlg
@@ -321,9 +268,9 @@ partial class Form1
 		rtbJson.Dock = System.Windows.Forms.DockStyle.Fill;
 		rtbJson.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		rtbJson.HideSelection = false;
-		rtbJson.Location = new System.Drawing.Point(0, 49);
+		rtbJson.Location = new System.Drawing.Point(0, 55);
 		rtbJson.Name = "rtbJson";
-		rtbJson.Size = new System.Drawing.Size(1048, 816);
+		rtbJson.Size = new System.Drawing.Size(1048, 810);
 		rtbJson.TabIndex = 38;
 		rtbJson.TabStop = false;
 		rtbJson.Text = "";
@@ -383,16 +330,10 @@ partial class Form1
 	private System.Windows.Forms.ToolStripButton btnNew;
 	private System.Windows.Forms.ToolStripButton btnOpen;
 	private System.Windows.Forms.ToolStripButton btnSave;
-	private System.Windows.Forms.ToolStripButton printToolStripButton;
 	private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-	private System.Windows.Forms.ToolStripButton cutToolStripButton;
-	private System.Windows.Forms.ToolStripButton copyToolStripButton;
-	private System.Windows.Forms.ToolStripButton pasteToolStripButton;
-	private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 	private System.Windows.Forms.ToolStripButton helpToolStripButton;
 	private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 	private System.Windows.Forms.ToolStripButton btnGenerate;
-	private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 	private System.Windows.Forms.OpenFileDialog openFileDlg;
 	private System.Windows.Forms.SaveFileDialog saveFileDlg;
 	private System.Windows.Forms.RichTextBox rtbJson;

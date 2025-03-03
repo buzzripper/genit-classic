@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Dyvenix.Genit.Models;
@@ -8,16 +7,17 @@ namespace Dyvenix.Genit.Models;
 public class EntityModel
 {
 	[JsonConstructor]
-	public EntityModel(DbContextModel dbContextModel, Guid id)
+	public EntityModel()
 	{
-		Id = id;
-		DbContextModel = dbContextModel;
 	}
 
-	[JsonIgnore]
-	public DbContextModel DbContextModel { get; set; }
+	public EntityModel(Guid id)
+	{
+		Id = id;
+	}
 
-	public Guid Id { get; private set; }
+	public Guid Id { get; init; }
+
 	public string Name { get; set; }
 	public string Schema { get; set; }
 	public string TableName { get; set; }
@@ -37,8 +37,8 @@ public class EntityModel
 	public Guid AddForeignKey(AssocModel assoc)
 	{
 		var propId = Guid.NewGuid();
-		var fkProp = new PropertyModel(this, propId) {
-			FKAssocId = assoc.Id,
+		var fkProp = new PropertyModel(propId) {
+			FKAssoc = assoc,
 			Name = $"{assoc.PrimaryEntity.Name}Id"
 		};
 

@@ -53,7 +53,7 @@ namespace Dyvenix.Genit
 
 		private static EntityModel CreateAppUserEntityModel(DbContextModel dbContextMdl)
 		{
-			var entity = new EntityModel(dbContextMdl, Guid.NewGuid()) {
+			var entity = new EntityModel(Guid.NewGuid()) {
 				Name = "AppUser",
 				Schema = "",
 				TableName = "",
@@ -66,7 +66,7 @@ namespace Dyvenix.Genit
 				AddlUsings = new List<string> { "System.Data", "System.Text" }
 			};
 
-			var prop = new PropertyModel(entity, Guid.NewGuid()) {
+			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",
 				PrimitiveType = PrimitveType.GuidType,
 				EnumType = null,
@@ -87,7 +87,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "IdentityId",
 				PrimitiveType = PrimitveType.stringType,
 				EnumType = null,
@@ -108,7 +108,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "FirstName",
 				PrimitiveType = PrimitveType.stringType,
 				EnumType = null,
@@ -129,7 +129,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "LastName",
 				PrimitiveType = PrimitveType.stringType,
 				EnumType = null,
@@ -150,7 +150,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Email",
 				PrimitiveType = PrimitveType.stringType,
 				EnumType = null,
@@ -171,7 +171,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "DateCreated",
 				PrimitiveType = PrimitveType.DateTimeType,
 				EnumType = null,
@@ -192,7 +192,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "IsActive",
 				PrimitiveType = PrimitveType.boolType,
 				EnumType = null,
@@ -213,7 +213,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ActivityCount",
 				PrimitiveType = PrimitveType.intType,
 				EnumType = null,
@@ -239,7 +239,7 @@ namespace Dyvenix.Genit
 
 		private static EntityModel CreateAccessClaimEntityModel(DbContextModel dbContextMdl, Guid appUserId)
 		{
-			var entity = new EntityModel(dbContextMdl, Guid.NewGuid()) {
+			var entity = new EntityModel(Guid.NewGuid()) {
 				Name = "AccessClaim",
 				Schema = "",
 				TableName = "",
@@ -252,7 +252,7 @@ namespace Dyvenix.Genit
 				//AddlUsings = new List<string> { "System.Data", "System.Text" }
 			};
 
-			var prop = new PropertyModel(entity, Guid.NewGuid()) {
+			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",
 				PrimitiveType = PrimitveType.GuidType,
 				EnumType = null,
@@ -273,7 +273,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "AppUserId",
 				PrimitiveType = PrimitveType.GuidType,
 				EnumType = null,
@@ -294,7 +294,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ClaimName",
 				PrimitiveType = PrimitveType.stringType,
 				EnumType = null,
@@ -315,7 +315,7 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			prop = new PropertyModel(entity, Guid.NewGuid()) {
+			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ClaimValue",
 				PrimitiveType = PrimitveType.stringType,
 				EnumType = null,

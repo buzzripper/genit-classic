@@ -12,12 +12,12 @@ namespace Dyvenix.Genit;
 
 public partial class Form1 : Form
 {
+	private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions { WriteIndented = true };
+
 	#region Constants
 
 
 	#endregion
-
-	private readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
 	#region Fields
 
@@ -40,9 +40,8 @@ public partial class Form1 : Form
 		PopulateForm(_appConfig);
 		Form1_Resize(null, null);
 
-		//AddRect();
-		var doc = Utils.GenerateTestDoc();
-		rtbJson.Text = JsonSerializer.Serialize(doc, _serializerOptions);
+		//var doc = DocManager.LoadDoc("TEST");
+		//rtbJson.Text = JsonSerializer.Serialize(doc, _serializerOptions);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
@@ -191,8 +190,10 @@ public partial class Form1 : Form
 		};
 
 		try {
-			var doc = JsonSerializer.Deserialize<Doc>(rtbJson.Text);
+			var doc = DocManager.LoadDoc("TEST");
 			entityGenerator.Run(doc.DbContexts[0]);
+
+			ShowSuccessDlg("Files generated.");
 
 		} catch (Exception ex) {
 			this.ShowErrorDlg(ex);
@@ -248,11 +249,16 @@ public partial class Form1 : Form
 
 	private void ShowErrorDlg(string message)
 	{
-		MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		MessageBox.Show(this, message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
 
 	private void ShowErrorDlg(Exception ex)
 	{
-		MessageBox.Show($"{ex.GetType().Name}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		MessageBox.Show(this, $"{ex.GetType().Name}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+	}
+
+	private void ShowSuccessDlg(string message)
+	{
+		MessageBox.Show(this, message, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 	}
 }

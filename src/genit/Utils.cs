@@ -12,7 +12,6 @@ namespace Dyvenix.Genit
 				Name = "MyDoc",
 				Description = "My Description",
 				Version = "1.0.0",
-				OutputRootFolder = @"C:\Work\Genit",
 				DbContexts = new List<DbContextModel>()
 			};
 
@@ -44,6 +43,8 @@ namespace Dyvenix.Genit
 			dbContext.Entities.Add(appUserMdl);
 			var accessClaimMdl = CreateAccessClaimEntityModel(dbContext, appUserMdl.Id);
 			dbContext.Entities.Add(accessClaimMdl);
+			var logEventsMdl = CreateLogEventsEntityModel(dbContext, appUserMdl.Id);
+			dbContext.Entities.Add(logEventsMdl);
 
 			var assoc = new AssocModel(Guid.NewGuid(), appUserMdl, accessClaimMdl, "Claims", CardinalityModel.OneToMany);
 			appUserMdl.Assocs.Add(assoc);
@@ -62,8 +63,7 @@ namespace Dyvenix.Genit
 				InclSingleQuery = true,
 				InclListQuery = true,
 				UseListPaging = true,
-				UseListSorting = true,
-				AddlUsings = new List<string> { "System.Data", "System.Text" }
+				UseListSorting = true
 			};
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
@@ -320,6 +320,192 @@ namespace Dyvenix.Genit
 				PrimitiveType = PrimitveType.stringType,
 				EnumType = null,
 				Nullable = false,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 50,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			return entity;
+		}
+
+		private static EntityModel CreateLogEventsEntityModel(DbContextModel dbContextMdl, Guid appUserId)
+		{
+			var entity = new EntityModel(Guid.NewGuid()) {
+				Name = "LogEvent",
+				Schema = "Logs",
+				TableName = "LogEvents",
+				Enabled = true,
+				Namespace = "",
+				InclSingleQuery = true,
+				InclListQuery = true,
+				UseListPaging = true,
+				UseListSorting = true
+				//AddlUsings = new List<string> { "System.Data", "System.Text" }
+			};
+
+			var prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "Id",
+				PrimitiveType = PrimitveType.GuidType,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = true,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = true,
+				IsIndexUnique = true,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "Message",
+				PrimitiveType = PrimitveType.stringType,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "Timestamp",
+				PrimitiveType = PrimitveType.DateTimeType,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = true,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "Exception",
+				PrimitiveType = PrimitveType.stringType,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "LogLevel",
+				PrimitiveType = PrimitveType.intType,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "Application",
+				PrimitiveType = PrimitveType.stringType,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 200,
+
+				IsIndexed = true,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "Source",
+				PrimitiveType = PrimitveType.stringType,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 200,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "CorrelationId",
+				PrimitiveType = PrimitveType.stringType,
+				EnumType = null,
+				Nullable = true,
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 50,

@@ -67,8 +67,12 @@ public class EntityGenerator
 				this.GenerateProperty(prop, propOutputList, usings);
 
 			// Navigation properties
-			foreach (var assoc in entity.Assocs)
-				this.GenerateNavigationProperty(assoc, propOutputList, usings);
+			if (entity.Assocs.Count > 0) {
+				propOutputList.AddLine();
+				propOutputList.AddLine(1, $"// Navigation properties");
+				foreach (var assoc in entity.Assocs)
+					this.GenerateNavigationProperty(assoc, propOutputList, usings);
+			}
 
 			var classEnd = new List<string>();
 			classEnd.Add("}");
@@ -91,33 +95,32 @@ public class EntityGenerator
 	{
 		var tabCount = 1;
 
-		string typeStr = assoc.Cardinality switch
-		{
+		string typeStr = assoc.Cardinality switch {
 			CardinalityModel.OneToOne => $"{assoc.RelatedEntity.Name}",
 			CardinalityModel.OneToMany => $"List<{assoc.RelatedEntity.Name}>",
 			_ => throw new ApplicationException($"Error determining data type for property '{assoc.PrimaryPropertyName}': Cardinality '{assoc.Cardinality}' not supported.")
 		};
 
-		propOutputList.Add($"{Tabs(tabCount)}public List<{typeStr}> {assoc.PrimaryPropertyName} {{ get; set; }}");
+		propOutputList.AddLine(tabCount, $"public List<{typeStr}> {assoc.PrimaryPropertyName} {{ get; set; }}");
 
 		usings.AddIfNotExists(assoc.RelatedEntity.Namespace);
 	}
 
 	private void GenerateProperty(PropertyModel prop, List<string> propOutputList, List<string> usings)
 	{
-		var tabCount = 1;
+		var tc = 1;
 
 		if (prop.Attributes.Any())
 			foreach (var attr in prop.Attributes)
-				propOutputList.Add($"{Tabs(tabCount)}[{attr}]");
+				propOutputList.AddLine(tc, $"[{attr}]");
 
 		if (prop.EnumType != null) {
-			propOutputList.Add($"{Tabs(tabCount)}[JsonConverter(typeof(JsonStringEnumConverter))]");
-			propOutputList.Add($"{Tabs(tabCount)}public {prop.EnumType} {prop.Name} {{ get; set; }}");
+			propOutputList.AddLine(tc, $"[JsonConverter(typeof(JsonStringEnumConverter))]");
+			propOutputList.AddLine(tc, $"public {prop.EnumType} {prop.Name} {{ get; set; }}");
 			usings.AddIfNotExists("System.Text.Json.Serialization");
 
 		} else {
-			propOutputList.Add($"{Tabs(tabCount)}public {FormatTypeName(prop.PrimitiveType.ToString())} {prop.Name} {{ get; set; }}");
+			propOutputList.AddLine(tc, $"public {FormatTypeName(prop.PrimitiveType.ToString())} {prop.Name} {{ get; set; }}");
 		}
 
 		if (prop.AddlUsings.Any())
@@ -135,21 +138,20 @@ public class EntityGenerator
 			case CardinalityModel.OneToOne:
 				typeStr = $"{assoc.PrimaryEntity.Name}";
 				break;
+
 			case CardinalityModel.OneToMany:
+				usings.AddIfNotExists("System.Collections.Generic");
 				typeStr = $"List<{assoc.PrimaryEntity.Name}>";
 				break;
+
 			default:
 				throw new ApplicationException($"Error determining data type for property '{assoc.PrimaryPropertyName}': Cardinality '{assoc.Cardinality}' not supported.");
 		}
 
-		propOutputList.Add($"{Tabs(tabCount)}public List<{typeStr}> {assoc.PrimaryPropertyName} {{ get; set; }}");
+		propOutputList.AddLine(tabCount, $"public {typeStr} {assoc.PrimaryPropertyName} {{ get; set; }}");
 
-		usings.AddIfNotExists(assoc.RelatedEntity.Namespace);
-	}
-
-	private string Tabs(int count)
-	{
-		return new string('\t', count);
+		if (!string.IsNullOrWhiteSpace(assoc.RelatedEntity.Namespace))
+			usings.AddIfNotExists(assoc.RelatedEntity.Namespace);
 	}
 
 	private void Validate()
@@ -196,10 +198,9 @@ public class EntityGenerator
 
 			var propOutputList = new List<string>();
 			foreach (var member in enumMdl.Members)
-				propOutputList.Add($"{Tabs(1)}{member},");
+				propOutputList.AddLine(1, member);
 
 			var classEnd = new List<string>();
-			classEnd.Add("}");
 
 			var sb = new StringBuilder();
 			sb.AppendLine(string.Join(Environment.NewLine, header));

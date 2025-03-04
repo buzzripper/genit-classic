@@ -183,15 +183,22 @@ public partial class Form1 : Form
 
 	private void uiGenerate_Click(object sender, EventArgs e)
 	{
-		var entityGenerator = new EntityGenerator {
-			Enabled = true,
-			InclHeader = true,
-			OutputRootFolder = @"C:\Work\Genit"
-		};
-
 		try {
 			var doc = DocManager.LoadDoc("TEST");
-			entityGenerator.Run(doc.DbContexts[0]);
+
+			//var entityGenerator = new EntityGenerator {
+			//	Enabled = true,
+			//	InclHeader = true,
+			//	OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Entities"
+			//};
+			//entityGenerator.Run(doc.DbContexts[0]);
+
+			var dbContextGenerator = new DbContextGenerator {
+				Enabled = true,
+				InclHeader = true,
+				OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Data"
+			};
+			dbContextGenerator.Run(doc.DbContexts[0]);
 
 			ShowSuccessDlg("Files generated.");
 

@@ -95,4 +95,9 @@ public class PropertyModel
 	}
 
 	#endregion
+
+	public override string ToString()
+	{
+		return this.Name;
+	}
 }

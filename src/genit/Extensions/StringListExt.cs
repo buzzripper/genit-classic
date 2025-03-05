@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Dyvenix.Genit.Extensions
 {
@@ -8,6 +10,11 @@ namespace Dyvenix.Genit.Extensions
 		{
 			if (!list.Contains(newValue))
 				list.Add(newValue);
+		}
+
+		public static void AddLine(this List<string> list, int tabCount, StringBuilder sb)
+		{
+			AddLine(list, tabCount, sb.ToString());
 		}
 
 		public static void AddLine(this List<string> list, int tabCount, string line)

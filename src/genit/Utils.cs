@@ -442,11 +442,12 @@ namespace Dyvenix.Genit
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = true,
-				IsIdentity = false,
+				IsIdentity = true,
 				MaxLength = 0,
 
 				IsIndexed = true,
 				IsIndexUnique = true,
+				IsIndexClustered = false,
 				MultiIndex1 = false,
 				MultiIndex1Unique = false,
 				MultiIndex2 = false,

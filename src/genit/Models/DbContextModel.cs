@@ -36,4 +36,9 @@ public class DbContextModel
 
 		return assoc;
 	}
+
+	public override string ToString()
+	{
+		return this.Name;
+	}
 }

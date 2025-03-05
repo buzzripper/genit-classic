@@ -54,4 +54,9 @@ public class EntityModel
 		if (Properties.Count(p => p.IsIndexClustered) > 1)
 			errorList.Add($"Entity {this.Name}: Only one property can have a clustered index.");
 	}
+
+	public override string ToString()
+	{
+		return this.Name;
+	}
 }

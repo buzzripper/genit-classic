@@ -198,9 +198,10 @@ public class EntityGenerator
 
 			var propOutputList = new List<string>();
 			foreach (var member in enumMdl.Members)
-				propOutputList.AddLine(1, member);
+				propOutputList.AddLine(1, $"{member},");
 
 			var classEnd = new List<string>();
+			classEnd.Add("}");
 
 			var sb = new StringBuilder();
 			sb.AppendLine(string.Join(Environment.NewLine, header));

@@ -28,7 +28,7 @@ public class PropertyModel
 
 	public string Name { get; set; }
 	[JsonConverter(typeof(JsonStringEnumConverter))]
-	public PrimitveType PrimitiveType { get; set; }
+	public PrimitiveType PrimitiveType { get; set; }
 	public EnumModel EnumType { get; set; }
 	public AssocModel FKAssoc { get; set; }
 	public bool Nullable { get; set; }

@@ -186,17 +186,17 @@ public partial class Form1 : Form
 		try {
 			var doc = DocManager.LoadDoc("TEST");
 
-			//var entityGenerator = new EntityGenerator {
-			//	Enabled = true,
-			//	InclHeader = true,
-			//	OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Entities"
-			//};
-			//entityGenerator.Run(doc.DbContexts[0]);
+			var entityGenerator = new EntityGenerator {
+				Enabled = true,
+				InclHeader = true,
+				OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Entities"
+			};
+			entityGenerator.Run(doc.DbContexts[0]);
 
 			var dbContextGenerator = new DbContextGenerator {
 				Enabled = true,
 				InclHeader = true,
-				OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Data"
+				OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Contexts"
 			};
 			dbContextGenerator.Run(doc.DbContexts[0]);
 

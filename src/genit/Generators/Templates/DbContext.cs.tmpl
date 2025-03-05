@@ -1,0 +1,32 @@
+﻿//------------------------------------------------------------------------------
+// This file was auto-generated. Any changes made to it will be lost.
+//------------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using ${{ENTITY_NS}};
+${{ADDL_USINGS}}
+
+namespace ${{CONTEXT_NS}};
+
+public partial class ${{DBCONTEXT_NAME}} : DbContext
+{
+    public ${{DBCONTEXT_NAME}}(DbContextOptions<${{DBCONTEXT_NAME}}> options)
+        : base(options)
+    {
+    }
+
+    # region Properties
+
+${{PROPERTIES}}
+
+    # endregion
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+${{ON_MODEL_CREATING}}
+        OnModelCreatingPartial(modelBuilder);
+    }
+
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+}

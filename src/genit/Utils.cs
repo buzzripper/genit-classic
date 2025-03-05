@@ -68,7 +68,7 @@ namespace Dyvenix.Genit
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",
-				PrimitiveType = PrimitveType.GuidType,
+				PrimitiveType = PrimitiveType.GuidType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = true,
@@ -89,7 +89,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "IdentityId",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -110,7 +110,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "FirstName",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -131,7 +131,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "LastName",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -152,7 +152,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Email",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -173,7 +173,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "DateCreated",
-				PrimitiveType = PrimitveType.DateTimeType,
+				PrimitiveType = PrimitiveType.DateTimeType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -194,7 +194,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "IsActive",
-				PrimitiveType = PrimitveType.boolType,
+				PrimitiveType = PrimitiveType.boolType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -215,7 +215,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ActivityCount",
-				PrimitiveType = PrimitveType.intType,
+				PrimitiveType = PrimitiveType.intType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -254,7 +254,7 @@ namespace Dyvenix.Genit
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",
-				PrimitiveType = PrimitveType.GuidType,
+				PrimitiveType = PrimitiveType.GuidType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = true,
@@ -275,7 +275,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "AppUserId",
-				PrimitiveType = PrimitveType.GuidType,
+				PrimitiveType = PrimitiveType.GuidType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -296,7 +296,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ClaimName",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -317,7 +317,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ClaimValue",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -356,7 +356,7 @@ namespace Dyvenix.Genit
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",
-				PrimitiveType = PrimitveType.GuidType,
+				PrimitiveType = PrimitiveType.GuidType,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = true,
@@ -377,7 +377,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Message",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -398,7 +398,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Timestamp",
-				PrimitiveType = PrimitveType.DateTimeType,
+				PrimitiveType = PrimitiveType.DateTimeType,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -419,7 +419,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Exception",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -440,7 +440,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "LogLevel",
-				PrimitiveType = PrimitveType.intType,
+				PrimitiveType = PrimitiveType.intType,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -461,7 +461,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Application",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -482,7 +482,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Source",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -503,7 +503,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "CorrelationId",
-				PrimitiveType = PrimitveType.stringType,
+				PrimitiveType = PrimitiveType.stringType,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,

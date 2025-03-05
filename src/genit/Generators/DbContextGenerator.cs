@@ -1,17 +1,28 @@
 ﻿using Dyvenix.Genit.Extensions;
 using Dyvenix.Genit.Models;
+using Microsoft.DotNet.DesignTools.Protocol.Values;
+using Syncfusion.SVG.IO;
+using Syncfusion.Windows.Forms.Diagram;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.WebSockets;
+using System.Reflection.Metadata;
 using System.Text;
+using System.Windows.Forms.VisualStyles;
+using System.Windows.Forms;
 
 namespace Dyvenix.Genit.Generators;
 
 public class DbContextGenerator
 {
-	private DbContextModel _dbMdl;
-	private List<string> _usings;
+	private const string cToken_EntityNs = "ENTITY_NS";
+	private const string cToken_AddlUsings = "ADDL_USINGS";
+	private const string cToken_ContextNs = "CONTEXT_NS";
+	private const string cToken_DbContextName = "DBCONTEXT_NAME";
+	private const string cToken_Properties = "PROPERTIES";
+	private const string cToken_OnModelCreating = "ON_MODEL_CREATING";
 
 	public bool InclHeader { get; set; }
 	public string OutputRootFolder { get; set; }
@@ -25,168 +36,179 @@ public class DbContextGenerator
 
 		Validate(dbContextModel);
 
-		// Header
-		var headerLines = GenerateHeader();
+		// Addl usings
+		var usingsList = InitializeUsings(dbContextModel);
 
-		// Usings
-		var _usings = InitUsings(_dbMdl);
+		// Properties
+		var propsList = this.GenerateProperties(dbContextModel.Entities);
 
-		var classDeclLines = GenerateClassDeclaration();
+		// OnModelCreating()
+		var onModelCreatingList = this.GenerateOnModelCreating(dbContextModel.Entities, dbContextModel.Assocs);
 
-		//if (_dbMdl.Entities.Any(e => e.Enabled))
-		//	this.GenerateEntities(_dbMdl.Entities);
+		// Replace tokens in template
+		var fileContents = this.ReplaceTemplateTokens(dbContextModel, usingsList, propsList, onModelCreatingList);
 
-		//if (!_dbMdl.Enums.All(e => e.IsExternal))
-		//	this.GenerateEnums(_dbMdl, _dbMdl.Enums);
-
-		var sb = new StringBuilder();
-		headerLines.ForEach(x => sb.AppendLine(x));
-		_usings.ForEach(u => sb.AppendLine($"using {u};"));
-		classDeclLines.ForEach(u => sb.AppendLine($"using {u};"));
-		sb.AppendLine(string.Join(Environment.NewLine, classStart));
-		sb.AppendLine(string.Join(Environment.NewLine, propOutputList));
-		sb.AppendLine(string.Join(Environment.NewLine, classEnd));
-
-		var outputFile = Path.Combine(this.OutputRootFolder, $"{entity.Name}.cs");
+		var outputFile = Path.Combine(this.OutputRootFolder, $"{dbContextModel.Name}.cs");
 		if (File.Exists(outputFile))
 			File.Delete(outputFile);
-		File.WriteAllText(outputFile, sb.ToString());
-
-	}
-
-	private List<string> GenerateHeader()
-	{
-		var headerLines = new List<string>();
-		headerLines.Add("//------------------------------------------------------------------------------");
-		headerLines.Add("// This file was auto-generated. Any changes made to it will be lost.");
-		headerLines.Add("//------------------------------------------------------------------------------");
-		return headerLines;
+		File.WriteAllText(outputFile, fileContents);
 	}
 
 	private void Validate(DbContextModel dbContextModel)
 	{
 		if (!Directory.Exists(OutputRootFolder))
 			throw new ApplicationException($"OutputRootFolder does not exist: {OutputRootFolder}");
-		if (!Directory.Exists(dbContextModel.ContextNamespace))
+
+		if (string.IsNullOrWhiteSpace(dbContextModel.ContextNamespace))
 			throw new ApplicationException($"ContextNamespace not set on db context");
-		if (!Directory.Exists(dbContextModel.EntitiesNamespace))
+
+		if (string.IsNullOrWhiteSpace(dbContextModel.EntitiesNamespace))
 			throw new ApplicationException($"EntitiesNamespace not set on db context");
+
+		if (!dbContextModel.Entities.Any())
+			throw new ApplicationException($"No entities found in DbContext.");
 	}
 
-	private List<string> InitUsings(DbContextModel _dbMdl)
+	private List<string> InitializeUsings(DbContextModel _dbMdl)
 	{
-		var _usings = new List<string>();
+		var addlUsings = new List<string>();
 
-		// Add default _usings
-		_usings.Add("System");
-		_usings.Add("System.Data");
-		_usings.Add("System.Linq");
-		_usings.Add("System.Linq.Expressions");
-		_usings.Add("System.Data.Common");
-		_usings.Add("System.Collections.Generic");
-		_usings.Add("Microsoft.EntityFrameworkCore");
-		_usings.Add("Microsoft.EntityFrameworkCore.Infrastructure");
-		_usings.Add("Microsoft.EntityFrameworkCore.Internal");
-		_usings.Add("Microsoft.EntityFrameworkCore.Metadata");
+		_dbMdl.AddlContextUsings.ForEach(u => addlUsings.Add(u));
 
-		// Context namespace
-		if (!string.IsNullOrWhiteSpace(_dbMdl.ContextNamespace))
-			_usings.Add(_dbMdl.ContextNamespace);
-		if (!string.IsNullOrWhiteSpace(_dbMdl.ContextNamespace))
-			_usings.Add(_dbMdl.ContextNamespace);
-
-		// Add additional _usings
-		_dbMdl.AddlContextUsings.ForEach(u => _usings.Add(u));
-
-		_usings.AddLine();
-
-		return _usings;
+		return addlUsings;
 	}
 
-	private List<string> GenerateClassDeclaration()
+	private List<string> GenerateProperties(List<EntityModel> entities)
 	{
-		var classDecl = new List<string>();
+		if (!entities.Any())
+			return new List<string>();
 
-		classDecl.Add($"namespace {_dbMdl.ContextNamespace};");
-		classDecl.Add("{");
-		classDecl.AddLine(1, $"public partial class {_dbMdl.Name} : DbContext");
-		classDecl.AddLine(1, "{");
-		classDecl.AddLine(2, $"public {_dbMdl.Name}() :");
-		classDecl.AddLine(3, "base()");
-		classDecl.AddLine(2, "{");
-		classDecl.AddLine(3, "OnCreated();");
-		classDecl.AddLine(2, "}");
-		classDecl.AddLine();
+		var propsList = new List<string>();
 
-		classDecl.AddLine(2, $"public {_dbMdl.Name}(DbContextOptions<{_dbMdl.Name}> options) :");
-		classDecl.AddLine(3, "base()");
-		classDecl.AddLine(2, "{");
-		classDecl.AddLine(3, "OnCreated();");
-		classDecl.AddLine(2, "}");
-		classDecl.AddLine();
+		var t = 1;
 
-		return classDecl;
+		propsList.AddLine(t, "// Properties");
+
+		foreach (var entity in entities) {
+			if (!entity.Enabled)
+				continue;
+
+			propsList.AddLine(t, $"public DbSet<{entity.Name}> {entity.Name} {{ get; set; }}");
+		}
+
+		propsList.AddLine();
+
+		return propsList;
 	}
 
-	//private void GenerateEntities(List<EntityModel> entities)
-	//{
-	//	foreach (var entity in entities) {
-	//		if (!entity.Enabled)
-	//			continue;
+	private List<string> GenerateOnModelCreating(List<EntityModel> entities, List<AssocModel> assocs)
+	{
+		var outList = new List<string>();
 
-	//		var header = new List<string>();
-	//		if (InclHeader)
-	//			this.GenerateHeader(header);
+		var t = 1;
 
-	//		var _usings = new List<string>();
-	//		_usings.Add("System");
-	//		entity.AddlUsings.ForEach(u => _usings.Add(u));
+		foreach (var entity in entities) {
+			if (!entity.Enabled)
+				continue;
 
-	//		// Class declaration
-	//		var classStart = new List<string>();
-	//		classStart.Add("");
-	//		entity.Attributes.ForEach(a => classStart.Add($"[{a}]"));
-	//		var ns = string.IsNullOrEmpty(entity.Namespace) ? _dbMdl.EntitiesNamespace : entity.Namespace;
-	//		classStart.Add($"namespace {ns};");
-	//		classStart.Add("");
-	//		classStart.Add($"public partial class {entity.Name}");
-	//		classStart.Add("{");
+			this.GenerateModelBuilderEntity(entity, assocs, outList);
+		}
 
-	//		var propOutputList = new List<string>();
+		return outList;
+	}
 
-	//		// FK properties
-	//		var assocs = _dbMdl.Assocs.Where(p => p.RelatedEntity == entity).ToList();
-	//		foreach (var assoc in assocs)
-	//			this.GenerateFKProperty(assoc, propOutputList, _usings);
+	private void GenerateModelBuilderEntity(EntityModel entity, List<AssocModel> assocs, List<string> outList)
+	{
+		if (!entity.Enabled)
+			return;
 
-	//		// Normal properties
-	//		foreach (var prop in entity.Properties)
-	//			this.GenerateProperty(prop, propOutputList, _usings);
+		var t = 2;
+		outList.AddLine(t, $"modelBuilder.Entity<{entity.Name}>(entity =>");
+		outList.AddLine(t, "{");
+		var tableName = string.IsNullOrWhiteSpace(entity.TableName) ? entity.Name : entity.TableName;
+		outList.AddLine(t + 1, $"entity.ToTable(\"{tableName}\");");
+		outList.AddLine();
 
-	//		// Navigation properties
-	//		if (entity.Assocs.Count > 0) {
-	//			propOutputList.AddLine();
-	//			propOutputList.AddLine(1, $"// Navigation properties");
-	//			foreach (var assoc in entity.Assocs)
-	//				this.GenerateNavigationProperty(assoc, propOutputList, _usings);
-	//		}
+		foreach (var prop in entity.Properties) {
+			var sb = new StringBuilder();
+			sb.Append($"entity.Property(e => e.{prop.Name})");
 
-	//		var classEnd = new List<string>();
-	//		classEnd.Add("}");
+			if (prop.IsPrimaryKey) {
+				var valGen = prop.IsIdentity ? "ValueGeneratedOnAdd" : "ValueGeneratedNever";
+				sb.Append($".{valGen}()");
+			}
 
-	//		var sb = new StringBuilder();
-	//		sb.AppendLine(string.Join(Environment.NewLine, header));
-	//		_usings.ForEach(u => sb.AppendLine($"using {u};"));
-	//		sb.AppendLine(string.Join(Environment.NewLine, classStart));
-	//		sb.AppendLine(string.Join(Environment.NewLine, propOutputList));
-	//		sb.AppendLine(string.Join(Environment.NewLine, classEnd));
+			if (!prop.Nullable)
+				sb.Append($".IsRequired()");
 
-	//		var outputFile = Path.Combine(this.OutputRootFolder, $"{entity.Name}.cs");
-	//		if (File.Exists(outputFile))
-	//			File.Delete(outputFile);
-	//		File.WriteAllText(outputFile, sb.ToString());
-	//	}
-	//}
+			if (prop.PrimitiveType == PrimitiveType.stringType) {
+				sb.Append($".HasMaxLength({prop.MaxLength})");
+			} else if (prop.PrimitiveType == PrimitiveType.DateTimeType) {
+				sb.Append($".HasColumnType(\"{MapSqlServerType(PrimitiveType.DateTimeType)}\")");
+			}
+
+			sb.Append(";");
+			outList.AddLine(t + 1, sb.ToString());
+		}
+
+		outList.AddLine(t, "});");
+		outList.AddLine();
+	}
+
+	private string MapSqlServerType(PrimitiveType primitiveType)
+	{
+		//var sb = new StringBuilder();
+		//foreach (var e in Enum.GetValues(typeof(PrimitiveType))) {
+		//	sb.AppendLine($"\tPrimitiveType.{e.ToString()} => {e.ToString().ToLower()},");
+		//}
+		//return sb.ToString();
+
+		return primitiveType switch {
+			PrimitiveType.stringType => "nvarchar",
+			PrimitiveType.intType => "int",
+			PrimitiveType.boolType => "bit",
+			PrimitiveType.GuidType => "uniqueidentifier",
+			PrimitiveType.DateTimeType => "datetime",
+			PrimitiveType.TimeSpanType => "time",
+			PrimitiveType.shortType => "smallint",
+			PrimitiveType.longType => "bigint",
+			PrimitiveType.DoubleType => "float",
+			PrimitiveType.DecimalType => "decimal",
+			PrimitiveType.DateTimeOffsetType => "datetimeoffset",
+			PrimitiveType.ByteArrayType => "varbinary",
+			PrimitiveType.TimeType => "time",
+			_ => throw new ApplicationException($"Error determining data type '{primitiveType}'")
+		};
+	}
+
+	private string ReplaceTemplateTokens(DbContextModel dbContextModel, List<string> addlUsingsList, List<string> propsList, List<string> onModelCreatingList)
+	{
+		var filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Generators\Templates\DbContext.cs.tmpl");
+		if (!File.Exists(filepath))
+			throw new ApplicationException($"Dbcontext template file not found at ''{filepath}");
+
+		var template = File.ReadAllText(filepath);
+
+		var ft = FmtToken(cToken_EntityNs);
+		template = template.Replace(FmtToken(cToken_EntityNs), dbContextModel.EntitiesNamespace);
+		template = template.Replace(FmtToken(cToken_ContextNs), dbContextModel.ContextNamespace);
+		template = template.Replace(FmtToken(cToken_DbContextName), dbContextModel.Name);
+
+		// Addl usings
+		var sb = new StringBuilder();
+		addlUsingsList.ForEach(x => sb.AppendLine($"using {x};"));
+		template = template.Replace(FmtToken(cToken_AddlUsings), sb.ToString());
+
+		sb = new StringBuilder();
+		propsList.ForEach(x => sb.AppendLine(x));
+		template = template.Replace(FmtToken(cToken_Properties), sb.ToString());
+
+		sb = new StringBuilder();
+		onModelCreatingList.ForEach(x => sb.AppendLine(x));
+		template = template.Replace(FmtToken(cToken_OnModelCreating), sb.ToString());
+
+		return template;
+	}
 
 	//private void GenerateFKProperty(AssocModel assoc, List<string> propOutputList)
 	//{
@@ -252,59 +274,17 @@ public class DbContextGenerator
 	//}
 
 
-	//private void GenerateHeader(List<string> headerLines)
-	//{
-	//	headerLines.Add("//------------------------------------------------------------------------------");
-	//	headerLines.Add("// This file was auto-generated. Any changes made to it will be lost.");
-	//	headerLines.Add("//------------------------------------------------------------------------------");
-	//}
+	#region Utility methods
 
-	//private string FormatTypeName(string typeName)
-	//{
-	//	return typeName?.Replace("Type", string.Empty);
-	//}
+	private string FormatTypeName(string typeName)
+	{
+		return typeName?.Replace("Type", string.Empty);
+	}
 
-	//private void GenerateEnums(DbContextModel _dbMdl, List<EnumModel> enumMdls)
-	//{
-	//	foreach (var enumMdl in enumMdls) {
-	//		if (enumMdl.IsExternal)
-	//			continue;
+	private string FmtToken(string tokenTitle)
+	{
+		return $"${{{{{tokenTitle}}}}}";
+	}
 
-	//		var header = new List<string>();
-	//		if (InclHeader)
-	//			this.GenerateHeader(header);
-
-	//		var _usings = new List<string>();
-	//		_usings.Add("System");
-
-	//		// Enum declaration
-	//		var enumStart = new List<string>();
-	//		enumStart.Add("");
-	//		var ns = string.IsNullOrEmpty(enumMdl.Namespace) ? _dbMdl.EntitiesNamespace : enumMdl.Namespace;
-	//		enumStart.Add($"namespace {ns};");
-	//		enumStart.Add("");
-	//		if (enumMdl.IsFlags)
-	//			enumStart.Add("[Flags]");
-	//		enumStart.Add($"public enum {enumMdl.Name}");
-	//		enumStart.Add("{");
-
-	//		var propOutputList = new List<string>();
-	//		foreach (var member in enumMdl.Members)
-	//			propOutputList.AddLine(1, member);
-
-	//		var classEnd = new List<string>();
-
-	//		var sb = new StringBuilder();
-	//		sb.AppendLine(string.Join(Environment.NewLine, header));
-	//		_usings.ForEach(u => sb.AppendLine($"using {u};"));
-	//		sb.AppendLine(string.Join(Environment.NewLine, enumStart));
-	//		sb.AppendLine(string.Join(Environment.NewLine, propOutputList));
-	//		sb.AppendLine(string.Join(Environment.NewLine, classEnd));
-
-	//		var outputFile = Path.Combine(this.OutputRootFolder, $"{enumMdl.Name}.cs");
-	//		if (File.Exists(outputFile))
-	//			File.Delete(outputFile);
-	//		File.WriteAllText(outputFile, sb.ToString());
-	//	}
-	//}
+	#endregion
 }

@@ -1,6 +1,6 @@
 ﻿namespace Dyvenix.Genit.Models;
 
-public enum PrimitveType
+public enum PrimitiveType
 {
 	unknown,
 	stringType,

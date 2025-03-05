@@ -70,7 +70,7 @@ namespace Dyvenix.Genit
 
 		public static void SetPlacement(nint windowHandle, string placementXml)
 		{
-			if (string.IsNullOrEmpty(placementXml)) {
+			if (string.IsNullOrWhiteSpace(placementXml)) {
 				return;
 			}
 

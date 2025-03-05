@@ -31,6 +31,19 @@ public class EntityGenerator
 			this.GenerateEnums(dbContextMdl, dbContextMdl.Enums);
 	}
 
+	private void Validate()
+	{
+		if (!Directory.Exists(OutputRootFolder))
+			throw new ApplicationException($"OutputRootFolder does not exist: {OutputRootFolder}");
+	}
+
+	private void GenerateHeader(List<string> headerLines)
+	{
+		headerLines.Add("//------------------------------------------------------------------------------");
+		headerLines.Add("// This file was auto-generated. Any changes made to it will be lost.");
+		headerLines.Add("//------------------------------------------------------------------------------");
+	}
+
 	private void GenerateEntities(DbContextModel dbContextMdl, List<EntityModel> entities)
 	{
 		foreach (var entity in entities) {
@@ -49,7 +62,7 @@ public class EntityGenerator
 			var classStart = new List<string>();
 			classStart.Add("");
 			entity.Attributes.ForEach(a => classStart.Add($"[{a}]"));
-			var ns = string.IsNullOrEmpty(entity.Namespace) ? dbContextMdl.EntitiesNamespace : entity.Namespace;
+			var ns = string.IsNullOrWhiteSpace(entity.Namespace) ? dbContextMdl.EntitiesNamespace : entity.Namespace;
 			classStart.Add($"namespace {ns};");
 			classStart.Add("");
 			classStart.Add($"public partial class {entity.Name}");
@@ -114,13 +127,18 @@ public class EntityGenerator
 			foreach (var attr in prop.Attributes)
 				propOutputList.AddLine(tc, $"[{attr}]");
 
-		if (prop.EnumType != null) {
+		if ((prop.PrimitiveType ?? PrimitiveType.None) != PrimitiveType.None) {
+			propOutputList.AddLine(tc, $"public {prop.PrimitiveType.CSType} {prop.Name} {{ get; set; }}");
+
+		} else if (prop.EnumType != null) {
 			propOutputList.AddLine(tc, $"[JsonConverter(typeof(JsonStringEnumConverter))]");
-			propOutputList.AddLine(tc, $"public {prop.EnumType} {prop.Name} {{ get; set; }}");
+			propOutputList.AddLine(tc, $"public {prop.EnumType.Name} {prop.Name} {{ get; set; }}");
 			usings.AddIfNotExists("System.Text.Json.Serialization");
+			if (!string.IsNullOrWhiteSpace(prop.EnumType.Namespace))
+				usings.AddIfNotExists(prop.EnumType.Namespace);
 
 		} else {
-			propOutputList.AddLine(tc, $"public {FormatTypeName(prop.PrimitiveType.ToString())} {prop.Name} {{ get; set; }}");
+
 		}
 
 		if (prop.AddlUsings.Any())
@@ -132,44 +150,22 @@ public class EntityGenerator
 	{
 		var tabCount = 1;
 
-		string typeStr = null;
-
 		switch (assoc.Cardinality) {
 			case CardinalityModel.OneToOne:
-				typeStr = $"{assoc.PrimaryEntity.Name}";
+				propOutputList.AddLine(tabCount, $"public {assoc.RelatedEntity.Name} {assoc.PrimaryPropertyName} {{ get; set; }}");
 				break;
 
 			case CardinalityModel.OneToMany:
 				usings.AddIfNotExists("System.Collections.Generic");
-				typeStr = $"List<{assoc.PrimaryEntity.Name}>";
+				propOutputList.AddLine(tabCount, $"public virtual ICollection<{assoc.RelatedEntity.Name}> {assoc.PrimaryPropertyName} {{ get; set; }} = new List<{assoc.RelatedEntity.Name}>();");
 				break;
 
 			default:
 				throw new ApplicationException($"Error determining data type for property '{assoc.PrimaryPropertyName}': Cardinality '{assoc.Cardinality}' not supported.");
 		}
 
-		propOutputList.AddLine(tabCount, $"public {typeStr} {assoc.PrimaryPropertyName} {{ get; set; }}");
-
 		if (!string.IsNullOrWhiteSpace(assoc.RelatedEntity.Namespace))
 			usings.AddIfNotExists(assoc.RelatedEntity.Namespace);
-	}
-
-	private void Validate()
-	{
-		if (!Directory.Exists(OutputRootFolder))
-			throw new ApplicationException($"OutputRootFolder does not exist: {OutputRootFolder}");
-	}
-
-	private void GenerateHeader(List<string> headerLines)
-	{
-		headerLines.Add("//------------------------------------------------------------------------------");
-		headerLines.Add("// This file was auto-generated. Any changes made to it will be lost.");
-		headerLines.Add("//------------------------------------------------------------------------------");
-	}
-
-	private string FormatTypeName(string typeName)
-	{
-		return typeName?.Replace("Type", string.Empty);
 	}
 
 	private void GenerateEnums(DbContextModel dbContextMdl, List<EnumModel> enumMdls)
@@ -188,7 +184,7 @@ public class EntityGenerator
 			// Enum declaration
 			var enumStart = new List<string>();
 			enumStart.Add("");
-			var ns = string.IsNullOrEmpty(enumMdl.Namespace) ? dbContextMdl.EntitiesNamespace : enumMdl.Namespace;
+			var ns = string.IsNullOrWhiteSpace(enumMdl.Namespace) ? dbContextMdl.EntitiesNamespace : enumMdl.Namespace;
 			enumStart.Add($"namespace {ns};");
 			enumStart.Add("");
 			if (enumMdl.IsFlags)

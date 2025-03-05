@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dyvenix.App1.Server.Entities;
+using Dyvenix.App1.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dyvenix.App1.Data;
@@ -48,6 +48,7 @@ public partial class Db : DbContext
             entity.HasIndex(e => e.LastName, "IX_AppUser_LastName");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Birthdate).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(200);
             entity.Property(e => e.FirstName)
                 .IsRequired()
@@ -58,11 +59,18 @@ public partial class Db : DbContext
             entity.Property(e => e.LastName)
                 .IsRequired()
                 .HasMaxLength(100);
+            entity.Property(e => e.VarBin).HasMaxLength(50);
         });
 
         modelBuilder.Entity<LogEvent>(entity =>
         {
+            entity.HasKey(e => e.Id).IsClustered(false);
+
             entity.ToTable("LogEvents", "Logs");
+
+            entity.HasIndex(e => e.EventId, "IX_LogEvents_EventId").IsUnique();
+
+            entity.HasIndex(e => e.Timestamp, "IX_LogEvents_Timestamp").IsClustered();
 
             entity.Property(e => e.Application).HasMaxLength(200);
             entity.Property(e => e.CorrelationId).HasMaxLength(50);

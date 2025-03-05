@@ -19,10 +19,9 @@ namespace Dyvenix.Genit
 				Id = Guid.NewGuid(),
 				Name = "Db",
 				Enabled = true,
-				OutputFolder = @"src\app1.data\data",
 				ContextNamespace = "Dyvenix.App1.Data",
-				EntitiesNamespace = "Dyvenix.App1.Data.Entities",
-				AddlContextUsings = new List<string> { "System", "System.Collections.Generic" }
+				EntitiesNamespace = "Dyvenix.App1.Data.Entities"
+				//AddlUsings = new List<string> { "System", "System.Collections.Generic" }
 			};
 			doc.DbContexts.Add(dbContext);
 
@@ -43,11 +42,10 @@ namespace Dyvenix.Genit
 			dbContext.Entities.Add(appUserMdl);
 			var accessClaimMdl = CreateAccessClaimEntityModel(dbContext, appUserMdl.Id);
 			dbContext.Entities.Add(accessClaimMdl);
-			var logEventsMdl = CreateLogEventsEntityModel(dbContext, appUserMdl.Id);
+			var logEventsMdl = CreateLogEventsEntityModel(dbContext, appUserMdl.Id, logLevelEnumMdl);
 			dbContext.Entities.Add(logEventsMdl);
 
-			var assoc = new AssocModel(Guid.NewGuid(), appUserMdl, accessClaimMdl, "Claims", CardinalityModel.OneToMany);
-			appUserMdl.Assocs.Add(assoc);
+			var assoc = dbContext.AddAssoc(appUserMdl, accessClaimMdl, "AccessClaims", "AppUserId", CardinalityModel.OneToMany);
 
 			return doc;
 		}
@@ -68,7 +66,7 @@ namespace Dyvenix.Genit
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",
-				PrimitiveType = PrimitiveType.GuidType,
+				PrimitiveType = PrimitiveType.Guid,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = true,
@@ -88,8 +86,8 @@ namespace Dyvenix.Genit
 			entity.Properties.Add(prop);
 
 			prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "IdentityId",
-				PrimitiveType = PrimitiveType.stringType,
+				Name = "ExtId",
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -110,7 +108,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "FirstName",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -131,7 +129,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "LastName",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -152,7 +150,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Email",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -172,8 +170,71 @@ namespace Dyvenix.Genit
 			entity.Properties.Add(prop);
 
 			prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "DateCreated",
-				PrimitiveType = PrimitiveType.DateTimeType,
+				Name = "Birthdate",
+				PrimitiveType = PrimitiveType.DateTime,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "Age",
+				PrimitiveType = PrimitiveType.Int,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "Population",
+				PrimitiveType = PrimitiveType.Long,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 0,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "IsEnabled",
+				PrimitiveType = PrimitiveType.Bool,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -193,8 +254,8 @@ namespace Dyvenix.Genit
 			entity.Properties.Add(prop);
 
 			prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "IsActive",
-				PrimitiveType = PrimitiveType.boolType,
+				Name = "Temp",
+				PrimitiveType = PrimitiveType.Double,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -214,10 +275,31 @@ namespace Dyvenix.Genit
 			entity.Properties.Add(prop);
 
 			prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "ActivityCount",
-				PrimitiveType = PrimitiveType.intType,
+				Name = "VarBin",
+				PrimitiveType = PrimitiveType.ByteArray,
 				EnumType = null,
 				Nullable = false,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 10,
+
+				IsIndexed = false,
+				IsIndexUnique = false,
+				MultiIndex1 = false,
+				MultiIndex1Unique = false,
+				MultiIndex2 = false,
+				MultiIndex2Unique = false,
+
+				IsSortCol = false,
+				IsSortDesc = false
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "TinyInteger",
+				PrimitiveType = PrimitiveType.Byte,
+				EnumType = null,
+				Nullable = true,
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
@@ -254,7 +336,7 @@ namespace Dyvenix.Genit
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",
-				PrimitiveType = PrimitiveType.GuidType,
+				PrimitiveType = PrimitiveType.Guid,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = true,
@@ -275,7 +357,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "AppUserId",
-				PrimitiveType = PrimitiveType.GuidType,
+				PrimitiveType = PrimitiveType.Guid,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -296,7 +378,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ClaimName",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -317,7 +399,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ClaimValue",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -339,7 +421,7 @@ namespace Dyvenix.Genit
 			return entity;
 		}
 
-		private static EntityModel CreateLogEventsEntityModel(DbContextModel dbContextMdl, Guid appUserId)
+		private static EntityModel CreateLogEventsEntityModel(DbContextModel dbContextMdl, Guid appUserId, EnumModel logLevelEnumMdl)
 		{
 			var entity = new EntityModel(Guid.NewGuid()) {
 				Name = "LogEvent",
@@ -350,13 +432,13 @@ namespace Dyvenix.Genit
 				InclSingleQuery = true,
 				InclListQuery = true,
 				UseListPaging = true,
-				UseListSorting = true
-				//AddlUsings = new List<string> { "System.Data", "System.Text" }
+				UseListSorting = true,
+				AddlUsings = new List<string> { "System.Linq", "System.Text" }
 			};
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",
-				PrimitiveType = PrimitiveType.GuidType,
+				PrimitiveType = PrimitiveType.Guid,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = true,
@@ -377,7 +459,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Message",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -398,7 +480,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Timestamp",
-				PrimitiveType = PrimitiveType.DateTimeType,
+				PrimitiveType = PrimitiveType.DateTime,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -407,6 +489,7 @@ namespace Dyvenix.Genit
 
 				IsIndexed = true,
 				IsIndexUnique = false,
+				IsIndexClustered = false,
 				MultiIndex1 = false,
 				MultiIndex1Unique = false,
 				MultiIndex2 = false,
@@ -419,7 +502,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Exception",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -440,8 +523,8 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "LogLevel",
-				PrimitiveType = PrimitiveType.intType,
-				EnumType = null,
+				PrimitiveType = PrimitiveType.None,
+				EnumType = logLevelEnumMdl,
 				Nullable = true,
 				IsPrimaryKey = false,
 				IsIdentity = false,
@@ -461,7 +544,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Application",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -482,7 +565,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Source",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -503,7 +586,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "CorrelationId",
-				PrimitiveType = PrimitiveType.stringType,
+				PrimitiveType =PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,

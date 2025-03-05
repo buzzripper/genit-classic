@@ -2,6 +2,7 @@
 using Dyvenix.Genit.Generators;
 using Dyvenix.Genit.Models;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -186,17 +187,27 @@ public partial class Form1 : Form
 		try {
 			var doc = DocManager.LoadDoc("TEST");
 
+			var errors = new List<string>();
+			doc.Validate(errors);
+			if (errors.Count > 0) {
+				errors.Insert(0, "Validation Errors:");
+				ShowErrorDlg("Invalid Model", string.Join(Environment.NewLine, errors));
+				return;
+			}
+
 			var entityGenerator = new EntityGenerator {
 				Enabled = true,
 				InclHeader = true,
 				OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Entities"
+				//OutputRootFolder = @"c:\work\genit"
 			};
 			entityGenerator.Run(doc.DbContexts[0]);
 
 			var dbContextGenerator = new DbContextGenerator {
 				Enabled = true,
 				InclHeader = true,
-				OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Contexts"
+				OutputFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Contexts"
+				//OutputFolder = @"c:\work\genit"
 			};
 			dbContextGenerator.Run(doc.DbContexts[0]);
 
@@ -256,7 +267,12 @@ public partial class Form1 : Form
 
 	private void ShowErrorDlg(string message)
 	{
-		MessageBox.Show(this, message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		ShowErrorDlg("Error", message);
+	}
+
+	private void ShowErrorDlg(string caption, string message)
+	{
+		MessageBox.Show(this, message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
 	}
 
 	private void ShowErrorDlg(Exception ex)

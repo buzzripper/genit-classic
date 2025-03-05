@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Dyvenix.Genit.Models;
@@ -17,7 +18,6 @@ public class EntityModel
 	}
 
 	public Guid Id { get; init; }
-
 	public string Name { get; set; }
 	public string Schema { get; set; }
 	public string TableName { get; set; }
@@ -39,11 +39,19 @@ public class EntityModel
 		var propId = Guid.NewGuid();
 		var fkProp = new PropertyModel(propId) {
 			FKAssoc = assoc,
-			Name = $"{assoc.PrimaryEntity.Name}Id"
 		};
 
 		this.Properties.Add(fkProp);
 
 		return propId;
+	}
+
+	public void Validate(List<string> errorList)
+	{
+		foreach(var prop in Properties)
+			prop.Validate(this.Name, errorList);
+
+		if (Properties.Count(p => p.IsIndexClustered) > 1)
+			errorList.Add($"Entity {this.Name}: Only one property can have a clustered index.");
 	}
 }

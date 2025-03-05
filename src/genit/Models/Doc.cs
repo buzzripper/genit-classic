@@ -10,4 +10,10 @@ public class Doc
 
 	public string ModelFilepath { get; set; }
 	public List<DbContextModel> DbContexts { get; set; }
+
+	public void Validate(List<string> errorList)
+	{
+		foreach(var dbContext in DbContexts)
+			dbContext.Validate(errorList);
+	}
 }

@@ -1,33 +1,25 @@
 ﻿using Dyvenix.Genit.Extensions;
 using Dyvenix.Genit.Models;
-using Microsoft.DotNet.DesignTools.Protocol.Values;
-using Syncfusion.SVG.IO;
-using Syncfusion.Windows.Forms.Diagram;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.WebSockets;
-using System.Reflection.Metadata;
 using System.Text;
-using System.Windows.Forms.VisualStyles;
-using System.Windows.Forms;
 
 namespace Dyvenix.Genit.Generators;
 
 public class DbContextGenerator
 {
 	private const string cToken_EntityNs = "ENTITY_NS";
-	private const string cToken_AddlUsings = "ADDL_USINGS";
+	private const string cToken_Usings = "USINGS";
 	private const string cToken_ContextNs = "CONTEXT_NS";
 	private const string cToken_DbContextName = "DBCONTEXT_NAME";
 	private const string cToken_Properties = "PROPERTIES";
 	private const string cToken_OnModelCreating = "ON_MODEL_CREATING";
 
 	public bool InclHeader { get; set; }
-	public string OutputRootFolder { get; set; }
+	public string OutputFolder { get; set; }
 	public bool Enabled { get; set; }
-	//public string Namespace { get; set; }
 
 	public void Run(DbContextModel dbContextModel)
 	{
@@ -37,7 +29,7 @@ public class DbContextGenerator
 		Validate(dbContextModel);
 
 		// Addl usings
-		var usingsList = InitializeUsings(dbContextModel);
+		var usings = InitializeUsings(dbContextModel);
 
 		// Properties
 		var propsList = this.GenerateProperties(dbContextModel.Entities);
@@ -46,9 +38,9 @@ public class DbContextGenerator
 		var onModelCreatingList = this.GenerateOnModelCreating(dbContextModel.Entities, dbContextModel.Assocs);
 
 		// Replace tokens in template
-		var fileContents = this.ReplaceTemplateTokens(dbContextModel, usingsList, propsList, onModelCreatingList);
+		var fileContents = this.ReplaceTemplateTokens(dbContextModel, usings, propsList, onModelCreatingList);
 
-		var outputFile = Path.Combine(this.OutputRootFolder, $"{dbContextModel.Name}.cs");
+		var outputFile = Path.Combine(this.OutputFolder, $"{dbContextModel.Name}.cs");
 		if (File.Exists(outputFile))
 			File.Delete(outputFile);
 		File.WriteAllText(outputFile, fileContents);
@@ -56,8 +48,8 @@ public class DbContextGenerator
 
 	private void Validate(DbContextModel dbContextModel)
 	{
-		if (!Directory.Exists(OutputRootFolder))
-			throw new ApplicationException($"OutputRootFolder does not exist: {OutputRootFolder}");
+		if (!Directory.Exists(OutputFolder))
+			throw new ApplicationException($"OutputRootFolder does not exist: {OutputFolder}");
 
 		if (string.IsNullOrWhiteSpace(dbContextModel.ContextNamespace))
 			throw new ApplicationException($"ContextNamespace not set on db context");
@@ -69,13 +61,18 @@ public class DbContextGenerator
 			throw new ApplicationException($"No entities found in DbContext.");
 	}
 
-	private List<string> InitializeUsings(DbContextModel _dbMdl)
+	private List<string> InitializeUsings(DbContextModel dbContextMdl)
 	{
-		var addlUsings = new List<string>();
+		var usings = new List<string>();
 
-		_dbMdl.AddlContextUsings.ForEach(u => addlUsings.Add(u));
+		usings.Add("System");
+		usings.Add("Microsoft.EntityFrameworkCore");
+		usings.Add("System.Collections.Generic");
 
-		return addlUsings;
+		dbContextMdl.AddlUsings?.ForEach(u => usings.Add(u));
+		usings.Add(dbContextMdl.EntitiesNamespace);
+
+		return usings;
 	}
 
 	private List<string> GenerateProperties(List<EntityModel> entities)
@@ -105,12 +102,9 @@ public class DbContextGenerator
 	{
 		var outList = new List<string>();
 
-		var t = 1;
-
 		foreach (var entity in entities) {
 			if (!entity.Enabled)
 				continue;
-
 			this.GenerateModelBuilderEntity(entity, assocs, outList);
 		}
 
@@ -129,6 +123,8 @@ public class DbContextGenerator
 		outList.AddLine(t + 1, $"entity.ToTable(\"{tableName}\");");
 		outList.AddLine();
 
+		// Properties
+		//foreach (var prop in entity.Properties.Where(p => p.FKAssoc == null)) {
 		foreach (var prop in entity.Properties) {
 			var sb = new StringBuilder();
 			sb.Append($"entity.Property(e => e.{prop.Name})");
@@ -141,47 +137,60 @@ public class DbContextGenerator
 			if (!prop.Nullable)
 				sb.Append($".IsRequired()");
 
-			if (prop.PrimitiveType == PrimitiveType.stringType) {
+			if (prop.PrimitiveType == PrimitiveType.String && prop.MaxLength > 0) {
 				sb.Append($".HasMaxLength({prop.MaxLength})");
-			} else if (prop.PrimitiveType == PrimitiveType.DateTimeType) {
-				sb.Append($".HasColumnType(\"{MapSqlServerType(PrimitiveType.DateTimeType)}\")");
+
+			} else if (prop.PrimitiveType == PrimitiveType.DateTime) {
+				sb.Append($".HasColumnType(\"{PrimitiveType.DateTime.SqlType}\")");
 			}
 
 			sb.Append(";");
 			outList.AddLine(t + 1, sb.ToString());
 		}
 
+		// Indexes
+		var indexedProps = entity.Properties.Where(p => p.IsIndexed).ToList();
+		if (indexedProps.Count > 0) {
+			outList.AddLine();
+			outList.AddLine(t+1, "// Indexes");
+			foreach (var prop in indexedProps) {
+				var sb = new StringBuilder();
+				sb.Append($"entity.HasIndex(e => e.{prop.Name}, \"IX_{entity.Name}_{prop.Name}\")");
+				if (prop.IsIndexUnique)
+					sb.Append(".IsUnique()");
+				if (prop.IsIndexClustered)
+					sb.Append(".IsClustered()");
+				sb.Append(";");
+
+				outList.AddLine(t + 1, sb.ToString());
+			}
+		}
+		
 		outList.AddLine(t, "});");
 		outList.AddLine();
 	}
 
-	private string MapSqlServerType(PrimitiveType primitiveType)
-	{
-		//var sb = new StringBuilder();
-		//foreach (var e in Enum.GetValues(typeof(PrimitiveType))) {
-		//	sb.AppendLine($"\tPrimitiveType.{e.ToString()} => {e.ToString().ToLower()},");
-		//}
-		//return sb.ToString();
+	//private string MapSqlServerType(PrimitiveType primitiveType)
+	//{
+	//	return primitiveType switch {
+	//		PrimitiveType.stringType => "nvarchar",
+	//		PrimitiveType.Int32 => "int",
+	//		PrimitiveType.Bool => "bit",
+	//		PrimitiveType.Guid => "uniqueidentifier",
+	//		PrimitiveType.DateTime => "datetime",
+	//		PrimitiveType.TimeSpanType => "time",
+	//		PrimitiveType.shortType => "smallint",
+	//		PrimitiveType.Int64 => "bigint",
+	//		PrimitiveType.Double => "float",
+	//		PrimitiveType.DecimalType => "decimal",
+	//		PrimitiveType.DateTimeOffsetType => "datetimeoffset",
+	//		PrimitiveType.ByteArrayType => "varbinary",
+	//		PrimitiveType.TimeType => "time",
+	//		_ => throw new ApplicationException($"Error determining data type '{primitiveType}'")
+	//	};
+	//}
 
-		return primitiveType switch {
-			PrimitiveType.stringType => "nvarchar",
-			PrimitiveType.intType => "int",
-			PrimitiveType.boolType => "bit",
-			PrimitiveType.GuidType => "uniqueidentifier",
-			PrimitiveType.DateTimeType => "datetime",
-			PrimitiveType.TimeSpanType => "time",
-			PrimitiveType.shortType => "smallint",
-			PrimitiveType.longType => "bigint",
-			PrimitiveType.DoubleType => "float",
-			PrimitiveType.DecimalType => "decimal",
-			PrimitiveType.DateTimeOffsetType => "datetimeoffset",
-			PrimitiveType.ByteArrayType => "varbinary",
-			PrimitiveType.TimeType => "time",
-			_ => throw new ApplicationException($"Error determining data type '{primitiveType}'")
-		};
-	}
-
-	private string ReplaceTemplateTokens(DbContextModel dbContextModel, List<string> addlUsingsList, List<string> propsList, List<string> onModelCreatingList)
+	private string ReplaceTemplateTokens(DbContextModel dbContextModel, List<string> usings, List<string> propsList, List<string> onModelCreatingList)
 	{
 		var filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Generators\Templates\DbContext.cs.tmpl");
 		if (!File.Exists(filepath))
@@ -189,15 +198,14 @@ public class DbContextGenerator
 
 		var template = File.ReadAllText(filepath);
 
-		var ft = FmtToken(cToken_EntityNs);
-		template = template.Replace(FmtToken(cToken_EntityNs), dbContextModel.EntitiesNamespace);
+		// Usings
+		var sb = new StringBuilder();
+		usings.ForEach(x => sb.AppendLine($"using {x};"));
+		template = template.Replace(FmtToken(cToken_Usings), sb.ToString());
+
 		template = template.Replace(FmtToken(cToken_ContextNs), dbContextModel.ContextNamespace);
 		template = template.Replace(FmtToken(cToken_DbContextName), dbContextModel.Name);
 
-		// Addl usings
-		var sb = new StringBuilder();
-		addlUsingsList.ForEach(x => sb.AppendLine($"using {x};"));
-		template = template.Replace(FmtToken(cToken_AddlUsings), sb.ToString());
 
 		sb = new StringBuilder();
 		propsList.ForEach(x => sb.AppendLine(x));

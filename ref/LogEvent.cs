@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Dyvenix.App1.Server.Entities;
+namespace Dyvenix.App1.Data.Entities;
 
 public partial class LogEvent
 {
@@ -20,4 +20,6 @@ public partial class LogEvent
     public string Source { get; set; }
 
     public string CorrelationId { get; set; }
+
+    public Guid? EventId { get; set; }
 }

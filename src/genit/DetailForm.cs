@@ -7,7 +7,7 @@ namespace Dyvenix.Genit;
 public partial class DetailForm : Form
 {
 	private const int BottomOffset = 85;
-	private readonly Form1 _mainForm;
+	private readonly MainForm _mainForm;
 
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 	public string ConnString { get; set; }
@@ -16,7 +16,7 @@ public partial class DetailForm : Form
 
 	public DetailForm(Form form1) : this()
 	{
-		_mainForm = form1 as Form1;
+		_mainForm = form1 as MainForm;
 	}
 
 	public DetailForm()

@@ -16,4 +16,10 @@ public class Doc
 		foreach(var dbContext in DbContexts)
 			dbContext.Validate(errorList);
 	}
+	
+	public void Initialize()
+	{
+		foreach(var dbContext in DbContexts)
+			dbContext.Initialize();
+	}
 }

@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Dyvenix.Genit.Misc;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Dyvenix.Genit.Models
 {
@@ -18,17 +15,33 @@ namespace Dyvenix.Genit.Models
 				return Utils.GenerateTestDoc();
 
 			if (!File.Exists(filepath))
-				throw new FileNotFoundException($"File not found: {filepath}");	
+				throw new FileNotFoundException($"File not found: {filepath}");
 
 			var doc = JsonSerializer.Deserialize<Doc>(File.ReadAllText(filepath));
 			doc.ModelFilepath = filepath;
 
+			doc.Initialize();
+
 			return doc;
 		}
 
-		public static void SaveDoc(Doc doc)
+		public static void SaveDoc(Doc doc, string filepath)
 		{
+			ValidateDoc(doc);
 
+			var docJson = JsonSerializer.Serialize(doc, _serializerOptions);
+
+			File.WriteAllText(filepath, docJson);
+		}
+
+		private static void ValidateDoc(Doc doc)
+		{
+			var errors = new List<string>();
+
+			doc.Validate(errors);
+
+			if (errors.Count > 0) 
+				throw new ValidationException(errors);
 		}
 	}
 }

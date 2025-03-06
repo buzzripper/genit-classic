@@ -296,7 +296,7 @@ namespace Dyvenix.Genit
 			entity.Properties.Add(prop);
 
 			prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "TinyInteger",
+				Name = "Fubar",
 				PrimitiveType = PrimitiveType.Byte,
 				EnumType = null,
 				Nullable = true,

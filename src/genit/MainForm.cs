@@ -1,6 +1,8 @@
 ﻿using Dyvenix.Genit.Config;
 using Dyvenix.Genit.Generators;
+using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
+using Dyvenix.Genit.Views;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,12 +13,13 @@ using System.Windows.Forms;
 
 namespace Dyvenix.Genit;
 
-public partial class Form1 : Form
+public partial class MainForm : Form
 {
 	private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
 	#region Constants
 
+	private const int cOuputMinHeight = 25;
 
 	#endregion
 
@@ -25,12 +28,14 @@ public partial class Form1 : Form
 	private DetailForm _detailForm;
 	private bool _suspendUpdates;
 	private AppConfig _appConfig;
+	private Doc _doc;
+	private int _outputHeight;
 
 	#endregion
 
 	#region Ctors / Forms Events
 
-	public Form1()
+	public MainForm()
 	{
 		InitializeComponent();
 	}
@@ -39,10 +44,6 @@ public partial class Form1 : Form
 	{
 		_appConfig = ConfigManager.GetAppConfig();
 		PopulateForm(_appConfig);
-		Form1_Resize(null, null);
-
-		//var doc = DocManager.LoadDoc("TEST");
-		//rtbJson.Text = JsonSerializer.Serialize(doc, _serializerOptions);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
@@ -68,17 +69,9 @@ public partial class Form1 : Form
 		SaveSettings();
 	}
 
-	private void Form1_Resize(object sender, EventArgs e)
+	private void MainForm_ResizeEnd(object sender, EventArgs e)
 	{
-		if (this.WindowState == FormWindowState.Minimized) {
-			//if (timer1.Enabled)
-			//	SetAutoRefresh(false);
-		} else {
-			//var width = lvLogs.Width - 22;
-			//for (var i = 0; i < 4; i++)
-			//	width -= lvLogs.Columns[i].Width;
-			//lvLogs.Columns[4].Width = width;
-		}
+
 	}
 
 	#endregion
@@ -90,6 +83,8 @@ public partial class Form1 : Form
 		_suspendUpdates = true;
 		try {
 			SetFormSizeAndPosition(appConfig.WindowSize, appConfig.WindowPosition);
+			this.SetState(GenitAppState.NoDoc);
+			_outputHeight = splContent.Height - splContent.SplitterDistance;
 
 		} finally {
 			_suspendUpdates = false;
@@ -163,13 +158,91 @@ public partial class Form1 : Form
 
 	#endregion
 
+	#region Properties
+
+	private Doc Doc
+	{
+		get { return _doc; }
+		set {
+			_doc = value;
+			SetState(_doc == null ? GenitAppState.NoDoc : GenitAppState.DocLoaded);
+		}
+	}
+
+	#endregion
+
+	#region State management
+
+	private void SetState(GenitAppState state)
+	{
+		_suspendUpdates = true;
+		try {
+			switch (state) {
+				case GenitAppState.NoDoc:
+					SetStateNoDoc();
+					break;
+				default:
+					SetStateDocLoaded();
+					break;
+			}
+		} finally {
+			_suspendUpdates = false;
+		}
+	}
+
+	private void SetStateNoDoc()
+	{
+		EnableNew(true);
+		EnableOpen(true);
+		EnableSave(false);
+		EnableSaveAs(false);
+		EnableGenerate(false);
+	}
+
+	private void SetStateDocLoaded()
+	{
+		EnableNew(true);
+		EnableOpen(true);
+		EnableSave(true);
+		EnableSaveAs(true);
+		EnableGenerate(true);
+	}
+
+	private void EnableNew(bool value)
+	{
+		mnuNew.Enabled = value;
+		btnNew.Enabled = value;
+	}
+
+	private void EnableOpen(bool value)
+	{
+		mnuOpen.Enabled = value;
+		btnOpen.Enabled = value;
+	}
+
+	private void EnableSave(bool value)
+	{
+		mnuSave.Enabled = value;
+		btnSave.Enabled = value;
+	}
+
+	private void EnableSaveAs(bool value)
+	{
+		mnuSaveAs.Enabled = value;
+	}
+
+	private void EnableGenerate(bool value)
+	{
+		btnGenerate.Enabled = value;
+	}
+
+	#endregion
+
 	private void uiOpen_Click(object sender, EventArgs e)
 	{
 		if (openFileDlg.ShowDialog(this) == DialogResult.OK) {
 			try {
-				var contents = File.ReadAllText(openFileDlg.FileName);
-				var doc = JsonSerializer.Deserialize<Doc>(contents);
-				rtbJson.Text = JsonSerializer.Serialize(doc, _serializerOptions);
+				this.Doc = DocManager.LoadDoc(openFileDlg.FileName);
 
 			} catch (Exception ex) {
 				MessageBox.Show($"Error opening file: {ex.Message}");
@@ -177,61 +250,66 @@ public partial class Form1 : Form
 		}
 	}
 
+	private void uiSave_Click(object sender, EventArgs e)
+	{
+		if (saveFileDlg.ShowDialog(this) == DialogResult.OK) {
+			try {
+				DocManager.SaveDoc(this.Doc, saveFileDlg.FileName);
+
+			} catch (ValidationException ex) {
+				MessageBox.Show($"Validation error(s). See output for detail.");
+
+			} catch (Exception ex) {
+				MessageBox.Show($"Error saving file: {ex.Message}");
+			}
+		}
+	}
+
 	private void uiClose_Click(object sender, EventArgs e)
 	{
-
+		if (MessageBox.Show("Close the current document?", "Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+			this.Doc = null;
+		}
 	}
 
 	private void uiGenerate_Click(object sender, EventArgs e)
 	{
 		try {
-			var doc = DocManager.LoadDoc("TEST");
-
 			var errors = new List<string>();
-			doc.Validate(errors);
+
+			_doc.Validate(errors);
+
 			if (errors.Count > 0) {
 				errors.Insert(0, "Validation Errors:");
 				ShowErrorDlg("Invalid Model", string.Join(Environment.NewLine, errors));
 				return;
 			}
 
+			if (MessageBox.Show("Generate files?", "Generate", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+				return;
+
 			var entityGenerator = new EntityGenerator {
 				Enabled = true,
 				InclHeader = true,
-				OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Entities"
-				//OutputRootFolder = @"c:\work\genit"
+				//OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Entities"
+				OutputRootFolder = @"c:\work\genit"
 			};
-			entityGenerator.Run(doc.DbContexts[0]);
+			entityGenerator.Run(_doc.DbContexts[0]);
 
 			var dbContextGenerator = new DbContextGenerator {
 				Enabled = true,
 				InclHeader = true,
-				OutputFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Contexts"
-				//OutputFolder = @"c:\work\genit"
+				//OutputFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Contexts"
+				OutputFolder = @"c:\work\genit"
 			};
-			dbContextGenerator.Run(doc.DbContexts[0]);
+			dbContextGenerator.Run(_doc.DbContexts[0]);
 
 			ShowSuccessDlg("Files generated.");
 
 		} catch (Exception ex) {
 			this.ShowErrorDlg(ex);
 		}
-	}
 
-	private void uiSave_Click(object sender, EventArgs e)
-	{
-		if (!ValidateJson(rtbJson.Text))
-			return;
-
-		var formattedJson = FormatJson(rtbJson.Text);
-
-		if (saveFileDlg.ShowDialog(this) == DialogResult.OK) {
-			try {
-				File.WriteAllText(saveFileDlg.FileName, formattedJson);
-			} catch (Exception ex) {
-				MessageBox.Show($"Error saving file: {ex.Message}");
-			}
-		}
 	}
 
 	private bool ValidateJson(string json)
@@ -256,14 +334,10 @@ public partial class Form1 : Form
 	{
 	}
 
-	private void AddRect()
-	{
-		////var child = new Syncfusion.Windows.Forms.Diagram.RoundRect(new RectangleF(10, 10, 200, 100), 4);
-		//var entityView = new EntityRect(new RectangleF(10, 10, 200, 100));
-		//entityView.ClassName = "AppUser";
 
-		//diagram1.Model.AppendChild(entityView);
-	}
+	#region Error dialog/output
+
+
 
 	private void ShowErrorDlg(string message)
 	{
@@ -284,4 +358,58 @@ public partial class Form1 : Form
 	{
 		MessageBox.Show(this, message, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 	}
+
+	#endregion
+
+	private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+	{
+
+	}
+
+	private void btnTest1_Click(object sender, EventArgs e)
+	{
+		try {
+			this.Doc = DocManager.LoadDoc("TEST");
+			WriteOutput("Doc opened.");
+
+		} catch (Exception ex) {
+			this.ShowErrorDlg(ex);
+		}
+	}
+
+	private void newToolStripMenuItem_Click(object sender, EventArgs e)
+	{
+
+	}
+
+	#region Output window
+
+	private void btnShowOutput_Click(object sender, EventArgs e)
+	{
+		if (splOutput.Height > cOuputMinHeight) {
+			_outputHeight = splOutput.Height; // Cache the previous distance
+			splContent.SplitterDistance = splContent.Height - cOuputMinHeight;  // Hide
+		} else {
+			splContent.SplitterDistance = splContent.Height - _outputHeight;
+		}
+	}
+
+	private void WriteOutput(List<string> outputLines)
+	{
+		if (outputLines.Count == 0)
+			return;
+
+		lbxOutput.SuspendLayout();
+		foreach (var outputLine in outputLines)
+			lbxOutput.Items.Add(outputLine);
+		lbxOutput.TopIndex = lbxOutput.Items.Count - 1;
+		lbxOutput.ResumeLayout();
+	}
+
+	private void WriteOutput(string outputLine)
+	{
+		lbxOutput.Items.Add(outputLine);
+		lbxOutput.TopIndex = lbxOutput.Items.Count - 1;
+	}
+	#endregion
 }

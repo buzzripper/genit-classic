@@ -10,5 +10,6 @@ namespace Dyvenix.Genit.Config
 
 		public Point WindowPosition { get; set; }
 		public Size WindowSize { get; set; }
+		public int OutputHeight { get; set; }
 	}
 }

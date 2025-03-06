@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyvenix.Genit.Models;
 
@@ -16,7 +17,15 @@ public class DbContextModel
 	public List<EnumModel> Enums { get; set; } = new List<EnumModel>();
 	public List<AssocModel> Assocs { get; set; } = new List<AssocModel>();
 
-	
+	public void Initialize()
+	{
+		foreach(var assoc in Assocs) {
+			var primaryEntityMdl = Entities.FirstOrDefault(e => e.Id == assoc.PrimaryEntityId);
+			var relatedEntityMdl = Entities.FirstOrDefault(e => e.Id == assoc.RelatedEntityId);
+			assoc.Initialize(primaryEntityMdl, relatedEntityMdl);
+		}
+	}
+
 	public void Validate(List<string> errorList)
 	{
 		foreach(var entity in Entities)

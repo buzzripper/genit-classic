@@ -1,6 +1,6 @@
 ﻿namespace Dyvenix.Genit;
 
-partial class Form1
+partial class MainForm
 {
 	/// <summary>
 	/// Required designer variable.
@@ -28,19 +28,14 @@ partial class Form1
 	/// </summary>
 	private void InitializeComponent()
 	{
-		components = new System.ComponentModel.Container();
-		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-		imageList1 = new System.Windows.Forms.ImageList(components);
+		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 		statusStrip1 = new System.Windows.Forms.StatusStrip();
 		statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 		toolLblVersion = new System.Windows.Forms.ToolStripStatusLabel();
 		toolLblMessage = new System.Windows.Forms.ToolStripStatusLabel();
-		logEventImgList = new System.Windows.Forms.ImageList(components);
-		timer1 = new System.Windows.Forms.Timer(components);
-		toolTip1 = new System.Windows.Forms.ToolTip(components);
 		menuStrip1 = new System.Windows.Forms.MenuStrip();
 		toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-		newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+		mnuNew = new System.Windows.Forms.ToolStripMenuItem();
 		mnuOpen = new System.Windows.Forms.ToolStripMenuItem();
 		mnuSave = new System.Windows.Forms.ToolStripMenuItem();
 		mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,47 +44,50 @@ partial class Form1
 		mnuExit = new System.Windows.Forms.ToolStripMenuItem();
 		editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 		generateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+		openFileDlg = new System.Windows.Forms.OpenFileDialog();
+		saveFileDlg = new System.Windows.Forms.SaveFileDialog();
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
 		btnNew = new System.Windows.Forms.ToolStripButton();
 		btnOpen = new System.Windows.Forms.ToolStripButton();
 		btnSave = new System.Windows.Forms.ToolStripButton();
 		toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
 		btnGenerate = new System.Windows.Forms.ToolStripButton();
-		openFileDlg = new System.Windows.Forms.OpenFileDialog();
-		saveFileDlg = new System.Windows.Forms.SaveFileDialog();
-		rtbJson = new System.Windows.Forms.RichTextBox();
+		btnTest1 = new System.Windows.Forms.ToolStripButton();
+		btnTest2 = new System.Windows.Forms.ToolStripButton();
+		splMain = new System.Windows.Forms.SplitContainer();
+		treeNav = new System.Windows.Forms.TreeView();
+		splContent = new System.Windows.Forms.SplitContainer();
+		splOutput = new System.Windows.Forms.SplitContainer();
+		tbOutput = new System.Windows.Forms.ToolStrip();
+		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+		btnShowOutput = new System.Windows.Forms.ToolStripButton();
+		lbxOutput = new System.Windows.Forms.ListBox();
 		statusStrip1.SuspendLayout();
 		menuStrip1.SuspendLayout();
 		toolStrip1.SuspendLayout();
+		((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
+		splMain.Panel1.SuspendLayout();
+		splMain.Panel2.SuspendLayout();
+		splMain.SuspendLayout();
+		((System.ComponentModel.ISupportInitialize)splContent).BeginInit();
+		splContent.Panel2.SuspendLayout();
+		splContent.SuspendLayout();
+		((System.ComponentModel.ISupportInitialize)splOutput).BeginInit();
+		splOutput.Panel1.SuspendLayout();
+		splOutput.Panel2.SuspendLayout();
+		splOutput.SuspendLayout();
+		tbOutput.SuspendLayout();
 		SuspendLayout();
-		// 
-		// imageList1
-		// 
-		imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-		imageList1.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("imageList1.ImageStream");
-		imageList1.TransparentColor = System.Drawing.Color.Transparent;
-		imageList1.Images.SetKeyName(0, "timer_off_32.png");
-		imageList1.Images.SetKeyName(1, "timer_32.png");
-		imageList1.Images.SetKeyName(2, "refresh_32.png");
-		imageList1.Images.SetKeyName(3, "auto_refresh_32.png");
-		imageList1.Images.SetKeyName(4, "sort_32.png");
-		imageList1.Images.SetKeyName(5, "clear_filters_32.png");
-		imageList1.Images.SetKeyName(6, "add_datasource.png");
-		imageList1.Images.SetKeyName(7, "del_datasource_32.png");
-		imageList1.Images.SetKeyName(8, "edit_datasource_32.png");
-		imageList1.Images.SetKeyName(9, "left_arrow_32.png");
-		imageList1.Images.SetKeyName(10, "right_arrow_32.png");
-		imageList1.Images.SetKeyName(11, "Spinner.gif");
 		// 
 		// statusStrip1
 		// 
 		statusStrip1.BackColor = System.Drawing.SystemColors.Control;
 		statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 		statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { statusLabel, toolLblVersion, toolLblMessage });
-		statusStrip1.Location = new System.Drawing.Point(0, 865);
+		statusStrip1.Location = new System.Drawing.Point(0, 920);
 		statusStrip1.Name = "statusStrip1";
 		statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-		statusStrip1.Size = new System.Drawing.Size(1048, 22);
+		statusStrip1.Size = new System.Drawing.Size(1250, 22);
 		statusStrip1.TabIndex = 35;
 		// 
 		// statusLabel
@@ -112,52 +110,41 @@ partial class Form1
 		toolLblMessage.Size = new System.Drawing.Size(95, 17);
 		toolLblMessage.Text = "Auto refresh: Off";
 		// 
-		// logEventImgList
-		// 
-		logEventImgList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-		logEventImgList.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("logEventImgList.ImageStream");
-		logEventImgList.TransparentColor = System.Drawing.Color.Transparent;
-		logEventImgList.Images.SetKeyName(0, "Verbose.png");
-		logEventImgList.Images.SetKeyName(1, "Debug.png");
-		logEventImgList.Images.SetKeyName(2, "Information.png");
-		logEventImgList.Images.SetKeyName(3, "Warning.png");
-		logEventImgList.Images.SetKeyName(4, "Error.png");
-		logEventImgList.Images.SetKeyName(5, "Critical.png");
-		// 
 		// menuStrip1
 		// 
 		menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripMenuItem1, editToolStripMenuItem });
 		menuStrip1.Location = new System.Drawing.Point(0, 0);
 		menuStrip1.Name = "menuStrip1";
-		menuStrip1.Size = new System.Drawing.Size(1048, 24);
+		menuStrip1.Size = new System.Drawing.Size(1250, 24);
 		menuStrip1.TabIndex = 36;
 		menuStrip1.Text = "menuStrip1";
 		// 
 		// toolStripMenuItem1
 		// 
-		toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { newToolStripMenuItem, mnuOpen, mnuSave, mnuSaveAs, mnuClose, toolStripMenuItem2, mnuExit });
+		toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuNew, mnuOpen, mnuSave, mnuSaveAs, mnuClose, toolStripMenuItem2, mnuExit });
 		toolStripMenuItem1.Name = "toolStripMenuItem1";
 		toolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
 		toolStripMenuItem1.Text = "&File";
 		// 
-		// newToolStripMenuItem
+		// mnuNew
 		// 
-		newToolStripMenuItem.Name = "newToolStripMenuItem";
-		newToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-		newToolStripMenuItem.Text = "&New";
+		mnuNew.Name = "mnuNew";
+		mnuNew.Size = new System.Drawing.Size(140, 22);
+		mnuNew.Text = "&New Model";
+		mnuNew.Click += newToolStripMenuItem_Click;
 		// 
 		// mnuOpen
 		// 
 		mnuOpen.Name = "mnuOpen";
 		mnuOpen.Size = new System.Drawing.Size(140, 22);
-		mnuOpen.Text = "&Open";
+		mnuOpen.Text = "&Open Model";
 		mnuOpen.Click += uiOpen_Click;
 		// 
 		// mnuSave
 		// 
 		mnuSave.Name = "mnuSave";
 		mnuSave.Size = new System.Drawing.Size(140, 22);
-		mnuSave.Text = "&Save";
+		mnuSave.Text = "&Save Model";
 		mnuSave.Click += uiSave_Click;
 		// 
 		// mnuSaveAs
@@ -198,13 +185,23 @@ partial class Form1
 		generateToolStripMenuItem.Text = "&Generate";
 		generateToolStripMenuItem.Click += uiGenerate_Click;
 		// 
+		// openFileDlg
+		// 
+		openFileDlg.DefaultExt = "*.gmdl";
+		openFileDlg.Filter = "Model file (*.gmdl)|*.gmdl| All Files (*.*)|*.*";
+		// 
+		// saveFileDlg
+		// 
+		saveFileDlg.DefaultExt = "*.gmdl";
+		saveFileDlg.Filter = "Model file (*.gmdl)|*.gmdl| All Files (*.*)|*.*";
+		// 
 		// toolStrip1
 		// 
-		toolStrip1.ImageScalingSize = new System.Drawing.Size(48, 48);
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate });
+		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate, btnTest1, btnTest2 });
 		toolStrip1.Location = new System.Drawing.Point(0, 24);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(1048, 31);
+		toolStrip1.Size = new System.Drawing.Size(1250, 31);
 		toolStrip1.TabIndex = 37;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -251,38 +248,133 @@ partial class Form1
 		btnGenerate.Text = "Generate";
 		btnGenerate.Click += uiGenerate_Click;
 		// 
-		// openFileDlg
+		// btnTest1
 		// 
-		openFileDlg.DefaultExt = "*.gmdl";
-		openFileDlg.Filter = "Model file (*.gmdl)|*.gmdl| All Files (*.*)|*.*";
+		btnTest1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+		btnTest1.Image = (System.Drawing.Image)resources.GetObject("btnTest1.Image");
+		btnTest1.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnTest1.Name = "btnTest1";
+		btnTest1.Size = new System.Drawing.Size(37, 28);
+		btnTest1.Text = "Test1";
+		btnTest1.Click += btnTest1_Click;
 		// 
-		// saveFileDlg
+		// btnTest2
 		// 
-		saveFileDlg.DefaultExt = "*.gmdl";
-		saveFileDlg.Filter = "Model file (*.gmdl)|*.gmdl| All Files (*.*)|*.*";
+		btnTest2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+		btnTest2.Image = (System.Drawing.Image)resources.GetObject("btnTest2.Image");
+		btnTest2.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnTest2.Name = "btnTest2";
+		btnTest2.Size = new System.Drawing.Size(37, 28);
+		btnTest2.Text = "Test2";
 		// 
-		// rtbJson
+		// splMain
 		// 
-		rtbJson.AcceptsTab = true;
-		rtbJson.DetectUrls = false;
-		rtbJson.Dock = System.Windows.Forms.DockStyle.Fill;
-		rtbJson.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		rtbJson.HideSelection = false;
-		rtbJson.Location = new System.Drawing.Point(0, 55);
-		rtbJson.Name = "rtbJson";
-		rtbJson.Size = new System.Drawing.Size(1048, 810);
-		rtbJson.TabIndex = 38;
-		rtbJson.TabStop = false;
-		rtbJson.Text = "";
-		rtbJson.WordWrap = false;
+		splMain.Dock = System.Windows.Forms.DockStyle.Fill;
+		splMain.Location = new System.Drawing.Point(0, 55);
+		splMain.Name = "splMain";
 		// 
-		// Form1
+		// splMain.Panel1
+		// 
+		splMain.Panel1.Controls.Add(treeNav);
+		// 
+		// splMain.Panel2
+		// 
+		splMain.Panel2.Controls.Add(splContent);
+		splMain.Size = new System.Drawing.Size(1250, 865);
+		splMain.SplitterDistance = 227;
+		splMain.SplitterWidth = 8;
+		splMain.TabIndex = 38;
+		// 
+		// treeNav
+		// 
+		treeNav.Dock = System.Windows.Forms.DockStyle.Fill;
+		treeNav.Location = new System.Drawing.Point(0, 0);
+		treeNav.Name = "treeNav";
+		treeNav.Size = new System.Drawing.Size(227, 865);
+		treeNav.TabIndex = 0;
+		// 
+		// splContent
+		// 
+		splContent.Dock = System.Windows.Forms.DockStyle.Fill;
+		splContent.Location = new System.Drawing.Point(0, 0);
+		splContent.Name = "splContent";
+		splContent.Orientation = System.Windows.Forms.Orientation.Horizontal;
+		// 
+		// splContent.Panel2
+		// 
+		splContent.Panel2.Controls.Add(splOutput);
+		splContent.Size = new System.Drawing.Size(1015, 865);
+		splContent.SplitterDistance = 600;
+		splContent.SplitterWidth = 8;
+		splContent.TabIndex = 0;
+		// 
+		// splOutput
+		// 
+		splOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+		splOutput.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+		splOutput.IsSplitterFixed = true;
+		splOutput.Location = new System.Drawing.Point(0, 0);
+		splOutput.Name = "splOutput";
+		splOutput.Orientation = System.Windows.Forms.Orientation.Horizontal;
+		// 
+		// splOutput.Panel1
+		// 
+		splOutput.Panel1.Controls.Add(tbOutput);
+		// 
+		// splOutput.Panel2
+		// 
+		splOutput.Panel2.Controls.Add(lbxOutput);
+		splOutput.Size = new System.Drawing.Size(1015, 257);
+		splOutput.SplitterDistance = 25;
+		splOutput.SplitterWidth = 1;
+		splOutput.TabIndex = 3;
+		// 
+		// tbOutput
+		// 
+		tbOutput.BackColor = System.Drawing.SystemColors.ActiveCaption;
+		tbOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+		tbOutput.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+		tbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, btnShowOutput });
+		tbOutput.Location = new System.Drawing.Point(0, 0);
+		tbOutput.Name = "tbOutput";
+		tbOutput.Size = new System.Drawing.Size(1015, 25);
+		tbOutput.TabIndex = 0;
+		tbOutput.Text = "Hey";
+		// 
+		// toolStripLabel1
+		// 
+		toolStripLabel1.Name = "toolStripLabel1";
+		toolStripLabel1.Size = new System.Drawing.Size(45, 22);
+		toolStripLabel1.Text = "Output";
+		// 
+		// btnShowOutput
+		// 
+		btnShowOutput.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnShowOutput.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnShowOutput.Image = (System.Drawing.Image)resources.GetObject("btnShowOutput.Image");
+		btnShowOutput.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnShowOutput.Name = "btnShowOutput";
+		btnShowOutput.Size = new System.Drawing.Size(23, 22);
+		btnShowOutput.Text = "toolStripButton1";
+		btnShowOutput.Click += btnShowOutput_Click;
+		// 
+		// lbxOutput
+		// 
+		lbxOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		lbxOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+		lbxOutput.FormattingEnabled = true;
+		lbxOutput.Location = new System.Drawing.Point(0, 0);
+		lbxOutput.Name = "lbxOutput";
+		lbxOutput.Size = new System.Drawing.Size(1015, 231);
+		lbxOutput.TabIndex = 0;
+		// 
+		// MainForm
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.Control;
-		ClientSize = new System.Drawing.Size(1048, 887);
-		Controls.Add(rtbJson);
+		ClientSize = new System.Drawing.Size(1250, 942);
+		Controls.Add(splMain);
 		Controls.Add(toolStrip1);
 		Controls.Add(statusStrip1);
 		Controls.Add(menuStrip1);
@@ -290,19 +382,33 @@ partial class Form1
 		Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
 		MainMenuStrip = menuStrip1;
 		Margin = new System.Windows.Forms.Padding(2);
-		Name = "Form1";
+		Name = "MainForm";
 		Text = "GenIt";
 		Activated += Form1_Activated;
 		FormClosing += Form1_FormClosing;
 		Load += Form1_Load;
 		Shown += Form1_Shown;
-		Resize += Form1_Resize;
+		ResizeEnd += MainForm_ResizeEnd;
 		statusStrip1.ResumeLayout(false);
 		statusStrip1.PerformLayout();
 		menuStrip1.ResumeLayout(false);
 		menuStrip1.PerformLayout();
 		toolStrip1.ResumeLayout(false);
 		toolStrip1.PerformLayout();
+		splMain.Panel1.ResumeLayout(false);
+		splMain.Panel2.ResumeLayout(false);
+		((System.ComponentModel.ISupportInitialize)splMain).EndInit();
+		splMain.ResumeLayout(false);
+		splContent.Panel2.ResumeLayout(false);
+		((System.ComponentModel.ISupportInitialize)splContent).EndInit();
+		splContent.ResumeLayout(false);
+		splOutput.Panel1.ResumeLayout(false);
+		splOutput.Panel1.PerformLayout();
+		splOutput.Panel2.ResumeLayout(false);
+		((System.ComponentModel.ISupportInitialize)splOutput).EndInit();
+		splOutput.ResumeLayout(false);
+		tbOutput.ResumeLayout(false);
+		tbOutput.PerformLayout();
 		ResumeLayout(false);
 		PerformLayout();
 	}
@@ -312,10 +418,6 @@ partial class Form1
 	private System.Windows.Forms.ToolStripStatusLabel statusLabel;
 	private System.Windows.Forms.ToolStripStatusLabel toolLblVersion;
 	private System.Windows.Forms.ToolStripStatusLabel toolLblMessage;
-	private System.Windows.Forms.Timer timer1;
-	private System.Windows.Forms.ToolTip toolTip1;
-	private System.Windows.Forms.ImageList imageList1;
-	private System.Windows.Forms.ImageList logEventImgList;
 	private System.Windows.Forms.MenuStrip menuStrip1;
 	private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 	private System.Windows.Forms.ToolStripMenuItem mnuOpen;
@@ -324,17 +426,26 @@ partial class Form1
 	private System.Windows.Forms.ToolStripMenuItem mnuClose;
 	private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
 	private System.Windows.Forms.ToolStripMenuItem mnuExit;
-	private System.Windows.Forms.ToolStrip toolStrip1;
 	private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 	private System.Windows.Forms.ToolStripMenuItem generateToolStripMenuItem;
+	private System.Windows.Forms.ToolStripButton helpToolStripButton;
+	private System.Windows.Forms.ToolStripMenuItem mnuNew;
+	private System.Windows.Forms.OpenFileDialog openFileDlg;
+	private System.Windows.Forms.SaveFileDialog saveFileDlg;
+	private System.Windows.Forms.ToolStrip toolStrip1;
 	private System.Windows.Forms.ToolStripButton btnNew;
 	private System.Windows.Forms.ToolStripButton btnOpen;
 	private System.Windows.Forms.ToolStripButton btnSave;
 	private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-	private System.Windows.Forms.ToolStripButton helpToolStripButton;
-	private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 	private System.Windows.Forms.ToolStripButton btnGenerate;
-	private System.Windows.Forms.OpenFileDialog openFileDlg;
-	private System.Windows.Forms.SaveFileDialog saveFileDlg;
-	private System.Windows.Forms.RichTextBox rtbJson;
+	private System.Windows.Forms.SplitContainer splMain;
+	private System.Windows.Forms.SplitContainer splContent;
+	private System.Windows.Forms.TreeView treeNav;
+	private System.Windows.Forms.ToolStripButton btnTest1;
+	private System.Windows.Forms.ToolStripButton btnTest2;
+	private System.Windows.Forms.SplitContainer splOutput;
+	private System.Windows.Forms.ToolStrip tbOutput;
+	private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+	private System.Windows.Forms.ToolStripButton btnShowOutput;
+	private System.Windows.Forms.ListBox lbxOutput;
 }

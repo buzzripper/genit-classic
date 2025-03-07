@@ -337,32 +337,46 @@ public partial class MainForm : Form
 		_suspendUpdates = true;
 		try {
 			treeNav.DataSource = doc.DbContexts[0];
-
+			treeNav.AssocModelSelected += TreeNav_AssocModelSelected;
+			treeNav.DbContextModelSelected += TreeNav_DbContextModelSelected;
+			treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
+			treeNav.EntityModelSelected += TreeNav_EntityModelSelected;
+			treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
+			treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
 		} finally {
 			_suspendUpdates = false;
 		}
 	}
 
-	//private void PopulateTreeView(Doc doc)
-	//{
-	//	treeNav.Nodes.Clear();
-	//	this.SuspendLayout();
+	#region TreeNav
 
-	//	try {
-	//		var entitiesNode = treeNav.Nodes.Cast<TreeNode>().Where(n => n.Text == "Entities").ToList();
-	//		foreach(var entity in doc.DbContexts[0].Entities) {
-	//			entitiesNode.Add(new TreeNode(entity.Name));
-	//		}
-	//		//treeNav.Nodes.Add(new TreeNode("Enums"));
-	//		//treeNav.Nodes.Add(new TreeNode("Assocs"));
+	private void TreeNav_DbContextModelSelected(object sender, UserControls.DbContextModelEventArgs e)
+	{
+		outputCtl.WriteInfo($"DbContext selected: {e.DbContext.Name}");
+	}
 
-	//	} catch (Exception ex) {
-	//		ShowErrorDlg(ex);
+	private void TreeNav_EntityModelSelected(object sender, UserControls.EntityModelEventArgs e)
+	{
+		outputCtl.WriteInfo($"DbContext selected: {e.Entity.Name}");
+	}
 
-	//	} finally {
-	//		treeNav.ResumeLayout();
-	//	}
-	//}
+	private void TreeNav_PropertyModelSelected(object sender, UserControls.PropertyModelEventArgs e)
+	{
+	}
+
+	private void TreeNav_EnumModelSelected(object sender, UserControls.EnumModelEventArgs e)
+	{
+	}
+
+	private void TreeNav_AssocModelSelected(object sender, UserControls.AssocModelEventArgs e)
+	{
+	}
+
+	private void TreeNav_GeneratorModelSelected(object sender, UserControls.GeneratorModelEventArgs e)
+	{
+	}
+
+	#endregion
 
 	#region Utils
 
@@ -396,30 +410,13 @@ public partial class MainForm : Form
 		}
 	}
 
-	private void WriteOutput(List<string> outputLines)
-	{
-		if (outputLines.Count == 0)
-			return;
-
-		lbxOutput.SuspendLayout();
-		foreach (var outputLine in outputLines)
-			lbxOutput.Items.Add(outputLine);
-		lbxOutput.TopIndex = lbxOutput.Items.Count - 1;
-		lbxOutput.ResumeLayout();
-	}
-
-	private void WriteOutput(string outputLine)
-	{
-		lbxOutput.Items.Add(outputLine);
-		lbxOutput.TopIndex = lbxOutput.Items.Count - 1;
-	}
 	#endregion
 
 	private void btnTest1_Click(object sender, EventArgs e)
 	{
 		try {
 			this.Doc = DocManager.LoadDoc("TEST");
-			WriteOutput("Doc opened.");
+			outputCtl.WriteInfo("Doc opened.");
 
 		} catch (Exception ex) {
 			this.ShowErrorDlg(ex);
@@ -454,4 +451,10 @@ public partial class MainForm : Form
 			dbContextEditCtl.SetDbContext(this.Doc.DbContexts[0]);
 		}
 	}
+
+	private void btnClearOuput_Click(object sender, EventArgs e)
+	{
+		outputCtl.Clear();
+	}
 }
+

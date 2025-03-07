@@ -56,14 +56,15 @@ partial class MainForm
 		btnTest1 = new System.Windows.Forms.ToolStripButton();
 		btnTest2 = new System.Windows.Forms.ToolStripButton();
 		splMain = new System.Windows.Forms.SplitContainer();
+		treeNav = new Dyvenix.Genit.UserControls.TreeNav();
 		splContent = new System.Windows.Forms.SplitContainer();
 		splOutput = new System.Windows.Forms.SplitContainer();
 		tbOutput = new System.Windows.Forms.ToolStrip();
 		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 		btnShowOutput = new System.Windows.Forms.ToolStripButton();
-		lbxOutput = new System.Windows.Forms.ListBox();
+		btnClearOuput = new System.Windows.Forms.ToolStripButton();
+		outputCtl = new Dyvenix.Genit.UserControls.OutputCtl();
 		tvImgList = new System.Windows.Forms.ImageList(components);
-		treeNav = new Dyvenix.Genit.UserControls.TreeNav();
 		statusStrip1.SuspendLayout();
 		menuStrip1.SuspendLayout();
 		toolStrip1.SuspendLayout();
@@ -288,6 +289,14 @@ partial class MainForm
 		splMain.SplitterWidth = 8;
 		splMain.TabIndex = 38;
 		// 
+		// treeNav
+		// 
+		treeNav.Dock = System.Windows.Forms.DockStyle.Fill;
+		treeNav.Location = new System.Drawing.Point(0, 0);
+		treeNav.Name = "treeNav";
+		treeNav.Size = new System.Drawing.Size(190, 538);
+		treeNav.TabIndex = 0;
+		// 
 		// splContent
 		// 
 		splContent.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -318,7 +327,7 @@ partial class MainForm
 		// 
 		// splOutput.Panel2
 		// 
-		splOutput.Panel2.Controls.Add(lbxOutput);
+		splOutput.Panel2.Controls.Add(outputCtl);
 		splOutput.Size = new System.Drawing.Size(854, 119);
 		splOutput.SplitterDistance = 25;
 		splOutput.SplitterWidth = 1;
@@ -329,7 +338,7 @@ partial class MainForm
 		tbOutput.BackColor = System.Drawing.SystemColors.ActiveCaption;
 		tbOutput.Dock = System.Windows.Forms.DockStyle.Fill;
 		tbOutput.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		tbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, btnShowOutput });
+		tbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, btnShowOutput, btnClearOuput });
 		tbOutput.Location = new System.Drawing.Point(0, 0);
 		tbOutput.Name = "tbOutput";
 		tbOutput.Size = new System.Drawing.Size(854, 25);
@@ -353,15 +362,24 @@ partial class MainForm
 		btnShowOutput.Text = "toolStripButton1";
 		btnShowOutput.Click += btnShowOutput_Click;
 		// 
-		// lbxOutput
+		// btnClearOuput
 		// 
-		lbxOutput.BorderStyle = System.Windows.Forms.BorderStyle.None;
-		lbxOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-		lbxOutput.FormattingEnabled = true;
-		lbxOutput.Location = new System.Drawing.Point(0, 0);
-		lbxOutput.Name = "lbxOutput";
-		lbxOutput.Size = new System.Drawing.Size(854, 93);
-		lbxOutput.TabIndex = 0;
+		btnClearOuput.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnClearOuput.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnClearOuput.Image = (System.Drawing.Image)resources.GetObject("btnClearOuput.Image");
+		btnClearOuput.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnClearOuput.Name = "btnClearOuput";
+		btnClearOuput.Size = new System.Drawing.Size(23, 22);
+		btnClearOuput.Text = "toolStripButton1";
+		btnClearOuput.Click += btnClearOuput_Click;
+		// 
+		// outputCtl
+		// 
+		outputCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+		outputCtl.Location = new System.Drawing.Point(0, 0);
+		outputCtl.Name = "outputCtl";
+		outputCtl.Size = new System.Drawing.Size(854, 93);
+		outputCtl.TabIndex = 0;
 		// 
 		// tvImgList
 		// 
@@ -378,14 +396,6 @@ partial class MainForm
 		tvImgList.Images.SetKeyName(7, "assoc_dis");
 		tvImgList.Images.SetKeyName(8, "gen");
 		tvImgList.Images.SetKeyName(9, "gen_dis");
-		// 
-		// treeNav
-		// 
-		treeNav.Dock = System.Windows.Forms.DockStyle.Fill;
-		treeNav.Location = new System.Drawing.Point(0, 0);
-		treeNav.Name = "treeNav";
-		treeNav.Size = new System.Drawing.Size(190, 538);
-		treeNav.TabIndex = 0;
 		// 
 		// MainForm
 		// 
@@ -465,8 +475,9 @@ partial class MainForm
 	private System.Windows.Forms.ToolStrip tbOutput;
 	private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 	private System.Windows.Forms.ToolStripButton btnShowOutput;
-	private System.Windows.Forms.ListBox lbxOutput;
 	private System.Windows.Forms.ImageList tvImgList;
 	private UserControls.DbContextEditCtl dbContextEditCtl;
 	private UserControls.TreeNav treeNav;
+	private UserControls.OutputCtl outputCtl;
+	private System.Windows.Forms.ToolStripButton btnClearOuput;
 }

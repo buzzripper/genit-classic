@@ -39,15 +39,12 @@ partial class TreeNav
 		tvImgList.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("tvImgList.ImageStream");
 		tvImgList.TransparentColor = System.Drawing.Color.Transparent;
 		tvImgList.Images.SetKeyName(0, "db");
-		tvImgList.Images.SetKeyName(1, "db_dis");
-		tvImgList.Images.SetKeyName(2, "ent");
-		tvImgList.Images.SetKeyName(3, "ent_dis");
-		tvImgList.Images.SetKeyName(4, "enum");
-		tvImgList.Images.SetKeyName(5, "enum_dis");
-		tvImgList.Images.SetKeyName(6, "assoc");
-		tvImgList.Images.SetKeyName(7, "assoc_dis");
-		tvImgList.Images.SetKeyName(8, "gen");
-		tvImgList.Images.SetKeyName(9, "gen_dis");
+		tvImgList.Images.SetKeyName(1, "ent");
+		tvImgList.Images.SetKeyName(2, "enum");
+		tvImgList.Images.SetKeyName(3, "assoc");
+		tvImgList.Images.SetKeyName(4, "gens");
+		tvImgList.Images.SetKeyName(5, "gen");
+		tvImgList.Images.SetKeyName(6, "prop");
 		// 
 		// treeView1
 		// 
@@ -59,6 +56,7 @@ partial class TreeNav
 		treeView1.SelectedImageIndex = 0;
 		treeView1.Size = new System.Drawing.Size(123, 345);
 		treeView1.TabIndex = 0;
+		treeView1.AfterSelect += treeView1_AfterSelect;
 		// 
 		// TreeNav
 		// 

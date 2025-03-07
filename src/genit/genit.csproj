@@ -66,10 +66,6 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if /i &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xD;&#xA;    rmdir /S /Q &quot;C:\Programs\LogViewer\&quot;&#xD;&#xA;    mkdir &quot;C:\Programs\LogViewer\&quot;&#xD;&#xA;    xcopy /Y /E &quot;$(TargetDir)*&quot; &quot;C:\Programs\LogViewer\&quot;&#xD;&#xA;)" />
   </Target>

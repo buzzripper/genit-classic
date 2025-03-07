@@ -11,7 +11,7 @@ public class DbContextModel
 	public bool Enabled { get; set; }
 	public string ContextNamespace { get; set; }
 	public string EntitiesNamespace { get; set; }
-	public List<string> AddlUsings { get; set; }
+	public List<string> AddlUsings { get; set; } = new List<string>();
 
 	public List<EntityModel> Entities { get; set; } = new List<EntityModel>();
 	public List<EnumModel> Enums { get; set; } = new List<EnumModel>();
@@ -19,6 +19,9 @@ public class DbContextModel
 
 	public void InitializeOnLoad()
 	{
+		if (AddlUsings == null)
+			AddlUsings = new List<string>();
+
 		foreach (var navProperty in Assocs) {
 			var primaryEntityMdl = Entities.FirstOrDefault(e => e.Id == navProperty.PrimaryEntityId);
 			var relatedEntityMdl = Entities.FirstOrDefault(e => e.Id == navProperty.RelatedEntityId);

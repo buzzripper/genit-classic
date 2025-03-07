@@ -121,16 +121,16 @@
     <value>33, 14</value>
   </metadata>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>794, 29</value>
+    <value>540, 16</value>
   </metadata>
   <metadata name="openFileDlg.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>229, 20</value>
+    <value>173, 10</value>
   </metadata>
   <metadata name="saveFileDlg.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>440, 29</value>
+    <value>303, 14</value>
   </metadata>
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>621, 28</value>
+    <value>433, 15</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnNew.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -239,8 +239,66 @@
         qgAAAABJRU5ErkJggg==
 </value>
   </data>
+  <metadata name="tvImgList.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>771, 18</value>
+  </metadata>
+  <data name="tvImgList.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAEZTeXN0ZW0uV2luZG93cy5Gb3JtcywgQ3VsdHVyZT1uZXV0cmFs
+        LCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5BQEAAAAmU3lzdGVtLldpbmRvd3MuRm9ybXMu
+        SW1hZ2VMaXN0U3RyZWFtZXIBAAAABERhdGEHAgIAAAAJAwAAAA8DAAAAFAsAAAJNU0Z0AUkBTAIBAQoB
+        AAFgAQABYAEAARABAAEQAQAE/wEhAQAI/wFCAU0BNgcAATYDAAEoAwABQAMAATADAAEBAQABIAYAATD/
+        AP8A/wD/ACoAA8wB/wPMAf8MAAPMAf8DZQHfJAADZgH/A2YB/wwAA2YB/wNjAd+gAAPMAf8DzAH/FAAD
+        zAH/A2UB3xwAA2YB/wNmAf8UAANmAf8DYwHfmAADzAH/A8wB/xwAA8wB/wNlAd8UAANmAf8DZgH/HAAD
+        ZgH/A2MB35AAA8wB/wPMAf8kAAPMAf8DZQHfDAADZgH/A2YB/yQAA2YB/wNjAd+QAAPMAf8DWgG/HAAD
+        zAH/A8wB/xQAA2YB/wNaAb8cAANmAf8DZgH/mAADzAH/A1oBvxQAA8wB/wPMAf8cAANmAf8DWgG/FAAD
+        ZgH/A2YB/6AAA8wB/wNaAb8MAAPMAf8DzAH/JAADZgH/A1oBvwwAA2YB/wNmAf+4AAMYASA8AAMYASD/
+        AP8A/wD/AP8A/wCmAAPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/FAAD
+        ZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/5QAA8wB/yQAA8wB/xQAA2YB
+        /yQAA2YB/yAAA8wB/wMqAUA4AANmAf8DKgFALAADzAH/JAADzAH/FAADZgH/JAADZgH/HAADzAH/A8wB
+        /zgAA2YB/wNmAf8wAAPMAf8kAAPMAf8UAANmAf8kAANmAf8YAAPMAf8DzAH/OAADZgH/A2YB/zQAA8wB
+        /yQAA8wB/xQAA2YB/yQAA2YB/xQAA8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/HAAD
+        ZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8cAAPMAf8kAAPMAf8UAANmAf8kAANmAf8Y
+        AAPMAf8DzAH/FAADzAH/IAADZgH/A2YB/xQAA2YB/xwAA8wB/yQAA8wB/xQAA2YB/yQAA2YB/xwAA8wB
+        /wPMAf8QAAPMAf8kAANmAf8DZgH/EAADZgH/HAADzAH/JAADzAH/FAADZgH/JAADZgH/IAADzAH/EAAD
+        zAH/KAADZgH/EAADZgH/HAADzAH/JAADzAH/FAADZgH/JAADZgH/NAADzAH/PAADZgH/HAADzAH/JAAD
+        zAH/FAADZgH/JAADZgH/NAADzAH/PAADZgH/HAADzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB
+        /wPMAf8DzAH/A8wB/xQAA2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf80
+        AAPMAf88AANmAf//AP8A/wD/AP8AKQADzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DRgF/JAADZgH/A2YB
+        /wNmAf8DZgH/A2YB/wNmAf8DRgF/HAADzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8D
+        zAH/A8wB/xQAA2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8UAAPMAf8D
+        zAH/A2MB3wMqAUAMAAM6AWADzAH/A8wB/wNaAb8UAANmAf8DZgH/A2MB3wMqAUAMAAM6AWADZgH/A2YB
+        /wNaAb8UAAPMAf8kAAPMAf8UAANmAf8kAANmAf8UAAPMAf8kAAPMAf8UAANmAf8kAANmAf8UAAPMAf8k
+        AAPMAf8UAANmAf8kAANmAf8UAAPMAf8EAAMYASADzAH/A8wB/wPMAf8DzAH/A2MB3wgAA8wB/xQAA2YB
+        /wQAAxgBIANmAf8DZgH/A2YB/wNmAf8DYwHfCAADZgH/FAADzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8D
+        zAH/A8wB/wPMAf8DzAH/A8wB/xQAA2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB
+        /wNmAf8UAAPMAf8DzAH/A8wB/wNjAd8DOgFgAyoBQANGAX8DzAH/A8wB/wPMAf8DzAH/FAADZgH/A2YB
+        /wNmAf8DYwHfAzoBYAMqAUADRgF/A2YB/wNmAf8DZgH/A2YB/xQAA8wB/wMqAUADKgFAAyoBQAMqAUAD
+        KgFAAyoBQAMqAUADKgFAAyoBQAPMAf8UAANmAf8DKgFAAyoBQAMqAUADKgFAAyoBQAMqAUADKgFAAyoB
+        QAMqAUADZgH/FAADzAH/IAADGAEgA8wB/xQAA2YB/yAAAxgBIANmAf8UAAPMAf8kAAPMAf8UAANmAf8k
+        AANmAf8UAAPMAf8IAAMYASADUQGfA1oBvwNRAZ8MAAPMAf8UAANmAf8IAAMYASADUQGfA1oBvwNRAZ8M
+        AANmAf8UAAPMAf8kAAPMAf8UAANmAf8kAANmAf8UAAPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8D
+        zAH/A8wB/wPMAf8DzAH/FAADZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB
+        /xQAA8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8UAANmAf8DZgH/A2YB
+        /wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/FAADzAH/AxgBIBwAA1oBvwPMAf8UAANmAf8D
+        GAEgHAADWgG/A2YB/xQAA8wB/yQAA8wB/xQAA2YB/yQAA2YB/xQAA8wB/wPMAf8YAAM6AWADzAH/A8wB
+        /xQAA2YB/wNmAf8YAAM6AWADZgH/A2YB/xQAA8wB/yQAA8wB/xQAA2YB/yQAA2YB/xgAA1oBvwPMAf8D
+        zAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DKgFAHAADWgG/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB
+        /wMqAUAYAAPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/A8wB/wPMAf8DzAH/FAADZgH/A2YB
+        /wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB/wNmAf8DZgH/A2YB//8A/wD/AAsAAUIBTQE+BwABPgMAASgD
+        AAFAAwABMAMAAQEBAAEBBQABgAEBFgAD/wEABP8EAAT/BAAE/wQABP8EAAH5Ac8B+QHPBAAB8wHnAfMB
+        5wQAAecB8wHnAfMEAAHPAfkBzwH5BAAB5wHzAecB8wQAAfMB5wHzAecEAAH5Ac8B+QHPBAAB/wHfAf8B
+        3wQABP8EAAT/BAAE/wQABP8EABD/AeABAwHgAQME/wHvAfsB7wH7AfwB/wH8Af8B7wH7Ae8B+wH5Af8B
+        +QH/Ae8B+wHvAfsB8wH/AfMB/wHvAfsB7wH7AeABDwHgAQ8B7wH7Ae8B+wHzAe8B8wLvAfsB7wH7AfkB
+        7wH5Au8B+wHvAfsB/QHvAf0C7wH7Ae8B+wH/Ae8B/wLvAfsB7wH7Af8B7wH/Ae8B4AEDAeABAwH/Ae8B
+        /wHvKP8B+AEPAfgBDwHgAQMB4AEDAeEBwwHhAcMB7wH7Ae8B+wHvAfsB7wH7Ae8B+wHvAfsB6AEbAegB
+        GwHgAQMB4AEDAeABAwHgAQMB4AEDAeABAwHvAfMB7wHzAe8B+wHvAfsB7AE7AewBOwHvAfsB7wH7AeAB
+        AwHgAQMB4AEDAeABAwHnAfMB5wHzAe8B+wHvAfsB5wHjAecB4wHvAfsB7wH7AfABBwHwAQcB4AEDAeAB
+        Axj/Cw==
+</value>
+  </data>
   <metadata name="tbOutput.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>935, 29</value>
+    <value>665, 17</value>
   </metadata>
   <data name="btnShowOutput.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -261,7 +319,7 @@
 </value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>75</value>
+    <value>63</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

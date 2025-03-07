@@ -28,7 +28,13 @@ partial class MainForm
 	/// </summary>
 	private void InitializeComponent()
 	{
+		components = new System.ComponentModel.Container();
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+		System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("DbContext");
+		System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Entities");
+		System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Enums");
+		System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Associations");
+		System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Generators");
 		statusStrip1 = new System.Windows.Forms.StatusStrip();
 		statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 		toolLblVersion = new System.Windows.Forms.ToolStripStatusLabel();
@@ -56,7 +62,9 @@ partial class MainForm
 		btnTest2 = new System.Windows.Forms.ToolStripButton();
 		splMain = new System.Windows.Forms.SplitContainer();
 		treeNav = new System.Windows.Forms.TreeView();
+		tvImgList = new System.Windows.Forms.ImageList(components);
 		splContent = new System.Windows.Forms.SplitContainer();
+		dbContextEditCtl = new Dyvenix.Genit.UserControls.DbContextEditCtl();
 		splOutput = new System.Windows.Forms.SplitContainer();
 		tbOutput = new System.Windows.Forms.ToolStrip();
 		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -70,6 +78,7 @@ partial class MainForm
 		splMain.Panel2.SuspendLayout();
 		splMain.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)splContent).BeginInit();
+		splContent.Panel1.SuspendLayout();
 		splContent.Panel2.SuspendLayout();
 		splContent.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)splOutput).BeginInit();
@@ -84,10 +93,10 @@ partial class MainForm
 		statusStrip1.BackColor = System.Drawing.SystemColors.Control;
 		statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 		statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { statusLabel, toolLblVersion, toolLblMessage });
-		statusStrip1.Location = new System.Drawing.Point(0, 920);
+		statusStrip1.Location = new System.Drawing.Point(0, 593);
 		statusStrip1.Name = "statusStrip1";
 		statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-		statusStrip1.Size = new System.Drawing.Size(1250, 22);
+		statusStrip1.Size = new System.Drawing.Size(1052, 22);
 		statusStrip1.TabIndex = 35;
 		// 
 		// statusLabel
@@ -115,7 +124,7 @@ partial class MainForm
 		menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripMenuItem1, editToolStripMenuItem });
 		menuStrip1.Location = new System.Drawing.Point(0, 0);
 		menuStrip1.Name = "menuStrip1";
-		menuStrip1.Size = new System.Drawing.Size(1250, 24);
+		menuStrip1.Size = new System.Drawing.Size(1052, 24);
 		menuStrip1.TabIndex = 36;
 		menuStrip1.Text = "menuStrip1";
 		// 
@@ -131,7 +140,6 @@ partial class MainForm
 		mnuNew.Name = "mnuNew";
 		mnuNew.Size = new System.Drawing.Size(140, 22);
 		mnuNew.Text = "&New Model";
-		mnuNew.Click += newToolStripMenuItem_Click;
 		// 
 		// mnuOpen
 		// 
@@ -170,6 +178,7 @@ partial class MainForm
 		mnuExit.Name = "mnuExit";
 		mnuExit.Size = new System.Drawing.Size(140, 22);
 		mnuExit.Text = "E&xit";
+		mnuExit.Click += uiExit_Click;
 		// 
 		// editToolStripMenuItem
 		// 
@@ -201,7 +210,7 @@ partial class MainForm
 		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate, btnTest1, btnTest2 });
 		toolStrip1.Location = new System.Drawing.Point(0, 24);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(1250, 31);
+		toolStrip1.Size = new System.Drawing.Size(1052, 31);
 		toolStrip1.TabIndex = 37;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -266,6 +275,7 @@ partial class MainForm
 		btnTest2.Name = "btnTest2";
 		btnTest2.Size = new System.Drawing.Size(37, 28);
 		btnTest2.Text = "Test2";
+		btnTest2.Click += btnTest2_Click;
 		// 
 		// splMain
 		// 
@@ -280,18 +290,59 @@ partial class MainForm
 		// splMain.Panel2
 		// 
 		splMain.Panel2.Controls.Add(splContent);
-		splMain.Size = new System.Drawing.Size(1250, 865);
-		splMain.SplitterDistance = 227;
+		splMain.Size = new System.Drawing.Size(1052, 538);
+		splMain.SplitterDistance = 190;
 		splMain.SplitterWidth = 8;
 		splMain.TabIndex = 38;
 		// 
 		// treeNav
 		// 
 		treeNav.Dock = System.Windows.Forms.DockStyle.Fill;
+		treeNav.ImageIndex = 0;
+		treeNav.ImageList = tvImgList;
 		treeNav.Location = new System.Drawing.Point(0, 0);
 		treeNav.Name = "treeNav";
-		treeNav.Size = new System.Drawing.Size(227, 865);
+		treeNode6.ImageKey = "db_dis";
+		treeNode6.Name = "DbContextNode";
+		treeNode6.SelectedImageKey = "db";
+		treeNode6.Text = "DbContext";
+		treeNode7.ImageKey = "ent_dis";
+		treeNode7.Name = "EntitiesNode";
+		treeNode7.SelectedImageKey = "ent";
+		treeNode7.Text = "Entities";
+		treeNode8.ImageKey = "enum_dis";
+		treeNode8.Name = "EnumsNode";
+		treeNode8.SelectedImageKey = "enum";
+		treeNode8.Text = "Enums";
+		treeNode9.ImageKey = "assoc_dis";
+		treeNode9.Name = "AssocNode";
+		treeNode9.SelectedImageKey = "assoc";
+		treeNode9.Text = "Associations";
+		treeNode10.ImageKey = "gen_dis";
+		treeNode10.Name = "GeneratorsNode";
+		treeNode10.SelectedImageKey = "gen";
+		treeNode10.Text = "Generators";
+		treeNav.Nodes.AddRange(new System.Windows.Forms.TreeNode[] { treeNode6, treeNode7, treeNode8, treeNode9, treeNode10 });
+		treeNav.SelectedImageIndex = 0;
+		treeNav.Size = new System.Drawing.Size(190, 538);
 		treeNav.TabIndex = 0;
+		treeNav.AfterSelect += treeNav_AfterSelect;
+		// 
+		// tvImgList
+		// 
+		tvImgList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+		tvImgList.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("tvImgList.ImageStream");
+		tvImgList.TransparentColor = System.Drawing.Color.Transparent;
+		tvImgList.Images.SetKeyName(0, "db");
+		tvImgList.Images.SetKeyName(1, "db_dis");
+		tvImgList.Images.SetKeyName(2, "ent");
+		tvImgList.Images.SetKeyName(3, "ent_dis");
+		tvImgList.Images.SetKeyName(4, "enum");
+		tvImgList.Images.SetKeyName(5, "enum_dis");
+		tvImgList.Images.SetKeyName(6, "assoc");
+		tvImgList.Images.SetKeyName(7, "assoc_dis");
+		tvImgList.Images.SetKeyName(8, "gen");
+		tvImgList.Images.SetKeyName(9, "gen_dis");
 		// 
 		// splContent
 		// 
@@ -300,13 +351,24 @@ partial class MainForm
 		splContent.Name = "splContent";
 		splContent.Orientation = System.Windows.Forms.Orientation.Horizontal;
 		// 
+		// splContent.Panel1
+		// 
+		splContent.Panel1.Controls.Add(dbContextEditCtl);
+		// 
 		// splContent.Panel2
 		// 
 		splContent.Panel2.Controls.Add(splOutput);
-		splContent.Size = new System.Drawing.Size(1015, 865);
-		splContent.SplitterDistance = 662;
+		splContent.Size = new System.Drawing.Size(854, 538);
+		splContent.SplitterDistance = 411;
 		splContent.SplitterWidth = 8;
 		splContent.TabIndex = 0;
+		// 
+		// dbContextEditCtl
+		// 
+		dbContextEditCtl.Location = new System.Drawing.Point(12, 3);
+		dbContextEditCtl.Name = "dbContextEditCtl";
+		dbContextEditCtl.Size = new System.Drawing.Size(492, 342);
+		dbContextEditCtl.TabIndex = 0;
 		// 
 		// splOutput
 		// 
@@ -324,7 +386,7 @@ partial class MainForm
 		// splOutput.Panel2
 		// 
 		splOutput.Panel2.Controls.Add(lbxOutput);
-		splOutput.Size = new System.Drawing.Size(1015, 195);
+		splOutput.Size = new System.Drawing.Size(854, 119);
 		splOutput.SplitterDistance = 25;
 		splOutput.SplitterWidth = 1;
 		splOutput.TabIndex = 3;
@@ -337,7 +399,7 @@ partial class MainForm
 		tbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, btnShowOutput });
 		tbOutput.Location = new System.Drawing.Point(0, 0);
 		tbOutput.Name = "tbOutput";
-		tbOutput.Size = new System.Drawing.Size(1015, 25);
+		tbOutput.Size = new System.Drawing.Size(854, 25);
 		tbOutput.TabIndex = 0;
 		tbOutput.Text = "Hey";
 		// 
@@ -365,7 +427,7 @@ partial class MainForm
 		lbxOutput.FormattingEnabled = true;
 		lbxOutput.Location = new System.Drawing.Point(0, 0);
 		lbxOutput.Name = "lbxOutput";
-		lbxOutput.Size = new System.Drawing.Size(1015, 169);
+		lbxOutput.Size = new System.Drawing.Size(854, 93);
 		lbxOutput.TabIndex = 0;
 		// 
 		// MainForm
@@ -373,7 +435,7 @@ partial class MainForm
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.Control;
-		ClientSize = new System.Drawing.Size(1250, 942);
+		ClientSize = new System.Drawing.Size(1052, 615);
 		Controls.Add(splMain);
 		Controls.Add(toolStrip1);
 		Controls.Add(statusStrip1);
@@ -399,6 +461,7 @@ partial class MainForm
 		splMain.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splMain).EndInit();
 		splMain.ResumeLayout(false);
+		splContent.Panel1.ResumeLayout(false);
 		splContent.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splContent).EndInit();
 		splContent.ResumeLayout(false);
@@ -448,4 +511,6 @@ partial class MainForm
 	private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 	private System.Windows.Forms.ToolStripButton btnShowOutput;
 	private System.Windows.Forms.ListBox lbxOutput;
+	private System.Windows.Forms.ImageList tvImgList;
+	private UserControls.DbContextEditCtl dbContextEditCtl;
 }

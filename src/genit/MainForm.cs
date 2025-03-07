@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows.Forms;
@@ -30,6 +31,7 @@ public partial class MainForm : Form
 	private AppConfig _appConfig;
 	private Doc _doc;
 	private int _outputHeight;
+	private string _currDocFilepath;
 
 	#endregion
 
@@ -43,7 +45,7 @@ public partial class MainForm : Form
 	private void Form1_Load(object sender, EventArgs e)
 	{
 		_appConfig = ConfigManager.GetAppConfig();
-		PopulateForm(_appConfig);
+		InitializeLayout(_appConfig);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
@@ -78,7 +80,7 @@ public partial class MainForm : Form
 
 	#region Initialization
 
-	private void PopulateForm(AppConfig appConfig)
+	private void InitializeLayout(AppConfig appConfig)
 	{
 		_suspendUpdates = true;
 		try {
@@ -91,20 +93,20 @@ public partial class MainForm : Form
 		}
 	}
 
-	private Image LoadEmbeddedImage(string resourceName)
-	{
-		var resourceFullName = $"LogViewer.Resources.{resourceName}";
+	//private Image LoadEmbeddedImage(string resourceName)
+	//{
+	//	var resourceFullName = $"LogViewer.Resources.{resourceName}";
 
-		Assembly assembly = Assembly.GetExecutingAssembly();
+	//	Assembly assembly = Assembly.GetExecutingAssembly();
 
-		using (var stream = assembly.GetManifestResourceStream(resourceFullName)) {
-			if (stream != null) {
-				return Image.FromStream(stream);
-			} else {
-				throw new Exception("Resource not found: " + resourceName);
-			}
-		}
-	}
+	//	using (var stream = assembly.GetManifestResourceStream(resourceFullName)) {
+	//		if (stream != null) {
+	//			return Image.FromStream(stream);
+	//		} else {
+	//			throw new Exception("Resource not found: " + resourceName);
+	//		}
+	//	}
+	//}
 
 	#endregion
 
@@ -166,6 +168,7 @@ public partial class MainForm : Form
 		set {
 			_doc = value;
 			SetState(_doc == null ? GenitAppState.NoDoc : GenitAppState.DocLoaded);
+			PopulateForm(_doc);
 		}
 	}
 
@@ -238,11 +241,14 @@ public partial class MainForm : Form
 
 	#endregion
 
+	#region Doc Load/Save
+
 	private void uiOpen_Click(object sender, EventArgs e)
 	{
 		if (openFileDlg.ShowDialog(this) == DialogResult.OK) {
 			try {
 				this.Doc = DocManager.LoadDoc(openFileDlg.FileName);
+				_currDocFilepath = openFileDlg.FileName;
 
 			} catch (Exception ex) {
 				MessageBox.Show($"Error opening file: {ex.Message}");
@@ -270,6 +276,33 @@ public partial class MainForm : Form
 		if (MessageBox.Show("Close the current document?", "Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
 			this.Doc = null;
 		}
+	}
+
+	private void uiExit_Click(object sender, EventArgs e)
+	{
+		if (this.Doc != null) {
+			switch (MessageBox.Show("Save changes?", "Close", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)) {
+				case DialogResult.Yes:
+					if (string.IsNullOrWhiteSpace(_currDocFilepath)) {
+						if (saveFileDlg.ShowDialog(this) == DialogResult.OK) {
+							DocManager.SaveDoc(this.Doc, saveFileDlg.FileName);
+						}
+					} else {
+						DocManager.SaveDoc(this.Doc, _currDocFilepath);
+					}
+					Application.Exit();
+					break;
+
+				case DialogResult.No:
+					Application.Exit();
+					break;
+
+				case DialogResult.Cancel:
+					return;
+			}
+		}
+
+		Application.Exit();
 	}
 
 	private void uiGenerate_Click(object sender, EventArgs e)
@@ -312,7 +345,42 @@ public partial class MainForm : Form
 
 	}
 
-	#region Error dialog
+	#endregion
+
+	private void PopulateForm(Doc doc)
+	{
+		_suspendUpdates = true;
+		try {
+			// Populate the treeview
+			PopulateTreeView(doc);
+
+		} finally {
+			_suspendUpdates = false;
+		}
+	}
+
+	private void PopulateTreeView(Doc doc)
+	{
+		//treeNav.Nodes.Clear();
+		treeNav.SuspendLayout();
+
+		try {
+			var entitiesNode = treeNav.Nodes.Cast<TreeNode>().Where(n => n.Text == "Entities").ToList();
+			foreach(var entity in doc.DbContexts[0].Entities) {
+				entitiesNode.Add(new TreeNode(entity.Name));
+			}
+			//treeNav.Nodes.Add(new TreeNode("Enums"));
+			//treeNav.Nodes.Add(new TreeNode("Assocs"));
+
+		} catch (Exception ex) {
+			ShowErrorDlg(ex);
+
+		} finally {
+			treeNav.ResumeLayout();
+		}
+	}
+
+	#region Utils
 
 	private void ShowErrorDlg(string message)
 	{
@@ -333,31 +401,6 @@ public partial class MainForm : Form
 	{
 		MessageBox.Show(this, message, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
 	}
-
-	#endregion
-
-	private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
-	{
-
-	}
-
-	private void btnTest1_Click(object sender, EventArgs e)
-	{
-		try {
-			this.Doc = DocManager.LoadDoc("TEST");
-			WriteOutput("Doc opened.");
-
-		} catch (Exception ex) {
-			this.ShowErrorDlg(ex);
-		}
-	}
-
-	private void newToolStripMenuItem_Click(object sender, EventArgs e)
-	{
-
-	}
-
-	#region Output window
 
 	private void btnShowOutput_Click(object sender, EventArgs e)
 	{
@@ -387,4 +430,44 @@ public partial class MainForm : Form
 		lbxOutput.TopIndex = lbxOutput.Items.Count - 1;
 	}
 	#endregion
+
+	private void btnTest1_Click(object sender, EventArgs e)
+	{
+		try {
+			this.Doc = DocManager.LoadDoc("TEST");
+			WriteOutput("Doc opened.");
+
+		} catch (Exception ex) {
+			this.ShowErrorDlg(ex);
+		}
+	}
+
+	private void btnTest2_Click(object sender, EventArgs e)
+	{
+		//var items = new List<string> { "Item 1", "Item 2", "Item 3" };
+		//stringListEditor1.Items = items;
+
+		//listBox1.Items.Clear();
+		//listBox1.Items.AddRange(items.ToArray());
+
+		//stringListEditor1.ItemAdded += (s, e) => {
+		//	listBox1.Items.Add(e.Value);
+		//};	
+		//stringListEditor1.ItemChanged += (s, e) => {
+		//	listBox1.Items[e.Index] = e.Value;
+		//};
+		//stringListEditor1.ItemDeleted += (s, e) => {
+		//	listBox1.Items.RemoveAt(e.Index);
+		//};
+	}
+
+	private void treeNav_AfterSelect(object sender, TreeViewEventArgs e)
+	{
+		if (_suspendUpdates || this.Doc == null)
+			return;
+
+		if (e.Node.Text == "DbContext") {
+			dbContextEditCtl.SetDbContext(this.Doc.DbContexts[0]);
+		}
+	}
 }

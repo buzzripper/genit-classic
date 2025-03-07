@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Dyvenix.Genit.Generators;
 
-public class DbContextGenerator
+public class DbContextGenerator : IGeneratorModel
 {
 	private const string cToken_EntityNs = "ENTITY_NS";
 	private const string cToken_Usings = "USINGS";
@@ -17,6 +17,7 @@ public class DbContextGenerator
 	private const string cToken_Properties = "PROPERTIES";
 	private const string cToken_OnModelCreating = "ON_MODEL_CREATING";
 
+	public string Name { get { return "DbContext Generator"; } }
 	public bool InclHeader { get; set; }
 	public string OutputFolder { get; set; }
 	public bool Enabled { get; set; }
@@ -131,7 +132,7 @@ public class DbContextGenerator
 				sb.Append($".IsClustered(true)");
 
 			sb.Append(";");
-			outList.AddLine(t+1, sb);
+			outList.AddLine(t + 1, sb);
 		}
 		outList.AddLine();
 

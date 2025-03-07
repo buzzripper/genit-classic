@@ -8,10 +8,11 @@ using System.Text;
 
 namespace Dyvenix.Genit.Generators;
 
-public class EntityGenerator
+public class EntityGenerator : IGeneratorModel
 {
 	private DbContextModel _dbContextMdl;
 
+	public string Name { get { return "Entity Generator"; } }
 	public bool InclHeader { get; set; }
 	public string OutputRootFolder { get; set; }
 	public bool Enabled { get; set; }

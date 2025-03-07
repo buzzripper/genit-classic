@@ -50,6 +50,13 @@ namespace Dyvenix.Genit.Models
 		public EntityModel PrimaryEntity { get; private set; }
 		[JsonIgnore]
 		public EntityModel RelatedEntity { get; private set; }
+		[JsonIgnore]
+		public string Name
+		{
+			get {
+				return $"{this.PrimaryEntity?.Name} - {this.RelatedEntity?.Name}";
+			}
+		}
 
 		#endregion
 

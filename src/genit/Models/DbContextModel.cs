@@ -1,11 +1,15 @@
-﻿using System;
+﻿using Dyvenix.Genit.Generators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Dyvenix.Genit.Models;
 
 public class DbContextModel
 {
+	private List<IGeneratorModel> _generators = [new DbContextGenerator(), new EntityGenerator()];
+
 	public Guid Id { get; set; }
 	public string Name { get; set; }
 	public bool Enabled { get; set; }
@@ -16,6 +20,7 @@ public class DbContextModel
 	public List<EntityModel> Entities { get; set; } = new List<EntityModel>();
 	public List<EnumModel> Enums { get; set; } = new List<EnumModel>();
 	public List<AssocModel> Assocs { get; set; } = new List<AssocModel>();
+	public List<IGeneratorModel> Generators { get { return _generators; } }
 
 	public void InitializeOnLoad()
 	{

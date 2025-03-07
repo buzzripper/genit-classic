@@ -1,0 +1,4 @@
+   [*.cs]
+   # Namespace declaration should match the folder structure
+   dotnet_style_namespace_match_folder = false:suggestion
+   

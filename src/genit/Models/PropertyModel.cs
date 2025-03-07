@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Intrinsics.X86;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace Dyvenix.Genit.Models;
 
-public class PropertyModel
+public class PropertyModel : INotifyPropertyChanged
 {
 	private string _name;
 
@@ -42,31 +44,135 @@ public class PropertyModel
 		set {
 			if (FKAssoc != null)
 				throw new ApplicationException($"Can't rename property, it is a FK association property.");
-			_name = value;
+			SetProperty(ref _name, value);
 		}
 	}
 
-	public PrimitiveType PrimitiveType { get; set; }
-	public EnumModel EnumType { get; set; }
-	public AssocModel FKAssoc { get; set; }
-	public bool Nullable { get; set; }
-	public bool IsPrimaryKey { get; set; }
-	public bool IsIdentity { get; set; }
-	public int MaxLength { get; set; }
+	private PrimitiveType _primitiveType;
+	public PrimitiveType PrimitiveType
+	{
+		get => _primitiveType;
+		set => SetProperty(ref _primitiveType, value);
+	}
 
-	public bool IsIndexed { get; set; }
-	public bool IsIndexUnique { get; set; }
-	public bool IsIndexClustered { get; set; }
-	public bool MultiIndex1 { get; set; }
-	public bool MultiIndex1Unique { get; set; }
-	public bool MultiIndex2 { get; set; }
-	public bool MultiIndex2Unique { get; set; }
+	private EnumModel _enumType;
+	public EnumModel EnumType
+	{
+		get => _enumType;
+		set => SetProperty(ref _enumType, value);
+	}
 
-	public bool IsSortCol { get; set; }
-	public bool IsSortDesc { get; set; }
+	private AssocModel _fkAssoc;
+	public AssocModel FKAssoc
+	{
+		get => _fkAssoc;
+		set => SetProperty(ref _fkAssoc, value);
+	}
 
-	public List<string> Attributes { get; set; } = new List<string>();
-	public List<string> AddlUsings { get; set; } = new List<string>();
+	private bool _nullable;
+	public bool Nullable
+	{
+		get => _nullable;
+		set => SetProperty(ref _nullable, value);
+	}
+
+	private bool _isPrimaryKey;
+	public bool IsPrimaryKey
+	{
+		get => _isPrimaryKey;
+		set => SetProperty(ref _isPrimaryKey, value);
+	}
+
+	private bool _isIdentity;
+	public bool IsIdentity
+	{
+		get => _isIdentity;
+		set => SetProperty(ref _isIdentity, value);
+	}
+
+	private int _maxLength;
+	public int MaxLength
+	{
+		get => _maxLength;
+		set => SetProperty(ref _maxLength, value);
+	}
+
+	private bool _isIndexed;
+	public bool IsIndexed
+	{
+		get => _isIndexed;
+		set => SetProperty(ref _isIndexed, value);
+	}
+
+	private bool _isIndexUnique;
+	public bool IsIndexUnique
+	{
+		get => _isIndexUnique;
+		set => SetProperty(ref _isIndexUnique, value);
+	}
+
+	private bool _isIndexClustered;
+	public bool IsIndexClustered
+	{
+		get => _isIndexClustered;
+		set => SetProperty(ref _isIndexClustered, value);
+	}
+
+	private bool _multiIndex1;
+	public bool MultiIndex1
+	{
+		get => _multiIndex1;
+		set => SetProperty(ref _multiIndex1, value);
+	}
+
+	private bool _multiIndex1Unique;
+	public bool MultiIndex1Unique
+	{
+		get => _multiIndex1Unique;
+		set => SetProperty(ref _multiIndex1Unique, value);
+	}
+
+	private bool _multiIndex2;
+	public bool MultiIndex2
+	{
+		get => _multiIndex2;
+		set => SetProperty(ref _multiIndex2, value);
+	}
+
+	private bool _multiIndex2Unique;
+	public bool MultiIndex2Unique
+	{
+		get => _multiIndex2Unique;
+		set => SetProperty(ref _multiIndex2Unique, value);
+	}
+
+	private bool _isSortCol;
+	public bool IsSortCol
+	{
+		get => _isSortCol;
+		set => SetProperty(ref _isSortCol, value);
+	}
+
+	private bool _isSortDesc;
+	public bool IsSortDesc
+	{
+		get => _isSortDesc;
+		set => SetProperty(ref _isSortDesc, value);
+	}
+
+	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
+	public ObservableCollection<string> Attributes
+	{
+		get => _attributes;
+		set => SetProperty(ref _attributes, value);
+	}
+
+	private ObservableCollection<string> _addlUsings = new ObservableCollection<string>();
+	public ObservableCollection<string> AddlUsings
+	{
+		get => _addlUsings;
+		set => SetProperty(ref _addlUsings, value);
+	}
 
 	#region Methods
 
@@ -107,5 +213,20 @@ public class PropertyModel
 	public override string ToString()
 	{
 		return this.Name;
+	}
+
+	public event PropertyChangedEventHandler PropertyChanged;
+
+	protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+	{
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+	{
+		if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+		field = value;
+		OnPropertyChanged(propertyName);
+		return true;
 	}
 }

@@ -30,11 +30,6 @@ partial class MainForm
 	{
 		components = new System.ComponentModel.Container();
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-		System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("DbContext");
-		System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Entities");
-		System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Enums");
-		System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Associations");
-		System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Generators");
 		statusStrip1 = new System.Windows.Forms.StatusStrip();
 		statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 		toolLblVersion = new System.Windows.Forms.ToolStripStatusLabel();
@@ -61,15 +56,14 @@ partial class MainForm
 		btnTest1 = new System.Windows.Forms.ToolStripButton();
 		btnTest2 = new System.Windows.Forms.ToolStripButton();
 		splMain = new System.Windows.Forms.SplitContainer();
-		treeNav = new System.Windows.Forms.TreeView();
-		tvImgList = new System.Windows.Forms.ImageList(components);
 		splContent = new System.Windows.Forms.SplitContainer();
-		dbContextEditCtl = new Dyvenix.Genit.UserControls.DbContextEditCtl();
 		splOutput = new System.Windows.Forms.SplitContainer();
 		tbOutput = new System.Windows.Forms.ToolStrip();
 		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 		btnShowOutput = new System.Windows.Forms.ToolStripButton();
 		lbxOutput = new System.Windows.Forms.ListBox();
+		tvImgList = new System.Windows.Forms.ImageList(components);
+		treeNav = new Dyvenix.Genit.UserControls.TreeNav();
 		statusStrip1.SuspendLayout();
 		menuStrip1.SuspendLayout();
 		toolStrip1.SuspendLayout();
@@ -78,7 +72,6 @@ partial class MainForm
 		splMain.Panel2.SuspendLayout();
 		splMain.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)splContent).BeginInit();
-		splContent.Panel1.SuspendLayout();
 		splContent.Panel2.SuspendLayout();
 		splContent.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)splOutput).BeginInit();
@@ -295,65 +288,12 @@ partial class MainForm
 		splMain.SplitterWidth = 8;
 		splMain.TabIndex = 38;
 		// 
-		// treeNav
-		// 
-		treeNav.Dock = System.Windows.Forms.DockStyle.Fill;
-		treeNav.ImageIndex = 0;
-		treeNav.ImageList = tvImgList;
-		treeNav.Location = new System.Drawing.Point(0, 0);
-		treeNav.Name = "treeNav";
-		treeNode6.ImageKey = "db_dis";
-		treeNode6.Name = "DbContextNode";
-		treeNode6.SelectedImageKey = "db";
-		treeNode6.Text = "DbContext";
-		treeNode7.ImageKey = "ent_dis";
-		treeNode7.Name = "EntitiesNode";
-		treeNode7.SelectedImageKey = "ent";
-		treeNode7.Text = "Entities";
-		treeNode8.ImageKey = "enum_dis";
-		treeNode8.Name = "EnumsNode";
-		treeNode8.SelectedImageKey = "enum";
-		treeNode8.Text = "Enums";
-		treeNode9.ImageKey = "assoc_dis";
-		treeNode9.Name = "AssocNode";
-		treeNode9.SelectedImageKey = "assoc";
-		treeNode9.Text = "Associations";
-		treeNode10.ImageKey = "gen_dis";
-		treeNode10.Name = "GeneratorsNode";
-		treeNode10.SelectedImageKey = "gen";
-		treeNode10.Text = "Generators";
-		treeNav.Nodes.AddRange(new System.Windows.Forms.TreeNode[] { treeNode6, treeNode7, treeNode8, treeNode9, treeNode10 });
-		treeNav.SelectedImageIndex = 0;
-		treeNav.Size = new System.Drawing.Size(190, 538);
-		treeNav.TabIndex = 0;
-		treeNav.AfterSelect += treeNav_AfterSelect;
-		// 
-		// tvImgList
-		// 
-		tvImgList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-		tvImgList.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("tvImgList.ImageStream");
-		tvImgList.TransparentColor = System.Drawing.Color.Transparent;
-		tvImgList.Images.SetKeyName(0, "db");
-		tvImgList.Images.SetKeyName(1, "db_dis");
-		tvImgList.Images.SetKeyName(2, "ent");
-		tvImgList.Images.SetKeyName(3, "ent_dis");
-		tvImgList.Images.SetKeyName(4, "enum");
-		tvImgList.Images.SetKeyName(5, "enum_dis");
-		tvImgList.Images.SetKeyName(6, "assoc");
-		tvImgList.Images.SetKeyName(7, "assoc_dis");
-		tvImgList.Images.SetKeyName(8, "gen");
-		tvImgList.Images.SetKeyName(9, "gen_dis");
-		// 
 		// splContent
 		// 
 		splContent.Dock = System.Windows.Forms.DockStyle.Fill;
 		splContent.Location = new System.Drawing.Point(0, 0);
 		splContent.Name = "splContent";
 		splContent.Orientation = System.Windows.Forms.Orientation.Horizontal;
-		// 
-		// splContent.Panel1
-		// 
-		splContent.Panel1.Controls.Add(dbContextEditCtl);
 		// 
 		// splContent.Panel2
 		// 
@@ -362,13 +302,6 @@ partial class MainForm
 		splContent.SplitterDistance = 411;
 		splContent.SplitterWidth = 8;
 		splContent.TabIndex = 0;
-		// 
-		// dbContextEditCtl
-		// 
-		dbContextEditCtl.Location = new System.Drawing.Point(12, 3);
-		dbContextEditCtl.Name = "dbContextEditCtl";
-		dbContextEditCtl.Size = new System.Drawing.Size(492, 342);
-		dbContextEditCtl.TabIndex = 0;
 		// 
 		// splOutput
 		// 
@@ -430,6 +363,30 @@ partial class MainForm
 		lbxOutput.Size = new System.Drawing.Size(854, 93);
 		lbxOutput.TabIndex = 0;
 		// 
+		// tvImgList
+		// 
+		tvImgList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+		tvImgList.ImageStream = (System.Windows.Forms.ImageListStreamer)resources.GetObject("tvImgList.ImageStream");
+		tvImgList.TransparentColor = System.Drawing.Color.Transparent;
+		tvImgList.Images.SetKeyName(0, "db");
+		tvImgList.Images.SetKeyName(1, "db_dis");
+		tvImgList.Images.SetKeyName(2, "ent");
+		tvImgList.Images.SetKeyName(3, "ent_dis");
+		tvImgList.Images.SetKeyName(4, "enum");
+		tvImgList.Images.SetKeyName(5, "enum_dis");
+		tvImgList.Images.SetKeyName(6, "assoc");
+		tvImgList.Images.SetKeyName(7, "assoc_dis");
+		tvImgList.Images.SetKeyName(8, "gen");
+		tvImgList.Images.SetKeyName(9, "gen_dis");
+		// 
+		// treeNav
+		// 
+		treeNav.Dock = System.Windows.Forms.DockStyle.Fill;
+		treeNav.Location = new System.Drawing.Point(0, 0);
+		treeNav.Name = "treeNav";
+		treeNav.Size = new System.Drawing.Size(190, 538);
+		treeNav.TabIndex = 0;
+		// 
 		// MainForm
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -461,7 +418,6 @@ partial class MainForm
 		splMain.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splMain).EndInit();
 		splMain.ResumeLayout(false);
-		splContent.Panel1.ResumeLayout(false);
 		splContent.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splContent).EndInit();
 		splContent.ResumeLayout(false);
@@ -503,7 +459,6 @@ partial class MainForm
 	private System.Windows.Forms.ToolStripButton btnGenerate;
 	private System.Windows.Forms.SplitContainer splMain;
 	private System.Windows.Forms.SplitContainer splContent;
-	private System.Windows.Forms.TreeView treeNav;
 	private System.Windows.Forms.ToolStripButton btnTest1;
 	private System.Windows.Forms.ToolStripButton btnTest2;
 	private System.Windows.Forms.SplitContainer splOutput;
@@ -513,4 +468,5 @@ partial class MainForm
 	private System.Windows.Forms.ListBox lbxOutput;
 	private System.Windows.Forms.ImageList tvImgList;
 	private UserControls.DbContextEditCtl dbContextEditCtl;
+	private UserControls.TreeNav treeNav;
 }

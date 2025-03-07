@@ -93,21 +93,6 @@ public partial class MainForm : Form
 		}
 	}
 
-	//private Image LoadEmbeddedImage(string resourceName)
-	//{
-	//	var resourceFullName = $"LogViewer.Resources.{resourceName}";
-
-	//	Assembly assembly = Assembly.GetExecutingAssembly();
-
-	//	using (var stream = assembly.GetManifestResourceStream(resourceFullName)) {
-	//		if (stream != null) {
-	//			return Image.FromStream(stream);
-	//		} else {
-	//			throw new Exception("Resource not found: " + resourceName);
-	//		}
-	//	}
-	//}
-
 	#endregion
 
 	#region Settings
@@ -351,34 +336,33 @@ public partial class MainForm : Form
 	{
 		_suspendUpdates = true;
 		try {
-			// Populate the treeview
-			PopulateTreeView(doc);
+			treeNav.DataSource = doc.DbContexts[0];
 
 		} finally {
 			_suspendUpdates = false;
 		}
 	}
 
-	private void PopulateTreeView(Doc doc)
-	{
-		//treeNav.Nodes.Clear();
-		treeNav.SuspendLayout();
+	//private void PopulateTreeView(Doc doc)
+	//{
+	//	treeNav.Nodes.Clear();
+	//	this.SuspendLayout();
 
-		try {
-			var entitiesNode = treeNav.Nodes.Cast<TreeNode>().Where(n => n.Text == "Entities").ToList();
-			foreach(var entity in doc.DbContexts[0].Entities) {
-				entitiesNode.Add(new TreeNode(entity.Name));
-			}
-			//treeNav.Nodes.Add(new TreeNode("Enums"));
-			//treeNav.Nodes.Add(new TreeNode("Assocs"));
+	//	try {
+	//		var entitiesNode = treeNav.Nodes.Cast<TreeNode>().Where(n => n.Text == "Entities").ToList();
+	//		foreach(var entity in doc.DbContexts[0].Entities) {
+	//			entitiesNode.Add(new TreeNode(entity.Name));
+	//		}
+	//		//treeNav.Nodes.Add(new TreeNode("Enums"));
+	//		//treeNav.Nodes.Add(new TreeNode("Assocs"));
 
-		} catch (Exception ex) {
-			ShowErrorDlg(ex);
+	//	} catch (Exception ex) {
+	//		ShowErrorDlg(ex);
 
-		} finally {
-			treeNav.ResumeLayout();
-		}
-	}
+	//	} finally {
+	//		treeNav.ResumeLayout();
+	//	}
+	//}
 
 	#region Utils
 

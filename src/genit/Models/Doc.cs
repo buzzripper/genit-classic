@@ -20,6 +20,6 @@ public class Doc
 	public void Initialize()
 	{
 		foreach(var dbContext in DbContexts)
-			dbContext.Initialize();
+			dbContext.InitializeOnLoad();
 	}
 }

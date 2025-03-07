@@ -21,6 +21,14 @@ public class PropertyModel
 		Id = id;
 	}
 
+	public PropertyModel(Guid id, AssocModel assoc)
+	{
+		Id = id;
+		Name = assoc.RelatedPropertyName;
+		PrimitiveType = assoc.PrimaryPKType;
+		FKAssoc = assoc;
+	}
+
 	#endregion
 
 	public Guid Id { get; init; }
@@ -37,6 +45,7 @@ public class PropertyModel
 			_name = value;
 		}
 	}
+
 	public PrimitiveType PrimitiveType { get; set; }
 	public EnumModel EnumType { get; set; }
 	public AssocModel FKAssoc { get; set; }

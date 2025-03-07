@@ -304,7 +304,7 @@ partial class MainForm
 		// 
 		splContent.Panel2.Controls.Add(splOutput);
 		splContent.Size = new System.Drawing.Size(1015, 865);
-		splContent.SplitterDistance = 600;
+		splContent.SplitterDistance = 662;
 		splContent.SplitterWidth = 8;
 		splContent.TabIndex = 0;
 		// 
@@ -324,7 +324,7 @@ partial class MainForm
 		// splOutput.Panel2
 		// 
 		splOutput.Panel2.Controls.Add(lbxOutput);
-		splOutput.Size = new System.Drawing.Size(1015, 257);
+		splOutput.Size = new System.Drawing.Size(1015, 195);
 		splOutput.SplitterDistance = 25;
 		splOutput.SplitterWidth = 1;
 		splOutput.TabIndex = 3;
@@ -365,7 +365,7 @@ partial class MainForm
 		lbxOutput.FormattingEnabled = true;
 		lbxOutput.Location = new System.Drawing.Point(0, 0);
 		lbxOutput.Name = "lbxOutput";
-		lbxOutput.Size = new System.Drawing.Size(1015, 231);
+		lbxOutput.Size = new System.Drawing.Size(1015, 169);
 		lbxOutput.TabIndex = 0;
 		// 
 		// MainForm

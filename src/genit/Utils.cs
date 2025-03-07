@@ -38,14 +38,16 @@ namespace Dyvenix.Genit
 			logLevelEnumMdl.Members.Add("Fatal");
 			dbContext.Enums.Add(logLevelEnumMdl);
 
+			var accessClaimMdl = CreateAccessClaimEntityModel(dbContext);
+			dbContext.Entities.Add(accessClaimMdl);
+
 			var appUserMdl = CreateAppUserEntityModel(dbContext);
 			dbContext.Entities.Add(appUserMdl);
-			var accessClaimMdl = CreateAccessClaimEntityModel(dbContext, appUserMdl.Id);
-			dbContext.Entities.Add(accessClaimMdl);
+
+			dbContext.AddAssoc(appUserMdl, "AccessClaims", accessClaimMdl, "AppUserId", CardinalityModel.OneToMany);
+
 			var logEventsMdl = CreateLogEventsEntityModel(dbContext, appUserMdl.Id, logLevelEnumMdl);
 			dbContext.Entities.Add(logEventsMdl);
-
-			var assoc = dbContext.AddAssoc(appUserMdl, accessClaimMdl, "AccessClaims", "AppUserId", CardinalityModel.OneToMany);
 
 			return doc;
 		}
@@ -319,7 +321,7 @@ namespace Dyvenix.Genit
 			return entity;
 		}
 
-		private static EntityModel CreateAccessClaimEntityModel(DbContextModel dbContextMdl, Guid appUserId)
+		private static EntityModel CreateAccessClaimEntityModel(DbContextModel dbContextMdl)
 		{
 			var entity = new EntityModel(Guid.NewGuid()) {
 				Name = "AccessClaim",
@@ -345,27 +347,6 @@ namespace Dyvenix.Genit
 
 				IsIndexed = true,
 				IsIndexUnique = true,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
-			};
-			entity.Properties.Add(prop);
-
-			prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "AppUserId",
-				PrimitiveType = PrimitiveType.Guid,
-				EnumType = null,
-				Nullable = false,
-				IsPrimaryKey = false,
-				IsIdentity = false,
-				MaxLength = 0,
-
-				IsIndexed = true,
-				IsIndexUnique = false,
 				MultiIndex1 = false,
 				MultiIndex1Unique = false,
 				MultiIndex2 = false,
@@ -438,7 +419,7 @@ namespace Dyvenix.Genit
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",
-				PrimitiveType = PrimitiveType.Guid,
+				PrimitiveType = PrimitiveType.Int,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = true,

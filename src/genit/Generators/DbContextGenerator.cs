@@ -35,7 +35,7 @@ public class DbContextGenerator
 		var propsList = this.GenerateProperties(dbContextModel.Entities);
 
 		// OnModelCreating()
-		var onModelCreatingList = this.GenerateOnModelCreating(dbContextModel.Entities, dbContextModel.Assocs);
+		var onModelCreatingList = this.GenerateOnModelCreating(dbContextModel.Entities);
 
 		// Replace tokens in template
 		var fileContents = this.ReplaceTemplateTokens(dbContextModel, usings, propsList, onModelCreatingList);
@@ -94,20 +94,20 @@ public class DbContextGenerator
 		return propsList;
 	}
 
-	private List<string> GenerateOnModelCreating(List<EntityModel> entities, List<AssocModel> assocs)
+	private List<string> GenerateOnModelCreating(List<EntityModel> entities)
 	{
 		var outList = new List<string>();
 
 		foreach (var entity in entities) {
 			if (!entity.Enabled)
 				continue;
-			this.GenerateModelBuilderEntity(entity, assocs, outList);
+			this.GenerateModelBuilderEntity(entity, outList);
 		}
 
 		return outList;
 	}
 
-	private void GenerateModelBuilderEntity(EntityModel entity, List<AssocModel> assocs, List<string> outList)
+	private void GenerateModelBuilderEntity(EntityModel entity, List<string> outList)
 	{
 		if (!entity.Enabled)
 			return;
@@ -135,7 +135,26 @@ public class DbContextGenerator
 		}
 		outList.AddLine();
 
-		// Other properties
+		// Normal properties
+		foreach (var prop in entity.Properties.Where(p => !p.IsPrimaryKey)) {
+			var sb = new StringBuilder();
+			sb.Append($"entity.Property(e => e.{prop.Name})");
+
+			if (!prop.Nullable)
+				sb.Append($".IsRequired()");
+
+			if (prop.PrimitiveType == PrimitiveType.String && prop.MaxLength > 0) {
+				sb.Append($".HasMaxLength({prop.MaxLength})");
+
+			} else if (prop.PrimitiveType == PrimitiveType.DateTime) {
+				sb.Append($".HasColumnType(\"{PrimitiveType.DateTime.SqlType}\")");
+			}
+
+			sb.Append(";");
+			outList.AddLine(t + 1, sb);
+		}
+
+		// Normal properties
 		foreach (var prop in entity.Properties.Where(p => !p.IsPrimaryKey)) {
 			var sb = new StringBuilder();
 			sb.Append($"entity.Property(e => e.{prop.Name})");

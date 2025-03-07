@@ -10,6 +10,8 @@ namespace Dyvenix.Genit.Generators;
 
 public class EntityGenerator
 {
+	private DbContextModel _dbContextMdl;
+
 	public bool InclHeader { get; set; }
 	public string OutputRootFolder { get; set; }
 	public bool Enabled { get; set; }
@@ -19,6 +21,7 @@ public class EntityGenerator
 	{
 		Validate();
 
+		_dbContextMdl = dbContextMdl;
 		var entities = dbContextMdl.Entities;
 
 		if (!this.Enabled)
@@ -42,6 +45,19 @@ public class EntityGenerator
 		headerLines.Add("//------------------------------------------------------------------------------");
 		headerLines.Add("// This file was auto-generated. Any changes made to it will be lost.");
 		headerLines.Add("//------------------------------------------------------------------------------");
+	}
+
+	private void AddEntityNamespace(EntityModel entityMdl, List<string> usings)
+	{
+		var ns = string.IsNullOrWhiteSpace(entityMdl.Namespace) ?
+			_dbContextMdl.EntitiesNamespace :
+			entityMdl.Namespace;
+
+		if (string.IsNullOrWhiteSpace(ns))
+			throw new ApplicationException($"Cannot determine namespace for entity '{entityMdl.Name}'.");
+
+		if (string.Compare(ns, _dbContextMdl.EntitiesNamespace, true) != 0)
+			usings.AddIfNotExists(ns);
 	}
 
 	private void GenerateEntities(DbContextModel dbContextMdl, List<EntityModel> entities)
@@ -70,21 +86,28 @@ public class EntityGenerator
 
 			var propOutputList = new List<string>();
 
+			// PK
+			var pkProp = entity.Properties.FirstOrDefault(p => p.IsPrimaryKey);
+			this.GenerateProperty(pkProp, propOutputList, usings);
+			propOutputList.AddLine();
+
 			// FK properties
-			var assocs = dbContextMdl.Assocs.Where(p => p.RelatedEntity == entity).ToList();
-			foreach (var assoc in assocs)
-				this.GenerateFKProperty(assoc, propOutputList, usings);
+			var fkProps = entity.Properties.Where(p => p.FKAssoc != null).ToList();
+			foreach (var prop in fkProps)
+				this.GenerateProperty(prop, propOutputList, usings);
+			if (fkProps.Count > 0)
+				propOutputList.AddLine();
 
 			// Normal properties
-			foreach (var prop in entity.Properties)
+			foreach (var prop in entity.Properties.Where(p => p.FKAssoc == null && !p.IsPrimaryKey))
 				this.GenerateProperty(prop, propOutputList, usings);
 
 			// Navigation properties
-			if (entity.Assocs.Count > 0) {
+			if (entity.NavAssocs.Count > 0) {
 				propOutputList.AddLine();
 				propOutputList.AddLine(1, $"// Navigation properties");
-				foreach (var assoc in entity.Assocs)
-					this.GenerateNavigationProperty(assoc, propOutputList, usings);
+				foreach (var navProperty in entity.NavAssocs)
+					this.GenerateNavigationProperty(navProperty, propOutputList, usings);
 			}
 
 			var classEnd = new List<string>();
@@ -104,19 +127,19 @@ public class EntityGenerator
 		}
 	}
 
-	private void GenerateFKProperty(AssocModel assoc, List<string> propOutputList, List<string> usings)
+	private void GenerateFKProperty(AssocModel navProperty, List<string> propOutputList, List<string> usings)
 	{
 		var tabCount = 1;
 
-		string typeStr = assoc.Cardinality switch {
-			CardinalityModel.OneToOne => $"{assoc.RelatedEntity.Name}",
-			CardinalityModel.OneToMany => $"List<{assoc.RelatedEntity.Name}>",
-			_ => throw new ApplicationException($"Error determining data type for property '{assoc.PrimaryPropertyName}': Cardinality '{assoc.Cardinality}' not supported.")
+		string typeStr = navProperty.Cardinality switch {
+			CardinalityModel.OneToOne => $"{navProperty.RelatedEntity.Name}",
+			CardinalityModel.OneToMany => $"List<{navProperty.RelatedEntity.Name}>",
+			_ => throw new ApplicationException($"Error determining data type for property '{navProperty.PrimaryPropertyName}': Cardinality '{navProperty.Cardinality}' not supported.")
 		};
 
-		propOutputList.AddLine(tabCount, $"public List<{typeStr}> {assoc.PrimaryPropertyName} {{ get; set; }}");
+		propOutputList.AddLine(tabCount, $"public {navProperty.RelatedEntity.Name} {navProperty.PrimaryPropertyName} {{ get; set; }}");
 
-		usings.AddIfNotExists(assoc.RelatedEntity.Namespace);
+		this.AddEntityNamespace(navProperty.RelatedEntity, usings);
 	}
 
 	private void GenerateProperty(PropertyModel prop, List<string> propOutputList, List<string> usings)
@@ -136,9 +159,6 @@ public class EntityGenerator
 			usings.AddIfNotExists("System.Text.Json.Serialization");
 			if (!string.IsNullOrWhiteSpace(prop.EnumType.Namespace))
 				usings.AddIfNotExists(prop.EnumType.Namespace);
-
-		} else {
-
 		}
 
 		if (prop.AddlUsings.Any())
@@ -146,26 +166,25 @@ public class EntityGenerator
 				usings.AddIfNotExists(usingStr);
 	}
 
-	private void GenerateNavigationProperty(AssocModel assoc, List<string> propOutputList, List<string> usings)
+	private void GenerateNavigationProperty(AssocModel navProperty, List<string> propOutputList, List<string> usings)
 	{
 		var tabCount = 1;
 
-		switch (assoc.Cardinality) {
+		switch (navProperty.Cardinality) {
 			case CardinalityModel.OneToOne:
-				propOutputList.AddLine(tabCount, $"public {assoc.RelatedEntity.Name} {assoc.PrimaryPropertyName} {{ get; set; }}");
+				propOutputList.AddLine(tabCount, $"public {navProperty.RelatedEntity.Name} {navProperty.PrimaryPropertyName} {{ get; set; }}");
 				break;
 
 			case CardinalityModel.OneToMany:
 				usings.AddIfNotExists("System.Collections.Generic");
-				propOutputList.AddLine(tabCount, $"public virtual ICollection<{assoc.RelatedEntity.Name}> {assoc.PrimaryPropertyName} {{ get; set; }} = new List<{assoc.RelatedEntity.Name}>();");
+				propOutputList.AddLine(tabCount, $"public virtual ICollection<{navProperty.RelatedEntity.Name}> {navProperty.PrimaryPropertyName} {{ get; set; }} = new List<{navProperty.RelatedEntity.Name}>();");
 				break;
 
 			default:
-				throw new ApplicationException($"Error determining data type for property '{assoc.PrimaryPropertyName}': Cardinality '{assoc.Cardinality}' not supported.");
+				throw new ApplicationException($"Error determining data type for property '{navProperty.PrimaryPropertyName}': Cardinality '{navProperty.Cardinality}' not supported.");
 		}
 
-		if (!string.IsNullOrWhiteSpace(assoc.RelatedEntity.Namespace))
-			usings.AddIfNotExists(assoc.RelatedEntity.Namespace);
+		this.AddEntityNamespace(navProperty.RelatedEntity, usings);
 	}
 
 	private void GenerateEnums(DbContextModel dbContextMdl, List<EnumModel> enumMdls)

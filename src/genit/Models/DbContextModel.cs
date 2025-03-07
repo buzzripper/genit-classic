@@ -17,13 +17,32 @@ public class DbContextModel
 	public List<EnumModel> Enums { get; set; } = new List<EnumModel>();
 	public List<AssocModel> Assocs { get; set; } = new List<AssocModel>();
 
-	public void Initialize()
+	public void InitializeOnLoad()
 	{
-		foreach(var assoc in Assocs) {
-			var primaryEntityMdl = Entities.FirstOrDefault(e => e.Id == assoc.PrimaryEntityId);
-			var relatedEntityMdl = Entities.FirstOrDefault(e => e.Id == assoc.RelatedEntityId);
-			assoc.Initialize(primaryEntityMdl, relatedEntityMdl);
+		foreach (var navProperty in Assocs) {
+			var primaryEntityMdl = Entities.FirstOrDefault(e => e.Id == navProperty.PrimaryEntityId);
+			var relatedEntityMdl = Entities.FirstOrDefault(e => e.Id == navProperty.RelatedEntityId);
+			navProperty.Initialize(primaryEntityMdl, relatedEntityMdl);
 		}
+	}
+
+	public void AddAssoc(EntityModel primaryEntityMdl, string primaryPropertyName, EntityModel relatedEntityMdl, string relatedPropertyName, CardinalityModel cardinality)
+	{ 
+		var assoc = new AssocModel(Guid.NewGuid(), primaryEntityMdl, primaryPropertyName, relatedEntityMdl, relatedPropertyName, cardinality);
+		this.Assocs.Add(assoc);
+		
+		primaryEntityMdl.NavAssocs.Add(assoc);
+		relatedEntityMdl.AddForeignKey(assoc);
+	}
+
+	public void DeleteAssoc(AssocModel assoc)
+	{ 
+		this.Assocs.Remove(assoc);
+		assoc.PrimaryEntity.NavAssocs.Remove(assoc);
+
+		var fkProp = assoc.RelatedEntity.Properties.FirstOrDefault(p => p.FKAssoc == assoc);
+		if (fkProp != null)
+			assoc.RelatedEntity.Properties.Remove(fkProp);
 	}
 
 	public void Validate(List<string> errorList)
@@ -32,18 +51,8 @@ public class DbContextModel
 			entity.Validate(errorList);
 		foreach(var enumMdl in Enums)
 			enumMdl.Validate(errorList);
-		foreach(var assoc in Assocs)
+		foreach (var assoc in Assocs)
 			assoc.Validate(errorList);
-	}
-
-	public AssocModel AddAssoc(EntityModel primaryEntityMdl, EntityModel relatedEntityMdl, string primaryPropertyName, string relatedPropertyName, CardinalityModel cardinality)
-	{
-		var assoc = new AssocModel(Guid.NewGuid(), primaryEntityMdl, relatedEntityMdl, primaryPropertyName, relatedPropertyName, cardinality);
-		
-		primaryEntityMdl.Assocs.Add(assoc);
-		relatedEntityMdl.AddForeignKey(assoc);
-
-		return assoc;
 	}
 
 	public override string ToString()

@@ -291,16 +291,16 @@ public partial class MainForm : Form
 			var entityGenerator = new EntityGenerator {
 				Enabled = true,
 				InclHeader = true,
-				//OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Entities"
-				OutputRootFolder = @"c:\work\genit"
+				OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Entities"
+				//OutputRootFolder = @"c:\work\genit\Entities"
 			};
 			entityGenerator.Run(_doc.DbContexts[0]);
 
 			var dbContextGenerator = new DbContextGenerator {
 				Enabled = true,
 				InclHeader = true,
-				//OutputFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Contexts"
-				OutputFolder = @"c:\work\genit"
+				OutputFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Contexts"
+				//OutputFolder = @"c:\work\genit\Entities"
 			};
 			dbContextGenerator.Run(_doc.DbContexts[0]);
 
@@ -312,32 +312,7 @@ public partial class MainForm : Form
 
 	}
 
-	private bool ValidateJson(string json)
-	{
-		try {
-			JsonSerializer.Deserialize<Doc>(json);
-			return true;
-
-		} catch (Exception ex) {
-			MessageBox.Show($"Error saving file: {ex.Message}");
-			return false;
-		}
-	}
-
-	private string FormatJson(string json)
-	{
-		var parsedJson = JsonSerializer.Deserialize<dynamic>(json);
-		return JsonSerializer.Serialize(parsedJson, _serializerOptions);
-	}
-
-	private void printToolStripButton_Click(object sender, EventArgs e)
-	{
-	}
-
-
-	#region Error dialog/output
-
-
+	#region Error dialog
 
 	private void ShowErrorDlg(string message)
 	{

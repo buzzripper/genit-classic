@@ -17,6 +17,8 @@ public class EntityModel
 		Id = id;
 	}
 
+	#region Properties
+
 	public Guid Id { get; init; }
 	public string Name { get; set; }
 	public string Schema { get; set; }
@@ -32,18 +34,20 @@ public class EntityModel
 	public bool UseListSorting { get; set; }
 
 	public List<PropertyModel> Properties { get; set; } = new List<PropertyModel>();
-	public List<AssocModel> Assocs { get; set; } = new List<AssocModel>();
+	public List<AssocModel> NavAssocs { get; set; } = new List<AssocModel>();
+
+	#endregion
 
 	public Guid AddForeignKey(AssocModel assoc)
 	{
-		var propId = Guid.NewGuid();
-		var fkProp = new PropertyModel(propId) {
+		var fkProp = new PropertyModel(Guid.NewGuid(), assoc) {
 			FKAssoc = assoc,
+			PrimitiveType = assoc.PrimaryPKType
 		};
 
 		this.Properties.Add(fkProp);
 
-		return propId;
+		return fkProp.Id;
 	}
 
 	public void Validate(List<string> errorList)

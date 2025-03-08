@@ -52,7 +52,7 @@ public class EntityModel
 
 	public void Validate(List<string> errorList)
 	{
-		foreach(var prop in Properties)
+		foreach (var prop in Properties)
 			prop.Validate(this.Name, errorList);
 
 		if (Properties.Count(p => p.IsIndexClustered) > 1)

@@ -1,7 +1,4 @@
-﻿using Dyvenix.Genit.Models;
-using System.Collections.Generic;
-
-namespace Dyvenix.Genit.Models;
+﻿namespace Dyvenix.Genit.Models;
 
 public class PrimitiveType
 {

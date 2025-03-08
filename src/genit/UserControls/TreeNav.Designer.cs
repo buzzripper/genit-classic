@@ -40,11 +40,11 @@ partial class TreeNav
 		tvImgList.TransparentColor = System.Drawing.Color.Transparent;
 		tvImgList.Images.SetKeyName(0, "db");
 		tvImgList.Images.SetKeyName(1, "ent");
-		tvImgList.Images.SetKeyName(2, "enum");
-		tvImgList.Images.SetKeyName(3, "assoc");
-		tvImgList.Images.SetKeyName(4, "gens");
-		tvImgList.Images.SetKeyName(5, "gen");
-		tvImgList.Images.SetKeyName(6, "prop");
+		tvImgList.Images.SetKeyName(2, "prop");
+		tvImgList.Images.SetKeyName(3, "enum");
+		tvImgList.Images.SetKeyName(4, "assoc");
+		tvImgList.Images.SetKeyName(5, "gens");
+		tvImgList.Images.SetKeyName(6, "gen");
 		// 
 		// treeView1
 		// 
@@ -54,17 +54,18 @@ partial class TreeNav
 		treeView1.Location = new System.Drawing.Point(0, 0);
 		treeView1.Name = "treeView1";
 		treeView1.SelectedImageIndex = 0;
-		treeView1.Size = new System.Drawing.Size(123, 345);
+		treeView1.Size = new System.Drawing.Size(123, 391);
 		treeView1.TabIndex = 0;
 		treeView1.AfterSelect += treeView1_AfterSelect;
 		// 
 		// TreeNav
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		Controls.Add(treeView1);
+		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "TreeNav";
-		Size = new System.Drawing.Size(123, 345);
+		Size = new System.Drawing.Size(123, 391);
 		ResumeLayout(false);
 	}
 

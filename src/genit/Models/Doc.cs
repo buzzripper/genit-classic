@@ -13,13 +13,13 @@ public class Doc
 
 	public void Validate(List<string> errorList)
 	{
-		foreach(var dbContext in DbContexts)
+		foreach (var dbContext in DbContexts)
 			dbContext.Validate(errorList);
 	}
-	
+
 	public void Initialize()
 	{
-		foreach(var dbContext in DbContexts)
+		foreach (var dbContext in DbContexts)
 			dbContext.InitializeOnLoad();
 	}
 }

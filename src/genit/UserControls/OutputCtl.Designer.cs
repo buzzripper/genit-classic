@@ -53,7 +53,7 @@ partial class OutputCtl
 		grdItems.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
 		grdItems.ShowEditingIcon = false;
-		grdItems.Size = new System.Drawing.Size(729, 227);
+		grdItems.Size = new System.Drawing.Size(729, 257);
 		grdItems.TabIndex = 3;
 		grdItems.CellDoubleClick += grdItems_CellDoubleClick;
 		// 
@@ -76,11 +76,12 @@ partial class OutputCtl
 		// 
 		// OutputCtl
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		Controls.Add(grdItems);
+		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "OutputCtl";
-		Size = new System.Drawing.Size(729, 227);
+		Size = new System.Drawing.Size(729, 257);
 		((System.ComponentModel.ISupportInitialize)grdItems).EndInit();
 		ResumeLayout(false);
 	}

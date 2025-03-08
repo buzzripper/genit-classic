@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Dyvenix.Genit.Models;
 
 namespace Dyvenix.Genit.UserControls;
@@ -15,12 +7,13 @@ public partial class DbContextEditCtl : UserControl
 {
 	private DbContextModel _dbContextMdl;
 
-	public DbContextEditCtl()
+	public DbContextEditCtl(DbContextModel dbContextMdl)
 	{
 		InitializeComponent();
+		SetDbContext(dbContextMdl);
 	}
 
-	public void SetDbContext(DbContextModel dbContextMdl)
+	private void SetDbContext(DbContextModel dbContextMdl)
 	{
 		_dbContextMdl = dbContextMdl;
 
@@ -43,5 +36,10 @@ public partial class DbContextEditCtl : UserControl
 	private void stringListEditor1_ItemDeleted(object sender, ItemDeletedEventArgs e)
 	{
 		_dbContextMdl.AddlUsings.RemoveAt(e.Index);
+	}
+
+	private void DbContextEditCtl_Load(object sender, System.EventArgs e)
+	{
+
 	}
 }

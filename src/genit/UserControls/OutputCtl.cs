@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Dyvenix.Genit.Views;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Dyvenix.Genit.Views;
 
 namespace Dyvenix.Genit.UserControls
 {

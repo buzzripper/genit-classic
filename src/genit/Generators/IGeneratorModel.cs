@@ -4,6 +4,6 @@ namespace Dyvenix.Genit.Generators;
 
 public interface IGeneratorModel
 {
-    string Name { get; }
-    void Run(DbContextModel dbContextMdl);
+	string Name { get; }
+	void Run(DbContextModel dbContextMdl);
 }

@@ -1,15 +1,9 @@
-﻿using System;
+﻿using Dyvenix.Genit.Generators;
+using Dyvenix.Genit.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Dyvenix.Genit.Models;
-using Dyvenix.Genit.Generators;
-using System.CodeDom;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -25,7 +19,7 @@ public partial class TreeNav : UserControl
 	public event EventHandler<DbContextModelEventArgs> DbContextModelSelected;
 	public event EventHandler<GeneratorModelEventArgs> GeneratorModelSelected;
 	public event EventHandler<GeneratorsNodeEventArgs> GeneratorsNodeSelected;
-	
+
 
 	private const string cKey_Db = "db";
 	private const string cKey_Entity = "ent";
@@ -72,6 +66,13 @@ public partial class TreeNav : UserControl
 		this.BuildEnumsNode();
 		this.BuildAssocsNode();
 		this.BuildGeneratorsNode();
+
+		 treeView1.SelectedNode = treeView1.Nodes[0];
+	}
+
+	public void Clear()
+	{
+		treeView1.Nodes.Clear();
 	}
 
 	private void BuildDbContextNode()
@@ -102,7 +103,7 @@ public partial class TreeNav : UserControl
 		}
 
 		treeView1.Nodes.Add(entitiesNode);
-		entitiesNode.Collapse();
+		entitiesNode.Expand();
 	}
 
 	private void BuildEnumsNode()

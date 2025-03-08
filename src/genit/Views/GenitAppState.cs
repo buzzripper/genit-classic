@@ -1,9 +1,9 @@
 ﻿
 namespace Dyvenix.Genit.Views
 {
-    public enum GenitAppState
-    {
-        NoDoc,
-        DocLoaded
-    }
+	public enum GenitAppState
+	{
+		NoDoc,
+		DocLoaded
+	}
 }

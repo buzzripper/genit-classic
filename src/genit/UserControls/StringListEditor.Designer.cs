@@ -27,14 +27,17 @@ partial class StringListEditor
 	/// </summary>
 	private void InitializeComponent()
 	{
+		components = new System.ComponentModel.Container();
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StringListEditor));
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
 		btnAdd = new System.Windows.Forms.ToolStripButton();
 		btnDelete = new System.Windows.Forms.ToolStripButton();
 		grdItems = new System.Windows.Forms.DataGridView();
 		colValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+		bindingSource = new System.Windows.Forms.BindingSource(components);
 		toolStrip1.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)grdItems).BeginInit();
+		((System.ComponentModel.ISupportInitialize)bindingSource).BeginInit();
 		SuspendLayout();
 		// 
 		// toolStrip1
@@ -44,7 +47,7 @@ partial class StringListEditor
 		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
 		toolStrip1.Location = new System.Drawing.Point(408, 0);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(24, 351);
+		toolStrip1.Size = new System.Drawing.Size(24, 398);
 		toolStrip1.TabIndex = 1;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -85,13 +88,12 @@ partial class StringListEditor
 		grdItems.RowHeadersVisible = false;
 		grdItems.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdItems.ShowEditingIcon = false;
-		grdItems.Size = new System.Drawing.Size(408, 351);
+		grdItems.Size = new System.Drawing.Size(408, 398);
 		grdItems.TabIndex = 2;
-		grdItems.CellBeginEdit += grdItems_CellBeginEdit;
 		grdItems.CellEndEdit += grdItems_CellEndEdit;
 		grdItems.CellValidating += grdItems_CellValidating;
-		grdItems.RowsAdded += grdItems_RowsAdded;
 		grdItems.SelectionChanged += grdItems_SelectionChanged;
+		grdItems.KeyDown += grdItems_KeyDown;
 		// 
 		// colValue
 		// 
@@ -101,17 +103,19 @@ partial class StringListEditor
 		// 
 		// StringListEditor
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.Color.RosyBrown;
 		Controls.Add(grdItems);
 		Controls.Add(toolStrip1);
+		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "StringListEditor";
-		Size = new System.Drawing.Size(432, 351);
+		Size = new System.Drawing.Size(432, 398);
 		Load += StringListEditor_Load;
 		toolStrip1.ResumeLayout(false);
 		toolStrip1.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)grdItems).EndInit();
+		((System.ComponentModel.ISupportInitialize)bindingSource).EndInit();
 		ResumeLayout(false);
 		PerformLayout();
 	}
@@ -121,5 +125,6 @@ partial class StringListEditor
 	private System.Windows.Forms.ToolStripButton btnAdd;
 	private System.Windows.Forms.ToolStripButton btnDelete;
 	private System.Windows.Forms.DataGridView grdItems;
+	private System.Windows.Forms.BindingSource bindingSource;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colValue;
 }

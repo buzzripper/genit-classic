@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Dyvenix.Genit.Models;
 
@@ -35,16 +34,16 @@ public class DbContextModel
 	}
 
 	public void AddAssoc(EntityModel primaryEntityMdl, string primaryPropertyName, EntityModel relatedEntityMdl, string relatedPropertyName, CardinalityModel cardinality)
-	{ 
+	{
 		var assoc = new AssocModel(Guid.NewGuid(), primaryEntityMdl, primaryPropertyName, relatedEntityMdl, relatedPropertyName, cardinality);
 		this.Assocs.Add(assoc);
-		
+
 		primaryEntityMdl.NavAssocs.Add(assoc);
 		relatedEntityMdl.AddForeignKey(assoc);
 	}
 
 	public void DeleteAssoc(AssocModel assoc)
-	{ 
+	{
 		this.Assocs.Remove(assoc);
 		assoc.PrimaryEntity.NavAssocs.Remove(assoc);
 
@@ -55,9 +54,9 @@ public class DbContextModel
 
 	public void Validate(List<string> errorList)
 	{
-		foreach(var entity in Entities)
+		foreach (var entity in Entities)
 			entity.Validate(errorList);
-		foreach(var enumMdl in Enums)
+		foreach (var enumMdl in Enums)
 			enumMdl.Validate(errorList);
 		foreach (var assoc in Assocs)
 			assoc.Validate(errorList);

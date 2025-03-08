@@ -55,9 +55,12 @@ partial class MainForm
 		btnGenerate = new System.Windows.Forms.ToolStripButton();
 		btnTest1 = new System.Windows.Forms.ToolStripButton();
 		btnTest2 = new System.Windows.Forms.ToolStripButton();
+		btnDeleteTab = new System.Windows.Forms.ToolStripButton();
 		splMain = new System.Windows.Forms.SplitContainer();
 		treeNav = new Dyvenix.Genit.UserControls.TreeNav();
 		splContent = new System.Windows.Forms.SplitContainer();
+		tabsMain = new System.Windows.Forms.TabControl();
+		tabPage1 = new System.Windows.Forms.TabPage();
 		splOutput = new System.Windows.Forms.SplitContainer();
 		tbOutput = new System.Windows.Forms.ToolStrip();
 		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -73,8 +76,10 @@ partial class MainForm
 		splMain.Panel2.SuspendLayout();
 		splMain.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)splContent).BeginInit();
+		splContent.Panel1.SuspendLayout();
 		splContent.Panel2.SuspendLayout();
 		splContent.SuspendLayout();
+		tabsMain.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)splOutput).BeginInit();
 		splOutput.Panel1.SuspendLayout();
 		splOutput.Panel2.SuspendLayout();
@@ -87,7 +92,7 @@ partial class MainForm
 		statusStrip1.BackColor = System.Drawing.SystemColors.Control;
 		statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 		statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { statusLabel, toolLblVersion, toolLblMessage });
-		statusStrip1.Location = new System.Drawing.Point(0, 593);
+		statusStrip1.Location = new System.Drawing.Point(0, 675);
 		statusStrip1.Name = "statusStrip1";
 		statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
 		statusStrip1.Size = new System.Drawing.Size(1052, 22);
@@ -201,7 +206,7 @@ partial class MainForm
 		// toolStrip1
 		// 
 		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate, btnTest1, btnTest2 });
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate, btnTest1, btnTest2, btnDeleteTab });
 		toolStrip1.Location = new System.Drawing.Point(0, 24);
 		toolStrip1.Name = "toolStrip1";
 		toolStrip1.Size = new System.Drawing.Size(1052, 31);
@@ -271,10 +276,22 @@ partial class MainForm
 		btnTest2.Text = "Test2";
 		btnTest2.Click += btnTest2_Click;
 		// 
+		// btnDeleteTab
+		// 
+		btnDeleteTab.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnDeleteTab.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnDeleteTab.Image = (System.Drawing.Image)resources.GetObject("btnDeleteTab.Image");
+		btnDeleteTab.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnDeleteTab.Name = "btnDeleteTab";
+		btnDeleteTab.Size = new System.Drawing.Size(28, 28);
+		btnDeleteTab.Text = "toolStripButton1";
+		btnDeleteTab.Click += btnDeleteTab_Click;
+		// 
 		// splMain
 		// 
 		splMain.Dock = System.Windows.Forms.DockStyle.Fill;
 		splMain.Location = new System.Drawing.Point(0, 55);
+		splMain.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 		splMain.Name = "splMain";
 		// 
 		// splMain.Panel1
@@ -284,33 +301,71 @@ partial class MainForm
 		// splMain.Panel2
 		// 
 		splMain.Panel2.Controls.Add(splContent);
-		splMain.Size = new System.Drawing.Size(1052, 538);
-		splMain.SplitterDistance = 190;
+		splMain.Size = new System.Drawing.Size(1052, 620);
+		splMain.SplitterDistance = 189;
 		splMain.SplitterWidth = 8;
 		splMain.TabIndex = 38;
 		// 
 		// treeNav
 		// 
 		treeNav.Dock = System.Windows.Forms.DockStyle.Fill;
+		treeNav.Font = new System.Drawing.Font("Verdana", 10F);
 		treeNav.Location = new System.Drawing.Point(0, 0);
 		treeNav.Name = "treeNav";
-		treeNav.Size = new System.Drawing.Size(190, 538);
+		treeNav.Size = new System.Drawing.Size(189, 620);
 		treeNav.TabIndex = 0;
+		treeNav.EntityModelSelected += TreeNav_EntityModelSelected;
+		treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
+		treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
+		treeNav.AssocModelSelected += TreeNav_AssocModelSelected;
+		treeNav.DbContextModelSelected += TreeNav_DbContextModelSelected;
+		treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
 		// 
 		// splContent
 		// 
 		splContent.Dock = System.Windows.Forms.DockStyle.Fill;
 		splContent.Location = new System.Drawing.Point(0, 0);
+		splContent.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 		splContent.Name = "splContent";
 		splContent.Orientation = System.Windows.Forms.Orientation.Horizontal;
+		// 
+		// splContent.Panel1
+		// 
+		splContent.Panel1.Controls.Add(tabsMain);
 		// 
 		// splContent.Panel2
 		// 
 		splContent.Panel2.Controls.Add(splOutput);
-		splContent.Size = new System.Drawing.Size(854, 538);
-		splContent.SplitterDistance = 411;
+		splContent.Size = new System.Drawing.Size(855, 620);
+		splContent.SplitterDistance = 472;
 		splContent.SplitterWidth = 8;
 		splContent.TabIndex = 0;
+		// 
+		// tabsMain
+		// 
+		tabsMain.Controls.Add(tabPage1);
+		tabsMain.Dock = System.Windows.Forms.DockStyle.Fill;
+		tabsMain.ItemSize = new System.Drawing.Size(61, 24);
+		tabsMain.Location = new System.Drawing.Point(0, 0);
+		tabsMain.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+		tabsMain.Name = "tabsMain";
+		tabsMain.SelectedIndex = 0;
+		tabsMain.ShowToolTips = true;
+		tabsMain.Size = new System.Drawing.Size(855, 472);
+		tabsMain.TabIndex = 0;
+		tabsMain.Visible = false;
+		tabsMain.SelectedIndexChanged += tabsMain_SelectedIndexChanged;
+		// 
+		// tabPage1
+		// 
+		tabPage1.Location = new System.Drawing.Point(4, 28);
+		tabPage1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+		tabPage1.Name = "tabPage1";
+		tabPage1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+		tabPage1.Size = new System.Drawing.Size(847, 440);
+		tabPage1.TabIndex = 0;
+		tabPage1.Text = "tabPage1";
+		tabPage1.UseVisualStyleBackColor = true;
 		// 
 		// splOutput
 		// 
@@ -318,6 +373,7 @@ partial class MainForm
 		splOutput.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
 		splOutput.IsSplitterFixed = true;
 		splOutput.Location = new System.Drawing.Point(0, 0);
+		splOutput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 		splOutput.Name = "splOutput";
 		splOutput.Orientation = System.Windows.Forms.Orientation.Horizontal;
 		// 
@@ -328,8 +384,8 @@ partial class MainForm
 		// splOutput.Panel2
 		// 
 		splOutput.Panel2.Controls.Add(outputCtl);
-		splOutput.Size = new System.Drawing.Size(854, 119);
-		splOutput.SplitterDistance = 25;
+		splOutput.Size = new System.Drawing.Size(855, 140);
+		splOutput.SplitterDistance = 30;
 		splOutput.SplitterWidth = 1;
 		splOutput.TabIndex = 3;
 		// 
@@ -341,14 +397,14 @@ partial class MainForm
 		tbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, btnShowOutput, btnClearOuput });
 		tbOutput.Location = new System.Drawing.Point(0, 0);
 		tbOutput.Name = "tbOutput";
-		tbOutput.Size = new System.Drawing.Size(854, 25);
+		tbOutput.Size = new System.Drawing.Size(855, 30);
 		tbOutput.TabIndex = 0;
 		tbOutput.Text = "Hey";
 		// 
 		// toolStripLabel1
 		// 
 		toolStripLabel1.Name = "toolStripLabel1";
-		toolStripLabel1.Size = new System.Drawing.Size(45, 22);
+		toolStripLabel1.Size = new System.Drawing.Size(45, 27);
 		toolStripLabel1.Text = "Output";
 		// 
 		// btnShowOutput
@@ -358,7 +414,7 @@ partial class MainForm
 		btnShowOutput.Image = (System.Drawing.Image)resources.GetObject("btnShowOutput.Image");
 		btnShowOutput.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnShowOutput.Name = "btnShowOutput";
-		btnShowOutput.Size = new System.Drawing.Size(23, 22);
+		btnShowOutput.Size = new System.Drawing.Size(23, 27);
 		btnShowOutput.Text = "toolStripButton1";
 		btnShowOutput.Click += btnShowOutput_Click;
 		// 
@@ -369,16 +425,17 @@ partial class MainForm
 		btnClearOuput.Image = (System.Drawing.Image)resources.GetObject("btnClearOuput.Image");
 		btnClearOuput.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnClearOuput.Name = "btnClearOuput";
-		btnClearOuput.Size = new System.Drawing.Size(23, 22);
+		btnClearOuput.Size = new System.Drawing.Size(23, 27);
 		btnClearOuput.Text = "toolStripButton1";
 		btnClearOuput.Click += btnClearOuput_Click;
 		// 
 		// outputCtl
 		// 
 		outputCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+		outputCtl.Font = new System.Drawing.Font("Verdana", 10F);
 		outputCtl.Location = new System.Drawing.Point(0, 0);
 		outputCtl.Name = "outputCtl";
-		outputCtl.Size = new System.Drawing.Size(854, 93);
+		outputCtl.Size = new System.Drawing.Size(855, 109);
 		outputCtl.TabIndex = 0;
 		// 
 		// tvImgList
@@ -399,14 +456,15 @@ partial class MainForm
 		// 
 		// MainForm
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.Control;
-		ClientSize = new System.Drawing.Size(1052, 615);
+		ClientSize = new System.Drawing.Size(1052, 697);
 		Controls.Add(splMain);
 		Controls.Add(toolStrip1);
 		Controls.Add(statusStrip1);
 		Controls.Add(menuStrip1);
+		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		ForeColor = System.Drawing.SystemColors.ControlText;
 		Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
 		MainMenuStrip = menuStrip1;
@@ -428,9 +486,11 @@ partial class MainForm
 		splMain.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splMain).EndInit();
 		splMain.ResumeLayout(false);
+		splContent.Panel1.ResumeLayout(false);
 		splContent.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splContent).EndInit();
 		splContent.ResumeLayout(false);
+		tabsMain.ResumeLayout(false);
 		splOutput.Panel1.ResumeLayout(false);
 		splOutput.Panel1.PerformLayout();
 		splOutput.Panel2.ResumeLayout(false);
@@ -480,4 +540,7 @@ partial class MainForm
 	private UserControls.TreeNav treeNav;
 	private UserControls.OutputCtl outputCtl;
 	private System.Windows.Forms.ToolStripButton btnClearOuput;
+	private System.Windows.Forms.TabControl tabsMain;
+	private System.Windows.Forms.TabPage tabPage1;
+	private System.Windows.Forms.ToolStripButton btnDeleteTab;
 }

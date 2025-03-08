@@ -89,7 +89,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ExtId",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -110,7 +110,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "FirstName",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -131,7 +131,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "LastName",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -152,7 +152,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Email",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -359,7 +359,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ClaimName",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -380,7 +380,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "ClaimValue",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = false,
 				IsPrimaryKey = false,
@@ -441,7 +441,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Message",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -484,7 +484,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Exception",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -526,7 +526,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Application",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -547,7 +547,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Source",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,
@@ -568,7 +568,7 @@ namespace Dyvenix.Genit
 
 			prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "CorrelationId",
-				PrimitiveType =PrimitiveType.String,
+				PrimitiveType = PrimitiveType.String,
 				EnumType = null,
 				Nullable = true,
 				IsPrimaryKey = false,

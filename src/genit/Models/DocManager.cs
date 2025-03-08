@@ -40,7 +40,7 @@ namespace Dyvenix.Genit.Models
 
 			doc.Validate(errors);
 
-			if (errors.Count > 0) 
+			if (errors.Count > 0)
 				throw new ValidationException(errors);
 		}
 	}

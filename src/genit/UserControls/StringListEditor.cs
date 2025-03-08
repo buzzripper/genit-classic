@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -12,6 +13,7 @@ public partial class StringListEditor : UserControl
 	public event EventHandler<ItemChangedEventArgs> ItemChanged;
 	public event EventHandler<ItemDeletedEventArgs> ItemDeleted;
 
+	private List<string> _items;
 	private bool _populating;
 
 	public StringListEditor()
@@ -33,26 +35,102 @@ public partial class StringListEditor : UserControl
 				items.Add(row.Cells[0].Value.ToString());
 			return items;
 		}
+
 		set {
 			_populating = true;
+
 			grdItems.Rows.Clear();
-			foreach (string item in value)
+			foreach(var item in value)
 				grdItems.Rows.Add(item);
+
+			_items = value;
 			_populating = false;
 		}
 	}
+
+	private void grdItems_KeyDown(object sender, KeyEventArgs e)
+	{
+		if (e.Shift && e.KeyCode == Keys.Insert) {
+			this.Add(GetUniqueValue());
+
+		} else if (e.Shift && e.KeyCode == Keys.Delete) {
+			this.Delete();
+		}
+	}
+
+	#region Add
+
+	private void btnAdd_Click(object sender, EventArgs e)
+	{
+		this.Add(GetUniqueValue());
+	}
+
+	private void Add(string value)
+	{
+		_items.Add(value);
+
+		var rowIdx = grdItems.Rows.Add(value);
+
+		grdItems.CurrentCell = grdItems.Rows[rowIdx].Cells[0];
+		grdItems.BeginEdit(true);
+	}
+
+	#endregion
+
+	#region Edit
+
+	private void grdItems_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+	{
+		var newValue = grdItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
+		_items[e.RowIndex] = newValue;
+
+
+		ItemChanged?.Invoke(this, new ItemChangedEventArgs(e.RowIndex, newValue));
+	}
+
+	private void grdItems_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+	{
+		// Get the current cell value
+		string cellValue = e.FormattedValue.ToString();
+
+		// Check if the cell value is empty
+		if (string.IsNullOrWhiteSpace(cellValue)) {
+			// Cancel the change and display an error message
+			e.Cancel = true;
+			grdItems.Rows[e.RowIndex].ErrorText = "Cell value cannot be empty";
+		} else {
+			// Clear the error message
+			grdItems.Rows[e.RowIndex].ErrorText = string.Empty;
+		}
+	}
+
+	#endregion
+
+	#region Delete
 
 	private void grdItems_SelectionChanged(object sender, EventArgs e)
 	{
 		btnDelete.Enabled = grdItems.SelectedCells.Count == 1;
 	}
 
-	private void btnAdd_Click(object sender, EventArgs e)
+	private void btnDelete_Click(object sender, EventArgs e)
 	{
-		var itemText = GetUniqueValue();
-		var rowIdx = grdItems.Rows.Add(itemText);
-		grdItems.Rows[rowIdx].Cells[0].Selected = true;
+		this.Delete();
 	}
+
+	private void Delete()
+	{
+		if (grdItems.SelectedCells.Count == 1) {
+			var rowIdx = grdItems.SelectedCells[0].OwningRow.Index;
+
+			_items.RemoveAt(rowIdx);
+			grdItems.Rows.RemoveAt(rowIdx);
+
+			ItemDeleted?.Invoke(this, new ItemDeletedEventArgs(rowIdx));
+		}
+	}
+
+	#endregion
 
 	private string GetUniqueValue()
 	{
@@ -64,55 +142,9 @@ public partial class StringListEditor : UserControl
 		}
 		return value;
 	}
-
-	private void btnDelete_Click(object sender, EventArgs e)
-	{
-		if (grdItems.SelectedCells.Count == 1) {
-			var rowIdx = grdItems.SelectedCells[0].OwningRow.Index;
-			grdItems.Rows.RemoveAt(rowIdx);
-			ItemDeleted?.Invoke(this, new ItemDeletedEventArgs(rowIdx));
-		}
-	}
-
-	private void grdItems_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
-	{
-	}
-
-	private void grdItems_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-	{
-		var newValue = grdItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
-		ItemChanged.Invoke(this, new ItemChangedEventArgs(e.RowIndex, newValue));
-	}
-
-	private void grdItems_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-	{
-		if (_populating)
-			return;
-
-		var rowIdx = e.RowIndex;
-		var val = grdItems.Rows[rowIdx].Cells[0].Value?.ToString();
-		ItemAdded?.Invoke(this, new ItemAddedEventArgs(val));
-	}
-
-	private void grdItems_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
-	{
-		  // Get the current cell value
-        string cellValue = e.FormattedValue.ToString();
-
-        // Check if the cell value is empty
-        if (string.IsNullOrWhiteSpace(cellValue))
-        {
-            // Cancel the change and display an error message
-            e.Cancel = true;
-            grdItems.Rows[e.RowIndex].ErrorText = "Cell value cannot be empty";
-        }
-        else
-        {
-            // Clear the error message
-            grdItems.Rows[e.RowIndex].ErrorText = string.Empty;
-        }
-	}
 }
+
+#region EventArg Classes
 
 public class ItemAddedEventArgs : EventArgs
 {
@@ -146,4 +178,5 @@ public class ItemDeletedEventArgs : EventArgs
 	}
 }
 
+#endregion
 

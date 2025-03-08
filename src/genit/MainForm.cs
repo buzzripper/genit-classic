@@ -2,13 +2,12 @@
 using Dyvenix.Genit.Generators;
 using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
+using Dyvenix.Genit.UserControls;
 using Dyvenix.Genit.Views;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using System.Windows.Forms;
 
@@ -50,14 +49,14 @@ public partial class MainForm : Form
 
 	private void Form1_Shown(object sender, EventArgs e)
 	{
-		this.Cursor = Cursors.WaitCursor;
-		try {
+		//this.Cursor = Cursors.WaitCursor;
+		//try {
 
-		} catch (Exception ex) {
-			MessageBox.Show($"{ex.GetType().Name} doing stuff: {ex.Message}");
-		} finally {
-			this.Cursor = Cursors.Default;
-		}
+		//} catch (Exception ex) {
+		//	MessageBox.Show($"{ex.GetType().Name} doing stuff: {ex.Message}");
+		//} finally {
+		//	this.Cursor = Cursors.Default;
+		//}
 	}
 
 	private void Form1_Activated(object sender, EventArgs e)
@@ -83,10 +82,15 @@ public partial class MainForm : Form
 	private void InitializeLayout(AppConfig appConfig)
 	{
 		_suspendUpdates = true;
+
 		try {
 			SetFormSizeAndPosition(appConfig.WindowSize, appConfig.WindowPosition);
 			this.SetState(GenitAppState.NoDoc);
 			_outputHeight = splContent.Height - splContent.SplitterDistance;
+
+			// Clear any tabs
+			while (tabsMain.TabPages.Count > 0)
+				tabsMain.TabPages.RemoveAt(0);
 
 		} finally {
 			_suspendUpdates = false;
@@ -185,6 +189,7 @@ public partial class MainForm : Form
 		EnableSave(false);
 		EnableSaveAs(false);
 		EnableGenerate(false);
+		tabsMain.Visible = false;
 	}
 
 	private void SetStateDocLoaded()
@@ -194,6 +199,7 @@ public partial class MainForm : Form
 		EnableSave(true);
 		EnableSaveAs(true);
 		EnableGenerate(true);
+		tabsMain.Visible = true;
 	}
 
 	private void EnableNew(bool value)
@@ -336,13 +342,21 @@ public partial class MainForm : Form
 	{
 		_suspendUpdates = true;
 		try {
+			if (doc == null) {
+				treeNav.Clear();
+				while (tabsMain.TabPages.Count > 0)
+					tabsMain.TabPages.RemoveAt(0);
+				return;
+			}
+
 			treeNav.DataSource = doc.DbContexts[0];
-			treeNav.AssocModelSelected += TreeNav_AssocModelSelected;
-			treeNav.DbContextModelSelected += TreeNav_DbContextModelSelected;
-			treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
-			treeNav.EntityModelSelected += TreeNav_EntityModelSelected;
-			treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
-			treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
+			//treeNav.AssocModelSelected += TreeNav_AssocModelSelected;
+			//treeNav.DbContextModelSelected += TreeNav_DbContextModelSelected;
+			//treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
+			//treeNav.EntityModelSelected += TreeNav_EntityModelSelected;
+			//treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
+			//treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
+
 		} finally {
 			_suspendUpdates = false;
 		}
@@ -350,14 +364,22 @@ public partial class MainForm : Form
 
 	#region TreeNav
 
-	private void TreeNav_DbContextModelSelected(object sender, UserControls.DbContextModelEventArgs e)
+	private void TreeNav_DbContextModelSelected(object sender, DbContextModelEventArgs e)
 	{
-		outputCtl.WriteInfo($"DbContext selected: {e.DbContext.Name}");
+		if (GoToTabPageById(e.DbContext.Id))
+			return;
+
+		var dbContextCtl = new DbContextEditCtl(e.DbContext);
+		AddNewTabPage(e.DbContext.Name, dbContextCtl, TabType.DbContext, e.DbContext.Id);
 	}
 
-	private void TreeNav_EntityModelSelected(object sender, UserControls.EntityModelEventArgs e)
+	private void TreeNav_EntityModelSelected(object sender, EntityModelEventArgs e)
 	{
-		outputCtl.WriteInfo($"DbContext selected: {e.Entity.Name}");
+		if (GoToTabPageById(e.Entity.Id))
+			return;
+
+		var dbContextCtl = new EntityEditCtl(e.Entity);
+		AddNewTabPage(e.Entity.Name, dbContextCtl, TabType.DbContext, e.Entity.Id);
 	}
 
 	private void TreeNav_PropertyModelSelected(object sender, UserControls.PropertyModelEventArgs e)
@@ -375,6 +397,46 @@ public partial class MainForm : Form
 	private void TreeNav_GeneratorModelSelected(object sender, UserControls.GeneratorModelEventArgs e)
 	{
 	}
+
+	#endregion
+
+	#region Tabs
+
+	private void AddNewTabPage(string name, Control ctl, TabType tabType, Guid id)
+	{
+		var tabPage = new TabPage(name) {
+			Tag = new TabData { TabType = tabType, Id = id }
+		};
+		tabPage.Controls.Add(ctl);
+		ctl.Dock = DockStyle.Fill;
+		tabsMain.TabPages.Add(tabPage);
+		tabsMain.SelectedTab = tabPage;
+		tabsMain.Visible = true;
+		tabsMain.Focus();
+	}
+
+	private bool GoToTabPageById(Guid id)
+	{
+		var tabPage = GetTabPageById(id);
+		if (tabPage != null) {
+			tabsMain.SelectedTab = tabPage;
+			return true;
+		}
+		return false;
+	}
+
+	private TabPage GetTabPageById(Guid id)
+	{
+		foreach (TabPage tabPage in tabsMain.TabPages) {
+			var tabData = tabPage.Tag as TabData;
+			if (tabData == null)
+				continue;
+			if (tabData.Id == id)
+				return tabPage;
+		}
+		return null;
+	}
+
 
 	#endregion
 
@@ -410,6 +472,11 @@ public partial class MainForm : Form
 		}
 	}
 
+	private void btnClearOuput_Click(object sender, EventArgs e)
+	{
+		outputCtl.Clear();
+	}
+
 	#endregion
 
 	private void btnTest1_Click(object sender, EventArgs e)
@@ -442,19 +509,15 @@ public partial class MainForm : Form
 		//};
 	}
 
-	private void treeNav_AfterSelect(object sender, TreeViewEventArgs e)
+	private void btnDeleteTab_Click(object sender, EventArgs e)
 	{
-		if (_suspendUpdates || this.Doc == null)
-			return;
-
-		if (e.Node.Text == "DbContext") {
-			dbContextEditCtl.SetDbContext(this.Doc.DbContexts[0]);
-		}
+		if (tabsMain.SelectedIndex > -1)
+			tabsMain.TabPages.RemoveAt(tabsMain.SelectedIndex);
 	}
 
-	private void btnClearOuput_Click(object sender, EventArgs e)
+	private void tabsMain_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		outputCtl.Clear();
+		btnDeleteTab.Enabled = tabsMain.SelectedIndex > -1;
 	}
 }
 

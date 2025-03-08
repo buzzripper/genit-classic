@@ -59,8 +59,7 @@ partial class MainForm
 		splMain = new System.Windows.Forms.SplitContainer();
 		treeNav = new Dyvenix.Genit.UserControls.TreeNav();
 		splContent = new System.Windows.Forms.SplitContainer();
-		tabsMain = new System.Windows.Forms.TabControl();
-		tabPage1 = new System.Windows.Forms.TabPage();
+		multiPageCtl = new Dyvenix.Genit.UserControls.MultiPageCtl();
 		splOutput = new System.Windows.Forms.SplitContainer();
 		tbOutput = new System.Windows.Forms.ToolStrip();
 		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -79,7 +78,6 @@ partial class MainForm
 		splContent.Panel1.SuspendLayout();
 		splContent.Panel2.SuspendLayout();
 		splContent.SuspendLayout();
-		tabsMain.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)splOutput).BeginInit();
 		splOutput.Panel1.SuspendLayout();
 		splOutput.Panel2.SuspendLayout();
@@ -314,11 +312,12 @@ partial class MainForm
 		treeNav.Name = "treeNav";
 		treeNav.Size = new System.Drawing.Size(189, 620);
 		treeNav.TabIndex = 0;
-		treeNav.EntityModelSelected += TreeNav_EntityModelSelected;
+		treeNav.DbContextModelSelected += treeNav_DbContextModelSelected;
+		treeNav.EntityModelSelected += treeNav_EntityModelSelected_1;
+		treeNav.EntitiesNodeSelected += treeNav_EntitiesNodeSelected;
 		treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
 		treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
 		treeNav.AssocModelSelected += TreeNav_AssocModelSelected;
-		treeNav.DbContextModelSelected += TreeNav_DbContextModelSelected;
 		treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
 		// 
 		// splContent
@@ -331,7 +330,7 @@ partial class MainForm
 		// 
 		// splContent.Panel1
 		// 
-		splContent.Panel1.Controls.Add(tabsMain);
+		splContent.Panel1.Controls.Add(multiPageCtl);
 		// 
 		// splContent.Panel2
 		// 
@@ -341,36 +340,18 @@ partial class MainForm
 		splContent.SplitterWidth = 8;
 		splContent.TabIndex = 0;
 		// 
-		// tabsMain
+		// multiPageCtl
 		// 
-		tabsMain.Controls.Add(tabPage1);
-		tabsMain.Dock = System.Windows.Forms.DockStyle.Fill;
-		tabsMain.ItemSize = new System.Drawing.Size(61, 24);
-		tabsMain.Location = new System.Drawing.Point(0, 0);
-		tabsMain.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-		tabsMain.Name = "tabsMain";
-		tabsMain.SelectedIndex = 0;
-		tabsMain.ShowToolTips = true;
-		tabsMain.Size = new System.Drawing.Size(855, 472);
-		tabsMain.TabIndex = 0;
-		tabsMain.Visible = false;
-		tabsMain.SelectedIndexChanged += tabsMain_SelectedIndexChanged;
-		// 
-		// tabPage1
-		// 
-		tabPage1.Location = new System.Drawing.Point(4, 28);
-		tabPage1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-		tabPage1.Name = "tabPage1";
-		tabPage1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-		tabPage1.Size = new System.Drawing.Size(847, 440);
-		tabPage1.TabIndex = 0;
-		tabPage1.Text = "tabPage1";
-		tabPage1.UseVisualStyleBackColor = true;
+		multiPageCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+		multiPageCtl.Location = new System.Drawing.Point(0, 0);
+		multiPageCtl.Name = "multiPageCtl";
+		multiPageCtl.Size = new System.Drawing.Size(855, 472);
+		multiPageCtl.TabIndex = 2;
+		multiPageCtl.SelectedItemChanged += multiPageCtl_SelectedItemChanged;
 		// 
 		// splOutput
 		// 
 		splOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-		splOutput.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
 		splOutput.IsSplitterFixed = true;
 		splOutput.Location = new System.Drawing.Point(0, 0);
 		splOutput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -385,7 +366,7 @@ partial class MainForm
 		// 
 		splOutput.Panel2.Controls.Add(outputCtl);
 		splOutput.Size = new System.Drawing.Size(855, 140);
-		splOutput.SplitterDistance = 30;
+		splOutput.SplitterDistance = 29;
 		splOutput.SplitterWidth = 1;
 		splOutput.TabIndex = 3;
 		// 
@@ -397,14 +378,14 @@ partial class MainForm
 		tbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, btnShowOutput, btnClearOuput });
 		tbOutput.Location = new System.Drawing.Point(0, 0);
 		tbOutput.Name = "tbOutput";
-		tbOutput.Size = new System.Drawing.Size(855, 30);
+		tbOutput.Size = new System.Drawing.Size(855, 29);
 		tbOutput.TabIndex = 0;
 		tbOutput.Text = "Hey";
 		// 
 		// toolStripLabel1
 		// 
 		toolStripLabel1.Name = "toolStripLabel1";
-		toolStripLabel1.Size = new System.Drawing.Size(45, 27);
+		toolStripLabel1.Size = new System.Drawing.Size(45, 26);
 		toolStripLabel1.Text = "Output";
 		// 
 		// btnShowOutput
@@ -414,7 +395,7 @@ partial class MainForm
 		btnShowOutput.Image = (System.Drawing.Image)resources.GetObject("btnShowOutput.Image");
 		btnShowOutput.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnShowOutput.Name = "btnShowOutput";
-		btnShowOutput.Size = new System.Drawing.Size(23, 27);
+		btnShowOutput.Size = new System.Drawing.Size(23, 26);
 		btnShowOutput.Text = "toolStripButton1";
 		btnShowOutput.Click += btnShowOutput_Click;
 		// 
@@ -425,7 +406,7 @@ partial class MainForm
 		btnClearOuput.Image = (System.Drawing.Image)resources.GetObject("btnClearOuput.Image");
 		btnClearOuput.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnClearOuput.Name = "btnClearOuput";
-		btnClearOuput.Size = new System.Drawing.Size(23, 27);
+		btnClearOuput.Size = new System.Drawing.Size(23, 26);
 		btnClearOuput.Text = "toolStripButton1";
 		btnClearOuput.Click += btnClearOuput_Click;
 		// 
@@ -435,7 +416,7 @@ partial class MainForm
 		outputCtl.Font = new System.Drawing.Font("Verdana", 10F);
 		outputCtl.Location = new System.Drawing.Point(0, 0);
 		outputCtl.Name = "outputCtl";
-		outputCtl.Size = new System.Drawing.Size(855, 109);
+		outputCtl.Size = new System.Drawing.Size(855, 110);
 		outputCtl.TabIndex = 0;
 		// 
 		// tvImgList
@@ -490,7 +471,6 @@ partial class MainForm
 		splContent.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splContent).EndInit();
 		splContent.ResumeLayout(false);
-		tabsMain.ResumeLayout(false);
 		splOutput.Panel1.ResumeLayout(false);
 		splOutput.Panel1.PerformLayout();
 		splOutput.Panel2.ResumeLayout(false);
@@ -540,7 +520,6 @@ partial class MainForm
 	private UserControls.TreeNav treeNav;
 	private UserControls.OutputCtl outputCtl;
 	private System.Windows.Forms.ToolStripButton btnClearOuput;
-	private System.Windows.Forms.TabControl tabsMain;
-	private System.Windows.Forms.TabPage tabPage1;
 	private System.Windows.Forms.ToolStripButton btnDeleteTab;
+	private UserControls.MultiPageCtl multiPageCtl;
 }

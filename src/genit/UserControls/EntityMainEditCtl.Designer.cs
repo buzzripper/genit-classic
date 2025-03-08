@@ -1,6 +1,6 @@
 ﻿namespace Dyvenix.Genit.UserControls;
 
-partial class EntityEditCtl
+partial class EntityMainEditCtl
 {
 	/// <summary> 
 	/// Required designer variable.
@@ -28,7 +28,6 @@ partial class EntityEditCtl
 	private void InitializeComponent()
 	{
 		components = new System.ComponentModel.Container();
-		lblTitle = new System.Windows.Forms.Label();
 		lblName = new System.Windows.Forms.Label();
 		txtName = new System.Windows.Forms.TextBox();
 		bindingSource = new System.Windows.Forms.BindingSource(components);
@@ -49,18 +48,9 @@ partial class EntityEditCtl
 		ckbQueryList = new System.Windows.Forms.CheckBox();
 		ckbUseListPaging = new System.Windows.Forms.CheckBox();
 		ckbUseListSorting = new System.Windows.Forms.CheckBox();
+		checkBox1 = new System.Windows.Forms.CheckBox();
 		((System.ComponentModel.ISupportInitialize)bindingSource).BeginInit();
 		SuspendLayout();
-		// 
-		// lblTitle
-		// 
-		lblTitle.AutoSize = true;
-		lblTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		lblTitle.Location = new System.Drawing.Point(0, 0);
-		lblTitle.Name = "lblTitle";
-		lblTitle.Size = new System.Drawing.Size(49, 21);
-		lblTitle.TabIndex = 0;
-		lblTitle.Text = "Entity";
 		// 
 		// lblName
 		// 
@@ -225,7 +215,7 @@ partial class EntityEditCtl
 		// 
 		ckbQueryList.AutoSize = true;
 		ckbQueryList.DataBindings.Add(new System.Windows.Forms.Binding("Checked", bindingSource, "InclListQuery", true));
-		ckbQueryList.Location = new System.Drawing.Point(78, 286);
+		ckbQueryList.Location = new System.Drawing.Point(77, 312);
 		ckbQueryList.Name = "ckbQueryList";
 		ckbQueryList.Size = new System.Drawing.Size(101, 23);
 		ckbQueryList.TabIndex = 17;
@@ -238,7 +228,7 @@ partial class EntityEditCtl
 		ckbUseListPaging.AutoSize = true;
 		ckbUseListPaging.DataBindings.Add(new System.Windows.Forms.Binding("Checked", bindingSource, "UseListPaging", true));
 		ckbUseListPaging.Enabled = false;
-		ckbUseListPaging.Location = new System.Drawing.Point(197, 286);
+		ckbUseListPaging.Location = new System.Drawing.Point(196, 312);
 		ckbUseListPaging.Name = "ckbUseListPaging";
 		ckbUseListPaging.Size = new System.Drawing.Size(97, 23);
 		ckbUseListPaging.TabIndex = 18;
@@ -250,17 +240,27 @@ partial class EntityEditCtl
 		ckbUseListSorting.AutoSize = true;
 		ckbUseListSorting.DataBindings.Add(new System.Windows.Forms.Binding("Checked", bindingSource, "UseListSorting", true));
 		ckbUseListSorting.Enabled = false;
-		ckbUseListSorting.Location = new System.Drawing.Point(302, 286);
+		ckbUseListSorting.Location = new System.Drawing.Point(301, 312);
 		ckbUseListSorting.Name = "ckbUseListSorting";
 		ckbUseListSorting.Size = new System.Drawing.Size(99, 23);
 		ckbUseListSorting.TabIndex = 19;
 		ckbUseListSorting.Text = "Use Sorting";
 		ckbUseListSorting.UseVisualStyleBackColor = true;
 		// 
-		// EntityEditCtl
+		// checkBox1
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
-		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		checkBox1.AutoSize = true;
+		checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", bindingSource, "InclListQuery", true));
+		checkBox1.Location = new System.Drawing.Point(77, 282);
+		checkBox1.Name = "checkBox1";
+		checkBox1.Size = new System.Drawing.Size(101, 23);
+		checkBox1.TabIndex = 20;
+		checkBox1.Text = "Query - List";
+		checkBox1.UseVisualStyleBackColor = true;
+		// 
+		// EntityMainEditCtl
+		// 
+		Controls.Add(checkBox1);
 		Controls.Add(ckbUseListSorting);
 		Controls.Add(ckbUseListPaging);
 		Controls.Add(ckbQueryList);
@@ -276,22 +276,19 @@ partial class EntityEditCtl
 		Controls.Add(txtSchema);
 		Controls.Add(txtNamespace);
 		Controls.Add(txtName);
-		Controls.Add(lblTitle);
 		Controls.Add(lbl7);
 		Controls.Add(label3);
 		Controls.Add(label8);
 		Controls.Add(lblName);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		Name = "EntityEditCtl";
-		Size = new System.Drawing.Size(865, 339);
+		Name = "EntityMainEditCtl";
+		Size = new System.Drawing.Size(865, 640);
 		((System.ComponentModel.ISupportInitialize)bindingSource).EndInit();
 		ResumeLayout(false);
 		PerformLayout();
 	}
 
 	#endregion
-
-	private System.Windows.Forms.Label lblTitle;
 	private System.Windows.Forms.Label lblName;
 	private System.Windows.Forms.TextBox txtName;
 	private System.Windows.Forms.TextBox txtNamespace;
@@ -312,4 +309,5 @@ partial class EntityEditCtl
 	private System.Windows.Forms.CheckBox ckbUseListPaging;
 	private System.Windows.Forms.CheckBox ckbUseListSorting;
 	private System.Windows.Forms.BindingSource bindingSource;
+	private System.Windows.Forms.CheckBox checkBox1;
 }

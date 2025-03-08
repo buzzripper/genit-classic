@@ -1,29 +1,26 @@
 ﻿using Dyvenix.Genit.Models;
-using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls;
 
-public partial class EntityEditCtl : UserControl
+public partial class EntityMainEditCtl : EntityEditCtlBase
 {
-	private EntityModel _entity;
-
-	public EntityEditCtl(EntityModel entity)
+	public EntityMainEditCtl()
 	{
 		InitializeComponent();
-		SetEntity(entity);
 	}
 
-	public void SetEntity(EntityModel entity)
+	public override void Initialize(EntityModel entity)
 	{
-		bindingSource.DataSource = entity;
-		_entity = entity;
+		base.Initialize(entity);
+
+		bindingSource.DataSource = _entity;
 
 		//txtName.Text = entity.Name;
 		//txtNamespace.Text = entity.Namespace;
 		//txtSchema.Text = entity.Schema;
 
-		sleAttrs.Items = entity.Attributes;
-		sleUsings.Items = entity.AddlUsings;
+		sleAttrs.Items = _entity.Attributes;
+		sleUsings.Items = _entity.AddlUsings;
 
 		//ckbEnabled.Checked = entity.Enabled;
 		//ckbQuerySingle.Checked = entity.InclSingleQuery;

@@ -47,7 +47,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="UserControls\EntityEditCtl.cs">
+    <Compile Update="UserControls\EntityMainEditCtl.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>

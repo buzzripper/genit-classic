@@ -49,6 +49,8 @@ namespace Dyvenix.Genit
 			var logEventsMdl = CreateLogEventsEntityModel(dbContext, appUserMdl.Id, logLevelEnumMdl);
 			dbContext.Entities.Add(logEventsMdl);
 
+			CreateGeneratorModels(dbContext);
+
 			return doc;
 		}
 
@@ -588,6 +590,23 @@ namespace Dyvenix.Genit
 			entity.Properties.Add(prop);
 
 			return entity;
+		}
+
+		private static void CreateGeneratorModels(DbContextModel dbContextMdl)
+		{
+			var dbContextGenModel = new DbContextGenModel() {
+				InclHeader = true,
+				OutputFolder = "C:\\Temp\\Genit\\Output",
+				Enabled = true
+			};
+			dbContextMdl.Generators.Add(dbContextGenModel);
+
+			var entityGenModel = new EntityGenModel() {
+				InclHeader = true,
+				OutputRootFolder = "C:\\Temp\\Genit\\Output",
+				Enabled = true
+			};
+			dbContextMdl.Generators.Add(entityGenModel);
 		}
 	}
 }

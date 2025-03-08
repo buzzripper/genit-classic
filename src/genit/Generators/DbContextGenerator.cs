@@ -8,23 +8,46 @@ using System.Text;
 
 namespace Dyvenix.Genit.Generators;
 
-public class DbContextGenerator : IGeneratorModel
+public class DbContextGenerator
 {
-	private const string cToken_EntityNs = "ENTITY_NS";
+	#region Constants
+
 	private const string cToken_Usings = "USINGS";
 	private const string cToken_ContextNs = "CONTEXT_NS";
 	private const string cToken_DbContextName = "DBCONTEXT_NAME";
 	private const string cToken_Properties = "PROPERTIES";
 	private const string cToken_OnModelCreating = "ON_MODEL_CREATING";
 
-	public string Name { get { return "DbContext Generator"; } }
-	public bool InclHeader { get; set; }
-	public string OutputFolder { get; set; }
-	public bool Enabled { get; set; }
+	#endregion
 
+	#region Fields
+
+	private bool _inclHeader { get; set; }
+	private string _outputFolder { get; set; }
+	private bool _enabled { get; set; }
+
+	#endregion
+		
+	#region Ctor
+
+	public DbContextGenerator(DbContextGenModel model)
+	{
+		_inclHeader = model.InclHeader;
+		_outputFolder = model.OutputFolder;
+		_enabled = true;
+	}
+
+	#endregion
+		
+	#region Properties
+
+	public GeneratorType Type => GeneratorType.DbContext;
+
+	#endregion
+		
 	public void Run(DbContextModel dbContextModel)
 	{
-		if (!this.Enabled)
+		if (!_enabled)
 			return;
 
 		Validate(dbContextModel);
@@ -33,15 +56,15 @@ public class DbContextGenerator : IGeneratorModel
 		var usings = InitializeUsings(dbContextModel);
 
 		// Properties
-		var propsList = this.GenerateProperties(dbContextModel.Entities);
+		var propsList = GenerateProperties(dbContextModel.Entities);
 
 		// OnModelCreating()
-		var onModelCreatingList = this.GenerateOnModelCreating(dbContextModel.Entities);
+		var onModelCreatingList = GenerateOnModelCreating(dbContextModel.Entities);
 
 		// Replace tokens in template
-		var fileContents = this.ReplaceTemplateTokens(dbContextModel, usings, propsList, onModelCreatingList);
+		var fileContents = ReplaceTemplateTokens(dbContextModel, usings, propsList, onModelCreatingList);
 
-		var outputFile = Path.Combine(this.OutputFolder, $"{dbContextModel.Name}.cs");
+		var outputFile = Path.Combine(_outputFolder, $"{dbContextModel.Name}.cs");
 		if (File.Exists(outputFile))
 			File.Delete(outputFile);
 		File.WriteAllText(outputFile, fileContents);
@@ -49,8 +72,8 @@ public class DbContextGenerator : IGeneratorModel
 
 	private void Validate(DbContextModel dbContextModel)
 	{
-		if (!Directory.Exists(OutputFolder))
-			throw new ApplicationException($"OutputRootFolder does not exist: {OutputFolder}");
+		if (!Directory.Exists(_outputFolder))
+			throw new ApplicationException($"OutputRootFolder does not exist: {_outputFolder}");
 
 		if (string.IsNullOrWhiteSpace(dbContextModel.ContextNamespace))
 			throw new ApplicationException($"ContextNamespace not set on db context");
@@ -102,7 +125,7 @@ public class DbContextGenerator : IGeneratorModel
 		foreach (var entity in entities) {
 			if (!entity.Enabled)
 				continue;
-			this.GenerateModelBuilderEntity(entity, outList);
+			GenerateModelBuilderEntity(entity, outList);
 		}
 
 		return outList;

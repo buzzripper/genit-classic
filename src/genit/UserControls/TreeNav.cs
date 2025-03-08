@@ -9,16 +9,17 @@ namespace Dyvenix.Genit.UserControls;
 
 public partial class TreeNav : UserControl
 {
-	public event EventHandler<EntitiesNodeEventArgs> EntitiesNodeSelected;
-	public event EventHandler<EntityModelEventArgs> EntityModelSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> DbContextModelSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityModelSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> EntitiesNodeSelected;
+
 	public event EventHandler<PropertyModelEventArgs> PropertyModelSelected;
 	public event EventHandler<EnumsNodeEventArgs> EnumsNodeSelected;
 	public event EventHandler<EnumModelEventArgs> EnumModelSelected;
 	public event EventHandler<AssocsNodeEventArgs> AssocsNodeSelected;
 	public event EventHandler<AssocModelEventArgs> AssocModelSelected;
-	public event EventHandler<DbContextModelEventArgs> DbContextModelSelected;
+	public event EventHandler<EventArgs> GeneratorsNodeSelected;
 	public event EventHandler<GeneratorModelEventArgs> GeneratorModelSelected;
-	public event EventHandler<GeneratorsNodeEventArgs> GeneratorsNodeSelected;
 
 
 	private const string cKey_Db = "db";
@@ -80,7 +81,7 @@ public partial class TreeNav : UserControl
 		TreeNode dbNode = new TreeNode(cNodeName_Db) {
 			SelectedImageKey = cKey_Db,
 			ImageKey = cKey_Db,
-			Tag = _dbContextModel
+			Tag = _dbContextModel.Id
 		};
 		treeView1.Nodes.Add(dbNode);
 	}
@@ -97,7 +98,7 @@ public partial class TreeNav : UserControl
 			TreeNode entNode = new TreeNode(entity.Name) {
 				SelectedImageKey = cKey_Entity,
 				ImageKey = cKey_Entity,
-				Tag = entity
+				Tag = entity.Id
 			};
 			entitiesNode.Nodes.Add(entNode);
 		}
@@ -110,14 +111,15 @@ public partial class TreeNav : UserControl
 	{
 		TreeNode enumsNode = new TreeNode(cNodeName_Enums) {
 			SelectedImageKey = cKey_Enum,
-			ImageKey = cKey_Enum
+			ImageKey = cKey_Enum,
+			Tag = Guid.NewGuid()
 		};
 
 		foreach (var enumMdl in _dbContextModel.Enums) {
 			TreeNode enumNode = new TreeNode(enumMdl.Name) {
 				SelectedImageKey = cKey_Enum,
 				ImageKey = cKey_Enum,
-				Tag = enumMdl
+				Tag = enumMdl.Id
 			};
 			enumsNode.Nodes.Add(enumNode);
 		}
@@ -130,14 +132,15 @@ public partial class TreeNav : UserControl
 	{
 		TreeNode assocsNode = new TreeNode(cNodeName_Assocs) {
 			SelectedImageKey = cKey_Assoc,
-			ImageKey = cKey_Assoc
+			ImageKey = cKey_Assoc,
+			Tag = Guid.NewGuid()
 		};
 
 		foreach (var assocMdl in _dbContextModel.Assocs) {
 			TreeNode assocNode = new TreeNode(assocMdl.Name) {
 				SelectedImageKey = cKey_Assoc,
 				ImageKey = cKey_Assoc,
-				Tag = assocMdl
+				Tag = assocMdl.Id
 			};
 			assocsNode.Nodes.Add(assocNode);
 		}
@@ -150,14 +153,15 @@ public partial class TreeNav : UserControl
 	{
 		TreeNode gensNode = new TreeNode(cNodeName_Gen) {
 			SelectedImageKey = cKey_Gens,
-			ImageKey = cKey_Gens
+			ImageKey = cKey_Gens,
+			Tag = Guid.NewGuid()
 		};
 
 		foreach (var genMdl in _dbContextModel.Generators) {
 			TreeNode genNode = new TreeNode(genMdl.Name) {
 				SelectedImageKey = cKey_Gen,
 				ImageKey = cKey_Gen,
-				Tag = genMdl
+				Tag = genMdl.Id
 			};
 			gensNode.Nodes.Add(genNode);
 		}
@@ -170,11 +174,16 @@ public partial class TreeNav : UserControl
 	{
 		// Top level nodes
 
+		var id = (Guid)e.Node.Tag;
+
 		if (e.Node.Text == cNodeName_Db) {
-			DbContextModelSelected?.Invoke(this, new DbContextModelEventArgs((DbContextModel)e.Node.Tag));
+			DbContextModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		} else if (e.Node.Parent.Text == cNodeName_Entities) {
+			EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
 		} else if (e.Node.Text == cNodeName_Entities) {
-			EntitiesNodeSelected?.Invoke(this, new EntitiesNodeEventArgs((List<EntityModel>)e.Node.Tag));
+			EntitiesNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
 		} else if (e.Node.Text == cNodeName_Enums) {
 			EnumsNodeSelected?.Invoke(this, new EnumsNodeEventArgs((List<EnumModel>)e.Node.Tag));
@@ -183,19 +192,42 @@ public partial class TreeNav : UserControl
 			AssocsNodeSelected?.Invoke(this, new AssocsNodeEventArgs((List<AssocModel>)e.Node.Tag));
 
 		} else if (e.Node.Text == cNodeName_Gen) {
-			GeneratorsNodeSelected?.Invoke(this, new GeneratorsNodeEventArgs((List<IGeneratorModel>)e.Node.Tag));
+			GeneratorsNodeSelected?.Invoke(this, new EventArgs());
 
 			// Other nodes
 
 		} else if (e.Node.Tag is EntityModel) {
-			EntityModelSelected?.Invoke(this, new EntityModelEventArgs((EntityModel)e.Node.Tag));
+			EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
 		} else if (e.Node.Text == cNodeName_Enums) {
 			EnumModelSelected?.Invoke(this, new EnumModelEventArgs((EnumModel)e.Node.Tag));
 		}
 	}
+
+	public bool Select(Guid id)
+	{
+		foreach(TreeNode node in treeView1.Nodes) {
+			var tagId = node.Tag as Guid?;
+			if (tagId.HasValue) {
+				if (tagId.Value == id) {
+					treeView1.SelectedNode = node;
+					return true;
+				}
+			}
+		}	
+		return false;
+	}
 }
 
+public class NavTreeNodeSelectedEventArgs : EventArgs
+{
+	public Guid Id { get; }
+
+	public NavTreeNodeSelectedEventArgs(Guid id)
+	{
+		Id = id;
+	}
+}
 
 public class DbContextModelEventArgs : EventArgs
 {
@@ -277,22 +309,22 @@ public class AssocModelEventArgs : EventArgs
 	}
 }
 
-public class GeneratorsNodeEventArgs : EventArgs
-{
-	public List<IGeneratorModel> Generators { get; }
+//public class GeneratorsNodeEventArgs : EventArgs
+//{
+//	public List<GenModelBase> Generators { get; }
 
-	public GeneratorsNodeEventArgs(List<IGeneratorModel> generators)
-	{
-		Generators = generators;
-	}
-}
+//	public GeneratorsNodeEventArgs(List<IGenerator> generators)
+//	{
+//		Generators = generators;
+//	}
+//}
 
 public class GeneratorModelEventArgs : EventArgs
 {
-	public IGeneratorModel Generator { get; }
+	public GenModelBase GenModel { get; }
 
-	public GeneratorModelEventArgs(IGeneratorModel generator)
+	public GeneratorModelEventArgs(GenModelBase genModel)
 	{
-		Generator = generator;
+		GenModel = genModel;
 	}
 }

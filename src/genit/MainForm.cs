@@ -45,6 +45,9 @@ public partial class MainForm : Form
 	{
 		_appConfig = ConfigManager.GetAppConfig();
 		InitializeLayout(_appConfig);
+
+		// DEBUG
+		this.Doc = DocManager.LoadDoc(@"C:\Work\Genit\Test1.gmdl");
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
@@ -89,8 +92,30 @@ public partial class MainForm : Form
 			_outputHeight = splContent.Height - splContent.SplitterDistance;
 
 			// Clear any tabs
-			while (tabsMain.TabPages.Count > 0)
-				tabsMain.TabPages.RemoveAt(0);
+			multiPageCtl.Clear();
+
+		} finally {
+			_suspendUpdates = false;
+		}
+	}
+
+	private void PopulateForm(Doc doc)
+	{
+		_suspendUpdates = true;
+		try {
+			if (doc == null) {
+				treeNav.Clear();
+				multiPageCtl.Clear();
+				return;
+			}
+
+			treeNav.DataSource = doc.DbContexts[0];
+			//treeNav.AssocModelSelected += TreeNav_AssocModelSelected;
+			//treeNav.DbContextModelSelected += TreeNav_DbContextModelSelected;
+			//treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
+			//treeNav.EntityModelSelected += TreeNav_EntityModelSelected;
+			//treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
+			//treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
 
 		} finally {
 			_suspendUpdates = false;
@@ -189,7 +214,7 @@ public partial class MainForm : Form
 		EnableSave(false);
 		EnableSaveAs(false);
 		EnableGenerate(false);
-		tabsMain.Visible = false;
+		multiPageCtl.Visible = false;
 	}
 
 	private void SetStateDocLoaded()
@@ -199,7 +224,7 @@ public partial class MainForm : Form
 		EnableSave(true);
 		EnableSaveAs(true);
 		EnableGenerate(true);
-		tabsMain.Visible = true;
+		multiPageCtl.Visible = true;
 	}
 
 	private void EnableNew(bool value)
@@ -299,6 +324,13 @@ public partial class MainForm : Form
 	private void uiGenerate_Click(object sender, EventArgs e)
 	{
 		try {
+			if (_doc == null) {
+				outputCtl.WriteInfo("No document loaded.");
+				return;
+			}
+
+			var dbContextMdl = _doc.DbContexts[0];
+
 			var errors = new List<string>();
 
 			_doc.Validate(errors);
@@ -312,21 +344,25 @@ public partial class MainForm : Form
 			if (MessageBox.Show("Generate files?", "Generate", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
 				return;
 
-			var entityGenerator = new EntityGenerator {
-				Enabled = true,
-				InclHeader = true,
-				OutputRootFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Entities"
-				//OutputRootFolder = @"c:\work\genit\Entities"
-			};
-			entityGenerator.Run(_doc.DbContexts[0]);
+			// DbContext
+			var dbContextGenMdl = dbContextMdl.Generators.First(g => g.GeneratorType == GeneratorType.DbContext) as DbContextGenModel;
+			if (dbContextGenMdl == null)
+				throw new ApplicationException("DbContext generator not found.");
+			if (dbContextGenMdl.Enabled) {
+				var dbContextGenerator = new DbContextGenerator(dbContextGenMdl);
+				outputCtl.WriteInfo("Running DbContext generator...");
+				dbContextGenerator.Run(dbContextMdl);
+			}
 
-			var dbContextGenerator = new DbContextGenerator {
-				Enabled = true,
-				InclHeader = true,
-				OutputFolder = @"D:\Code\buzzripper\dyvenix\src\app1.data\Contexts"
-				//OutputFolder = @"c:\work\genit\Entities"
-			};
-			dbContextGenerator.Run(_doc.DbContexts[0]);
+			// Entities
+			var entityGenMdl = dbContextMdl.Generators.FirstOrDefault(g => g.GeneratorType == GeneratorType.Entity) as EntityGenModel;
+			if (entityGenMdl == null)
+				throw new ApplicationException("Entity generator not found.");
+			if (entityGenMdl.Enabled) {
+				var entityGenerator = new EntityGenerator(entityGenMdl);
+				outputCtl.WriteInfo("Running Entities generator...");
+				entityGenerator.Run(dbContextMdl);
+			}
 
 			ShowSuccessDlg("Files generated.");
 
@@ -338,48 +374,29 @@ public partial class MainForm : Form
 
 	#endregion
 
-	private void PopulateForm(Doc doc)
+	#region TreeNav
+
+	private void treeNav_DbContextModelSelected(object sender, NavTreeNodeSelectedEventArgs e)
 	{
-		_suspendUpdates = true;
-		try {
-			if (doc == null) {
-				treeNav.Clear();
-				while (tabsMain.TabPages.Count > 0)
-					tabsMain.TabPages.RemoveAt(0);
-				return;
-			}
+		if (SelectTabPageById(e.Id))
+			return;
 
-			treeNav.DataSource = doc.DbContexts[0];
-			//treeNav.AssocModelSelected += TreeNav_AssocModelSelected;
-			//treeNav.DbContextModelSelected += TreeNav_DbContextModelSelected;
-			//treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
-			//treeNav.EntityModelSelected += TreeNav_EntityModelSelected;
-			//treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
-			//treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
-
-		} finally {
-			_suspendUpdates = false;
+		if (!multiPageCtl.Select(e.Id)) {
+			var dbContextCtl = new DbContextEditCtl(_doc.DbContexts[0]);
+			multiPageCtl.Add(e.Id, _doc.DbContexts[0].Name, dbContextCtl);
 		}
 	}
 
-	#region TreeNav
-
-	private void TreeNav_DbContextModelSelected(object sender, DbContextModelEventArgs e)
+	private void treeNav_EntityModelSelected_1(object sender, NavTreeNodeSelectedEventArgs e)
 	{
-		if (GoToTabPageById(e.DbContext.Id))
+		if (SelectTabPageById(e.Id))
 			return;
 
-		var dbContextCtl = new DbContextEditCtl(e.DbContext);
-		AddNewTabPage(e.DbContext.Name, dbContextCtl, TabType.DbContext, e.DbContext.Id);
-	}
-
-	private void TreeNav_EntityModelSelected(object sender, EntityModelEventArgs e)
-	{
-		if (GoToTabPageById(e.Entity.Id))
-			return;
-
-		var dbContextCtl = new EntityEditCtl(e.Entity);
-		AddNewTabPage(e.Entity.Name, dbContextCtl, TabType.DbContext, e.Entity.Id);
+		if (!multiPageCtl.Select(e.Id)) {
+			var entity = _doc.DbContexts[0].Entities.First(e => e.Id == e.Id);
+			var entityCtl = new EntityContainerCtl(entity);
+			multiPageCtl.Add(e.Id, entity.Name, entityCtl);
+		}
 	}
 
 	private void TreeNav_PropertyModelSelected(object sender, UserControls.PropertyModelEventArgs e)
@@ -402,41 +419,62 @@ public partial class MainForm : Form
 
 	#region Tabs
 
+	//private void AddNewTabPage(string name, Control ctl, TabType tabType, Guid id)
+	//{
+	//	var tabPage = new TabPage(name) {
+	//		Tag = new TabData { TabType = tabType, Id = id }
+	//	};
+	//	tabPage.Controls.Add(ctl);
+	//	ctl.Dock = DockStyle.Fill;
+	//	tabsMain.TabPages.Add(tabPage);
+	//	tabsMain.SelectedTab = tabPage;
+	//	tabsMain.Visible = true;
+	//	tabsMain.Focus();
+	//}
+
+	//private bool SelectTabPageById(Guid id)
+	//{
+	//	var tabPage = GetTabPageById(id);
+	//	if (tabPage != null) {
+	//		tabsMain.SelectedTab = tabPage;
+	//		return true;
+	//	}
+	//	return false;
+	//}
+
+	//private TabPage GetTabPageById(Guid id)
+	//{
+	//	foreach (TabPage tabPage in tabsMain.TabPages) {
+	//		var tabData = tabPage.Tag as TabData;
+	//		if (tabData == null)
+	//			continue;
+	//		if (tabData.Id == id)
+	//			return tabPage;
+	//	}
+	//	return null;
+	//}
+
+	private bool SelectTabPageById(Guid id)
+	{
+		return multiPageCtl.Select(id);
+	}
+
 	private void AddNewTabPage(string name, Control ctl, TabType tabType, Guid id)
 	{
-		var tabPage = new TabPage(name) {
-			Tag = new TabData { TabType = tabType, Id = id }
-		};
-		tabPage.Controls.Add(ctl);
-		ctl.Dock = DockStyle.Fill;
-		tabsMain.TabPages.Add(tabPage);
-		tabsMain.SelectedTab = tabPage;
-		tabsMain.Visible = true;
-		tabsMain.Focus();
+		multiPageCtl.Add(id, name, ctl);
 	}
 
-	private bool GoToTabPageById(Guid id)
-	{
-		var tabPage = GetTabPageById(id);
-		if (tabPage != null) {
-			tabsMain.SelectedTab = tabPage;
-			return true;
-		}
-		return false;
-	}
-
-	private TabPage GetTabPageById(Guid id)
-	{
-		foreach (TabPage tabPage in tabsMain.TabPages) {
-			var tabData = tabPage.Tag as TabData;
-			if (tabData == null)
-				continue;
-			if (tabData.Id == id)
-				return tabPage;
-		}
-		return null;
-	}
-
+	//private TabPage GetTabPageById(Guid id)
+	//{
+	//	foreach (TabPage tabPage in tabsMain.TabPages) {
+	//		var tabData = tabPage.Tag as TabData;
+	//		if (tabData == null)
+	//			continue;
+	//		if (tabData.Id == id)
+	//			return tabPage;
+	//	}
+	//	return null;
+	//}
 
 	#endregion
 
@@ -511,13 +549,18 @@ public partial class MainForm : Form
 
 	private void btnDeleteTab_Click(object sender, EventArgs e)
 	{
-		if (tabsMain.SelectedIndex > -1)
-			tabsMain.TabPages.RemoveAt(tabsMain.SelectedIndex);
+		if (multiPageCtl.SelectedId.HasValue)
+			multiPageCtl.Remove(multiPageCtl.SelectedId.Value);
 	}
 
-	private void tabsMain_SelectedIndexChanged(object sender, EventArgs e)
+	private void multiPageCtl_SelectedItemChanged(object sender, SelectedItemChangedEventArgs e)
 	{
-		btnDeleteTab.Enabled = tabsMain.SelectedIndex > -1;
+		treeNav.Select(e.Id);
+	}
+
+	private void treeNav_EntitiesNodeSelected(object sender, NavTreeNodeSelectedEventArgs e)
+	{
+
 	}
 }
 

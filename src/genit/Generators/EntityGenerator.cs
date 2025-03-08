@@ -5,18 +5,32 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Dyvenix.Genit.Generators;
 
-public class EntityGenerator : IGeneratorModel
+public class EntityGenerator
 {
-	private DbContextModel _dbContextMdl;
+	#region Fields
 
-	public string Name { get { return "Entity Generator"; } }
-	public bool InclHeader { get; set; }
-	public string OutputRootFolder { get; set; }
-	public bool Enabled { get; set; }
-	public string Namespace { get; set; }
+	private DbContextModel _dbContextMdl;
+	private bool _inclHeader;
+	private string _outputFolder;
+	private bool _enabled;
+
+	#endregion
+		
+	public EntityGenerator(EntityGenModel model)
+	{
+		_inclHeader = model.InclHeader;
+		_outputFolder = model.OutputRootFolder;
+		_enabled = true;
+	}
+
+	#region Properties
+
+
+	#endregion
 
 	public void Run(DbContextModel dbContextMdl)
 	{
@@ -25,7 +39,7 @@ public class EntityGenerator : IGeneratorModel
 		_dbContextMdl = dbContextMdl;
 		var entities = dbContextMdl.Entities;
 
-		if (!this.Enabled)
+		if (!this._enabled)
 			return;
 
 		if (dbContextMdl.Entities.Any(e => e.Enabled))
@@ -37,8 +51,8 @@ public class EntityGenerator : IGeneratorModel
 
 	private void Validate()
 	{
-		if (!Directory.Exists(OutputRootFolder))
-			throw new ApplicationException($"OutputRootFolder does not exist: {OutputRootFolder}");
+		if (!Directory.Exists(_outputFolder))
+			throw new ApplicationException($"OutputRootFolder does not exist: {_outputFolder}");
 	}
 
 	private void GenerateHeader(List<string> headerLines)
@@ -68,7 +82,7 @@ public class EntityGenerator : IGeneratorModel
 				continue;
 
 			var header = new List<string>();
-			if (InclHeader)
+			if (_inclHeader)
 				this.GenerateHeader(header);
 
 			var usings = new List<string>();
@@ -121,7 +135,7 @@ public class EntityGenerator : IGeneratorModel
 			sb.AppendLine(string.Join(Environment.NewLine, propOutputList));
 			sb.AppendLine(string.Join(Environment.NewLine, classEnd));
 
-			var outputFile = Path.Combine(this.OutputRootFolder, $"{entity.Name}.cs");
+			var outputFile = Path.Combine(this._outputFolder, $"{entity.Name}.cs");
 			if (File.Exists(outputFile))
 				File.Delete(outputFile);
 			File.WriteAllText(outputFile, sb.ToString());
@@ -195,7 +209,7 @@ public class EntityGenerator : IGeneratorModel
 				continue;
 
 			var header = new List<string>();
-			if (InclHeader)
+			if (_inclHeader)
 				this.GenerateHeader(header);
 
 			var usings = new List<string>();
@@ -226,7 +240,7 @@ public class EntityGenerator : IGeneratorModel
 			sb.AppendLine(string.Join(Environment.NewLine, propOutputList));
 			sb.AppendLine(string.Join(Environment.NewLine, classEnd));
 
-			var outputFile = Path.Combine(this.OutputRootFolder, $"{enumMdl.Name}.cs");
+			var outputFile = Path.Combine(this._outputFolder, $"{enumMdl.Name}.cs");
 			if (File.Exists(outputFile))
 				File.Delete(outputFile);
 			File.WriteAllText(outputFile, sb.ToString());

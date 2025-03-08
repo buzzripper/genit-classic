@@ -43,6 +43,7 @@ partial class StringListEditor
 		// toolStrip1
 		// 
 		toolStrip1.Dock = System.Windows.Forms.DockStyle.Right;
+		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
 		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnDelete });
 		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
 		toolStrip1.Location = new System.Drawing.Point(408, 0);
@@ -67,7 +68,7 @@ partial class StringListEditor
 		btnDelete.Image = (System.Drawing.Image)resources.GetObject("btnDelete.Image");
 		btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnDelete.Name = "btnDelete";
-		btnDelete.Size = new System.Drawing.Size(21, 20);
+		btnDelete.Size = new System.Drawing.Size(29, 20);
 		btnDelete.Text = "toolStripButton3";
 		btnDelete.Click += btnDelete_Click;
 		// 

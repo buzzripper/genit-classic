@@ -30,6 +30,7 @@ public class EntityModel
 
 	public bool InclSingleQuery { get; set; }
 	public bool InclListQuery { get; set; }
+	public bool InclListInfoQuery { get; set; }
 	public bool UseListPaging { get; set; }
 	public bool UseListSorting { get; set; }
 

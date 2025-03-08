@@ -23,6 +23,11 @@ public partial class MultiPageCtl : UserControl
 		InitializeComponent();
 	}
 
+	private void MultiPageCtl_Load(object sender, EventArgs e)
+	{
+		toolStrip.Height = 35;
+	}
+
 	#region Properties
 
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -99,8 +104,6 @@ public partial class MultiPageCtl : UserControl
 		control.Height = this.Height - toolStrip.Height;
 		control.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 		this.Controls.Add(control);
-
-		control.Dock = DockStyle.Fill;
 	}
 
 	public bool Select(Guid id)

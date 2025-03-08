@@ -34,12 +34,13 @@ partial class MultiPageCtl
 		// 
 		// toolStrip
 		// 
+		toolStrip.AutoSize = false;
 		toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 		toolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
 		toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tbTitle });
 		toolStrip.Location = new System.Drawing.Point(0, 0);
 		toolStrip.Name = "toolStrip";
-		toolStrip.Size = new System.Drawing.Size(524, 25);
+		toolStrip.Size = new System.Drawing.Size(524, 36);
 		toolStrip.TabIndex = 0;
 		toolStrip.Text = "toolStrip1";
 		// 
@@ -47,7 +48,7 @@ partial class MultiPageCtl
 		// 
 		tbTitle.Font = new System.Drawing.Font("Segoe UI", 14F);
 		tbTitle.Name = "tbTitle";
-		tbTitle.Size = new System.Drawing.Size(0, 22);
+		tbTitle.Size = new System.Drawing.Size(0, 33);
 		tbTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		// 
 		// MultiPageCtl
@@ -57,11 +58,11 @@ partial class MultiPageCtl
 		Controls.Add(toolStrip);
 		Name = "MultiPageCtl";
 		Size = new System.Drawing.Size(524, 338);
+		Load += MultiPageCtl_Load;
 		SizeChanged += MultiButton_SizeChanged;
 		toolStrip.ResumeLayout(false);
 		toolStrip.PerformLayout();
 		ResumeLayout(false);
-		PerformLayout();
 	}
 
 	#endregion

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -48,18 +49,30 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
+	public int PrimitiveTypeId { get; set; }	
+
 	private PrimitiveType _primitiveType;
+	[JsonIgnore]
 	public PrimitiveType PrimitiveType
 	{
 		get => _primitiveType;
-		set => SetProperty(ref _primitiveType, value);
+		set {
+			PrimitiveTypeId = (value != null) ? value.Id : -1;
+			SetProperty(ref _primitiveType, value);
+		}
 	}
 
+	public Guid EnumTypeId { get; set; }	
+
 	private EnumModel _enumType;
+	[JsonIgnore]
 	public EnumModel EnumType
 	{
 		get => _enumType;
-		set => SetProperty(ref _enumType, value);
+		set {
+			EnumTypeId = (value != null) ? value.Id : Guid.Empty;
+			SetProperty(ref _enumType, value);
+		}
 	}
 
 	private AssocModel _fkAssoc;
@@ -176,8 +189,14 @@ public class PropertyModel : INotifyPropertyChanged
 
 	#region Methods
 
-	public void Initialize(EntityModel primaryEntityMdl, EntityModel relatedEntityMdl)
+	public void InitializeOnLoad(ObservableCollection<EnumModel> enums)
 	{
+		if (this.PrimitiveTypeId > 0) {
+			this.PrimitiveType = PrimitiveType.GetAll().First(p => p.Id == this.PrimitiveTypeId);
+		
+		} else if (this.EnumTypeId != Guid.Empty) {
+			this.EnumType = enums.First(e => e.Id == this.EnumTypeId);
+		}
 	}
 
 	public bool Validate(string entityName, List<string> errorList)

@@ -1,13 +1,13 @@
 ﻿using Dyvenix.Genit.Generators;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Dyvenix.Genit.Models;
 
 public class DbContextModel
 {
-
 	public Guid Id { get; set; }
 	public string Name { get; set; }
 	public bool Enabled { get; set; }
@@ -16,7 +16,7 @@ public class DbContextModel
 	public List<string> AddlUsings { get; set; } = new List<string>();
 
 	public List<EntityModel> Entities { get; set; } = new List<EntityModel>();
-	public List<EnumModel> Enums { get; set; } = new List<EnumModel>();
+	public ObservableCollection<EnumModel> Enums { get; set; } = new ObservableCollection<EnumModel>();
 	public List<AssocModel> Assocs { get; set; } = new List<AssocModel>();
 	public List<GenModelBase> Generators = new List<GenModelBase>();
 
@@ -24,6 +24,10 @@ public class DbContextModel
 	{
 		if (AddlUsings == null)
 			AddlUsings = new List<string>();
+
+		foreach (var entity in Entities) {
+			entity.InitializeOnLoad(Enums);
+		}
 
 		foreach (var navProperty in Assocs) {
 			var primaryEntityMdl = Entities.FirstOrDefault(e => e.Id == navProperty.PrimaryEntityId);

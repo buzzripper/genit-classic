@@ -7,6 +7,7 @@ using Dyvenix.Genit.Views;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Windows.Forms;
@@ -25,7 +26,7 @@ public partial class MainForm : Form
 
 	#region Fields
 
-	private DetailForm _detailForm;
+	//private DetailForm _detailForm;
 	private bool _suspendUpdates;
 	private AppConfig _appConfig;
 	private Doc _doc;
@@ -47,25 +48,16 @@ public partial class MainForm : Form
 		InitializeLayout(_appConfig);
 
 		// DEBUG
-		this.Doc = DocManager.LoadDoc(@"C:\Work\Genit\Test1.gmdl");
+		this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
+		this.Doc = DocManager.LoadDoc(CurrDocFilepath);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
 	{
-		//this.Cursor = Cursors.WaitCursor;
-		//try {
-
-		//} catch (Exception ex) {
-		//	MessageBox.Show($"{ex.GetType().Name} doing stuff: {ex.Message}");
-		//} finally {
-		//	this.Cursor = Cursors.Default;
-		//}
 	}
 
 	private void Form1_Activated(object sender, EventArgs e)
 	{
-		//if (this.WindowState == FormWindowState.Minimized)
-		//	SetAutoRefresh(false);
 	}
 
 	private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -75,10 +67,19 @@ public partial class MainForm : Form
 
 	private void MainForm_ResizeEnd(object sender, EventArgs e)
 	{
-
 	}
 
 	#endregion
+
+	private string CurrDocFilepath
+	{
+		get { return _currDocFilepath; }
+		set {
+			_currDocFilepath = value;
+			var filename = Path.GetFileName(value);
+			this.Text = string.IsNullOrWhiteSpace(value) ? "Genit" : $"Genit - {filename}";
+		}
+	}
 
 	#region Initialization
 
@@ -183,6 +184,7 @@ public partial class MainForm : Form
 			_doc = value;
 			SetState(_doc == null ? GenitAppState.NoDoc : GenitAppState.DocLoaded);
 			PopulateForm(_doc);
+			Globals.DbContext = value?.DbContexts[0];
 		}
 	}
 
@@ -264,7 +266,7 @@ public partial class MainForm : Form
 		if (openFileDlg.ShowDialog(this) == DialogResult.OK) {
 			try {
 				this.Doc = DocManager.LoadDoc(openFileDlg.FileName);
-				_currDocFilepath = openFileDlg.FileName;
+				CurrDocFilepath = openFileDlg.FileName;
 
 			} catch (Exception ex) {
 				MessageBox.Show($"Error opening file: {ex.Message}");
@@ -274,16 +276,23 @@ public partial class MainForm : Form
 
 	private void uiSave_Click(object sender, EventArgs e)
 	{
-		if (saveFileDlg.ShowDialog(this) == DialogResult.OK) {
-			try {
-				DocManager.SaveDoc(this.Doc, saveFileDlg.FileName);
+		Save();
+	}
 
-			} catch (ValidationException ex) {
-				MessageBox.Show($"Validation error(s). See output for detail.");
+	private void Save()
+	{
+		if (string.IsNullOrWhiteSpace(CurrDocFilepath))
+			return;
 
-			} catch (Exception ex) {
-				MessageBox.Show($"Error saving file: {ex.Message}");
-			}
+		try {
+			DocManager.SaveDoc(this.Doc, CurrDocFilepath);
+			outputCtl.WriteInfo($"File saved ({CurrDocFilepath})");
+
+		} catch (ValidationException ex) {
+			MessageBox.Show($"Validation error(s). See output for detail.");
+
+		} catch (Exception ex) {
+			MessageBox.Show($"Error saving file: {ex.Message}");
 		}
 	}
 
@@ -294,17 +303,34 @@ public partial class MainForm : Form
 		}
 	}
 
+	private void uiSaveAs_Click(object sender, EventArgs e)
+	{
+		if (saveFileDlg.ShowDialog(this) == DialogResult.OK) {
+			try {
+				DocManager.SaveDoc(this.Doc, saveFileDlg.FileName);
+				CurrDocFilepath = saveFileDlg.FileName;
+				outputCtl.WriteInfo($"File saved ({CurrDocFilepath})");
+
+			} catch (ValidationException ex) {
+				MessageBox.Show($"Validation error(s). See output for detail.");
+
+			} catch (Exception ex) {
+				MessageBox.Show($"Error saving file: {ex.Message}");
+			}
+		}
+	}
+
 	private void uiExit_Click(object sender, EventArgs e)
 	{
 		if (this.Doc != null) {
 			switch (MessageBox.Show("Save changes?", "Close", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question)) {
 				case DialogResult.Yes:
-					if (string.IsNullOrWhiteSpace(_currDocFilepath)) {
+					if (string.IsNullOrWhiteSpace(CurrDocFilepath)) {
 						if (saveFileDlg.ShowDialog(this) == DialogResult.OK) {
 							DocManager.SaveDoc(this.Doc, saveFileDlg.FileName);
 						}
 					} else {
-						DocManager.SaveDoc(this.Doc, _currDocFilepath);
+						DocManager.SaveDoc(this.Doc, CurrDocFilepath);
 					}
 					Application.Exit();
 					break;
@@ -384,6 +410,7 @@ public partial class MainForm : Form
 		if (!multiPageCtl.Select(e.Id)) {
 			var dbContextCtl = new DbContextEditCtl(_doc.DbContexts[0]);
 			multiPageCtl.Add(e.Id, _doc.DbContexts[0].Name, dbContextCtl);
+			multiPageCtl.Select(e.Id);
 		}
 	}
 
@@ -396,6 +423,7 @@ public partial class MainForm : Form
 			var entity = _doc.DbContexts[0].Entities.First(ent => ent.Id == e.Id);
 			var entityCtl = new EntityContainerCtl(entity);
 			multiPageCtl.Add(e.Id, entity.Name, entityCtl);
+			multiPageCtl.Select(e.Id);
 		}
 	}
 
@@ -547,12 +575,6 @@ public partial class MainForm : Form
 		//};
 	}
 
-	private void btnDeleteTab_Click(object sender, EventArgs e)
-	{
-		if (multiPageCtl.SelectedId.HasValue)
-			multiPageCtl.Remove(multiPageCtl.SelectedId.Value);
-	}
-
 	private void multiPageCtl_SelectedItemChanged(object sender, SelectedItemChangedEventArgs e)
 	{
 		treeNav.Select(e.Id);
@@ -561,6 +583,12 @@ public partial class MainForm : Form
 	private void treeNav_EntitiesNodeSelected(object sender, NavTreeNodeSelectedEventArgs e)
 	{
 
+	}
+
+	private void MainForm_KeyDown(object sender, KeyEventArgs e)
+	{
+		if (e.Control && e.KeyCode == Keys.S)
+			this.Save();
 	}
 }
 

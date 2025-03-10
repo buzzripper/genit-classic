@@ -42,13 +42,13 @@ partial class StringListEditor
 		// 
 		// toolStrip1
 		// 
-		toolStrip1.Dock = System.Windows.Forms.DockStyle.Right;
 		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
+		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnDelete });
-		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
-		toolStrip1.Location = new System.Drawing.Point(408, 0);
+		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(24, 398);
+		toolStrip1.Size = new System.Drawing.Size(370, 25);
 		toolStrip1.TabIndex = 1;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -58,7 +58,7 @@ partial class StringListEditor
 		btnAdd.Image = (System.Drawing.Image)resources.GetObject("btnAdd.Image");
 		btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnAdd.Name = "btnAdd";
-		btnAdd.Size = new System.Drawing.Size(21, 20);
+		btnAdd.Size = new System.Drawing.Size(23, 22);
 		btnAdd.Text = "toolStripButton1";
 		btnAdd.Click += btnAdd_Click;
 		// 
@@ -68,7 +68,7 @@ partial class StringListEditor
 		btnDelete.Image = (System.Drawing.Image)resources.GetObject("btnDelete.Image");
 		btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnDelete.Name = "btnDelete";
-		btnDelete.Size = new System.Drawing.Size(29, 20);
+		btnDelete.Size = new System.Drawing.Size(23, 22);
 		btnDelete.Text = "toolStripButton3";
 		btnDelete.Click += btnDelete_Click;
 		// 
@@ -81,15 +81,15 @@ partial class StringListEditor
 		grdItems.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		grdItems.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 		grdItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+		grdItems.ColumnHeadersVisible = false;
 		grdItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colValue });
-		grdItems.Dock = System.Windows.Forms.DockStyle.Fill;
-		grdItems.Location = new System.Drawing.Point(0, 0);
+		grdItems.Location = new System.Drawing.Point(24, 32);
 		grdItems.MultiSelect = false;
 		grdItems.Name = "grdItems";
 		grdItems.RowHeadersVisible = false;
 		grdItems.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdItems.ShowEditingIcon = false;
-		grdItems.Size = new System.Drawing.Size(408, 398);
+		grdItems.Size = new System.Drawing.Size(310, 98);
 		grdItems.TabIndex = 2;
 		grdItems.CellEndEdit += grdItems_CellEndEdit;
 		grdItems.CellValidating += grdItems_CellValidating;
@@ -106,13 +106,15 @@ partial class StringListEditor
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-		BackColor = System.Drawing.Color.RosyBrown;
+		BackColor = System.Drawing.SystemColors.ControlDarkDark;
+		BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		Controls.Add(grdItems);
 		Controls.Add(toolStrip1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "StringListEditor";
-		Size = new System.Drawing.Size(432, 398);
+		Size = new System.Drawing.Size(370, 193);
 		Load += StringListEditor_Load;
+		Layout += StringListEditor_Layout;
 		toolStrip1.ResumeLayout(false);
 		toolStrip1.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)grdItems).EndInit();

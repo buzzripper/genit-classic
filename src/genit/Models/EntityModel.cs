@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.Json.Serialization;
 
@@ -38,6 +39,12 @@ public class EntityModel
 	public List<AssocModel> NavAssocs { get; set; } = new List<AssocModel>();
 
 	#endregion
+
+	public void InitializeOnLoad(ObservableCollection<EnumModel> enums)
+	{
+		foreach (var prop in Properties)
+			prop.InitializeOnLoad(enums);
+	}
 
 	public Guid AddForeignKey(AssocModel assoc)
 	{

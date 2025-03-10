@@ -174,12 +174,13 @@ public partial class TreeNav : UserControl
 	{
 		// Top level nodes
 
-		var id = (Guid)e.Node.Tag;
+		if (!Guid.TryParse(e.Node.Tag.ToString(), out Guid id))
+			return;
 
 		if (e.Node.Text == cNodeName_Db) {
 			DbContextModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
-		} else if (e.Node.Parent.Text == cNodeName_Entities) {
+		} else if (e.Node.Level == 1 && e.Node.Parent?.Text == cNodeName_Entities) {
 			EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
 		} else if (e.Node.Text == cNodeName_Entities) {

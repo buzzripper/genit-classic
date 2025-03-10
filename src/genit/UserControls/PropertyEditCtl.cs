@@ -11,26 +11,51 @@ using Dyvenix.Genit.Models;
 
 namespace Dyvenix.Genit.UserControls;
 
-public partial class PropertyEditCtl: EntityEditCtlBase
+public partial class PropertyEditCtl : EntityEditCtlBase
 {
 	public PropertyEditCtl()
-    {
-        InitializeComponent();
+	{
+		InitializeComponent();
+	}
+
+	private void PropertyEditCtl_Load(object sender, EventArgs e)
+	{
+		propEditCtl.Visible = false;
+		propEditCtl.Dock = DockStyle.Fill;
+		navPropEditCtl.Visible = false;
+		navPropEditCtl.Dock = DockStyle.Fill;
 	}
 
 	public override void Initialize(EntityModel entity)
 	{
 		base.Initialize(entity);
 
-		//txtName.Text = entity.Name;
-		//txtNamespace.Text = entity.Namespace;
-		//txtSchema.Text = entity.Schema;
-		//sleAttrs.Items = entity.Attributes;
-		//sleUsings.Items = entity.AddlUsings;
-		//ckbEnabled.Checked = entity.Enabled;
-		//ckbQuerySingle.Checked = entity.InclSingleQuery;
-		//ckbQueryList.Checked = entity.InclListQuery;
-		//ckbUseListPaging.Checked = entity.UseListPaging;	
-		//ckbUseListSorting.Checked = entity.UseListSorting;
+		lbxProps.DataSource = _entity.Properties;
+	}
+
+	private void btnAddProp_Click(object sender, EventArgs e)
+	{
+
+	}
+
+	private void btnDeleteProp_Click(object sender, EventArgs e)
+	{
+
+	}
+
+	private void lbxProps_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		this.SuspendLayout();
+
+		var prop = lbxProps.SelectedItem as PropertyModel;
+		if (prop != null) {
+			propEditCtl.Initialize(prop);
+			propEditCtl.Visible = true;
+		} else {
+			propEditCtl.Visible = false;
+		}
+		btnDeleteProp.Enabled = (lbxProps.SelectedIndex >= 0);
+
+		this.ResumeLayout();
 	}
 }

@@ -19,7 +19,7 @@ namespace Dyvenix.Genit.UserControls
 
 		private int _currIdx = 0;
 		private readonly EntityModel _entity;
-		private readonly List<ChildEditor> _childEditors = new List<ChildEditor>();
+		private readonly List<EntityEditorItem> _childEditors = new List<EntityEditorItem>();
 
 		public EntityContainerCtl(EntityModel entity)
 		{
@@ -30,9 +30,9 @@ namespace Dyvenix.Genit.UserControls
 
 		private void Initialize()
 		{
-			_childEditors.Add(new ChildEditor(nbMain, new EntityMainEditCtl()));
-			_childEditors.Add(new ChildEditor(nbProperties, new PropertyEditCtl()));
-			_childEditors.Add(new ChildEditor(nbSvcMethods, new SvcMethodsEditCtl()));
+			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl()));
+			_childEditors.Add(new EntityEditorItem(nbProperties, new PropertyEditCtl()));
+			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl()));
 
 			foreach (var childEditor in _childEditors) {
 				var ctl = childEditor.Ctl;
@@ -43,9 +43,11 @@ namespace Dyvenix.Genit.UserControls
 				ctl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 				Controls.Add(ctl);
 
-				ctl.Initialize(_entity);
+				var entityEditCtl = ctl as EntityEditCtlBase;
+				if (entityEditCtl != null)
+					entityEditCtl.Initialize(_entity);
 			}
-
+		
 			SelectControl(cIdxMain);
 		}
 
@@ -98,15 +100,15 @@ namespace Dyvenix.Genit.UserControls
 		//}
 	}
 
-	public class ChildEditor
+	public class EntityEditorItem
 	{
-		public ChildEditor(ToolStripButton button, EntityEditCtlBase ctl)
+		public EntityEditorItem(ToolStripButton button, Control ctl)
 		{
 			Button = button;
 			Ctl = ctl;
 		}
 
 		public ToolStripButton Button { get; set; }
-		public EntityEditCtlBase Ctl { get; set; }
+		public Control Ctl { get; set; }
 	}
 }

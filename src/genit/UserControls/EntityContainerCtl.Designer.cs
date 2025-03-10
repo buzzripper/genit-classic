@@ -40,6 +40,7 @@ partial class EntityContainerCtl
 		// 
 		toolStrip1.AutoSize = false;
 		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, nbMain, nbProperties, nbSvcMethods });
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
@@ -93,6 +94,7 @@ partial class EntityContainerCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		BackColor = System.Drawing.SystemColors.ActiveBorder;
 		Controls.Add(toolStrip1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "EntityContainerCtl";

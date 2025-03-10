@@ -7,7 +7,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 
 namespace Dyvenix.Genit.UserControls;
 
-public partial class StringListEditor : UserControl
+public partial class StringListEditor : UserControlBase
 {
 	public event EventHandler<ItemAddedEventArgs> ItemAdded;
 	public event EventHandler<ItemChangedEventArgs> ItemChanged;
@@ -23,9 +23,64 @@ public partial class StringListEditor : UserControl
 
 	private void StringListEditor_Load(object sender, EventArgs e)
 	{
-		grdItems.ColumnHeadersVisible = false;
+		PositionGrid(toolStrip1.Dock);
 	}
 
+	private void StringListEditor_Layout(object sender, LayoutEventArgs e)
+	{
+	}
+
+	private void PositionGrid(DockStyle dock)
+	{
+
+		switch (dock) {
+			case DockStyle.Top:
+				grdItems.Top = toolStrip1.Height + 1;
+				grdItems.Left = 0;
+				grdItems.Width = this.Width;
+				grdItems.Height = this.Height - toolStrip1.Height - 2;
+				break;
+			case DockStyle.Right:
+				grdItems.Top = 0;
+				grdItems.Left = 0;
+				grdItems.Width = this.Width - toolStrip1.Width - 2;
+				grdItems.Height = this.Height - 2;
+				break;
+			case DockStyle.Left:
+				grdItems.Top = 0;
+				grdItems.Left = toolStrip1.Width + 1;
+				grdItems.Width = this.Width - toolStrip1.Width - 2;
+				grdItems.Height = this.Height - 2;
+				break;
+			default: // DockStyle.Bottom:
+				grdItems.Top = 0;
+				grdItems.Left = 0;
+				grdItems.Width = this.Width;
+				grdItems.Height = this.Height - toolStrip1.Height - 2;
+				break;
+		}
+
+		grdItems.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+	}
+
+	#region Properties
+
+	[Browsable(true)]
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+	[DefaultValue(DockStyle.Top)]
+	public DockStyle ToolbarDockStyle
+	{
+		get { return toolStrip1.Dock; }
+		set {
+			toolStrip1.Dock = value;
+			if (value == (DockStyle.Top | DockStyle.Bottom))
+				toolStrip1.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
+			else
+				toolStrip1.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow;
+		}
+	}
+
+	[Browsable(false)]
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 	public List<string> Items
 	{
@@ -40,7 +95,7 @@ public partial class StringListEditor : UserControl
 			_populating = true;
 
 			grdItems.Rows.Clear();
-			foreach(var item in value)
+			foreach (var item in value)
 				grdItems.Rows.Add(item);
 
 			_items = value;
@@ -58,6 +113,8 @@ public partial class StringListEditor : UserControl
 		}
 	}
 
+	#endregion
+
 	#region Add
 
 	private void btnAdd_Click(object sender, EventArgs e)
@@ -68,11 +125,10 @@ public partial class StringListEditor : UserControl
 	private void Add(string value)
 	{
 		_items.Add(value);
-
 		var rowIdx = grdItems.Rows.Add(value);
 
-		grdItems.CurrentCell = grdItems.Rows[rowIdx].Cells[0];
-		grdItems.BeginEdit(true);
+		//grdItems.CurrentCell = grdItems.Rows[rowIdx].Cells[0];
+		//grdItems.BeginEdit(true);
 	}
 
 	#endregion
@@ -83,8 +139,6 @@ public partial class StringListEditor : UserControl
 	{
 		var newValue = grdItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
 		_items[e.RowIndex] = newValue;
-
-
 		ItemChanged?.Invoke(this, new ItemChangedEventArgs(e.RowIndex, newValue));
 	}
 

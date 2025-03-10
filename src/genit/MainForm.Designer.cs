@@ -55,7 +55,6 @@ partial class MainForm
 		btnGenerate = new System.Windows.Forms.ToolStripButton();
 		btnTest1 = new System.Windows.Forms.ToolStripButton();
 		btnTest2 = new System.Windows.Forms.ToolStripButton();
-		btnDeleteTab = new System.Windows.Forms.ToolStripButton();
 		splMain = new System.Windows.Forms.SplitContainer();
 		treeNav = new Dyvenix.Genit.UserControls.TreeNav();
 		splContent = new System.Windows.Forms.SplitContainer();
@@ -157,6 +156,7 @@ partial class MainForm
 		mnuSaveAs.Name = "mnuSaveAs";
 		mnuSaveAs.Size = new System.Drawing.Size(140, 22);
 		mnuSaveAs.Text = "Save &As...";
+		mnuSaveAs.Click += uiSaveAs_Click;
 		// 
 		// mnuClose
 		// 
@@ -204,7 +204,7 @@ partial class MainForm
 		// toolStrip1
 		// 
 		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate, btnTest1, btnTest2, btnDeleteTab });
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate, btnTest1, btnTest2 });
 		toolStrip1.Location = new System.Drawing.Point(0, 24);
 		toolStrip1.Name = "toolStrip1";
 		toolStrip1.Size = new System.Drawing.Size(1052, 31);
@@ -274,17 +274,6 @@ partial class MainForm
 		btnTest2.Text = "Test2";
 		btnTest2.Click += btnTest2_Click;
 		// 
-		// btnDeleteTab
-		// 
-		btnDeleteTab.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-		btnDeleteTab.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		btnDeleteTab.Image = (System.Drawing.Image)resources.GetObject("btnDeleteTab.Image");
-		btnDeleteTab.ImageTransparentColor = System.Drawing.Color.Magenta;
-		btnDeleteTab.Name = "btnDeleteTab";
-		btnDeleteTab.Size = new System.Drawing.Size(28, 28);
-		btnDeleteTab.Text = "toolStripButton1";
-		btnDeleteTab.Click += btnDeleteTab_Click;
-		// 
 		// splMain
 		// 
 		splMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -342,6 +331,7 @@ partial class MainForm
 		// 
 		// multiPageCtl
 		// 
+		multiPageCtl.BackColor = System.Drawing.SystemColors.ActiveBorder;
 		multiPageCtl.Dock = System.Windows.Forms.DockStyle.Fill;
 		multiPageCtl.Location = new System.Drawing.Point(0, 0);
 		multiPageCtl.Name = "multiPageCtl";
@@ -448,6 +438,7 @@ partial class MainForm
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		ForeColor = System.Drawing.SystemColors.ControlText;
 		Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+		KeyPreview = true;
 		MainMenuStrip = menuStrip1;
 		Margin = new System.Windows.Forms.Padding(2);
 		Name = "MainForm";
@@ -457,6 +448,7 @@ partial class MainForm
 		Load += Form1_Load;
 		Shown += Form1_Shown;
 		ResizeEnd += MainForm_ResizeEnd;
+		KeyDown += MainForm_KeyDown;
 		statusStrip1.ResumeLayout(false);
 		statusStrip1.PerformLayout();
 		menuStrip1.ResumeLayout(false);
@@ -520,6 +512,5 @@ partial class MainForm
 	private UserControls.TreeNav treeNav;
 	private UserControls.OutputCtl outputCtl;
 	private System.Windows.Forms.ToolStripButton btnClearOuput;
-	private System.Windows.Forms.ToolStripButton btnDeleteTab;
 	private UserControls.MultiPageCtl multiPageCtl;
 }

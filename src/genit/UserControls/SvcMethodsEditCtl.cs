@@ -10,18 +10,20 @@ using System.Windows.Forms;
 using Dyvenix.Genit.Models;
 using System.DirectoryServices.ActiveDirectory;
 
-namespace Dyvenix.Genit.UserControls
-{
-	public partial class SvcMethodsEditCtl : EntityEditCtlBase
-	{
-		public SvcMethodsEditCtl()
-		{
-			InitializeComponent();
-		}
+namespace Dyvenix.Genit.UserControls;
 
-		public override void Initialize(EntityModel entity)
-		{
-			base.Initialize(entity);
-		}
+public partial class SvcMethodsEditCtl :  EntityEditCtlBase
+{
+	//protected EntityModel _entity;
+
+	public SvcMethodsEditCtl()
+	{
+		InitializeComponent();
+	}
+
+	public void Initialize(EntityModel entity)
+	{
+		//_entity = entity;
+		base.Initialize(entity);
 	}
 }

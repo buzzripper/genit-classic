@@ -83,12 +83,14 @@ partial class DbContextEditCtl
 		// 
 		// stringListEditor1
 		// 
-		stringListEditor1.BackColor = System.Drawing.Color.RosyBrown;
+		stringListEditor1.BackColor = System.Drawing.SystemColors.Control;
+		stringListEditor1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		stringListEditor1.Font = new System.Drawing.Font("Segoe UI", 10F);
 		stringListEditor1.Location = new System.Drawing.Point(161, 154);
 		stringListEditor1.Name = "stringListEditor1";
 		stringListEditor1.Size = new System.Drawing.Size(329, 152);
 		stringListEditor1.TabIndex = 7;
+		stringListEditor1.ToolbarDockStyle = System.Windows.Forms.DockStyle.Right;
 		stringListEditor1.ItemAdded += stringListEditor1_ItemAdded;
 		stringListEditor1.ItemChanged += stringListEditor1_ItemChanged;
 		stringListEditor1.ItemDeleted += stringListEditor1_ItemDeleted;
@@ -132,6 +134,7 @@ partial class DbContextEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		BackColor = System.Drawing.SystemColors.ActiveBorder;
 		Controls.Add(txtEntitiesNamespace);
 		Controls.Add(txtContextNamespace);
 		Controls.Add(txtName);

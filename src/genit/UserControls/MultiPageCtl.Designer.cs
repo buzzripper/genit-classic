@@ -27,34 +27,48 @@ partial class MultiPageCtl
 	/// </summary>
 	private void InitializeComponent()
 	{
+		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MultiPageCtl));
 		toolStrip = new System.Windows.Forms.ToolStrip();
 		tbTitle = new System.Windows.Forms.ToolStripLabel();
+		btnCloseItem = new System.Windows.Forms.ToolStripButton();
 		toolStrip.SuspendLayout();
 		SuspendLayout();
 		// 
 		// toolStrip
 		// 
 		toolStrip.AutoSize = false;
+		toolStrip.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		toolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
-		toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tbTitle });
+		toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tbTitle, btnCloseItem });
 		toolStrip.Location = new System.Drawing.Point(0, 0);
 		toolStrip.Name = "toolStrip";
-		toolStrip.Size = new System.Drawing.Size(524, 36);
-		toolStrip.TabIndex = 0;
+		toolStrip.Size = new System.Drawing.Size(524, 30);
+		toolStrip.TabIndex = 1;
 		toolStrip.Text = "toolStrip1";
 		// 
 		// tbTitle
 		// 
 		tbTitle.Font = new System.Drawing.Font("Segoe UI", 14F);
 		tbTitle.Name = "tbTitle";
-		tbTitle.Size = new System.Drawing.Size(0, 33);
+		tbTitle.Size = new System.Drawing.Size(0, 27);
 		tbTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+		// 
+		// btnCloseItem
+		// 
+		btnCloseItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnCloseItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnCloseItem.Image = (System.Drawing.Image)resources.GetObject("btnCloseItem.Image");
+		btnCloseItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnCloseItem.Name = "btnCloseItem";
+		btnCloseItem.Size = new System.Drawing.Size(23, 27);
+		btnCloseItem.Text = "toolStripButton1";
+		btnCloseItem.Click += btnCloseItem_Click;
 		// 
 		// MultiPageCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		BackColor = System.Drawing.SystemColors.ActiveBorder;
 		Controls.Add(toolStrip);
 		Name = "MultiPageCtl";
 		Size = new System.Drawing.Size(524, 338);
@@ -69,4 +83,5 @@ partial class MultiPageCtl
 
 	private System.Windows.Forms.ToolStrip toolStrip;
 	private System.Windows.Forms.ToolStripLabel tbTitle;
+	private System.Windows.Forms.ToolStripButton btnCloseItem;
 }

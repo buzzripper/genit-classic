@@ -3,7 +3,7 @@ using Dyvenix.Genit.Models;
 
 namespace Dyvenix.Genit.UserControls;
 
-public partial class DbContextEditCtl : UserControl
+public partial class DbContextEditCtl : UserControlBase
 {
 	private DbContextModel _dbContextMdl;
 
@@ -25,17 +25,17 @@ public partial class DbContextEditCtl : UserControl
 
 	private void stringListEditor1_ItemAdded(object sender, ItemAddedEventArgs e)
 	{
-		_dbContextMdl.AddlUsings.Add(e.Value);
+		//_dbContextMdl.AddlUsings.Add(e.Value);
 	}
 
 	private void stringListEditor1_ItemChanged(object sender, ItemChangedEventArgs e)
 	{
-		_dbContextMdl.AddlUsings[e.Index] = e.Value;
+		//_dbContextMdl.AddlUsings[e.Index] = e.Value;
 	}
 
 	private void stringListEditor1_ItemDeleted(object sender, ItemDeletedEventArgs e)
 	{
-		_dbContextMdl.AddlUsings.RemoveAt(e.Index);
+		//_dbContextMdl.AddlUsings.RemoveAt(e.Index);
 	}
 
 	private void DbContextEditCtl_Load(object sender, System.EventArgs e)

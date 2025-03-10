@@ -36,4 +36,9 @@ public class EnumModel
 		if (!this.Members.Any())
 			errorList.Add($"Invalid EnumModel '{this.Name}'. No members defined.");
 	}
+
+	public override string ToString()
+	{
+		return Name;
+	}
 }

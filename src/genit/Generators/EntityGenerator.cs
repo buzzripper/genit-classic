@@ -2,6 +2,7 @@
 using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -202,7 +203,7 @@ public class EntityGenerator
 		this.AddEntityNamespace(navProperty.RelatedEntity, usings);
 	}
 
-	private void GenerateEnums(DbContextModel dbContextMdl, List<EnumModel> enumMdls)
+	private void GenerateEnums(DbContextModel dbContextMdl, ObservableCollection<EnumModel> enumMdls)
 	{
 		foreach (var enumMdl in enumMdls) {
 			if (enumMdl.IsExternal)

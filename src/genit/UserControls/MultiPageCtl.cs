@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -16,7 +17,6 @@ public partial class MultiPageCtl : UserControl
 	public event EventHandler<SelectedItemChangedEventArgs> SelectedItemChanged;
 
 	private readonly List<MultiPageItem> _items = new List<MultiPageItem>();
-	private MultiPageItem _selectedItem;
 
 	public MultiPageCtl()
 	{
@@ -25,10 +25,20 @@ public partial class MultiPageCtl : UserControl
 
 	private void MultiPageCtl_Load(object sender, EventArgs e)
 	{
-		toolStrip.Height = 35;
+		//toolStrip.Height = 35;
 	}
 
 	#region Properties
+
+	private MultiPageItem _selectedItem;
+	private MultiPageItem SelectedItem
+	{
+		get { return _selectedItem; }
+		set { 
+			_selectedItem = value; 
+			btnCloseItem.Enabled = value != null;
+		}
+	}
 
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 	public string Title
@@ -56,7 +66,7 @@ public partial class MultiPageCtl : UserControl
 	}
 
 	//[Browsable(false)]
-	public Guid? SelectedId { get { return _selectedItem?.Id; } }
+	public Guid? SelectedId { get { return SelectedItem?.Id; } }
 
 	#endregion
 
@@ -74,7 +84,7 @@ public partial class MultiPageCtl : UserControl
 
 	private void MultiButton_SizeChanged(object sender, EventArgs e)
 	{
-		toolStrip.Height = this.Height;
+		//toolStrip.Height = this.Height;
 	}
 
 	#endregion
@@ -83,6 +93,7 @@ public partial class MultiPageCtl : UserControl
 	{
 		var btn = new ToolStripButton();
 		btn.Text = text;
+		btn.Padding = new Padding(5, 0, 5, 0);
 		btn.Click += Btn_Click;
 		var newIdx = toolStrip.Items.Add(btn);
 
@@ -119,7 +130,7 @@ public partial class MultiPageCtl : UserControl
 
 	private void Select(MultiPageItem multiPageItem)
 	{
-		if (multiPageItem == _selectedItem)
+		if (multiPageItem == SelectedItem)
 			return;
 
 		this.SuspendLayout();
@@ -128,7 +139,7 @@ public partial class MultiPageCtl : UserControl
 			if (item == multiPageItem) {
 				item.Ctl.Visible = true;
 				item.Button.BackColor = SystemColors.ActiveCaption;
-				_selectedItem = multiPageItem;
+				SelectedItem = multiPageItem;
 
 			} else {
 				item.Ctl.Visible = false;
@@ -142,9 +153,17 @@ public partial class MultiPageCtl : UserControl
 
 	public void Clear()
 	{
-		foreach (var item in _items)
-			this.RemoveItem(item);
+		if (_items.Count == 0)
+			return;
+
+		foreach (var item in _items) {
+			this.Controls.Remove(item.Ctl);
+			item.Ctl.Dispose();
+		}
+
+		toolStrip.Items.Clear();
 		_items.Clear();
+		SelectedItem = null;
 	}
 
 	public bool Remove(Guid id)
@@ -180,6 +199,17 @@ public partial class MultiPageCtl : UserControl
 		public Guid Id { get; set; }
 		public ToolStripButton Button { get; set; }
 		public Control Ctl { get; set; }
+	}
+
+	private void btnCloseItem_Click(object sender, EventArgs e)
+	{
+		if (this.SelectedId.HasValue)
+			this.Remove(this.SelectedId.Value);
+
+		if (_items.Count > 0)
+			Select(_items[0]);
+		else
+			SelectedItem = null;
 	}
 }
 

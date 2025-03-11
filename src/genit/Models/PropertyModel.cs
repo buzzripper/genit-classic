@@ -49,7 +49,7 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
-	public int PrimitiveTypeId { get; set; }	
+	public int PrimitiveTypeId { get; set; }
 
 	private PrimitiveType _primitiveType;
 	[JsonIgnore]
@@ -62,7 +62,7 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
-	public Guid EnumTypeId { get; set; }	
+	public Guid EnumTypeId { get; set; }
 
 	private EnumModel _enumType;
 	[JsonIgnore]
@@ -75,18 +75,29 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
+	[JsonIgnore]
+	public string DatatypeName
+	{
+		get {
+			if (this.PrimitiveType != PrimitiveType.None)
+				return this.PrimitiveType.CSType;
+			else if (this.EnumType != null)
+				return this.EnumType.Name;
+			else if (this.FKAssoc != null)
+				return this.FKAssoc.RelatedEntity.Name;
+			else
+				return string.Empty;
+		}
+		set {
+		}
+	}
+
+
 	private AssocModel _fkAssoc;
 	public AssocModel FKAssoc
 	{
 		get => _fkAssoc;
 		set => SetProperty(ref _fkAssoc, value);
-	}
-
-	private bool _nullable;
-	public bool Nullable
-	{
-		get => _nullable;
-		set => SetProperty(ref _nullable, value);
 	}
 
 	private bool _isPrimaryKey;
@@ -101,6 +112,13 @@ public class PropertyModel : INotifyPropertyChanged
 	{
 		get => _isIdentity;
 		set => SetProperty(ref _isIdentity, value);
+	}
+
+	private bool _nullable;
+	public bool Nullable
+	{
+		get => _nullable;
+		set => SetProperty(ref _nullable, value);
 	}
 
 	private int _maxLength;
@@ -193,7 +211,7 @@ public class PropertyModel : INotifyPropertyChanged
 	{
 		if (this.PrimitiveTypeId > 0) {
 			this.PrimitiveType = PrimitiveType.GetAll().First(p => p.Id == this.PrimitiveTypeId);
-		
+
 		} else if (this.EnumTypeId != Guid.Empty) {
 			this.EnumType = enums.First(e => e.Id == this.EnumTypeId);
 		}

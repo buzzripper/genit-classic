@@ -45,16 +45,16 @@ partial class EntityMainEditCtl
 		grdProps = new System.Windows.Forms.DataGridView();
 		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-		colDataType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+		colDataTypexXX = new System.Windows.Forms.DataGridViewComboBoxColumn();
+		colMaxLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colIsPrimaryKey = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colIsIdentity = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 		colNullable = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 		colIsIndexed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 		colIsIndexUnique = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 		colIsIndexClustered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		propsBindingSrc = new System.Windows.Forms.BindingSource(components);
 		((System.ComponentModel.ISupportInitialize)bindingSource).BeginInit();
 		((System.ComponentModel.ISupportInitialize)grdProps).BeginInit();
-		((System.ComponentModel.ISupportInitialize)propsBindingSrc).BeginInit();
 		SuspendLayout();
 		// 
 		// label1
@@ -137,7 +137,7 @@ partial class EntityMainEditCtl
 		// 
 		checkBox1.AutoSize = true;
 		checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", bindingSource, "Enabled", true));
-		checkBox1.Location = new System.Drawing.Point(550, 90);
+		checkBox1.Location = new System.Drawing.Point(788, 39);
 		checkBox1.Name = "checkBox1";
 		checkBox1.Size = new System.Drawing.Size(76, 23);
 		checkBox1.TabIndex = 4;
@@ -189,18 +189,15 @@ partial class EntityMainEditCtl
 		grdProps.AllowUserToResizeRows = false;
 		grdProps.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		grdProps.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-		grdProps.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colDataType, colIsPrimaryKey, colNullable, colIsIndexed, colIsIndexUnique, colIsIndexClustered });
+		grdProps.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colDataTypexXX, colMaxLength, colIsPrimaryKey, colIsIdentity, colNullable, colIsIndexed, colIsIndexUnique, colIsIndexClustered });
 		grdProps.Location = new System.Drawing.Point(29, 119);
 		grdProps.Name = "grdProps";
 		grdProps.RowHeadersVisible = false;
 		grdProps.Size = new System.Drawing.Size(1338, 399);
 		grdProps.TabIndex = 16;
 		grdProps.VirtualMode = true;
-		grdProps.CellContentClick += dataGridView1_CellContentClick;
-		grdProps.CellFormatting += grdProps_CellFormatting;
-		grdProps.CellValidating += grdProps_CellValidating;
-		grdProps.CellValueNeeded += grdProps_CellValueNeeded;
-		grdProps.CellValuePushed += grdProps_CellValuePushed;
+		grdProps.CellEndEdit += grdProps_CellEndEdit;
+		grdProps.EditingControlShowing += grdProps_EditingControlShowing;
 		// 
 		// colId
 		// 
@@ -208,6 +205,7 @@ partial class EntityMainEditCtl
 		colId.HeaderText = "Id";
 		colId.Name = "colId";
 		colId.Visible = false;
+		colId.Width = 75;
 		// 
 		// colName
 		// 
@@ -216,11 +214,18 @@ partial class EntityMainEditCtl
 		colName.Name = "colName";
 		colName.Width = 200;
 		// 
-		// colDataType
+		// colDataTypexXX
 		// 
-		colDataType.HeaderText = "Datatype";
-		colDataType.Name = "colDataType";
-		colDataType.Width = 200;
+		colDataTypexXX.HeaderText = "Datatype";
+		colDataTypexXX.Name = "colDataTypexXX";
+		colDataTypexXX.Width = 200;
+		// 
+		// colMaxLength
+		// 
+		colMaxLength.DataPropertyName = "MaxLength";
+		colMaxLength.HeaderText = "Max Len";
+		colMaxLength.Name = "colMaxLength";
+		colMaxLength.Width = 85;
 		// 
 		// colIsPrimaryKey
 		// 
@@ -229,6 +234,13 @@ partial class EntityMainEditCtl
 		colIsPrimaryKey.Name = "colIsPrimaryKey";
 		colIsPrimaryKey.ToolTipText = "Primary Key";
 		colIsPrimaryKey.Width = 40;
+		// 
+		// colIsIdentity
+		// 
+		colIsIdentity.DataPropertyName = "IsIdentity";
+		colIsIdentity.HeaderText = "Idty";
+		colIsIdentity.Name = "colIsIdentity";
+		colIsIdentity.Width = 40;
 		// 
 		// colNullable
 		// 
@@ -262,10 +274,6 @@ partial class EntityMainEditCtl
 		colIsIndexClustered.Name = "colIsIndexClustered";
 		colIsIndexClustered.Width = 40;
 		// 
-		// propsBindingSrc
-		// 
-		propsBindingSrc.DataSource = typeof(Models.PropertyModel);
-		// 
 		// EntityMainEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -290,7 +298,6 @@ partial class EntityMainEditCtl
 		Size = new System.Drawing.Size(1389, 552);
 		((System.ComponentModel.ISupportInitialize)bindingSource).EndInit();
 		((System.ComponentModel.ISupportInitialize)grdProps).EndInit();
-		((System.ComponentModel.ISupportInitialize)propsBindingSrc).EndInit();
 		ResumeLayout(false);
 		PerformLayout();
 	}
@@ -312,11 +319,12 @@ partial class EntityMainEditCtl
 	private StringListEditor sleAttrs;
 	private System.Windows.Forms.Label label6;
 	private System.Windows.Forms.DataGridView grdProps;
-	private System.Windows.Forms.BindingSource propsBindingSrc;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
-	private System.Windows.Forms.DataGridViewComboBoxColumn colDataType;
+	private System.Windows.Forms.DataGridViewComboBoxColumn colDataTypexXX;
+	private System.Windows.Forms.DataGridViewTextBoxColumn colMaxLength;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsPrimaryKey;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIdentity;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colNullable;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIndexed;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIndexUnique;

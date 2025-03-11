@@ -42,8 +42,10 @@ partial class PropEditCtl
 		numMaxLength = new System.Windows.Forms.NumericUpDown();
 		ckbMaxStrLength = new System.Windows.Forms.CheckBox();
 		ckbIsIndexUnique = new System.Windows.Forms.CheckBox();
+		dataGridView1 = new System.Windows.Forms.DataGridView();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).BeginInit();
 		((System.ComponentModel.ISupportInitialize)numMaxLength).BeginInit();
+		((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
 		SuspendLayout();
 		// 
 		// label1
@@ -186,11 +188,20 @@ partial class PropEditCtl
 		ckbIsIndexUnique.Text = "Unique";
 		ckbIsIndexUnique.UseVisualStyleBackColor = true;
 		// 
+		// dataGridView1
+		// 
+		dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+		dataGridView1.Location = new System.Drawing.Point(190, 341);
+		dataGridView1.Name = "dataGridView1";
+		dataGridView1.Size = new System.Drawing.Size(240, 150);
+		dataGridView1.TabIndex = 13;
+		// 
 		// PropEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ActiveBorder;
+		Controls.Add(dataGridView1);
 		Controls.Add(ckbIsIndexUnique);
 		Controls.Add(ckbMaxStrLength);
 		Controls.Add(numMaxLength);
@@ -209,6 +220,7 @@ partial class PropEditCtl
 		Size = new System.Drawing.Size(747, 533);
 		((System.ComponentModel.ISupportInitialize)bindingSrc).EndInit();
 		((System.ComponentModel.ISupportInitialize)numMaxLength).EndInit();
+		((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
 		ResumeLayout(false);
 		PerformLayout();
 	}
@@ -229,4 +241,5 @@ partial class PropEditCtl
 	private System.Windows.Forms.NumericUpDown numMaxLength;
 	private System.Windows.Forms.CheckBox ckbMaxStrLength;
 	private System.Windows.Forms.CheckBox ckbIsIndexUnique;
+	private System.Windows.Forms.DataGridView dataGridView1;
 }

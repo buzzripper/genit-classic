@@ -31,7 +31,7 @@ namespace Dyvenix.Genit.UserControls
 		private void Initialize()
 		{
 			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl()));
-			_childEditors.Add(new EntityEditorItem(nbProperties, new PropertyEditCtl()));
+			//_childEditors.Add(new EntityEditorItem(nbProperties, new PropertyEditCtl()));
 			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl()));
 
 			foreach (var childEditor in _childEditors) {

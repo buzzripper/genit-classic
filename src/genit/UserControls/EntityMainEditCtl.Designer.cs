@@ -42,7 +42,19 @@ partial class EntityMainEditCtl
 		label5 = new System.Windows.Forms.Label();
 		sleAttrs = new StringListEditor();
 		label6 = new System.Windows.Forms.Label();
+		grdProps = new System.Windows.Forms.DataGridView();
+		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+		colDataType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+		colIsPrimaryKey = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colNullable = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colIsIndexed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colIsIndexUnique = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colIsIndexClustered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		propsBindingSrc = new System.Windows.Forms.BindingSource(components);
 		((System.ComponentModel.ISupportInitialize)bindingSource).BeginInit();
+		((System.ComponentModel.ISupportInitialize)grdProps).BeginInit();
+		((System.ComponentModel.ISupportInitialize)propsBindingSrc).BeginInit();
 		SuspendLayout();
 		// 
 		// label1
@@ -57,7 +69,7 @@ partial class EntityMainEditCtl
 		// label2
 		// 
 		label2.AutoSize = true;
-		label2.Location = new System.Drawing.Point(64, 62);
+		label2.Location = new System.Drawing.Point(64, 49);
 		label2.Name = "label2";
 		label2.Size = new System.Drawing.Size(59, 19);
 		label2.TabIndex = 1;
@@ -66,7 +78,7 @@ partial class EntityMainEditCtl
 		// label3
 		// 
 		label3.AutoSize = true;
-		label3.Location = new System.Drawing.Point(41, 99);
+		label3.Location = new System.Drawing.Point(371, 27);
 		label3.Name = "label3";
 		label3.Size = new System.Drawing.Size(82, 19);
 		label3.TabIndex = 2;
@@ -75,7 +87,7 @@ partial class EntityMainEditCtl
 		// label4
 		// 
 		label4.AutoSize = true;
-		label4.Location = new System.Drawing.Point(41, 136);
+		label4.Location = new System.Drawing.Point(371, 51);
 		label4.Name = "label4";
 		label4.Size = new System.Drawing.Size(82, 19);
 		label4.TabIndex = 3;
@@ -87,7 +99,7 @@ partial class EntityMainEditCtl
 		textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "Name", true));
 		textBox1.Location = new System.Drawing.Point(129, 27);
 		textBox1.Name = "textBox1";
-		textBox1.Size = new System.Drawing.Size(366, 18);
+		textBox1.Size = new System.Drawing.Size(236, 18);
 		textBox1.TabIndex = 0;
 		// 
 		// bindingSource
@@ -98,34 +110,34 @@ partial class EntityMainEditCtl
 		// 
 		textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "Schema", true));
-		textBox2.Location = new System.Drawing.Point(129, 64);
+		textBox2.Location = new System.Drawing.Point(129, 51);
 		textBox2.Name = "textBox2";
-		textBox2.Size = new System.Drawing.Size(366, 18);
+		textBox2.Size = new System.Drawing.Size(236, 18);
 		textBox2.TabIndex = 1;
 		// 
 		// textBox3
 		// 
 		textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "TableName", true));
-		textBox3.Location = new System.Drawing.Point(129, 101);
+		textBox3.Location = new System.Drawing.Point(459, 28);
 		textBox3.Name = "textBox3";
-		textBox3.Size = new System.Drawing.Size(366, 18);
+		textBox3.Size = new System.Drawing.Size(298, 18);
 		textBox3.TabIndex = 2;
 		// 
 		// textBox4
 		// 
 		textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "Namespace", true));
-		textBox4.Location = new System.Drawing.Point(129, 138);
+		textBox4.Location = new System.Drawing.Point(459, 52);
 		textBox4.Name = "textBox4";
-		textBox4.Size = new System.Drawing.Size(366, 18);
+		textBox4.Size = new System.Drawing.Size(298, 18);
 		textBox4.TabIndex = 3;
 		// 
 		// checkBox1
 		// 
 		checkBox1.AutoSize = true;
 		checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", bindingSource, "Enabled", true));
-		checkBox1.Location = new System.Drawing.Point(254, 173);
+		checkBox1.Location = new System.Drawing.Point(550, 90);
 		checkBox1.Name = "checkBox1";
 		checkBox1.Size = new System.Drawing.Size(76, 23);
 		checkBox1.TabIndex = 4;
@@ -137,16 +149,16 @@ partial class EntityMainEditCtl
 		sleUsings.BackColor = System.Drawing.SystemColors.Control;
 		sleUsings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		sleUsings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		sleUsings.Location = new System.Drawing.Point(129, 234);
+		sleUsings.Location = new System.Drawing.Point(919, 39);
 		sleUsings.Name = "sleUsings";
-		sleUsings.Size = new System.Drawing.Size(366, 92);
+		sleUsings.Size = new System.Drawing.Size(154, 70);
 		sleUsings.TabIndex = 5;
 		sleUsings.ToolbarDockStyle = System.Windows.Forms.DockStyle.Right;
 		// 
 		// label5
 		// 
 		label5.AutoSize = true;
-		label5.Location = new System.Drawing.Point(129, 212);
+		label5.Location = new System.Drawing.Point(919, 17);
 		label5.Name = "label5";
 		label5.Size = new System.Drawing.Size(116, 19);
 		label5.TabIndex = 10;
@@ -157,26 +169,109 @@ partial class EntityMainEditCtl
 		sleAttrs.BackColor = System.Drawing.SystemColors.Control;
 		sleAttrs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		sleAttrs.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		sleAttrs.Location = new System.Drawing.Point(129, 366);
+		sleAttrs.Location = new System.Drawing.Point(1102, 39);
 		sleAttrs.Name = "sleAttrs";
-		sleAttrs.Size = new System.Drawing.Size(366, 82);
+		sleAttrs.Size = new System.Drawing.Size(170, 70);
 		sleAttrs.TabIndex = 6;
 		sleAttrs.ToolbarDockStyle = System.Windows.Forms.DockStyle.Right;
 		// 
 		// label6
 		// 
 		label6.AutoSize = true;
-		label6.Location = new System.Drawing.Point(131, 344);
+		label6.Location = new System.Drawing.Point(1104, 17);
 		label6.Name = "label6";
 		label6.Size = new System.Drawing.Size(105, 19);
 		label6.TabIndex = 12;
 		label6.Text = "Class Attributes";
+		// 
+		// grdProps
+		// 
+		grdProps.AllowUserToResizeRows = false;
+		grdProps.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+		grdProps.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+		grdProps.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colDataType, colIsPrimaryKey, colNullable, colIsIndexed, colIsIndexUnique, colIsIndexClustered });
+		grdProps.Location = new System.Drawing.Point(29, 119);
+		grdProps.Name = "grdProps";
+		grdProps.RowHeadersVisible = false;
+		grdProps.Size = new System.Drawing.Size(1338, 399);
+		grdProps.TabIndex = 16;
+		grdProps.VirtualMode = true;
+		grdProps.CellContentClick += dataGridView1_CellContentClick;
+		grdProps.CellFormatting += grdProps_CellFormatting;
+		grdProps.CellValidating += grdProps_CellValidating;
+		grdProps.CellValueNeeded += grdProps_CellValueNeeded;
+		grdProps.CellValuePushed += grdProps_CellValuePushed;
+		// 
+		// colId
+		// 
+		colId.DataPropertyName = "Id";
+		colId.HeaderText = "Id";
+		colId.Name = "colId";
+		colId.Visible = false;
+		// 
+		// colName
+		// 
+		colName.DataPropertyName = "Name";
+		colName.HeaderText = "Name";
+		colName.Name = "colName";
+		colName.Width = 200;
+		// 
+		// colDataType
+		// 
+		colDataType.HeaderText = "Datatype";
+		colDataType.Name = "colDataType";
+		colDataType.Width = 200;
+		// 
+		// colIsPrimaryKey
+		// 
+		colIsPrimaryKey.DataPropertyName = "IsPrimaryKey";
+		colIsPrimaryKey.HeaderText = "Pri";
+		colIsPrimaryKey.Name = "colIsPrimaryKey";
+		colIsPrimaryKey.ToolTipText = "Primary Key";
+		colIsPrimaryKey.Width = 40;
+		// 
+		// colNullable
+		// 
+		colNullable.DataPropertyName = "Nullable";
+		colNullable.HeaderText = "Nul";
+		colNullable.Name = "colNullable";
+		colNullable.ToolTipText = "Nullable";
+		colNullable.Width = 40;
+		// 
+		// colIsIndexed
+		// 
+		colIsIndexed.DataPropertyName = "IsIndexed";
+		colIsIndexed.HeaderText = "Idx";
+		colIsIndexed.Name = "colIsIndexed";
+		colIsIndexed.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+		colIsIndexed.ToolTipText = "Indexed";
+		colIsIndexed.Width = 40;
+		// 
+		// colIsIndexUnique
+		// 
+		colIsIndexUnique.DataPropertyName = "IsIndexUnique";
+		colIsIndexUnique.HeaderText = "UI";
+		colIsIndexUnique.Name = "colIsIndexUnique";
+		colIsIndexUnique.ToolTipText = "Unique Index";
+		colIsIndexUnique.Width = 40;
+		// 
+		// colIsIndexClustered
+		// 
+		colIsIndexClustered.DataPropertyName = "IsIndexClustered";
+		colIsIndexClustered.HeaderText = "CI";
+		colIsIndexClustered.Name = "colIsIndexClustered";
+		colIsIndexClustered.Width = 40;
+		// 
+		// propsBindingSrc
+		// 
+		propsBindingSrc.DataSource = typeof(Models.PropertyModel);
 		// 
 		// EntityMainEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ActiveBorder;
+		Controls.Add(grdProps);
 		Controls.Add(label6);
 		Controls.Add(sleAttrs);
 		Controls.Add(label5);
@@ -192,8 +287,10 @@ partial class EntityMainEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "EntityMainEditCtl";
-		Size = new System.Drawing.Size(560, 477);
+		Size = new System.Drawing.Size(1389, 552);
 		((System.ComponentModel.ISupportInitialize)bindingSource).EndInit();
+		((System.ComponentModel.ISupportInitialize)grdProps).EndInit();
+		((System.ComponentModel.ISupportInitialize)propsBindingSrc).EndInit();
 		ResumeLayout(false);
 		PerformLayout();
 	}
@@ -214,4 +311,14 @@ partial class EntityMainEditCtl
 	private System.Windows.Forms.Label label5;
 	private StringListEditor sleAttrs;
 	private System.Windows.Forms.Label label6;
+	private System.Windows.Forms.DataGridView grdProps;
+	private System.Windows.Forms.BindingSource propsBindingSrc;
+	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
+	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
+	private System.Windows.Forms.DataGridViewComboBoxColumn colDataType;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsPrimaryKey;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colNullable;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIndexed;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIndexUnique;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIndexClustered;
 }

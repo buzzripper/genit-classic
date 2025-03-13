@@ -32,12 +32,12 @@ partial class EntityMainEditCtl
 		label2 = new System.Windows.Forms.Label();
 		label3 = new System.Windows.Forms.Label();
 		label4 = new System.Windows.Forms.Label();
-		textBox1 = new System.Windows.Forms.TextBox();
+		txtName = new System.Windows.Forms.TextBox();
 		bindingSource = new System.Windows.Forms.BindingSource(components);
-		textBox2 = new System.Windows.Forms.TextBox();
-		textBox3 = new System.Windows.Forms.TextBox();
-		textBox4 = new System.Windows.Forms.TextBox();
-		checkBox1 = new System.Windows.Forms.CheckBox();
+		txtSchema = new System.Windows.Forms.TextBox();
+		txtTableName = new System.Windows.Forms.TextBox();
+		txtNamespace = new System.Windows.Forms.TextBox();
+		ckbEnabled = new System.Windows.Forms.CheckBox();
 		sleUsings = new StringListEditor();
 		label5 = new System.Windows.Forms.Label();
 		sleAttrs = new StringListEditor();
@@ -49,7 +49,7 @@ partial class EntityMainEditCtl
 		// label1
 		// 
 		label1.AutoSize = true;
-		label1.Location = new System.Drawing.Point(75, 25);
+		label1.Location = new System.Drawing.Point(47, 25);
 		label1.Name = "label1";
 		label1.Size = new System.Drawing.Size(48, 19);
 		label1.TabIndex = 0;
@@ -58,7 +58,7 @@ partial class EntityMainEditCtl
 		// label2
 		// 
 		label2.AutoSize = true;
-		label2.Location = new System.Drawing.Point(64, 49);
+		label2.Location = new System.Drawing.Point(342, 23);
 		label2.Name = "label2";
 		label2.Size = new System.Drawing.Size(59, 19);
 		label2.TabIndex = 1;
@@ -67,7 +67,7 @@ partial class EntityMainEditCtl
 		// label3
 		// 
 		label3.AutoSize = true;
-		label3.Location = new System.Drawing.Point(371, 27);
+		label3.Location = new System.Drawing.Point(319, 53);
 		label3.Name = "label3";
 		label3.Size = new System.Drawing.Size(82, 19);
 		label3.TabIndex = 2;
@@ -76,69 +76,74 @@ partial class EntityMainEditCtl
 		// label4
 		// 
 		label4.AutoSize = true;
-		label4.Location = new System.Drawing.Point(371, 51);
+		label4.Location = new System.Drawing.Point(13, 54);
 		label4.Name = "label4";
 		label4.Size = new System.Drawing.Size(82, 19);
 		label4.TabIndex = 3;
 		label4.Text = "Namespace:";
 		// 
-		// textBox1
+		// txtName
 		// 
-		textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-		textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "Name", true));
-		textBox1.Location = new System.Drawing.Point(129, 27);
-		textBox1.Name = "textBox1";
-		textBox1.Size = new System.Drawing.Size(236, 18);
-		textBox1.TabIndex = 0;
+		txtName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtName.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "Name", true));
+		txtName.Location = new System.Drawing.Point(101, 27);
+		txtName.Name = "txtName";
+		txtName.Size = new System.Drawing.Size(211, 18);
+		txtName.TabIndex = 0;
+		txtName.TextChanged += txtName_TextChanged;
 		// 
 		// bindingSource
 		// 
 		bindingSource.DataSource = typeof(Models.EntityModel);
 		// 
-		// textBox2
+		// txtSchema
 		// 
-		textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-		textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "Schema", true));
-		textBox2.Location = new System.Drawing.Point(129, 51);
-		textBox2.Name = "textBox2";
-		textBox2.Size = new System.Drawing.Size(236, 18);
-		textBox2.TabIndex = 1;
+		txtSchema.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtSchema.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "Schema", true));
+		txtSchema.Location = new System.Drawing.Point(407, 25);
+		txtSchema.Name = "txtSchema";
+		txtSchema.Size = new System.Drawing.Size(176, 18);
+		txtSchema.TabIndex = 1;
+		txtSchema.TextChanged += txtSchema_TextChanged;
 		// 
-		// textBox3
+		// txtTableName
 		// 
-		textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-		textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "TableName", true));
-		textBox3.Location = new System.Drawing.Point(459, 28);
-		textBox3.Name = "textBox3";
-		textBox3.Size = new System.Drawing.Size(298, 18);
-		textBox3.TabIndex = 2;
+		txtTableName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtTableName.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "TableName", true));
+		txtTableName.Location = new System.Drawing.Point(407, 54);
+		txtTableName.Name = "txtTableName";
+		txtTableName.Size = new System.Drawing.Size(176, 18);
+		txtTableName.TabIndex = 2;
+		txtTableName.TextChanged += txtTableName_TextChanged;
 		// 
-		// textBox4
+		// txtNamespace
 		// 
-		textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
-		textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "Namespace", true));
-		textBox4.Location = new System.Drawing.Point(459, 52);
-		textBox4.Name = "textBox4";
-		textBox4.Size = new System.Drawing.Size(298, 18);
-		textBox4.TabIndex = 3;
+		txtNamespace.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtNamespace.DataBindings.Add(new System.Windows.Forms.Binding("Text", bindingSource, "Namespace", true));
+		txtNamespace.Location = new System.Drawing.Point(101, 55);
+		txtNamespace.Name = "txtNamespace";
+		txtNamespace.Size = new System.Drawing.Size(211, 18);
+		txtNamespace.TabIndex = 3;
+		txtNamespace.TextChanged += txtNamespace_TextChanged;
 		// 
-		// checkBox1
+		// ckbEnabled
 		// 
-		checkBox1.AutoSize = true;
-		checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", bindingSource, "Enabled", true));
-		checkBox1.Location = new System.Drawing.Point(788, 39);
-		checkBox1.Name = "checkBox1";
-		checkBox1.Size = new System.Drawing.Size(76, 23);
-		checkBox1.TabIndex = 4;
-		checkBox1.Text = "Enabled";
-		checkBox1.UseVisualStyleBackColor = true;
+		ckbEnabled.AutoSize = true;
+		ckbEnabled.DataBindings.Add(new System.Windows.Forms.Binding("Checked", bindingSource, "Enabled", true));
+		ckbEnabled.Location = new System.Drawing.Point(603, 39);
+		ckbEnabled.Name = "ckbEnabled";
+		ckbEnabled.Size = new System.Drawing.Size(76, 23);
+		ckbEnabled.TabIndex = 4;
+		ckbEnabled.Text = "Enabled";
+		ckbEnabled.UseVisualStyleBackColor = true;
+		ckbEnabled.CheckedChanged += ckbEnabled_CheckedChanged;
 		// 
 		// sleUsings
 		// 
 		sleUsings.BackColor = System.Drawing.SystemColors.Control;
 		sleUsings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		sleUsings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		sleUsings.Location = new System.Drawing.Point(919, 39);
+		sleUsings.Location = new System.Drawing.Point(688, 32);
 		sleUsings.Name = "sleUsings";
 		sleUsings.Size = new System.Drawing.Size(154, 70);
 		sleUsings.TabIndex = 5;
@@ -147,7 +152,7 @@ partial class EntityMainEditCtl
 		// label5
 		// 
 		label5.AutoSize = true;
-		label5.Location = new System.Drawing.Point(919, 17);
+		label5.Location = new System.Drawing.Point(688, 10);
 		label5.Name = "label5";
 		label5.Size = new System.Drawing.Size(116, 19);
 		label5.TabIndex = 10;
@@ -158,7 +163,7 @@ partial class EntityMainEditCtl
 		sleAttrs.BackColor = System.Drawing.SystemColors.Control;
 		sleAttrs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		sleAttrs.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		sleAttrs.Location = new System.Drawing.Point(1102, 39);
+		sleAttrs.Location = new System.Drawing.Point(871, 32);
 		sleAttrs.Name = "sleAttrs";
 		sleAttrs.Size = new System.Drawing.Size(170, 70);
 		sleAttrs.TabIndex = 6;
@@ -167,7 +172,7 @@ partial class EntityMainEditCtl
 		// label6
 		// 
 		label6.AutoSize = true;
-		label6.Location = new System.Drawing.Point(1104, 17);
+		label6.Location = new System.Drawing.Point(873, 10);
 		label6.Name = "label6";
 		label6.Size = new System.Drawing.Size(105, 19);
 		label6.TabIndex = 12;
@@ -178,9 +183,9 @@ partial class EntityMainEditCtl
 		propGridCtl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		propGridCtl.AutoScroll = true;
 		propGridCtl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		propGridCtl.Location = new System.Drawing.Point(12, 121);
+		propGridCtl.Location = new System.Drawing.Point(12, 120);
 		propGridCtl.Name = "propGridCtl";
-		propGridCtl.Size = new System.Drawing.Size(1358, 416);
+		propGridCtl.Size = new System.Drawing.Size(1035, 423);
 		propGridCtl.TabIndex = 13;
 		// 
 		// EntityMainEditCtl
@@ -193,19 +198,19 @@ partial class EntityMainEditCtl
 		Controls.Add(sleAttrs);
 		Controls.Add(label5);
 		Controls.Add(sleUsings);
-		Controls.Add(checkBox1);
-		Controls.Add(textBox4);
-		Controls.Add(textBox3);
-		Controls.Add(textBox2);
-		Controls.Add(textBox1);
+		Controls.Add(ckbEnabled);
+		Controls.Add(txtNamespace);
+		Controls.Add(txtTableName);
+		Controls.Add(txtSchema);
+		Controls.Add(txtName);
 		Controls.Add(label4);
 		Controls.Add(label3);
 		Controls.Add(label2);
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "EntityMainEditCtl";
-		Size = new System.Drawing.Size(1389, 552);
-		VisibleChanged += EntityMainEditCtl_VisibleChanged;
+		Size = new System.Drawing.Size(1058, 552);
+		Load += EntityMainEditCtl_Load;
 		((System.ComponentModel.ISupportInitialize)bindingSource).EndInit();
 		ResumeLayout(false);
 		PerformLayout();
@@ -217,12 +222,12 @@ partial class EntityMainEditCtl
 	private System.Windows.Forms.Label label2;
 	private System.Windows.Forms.Label label3;
 	private System.Windows.Forms.Label label4;
-	private System.Windows.Forms.TextBox textBox1;
-	private System.Windows.Forms.TextBox textBox2;
-	private System.Windows.Forms.TextBox textBox3;
-	private System.Windows.Forms.TextBox textBox4;
+	private System.Windows.Forms.TextBox txtName;
+	private System.Windows.Forms.TextBox txtSchema;
+	private System.Windows.Forms.TextBox txtTableName;
+	private System.Windows.Forms.TextBox txtNamespace;
 	private System.Windows.Forms.BindingSource bindingSource;
-	private System.Windows.Forms.CheckBox checkBox1;
+	private System.Windows.Forms.CheckBox ckbEnabled;
 	private StringListEditor sleUsings;
 	private System.Windows.Forms.Label label5;
 	private StringListEditor sleAttrs;

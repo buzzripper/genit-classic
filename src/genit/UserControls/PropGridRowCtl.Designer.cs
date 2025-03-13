@@ -61,6 +61,7 @@ partial class PropGridRowCtl
 		numMaxLength.Name = "numMaxLength";
 		numMaxLength.Size = new System.Drawing.Size(55, 23);
 		numMaxLength.TabIndex = 2;
+		numMaxLength.ValueChanged += numMaxLength_ValueChanged;
 		// 
 		// ckbIsPrimaryKey
 		// 
@@ -162,11 +163,13 @@ partial class PropGridRowCtl
 		// 
 		// txtName
 		// 
+		txtName.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		txtName.Dock = System.Windows.Forms.DockStyle.Fill;
 		txtName.Location = new System.Drawing.Point(0, 0);
 		txtName.Name = "txtName";
-		txtName.Size = new System.Drawing.Size(141, 23);
+		txtName.Size = new System.Drawing.Size(141, 16);
 		txtName.TabIndex = 0;
+		txtName.TextChanged += txtName_TextChanged;
 		// 
 		// splDatatype
 		// 

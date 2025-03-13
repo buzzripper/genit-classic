@@ -29,7 +29,7 @@ partial class EntityContainerCtl
 	{
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EntityContainerCtl));
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
-		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+		lblEntityName = new System.Windows.Forms.ToolStripLabel();
 		nbMain = new System.Windows.Forms.ToolStripButton();
 		nbProperties = new System.Windows.Forms.ToolStripButton();
 		nbSvcMethods = new System.Windows.Forms.ToolStripButton();
@@ -41,21 +41,21 @@ partial class EntityContainerCtl
 		toolStrip1.AutoSize = false;
 		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, nbMain, nbProperties, nbSvcMethods });
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblEntityName, nbMain, nbProperties, nbSvcMethods });
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
 		toolStrip1.Size = new System.Drawing.Size(832, 30);
 		toolStrip1.TabIndex = 0;
 		toolStrip1.Text = "toolStrip1";
 		// 
-		// toolStripLabel1
+		// lblEntityName
 		// 
-		toolStripLabel1.Font = new System.Drawing.Font("Segoe UI", 14F);
-		toolStripLabel1.Name = "toolStripLabel1";
-		toolStripLabel1.Padding = new System.Windows.Forms.Padding(0, 0, 125, 0);
-		toolStripLabel1.Size = new System.Drawing.Size(184, 27);
-		toolStripLabel1.Text = "Entity";
-		toolStripLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+		lblEntityName.Font = new System.Drawing.Font("Segoe UI", 14F);
+		lblEntityName.Name = "lblEntityName";
+		lblEntityName.Padding = new System.Windows.Forms.Padding(0, 0, 125, 0);
+		lblEntityName.Size = new System.Drawing.Size(184, 27);
+		lblEntityName.Text = "Entity";
+		lblEntityName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		// 
 		// nbMain
 		// 
@@ -108,7 +108,7 @@ partial class EntityContainerCtl
 
 	private System.Windows.Forms.SplitContainer splitContainer1;
 	private System.Windows.Forms.ToolStrip toolStrip1;
-	private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+	private System.Windows.Forms.ToolStripLabel lblEntityName;
 	private System.Windows.Forms.ToolStripButton nbMain;
 	private System.Windows.Forms.ToolStripButton nbProperties;
 	private System.Windows.Forms.ToolStripButton nbSvcMethods;

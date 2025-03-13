@@ -24,7 +24,7 @@ public class EntityModel
 	public string Name { get; set; }
 	public string Schema { get; set; }
 	public string TableName { get; set; }
-	public bool Enabled { get; set; }
+	public bool Enabled { get; set; } = true;
 	public string Namespace { get; set; }
 	public List<string> Attributes { get; set; } = new List<string>();
 	public List<string> AddlUsings { get; set; } = new List<string>();

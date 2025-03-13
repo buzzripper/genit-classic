@@ -14,16 +14,13 @@ namespace Dyvenix.Genit.UserControls;
 
 public partial class SvcMethodsEditCtl :  EntityEditCtlBase
 {
-	//protected EntityModel _entity;
-
 	public SvcMethodsEditCtl()
 	{
 		InitializeComponent();
 	}
 
-	public void Initialize(EntityModel entity)
+	public SvcMethodsEditCtl(EntityModel entity) : base(entity)
 	{
-		//_entity = entity;
-		base.Initialize(entity);
+		InitializeComponent();
 	}
 }

@@ -76,9 +76,7 @@ public partial class DataTypeCtl : UserControlBase
 		cmbItems.SuspendLayout();
 		cmbItems.Items.Clear();
 
-		cmbItems.Items.Add(new DataTypeItem("Primitives", null, null));
 		PrimitiveType.GetAll().ForEach(pt => cmbItems.Items.Add(new DataTypeItem(pt.CSType, pt, null)));
-		cmbItems.Items.Add(new DataTypeItem("Enums", null, null));
 		foreach (var enumModel in enumModels)
 			cmbItems.Items.Add(new DataTypeItem(enumModel.Name, null, enumModel));
 

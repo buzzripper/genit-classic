@@ -77,9 +77,11 @@ public partial class PropGridRowCtl : UserControl
 
 	#region UI Events
 
-	private void ckbAll_CheckedChanged(object sender, EventArgs e)
+
+	private void txtName_TextChanged(object sender, EventArgs e)
 	{
-		SetState();
+		if (!_suspendUpdates)
+			_propertyMdl.Name = txtName.Text;
 	}
 
 	private void dtcDatatype_ValueChanged(object sender, DataTypeChangedEventArgs e)
@@ -89,6 +91,12 @@ public partial class PropGridRowCtl : UserControl
 			_propertyMdl.EnumType = e.EnumType;
 			SetState();
 		}
+	}
+
+	private void numMaxLength_ValueChanged(object sender, EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_propertyMdl.MaxLength = Convert.ToInt32(numMaxLength.Value);
 	}
 
 	private void ckbIsPrimaryKey_CheckedChanged(object sender, EventArgs e)
@@ -162,19 +170,13 @@ public partial class PropGridRowCtl : UserControl
 
 	private void SetState_MaxLength()
 	{
-		if (_propertyMdl.PrimitiveType.Id == PrimitiveType.String.Id || _propertyMdl.PrimitiveType.Id == PrimitiveType.ByteArray.Id) {
-			//numMaxLength.ReadOnly = false;
+		if (_propertyMdl.PrimitiveType?.Id == PrimitiveType.String.Id || _propertyMdl.PrimitiveType?.Id == PrimitiveType.ByteArray.Id) {
 			numMaxLength.Visible = true;
-			//numMaxLength.ForeColor = SystemColors.Control;
 		} else {
 			numMaxLength.Visible = false;
-			//numMaxLength.ReadOnly = true;
-			//numMaxLength.ForeColor = Color.Black;
 		}
 
-		// Override readonly if it's a foreign key
-		//if (_propertyMdl.IsForeignKey)
-			//numMaxLength.ReadOnly = true;
+		numMaxLength.Enabled = !_propertyMdl.IsForeignKey;
 	}
 
 	private void SetState_IsPrimaryKey()
@@ -238,7 +240,7 @@ public partial class PropGridRowCtl : UserControl
 	{
 		ckbIsIndexClustered.Enabled = ckbIsIndexed.Checked;
 
-		if (!ckbIsIndexed.Checked) 
+		if (!ckbIsIndexed.Checked)
 			ckbIsIndexClustered.Checked = false;
 
 		if (_propertyMdl.IsForeignKey)

@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Dyvenix.Genit.Models;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 
 namespace Dyvenix.Genit.UserControls;
 
 public partial class PropGridRowCtl : UserControl
 {
+	public event EventHandler<PropertyModelChangedEventArgs> PropertyModelChanged;
+
 	private readonly PropertyModel _propertyMdl;
 	private bool _suspendUpdates;
 
@@ -23,7 +17,7 @@ public partial class PropGridRowCtl : UserControl
 	public PropGridRowCtl()
 	{
 		InitializeComponent();
-		this.Height = 35;
+		this.Height = txtName.Height + 8;
 	}
 
 	public PropGridRowCtl(PropertyModel propertyMdl) : this()
@@ -248,4 +242,44 @@ public partial class PropGridRowCtl : UserControl
 	}
 
 	#endregion
+
+	private void picDelete_Click(object sender, EventArgs e)
+	{
+		if (MessageBox.Show("Are you sure you want to delete this property?", "Delete Property", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+			return;
+
+		PropertyModelChanged?.Invoke(this, new PropertyModelChangedEventArgs(ModelPropertyChangedAction.Deleted, _propertyMdl.Id, _propertyMdl));
+		
+	}
+
+	private void picEditAssoc_Click(object sender, EventArgs e)
+	{
+
+	}
 }
+
+#region Event Arg Classes
+
+public enum ModelPropertyChangedAction
+{
+	Added,
+	Deleted,
+	Updated
+}
+
+public class PropertyModelChangedEventArgs : EventArgs
+{
+	public ModelPropertyChangedAction Action { get; }
+	public Guid PropertyId { get; }
+	public PropertyModel PropertyModel { get; }
+
+	public PropertyModelChangedEventArgs(ModelPropertyChangedAction action, Guid propertyId, PropertyModel propMdl)
+	{
+		Action = action;
+		PropertyId = propertyId;
+		PropertyModel = propMdl;
+	}
+}
+
+#endregion
+

@@ -2,6 +2,7 @@
 using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -21,7 +22,6 @@ public partial class TreeNav : UserControl
 	public event EventHandler<EventArgs> GeneratorsNodeSelected;
 	public event EventHandler<GeneratorModelEventArgs> GeneratorModelSelected;
 
-
 	private const string cKey_Db = "db";
 	private const string cKey_Entity = "ent";
 	private const string cKey_Property = "prop";
@@ -37,6 +37,9 @@ public partial class TreeNav : UserControl
 	private const string cNodeName_Gen = "Generators";
 
 	private DbContextModel _dbContextModel;
+	private TreeNode _entitiesNode;
+	private TreeNode _enumsNode;
+	private TreeNode _generatorsNode;
 
 	public TreeNav()
 	{
@@ -63,7 +66,7 @@ public partial class TreeNav : UserControl
 			return;
 
 		this.BuildDbContextNode();
-		this.BuildEntitiesNode();
+		_entitiesNode = this.BuildEntitiesNode();
 		this.BuildEnumsNode();
 		this.BuildAssocsNode();
 		this.BuildGeneratorsNode();
@@ -86,7 +89,7 @@ public partial class TreeNav : UserControl
 		treeView1.Nodes.Add(dbNode);
 	}
 
-	private void BuildEntitiesNode()
+	private TreeNode BuildEntitiesNode()
 	{
 		TreeNode entitiesNode = new TreeNode(cNodeName_Entities) {
 			SelectedImageKey = cKey_Entity,
@@ -101,10 +104,42 @@ public partial class TreeNav : UserControl
 				Tag = entity.Id
 			};
 			entitiesNode.Nodes.Add(entNode);
+			entity.PropertyChanged += Entity_PropertyChanged;
 		}
 
 		treeView1.Nodes.Add(entitiesNode);
 		entitiesNode.Expand();
+
+		_dbContextModel.Entities.CollectionChanged += Entities_CollectionChanged;
+
+		return entitiesNode;
+	}
+
+	private void Entity_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == "Name") {
+			EntityModel entity = (EntityModel)sender;
+			foreach (TreeNode node in _entitiesNode.Nodes) {
+				if (node.Tag is Guid && (Guid)node.Tag == entity.Id) {
+					node.Text = entity.Name;
+					break;
+				}
+			}
+		}
+	}
+
+	private void Entities_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		if (e.Action == NotifyCollectionChangedAction.Remove) {
+			foreach (EntityModel entity in e.OldItems) {
+				foreach (TreeNode node in _entitiesNode.Nodes) {
+					if (node.Tag is Guid && (Guid)node.Tag == entity.Id) {
+						_entitiesNode.Nodes.Remove(node);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	private void BuildEnumsNode()

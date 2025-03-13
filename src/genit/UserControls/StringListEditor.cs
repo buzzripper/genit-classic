@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,7 +14,7 @@ public partial class StringListEditor : UserControlBase
 	public event EventHandler<ItemChangedEventArgs> ItemChanged;
 	public event EventHandler<ItemDeletedEventArgs> ItemDeleted;
 
-	private List<string> _items;
+	private ObservableCollection<string> _items;
 	private bool _populating;
 
 	public StringListEditor()
@@ -82,10 +83,10 @@ public partial class StringListEditor : UserControlBase
 
 	[Browsable(false)]
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-	public List<string> Items
+	public ObservableCollection<string> Items
 	{
 		get {
-			List<string> items = new List<string>();
+			ObservableCollection<string> items = new ObservableCollection<string>();
 			foreach (DataGridViewRow row in grdItems.Rows)
 				items.Add(row.Cells[0].Value.ToString());
 			return items;

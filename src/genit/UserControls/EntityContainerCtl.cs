@@ -31,6 +31,7 @@ namespace Dyvenix.Genit.UserControls
 		private void Initialize()
 		{
 			lblEntityName.Text = _entity.Name;
+			_entity.PropertyChanged += _entity_PropertyChanged;
 
 			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl(_entity)));
 			//_childEditors.Add(new EntityEditorItem(nbProperties, new PropertyEditCtl()));
@@ -59,6 +60,12 @@ namespace Dyvenix.Genit.UserControls
 
 			//if (entityMainEditCtl != null)
 			//	entityMainEditCtl.InitializeGrid();
+		}
+
+		private void _entity_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "Name")
+				lblEntityName.Text = _entity.Name;
 		}
 
 		private void nbMain_Click(object sender, EventArgs e)

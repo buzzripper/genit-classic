@@ -76,7 +76,7 @@ public class EntityGenerator
 			usings.AddIfNotExists(ns);
 	}
 
-	private void GenerateEntities(DbContextModel dbContextMdl, List<EntityModel> entities)
+	private void GenerateEntities(DbContextModel dbContextMdl, ObservableCollection<EntityModel> entities)
 	{
 		foreach (var entity in entities) {
 			if (!entity.Enabled)
@@ -88,12 +88,12 @@ public class EntityGenerator
 
 			var usings = new List<string>();
 			usings.Add("System");
-			entity.AddlUsings.ForEach(u => usings.Add(u));
+			entity.AddlUsings.ToList().ForEach(u => usings.Add(u));
 
 			// Class declaration
 			var classStart = new List<string>();
 			classStart.Add("");
-			entity.Attributes.ForEach(a => classStart.Add($"[{a}]"));
+			entity.Attributes.ToList().ForEach(a => classStart.Add($"[{a}]"));
 			var ns = string.IsNullOrWhiteSpace(entity.Namespace) ? dbContextMdl.EntitiesNamespace : entity.Namespace;
 			classStart.Add($"namespace {ns};");
 			classStart.Add("");

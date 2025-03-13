@@ -50,10 +50,10 @@ partial class EntityContainerCtl
 		// 
 		// lblEntityName
 		// 
-		lblEntityName.Font = new System.Drawing.Font("Segoe UI", 14F);
+		lblEntityName.AutoSize = false;
+		lblEntityName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		lblEntityName.Name = "lblEntityName";
-		lblEntityName.Padding = new System.Windows.Forms.Padding(0, 0, 125, 0);
-		lblEntityName.Size = new System.Drawing.Size(184, 27);
+		lblEntityName.Size = new System.Drawing.Size(300, 27);
 		lblEntityName.Text = "Entity";
 		lblEntityName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		// 

@@ -1,6 +1,7 @@
 ﻿using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Dyvenix.Genit
 {
@@ -417,7 +418,7 @@ namespace Dyvenix.Genit
 				InclListQuery = true,
 				UseListPaging = true,
 				UseListSorting = true,
-				AddlUsings = new List<string> { "System.Linq", "System.Text" }
+				AddlUsings = new ObservableCollection<string> { "System.Linq", "System.Text" }
 			};
 
 			var prop = new PropertyModel(Guid.NewGuid()) {

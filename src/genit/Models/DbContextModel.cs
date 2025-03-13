@@ -13,9 +13,9 @@ public class DbContextModel
 	public bool Enabled { get; set; }
 	public string ContextNamespace { get; set; }
 	public string EntitiesNamespace { get; set; }
-	public List<string> AddlUsings { get; set; } = new List<string>();
+	public ObservableCollection<string> AddlUsings { get; set; } = new ObservableCollection<string>();
 
-	public List<EntityModel> Entities { get; set; } = new List<EntityModel>();
+	public ObservableCollection<EntityModel> Entities { get; set; } = new ObservableCollection<EntityModel>();
 	public ObservableCollection<EnumModel> Enums { get; set; } = new ObservableCollection<EnumModel>();
 	public List<AssocModel> Assocs { get; set; } = new List<AssocModel>();
 	public List<GenModelBase> Generators = new List<GenModelBase>();
@@ -23,7 +23,7 @@ public class DbContextModel
 	public void InitializeOnLoad()
 	{
 		if (AddlUsings == null)
-			AddlUsings = new List<string>();
+			AddlUsings = new ObservableCollection<string>();
 
 		foreach (var entity in Entities) {
 			entity.InitializeOnLoad(Enums);

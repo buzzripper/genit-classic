@@ -63,7 +63,7 @@ partial class PropGridCtl
 		splMain.Panel2.Controls.Add(splDataType);
 		splMain.Size = new System.Drawing.Size(1090, 20);
 		splMain.SplitterDistance = 197;
-		splMain.SplitterWidth = 5;
+		splMain.SplitterWidth = 3;
 		splMain.TabIndex = 1;
 		splMain.SplitterMoved += splMain_SplitterMoved;
 		// 
@@ -99,9 +99,9 @@ partial class PropGridCtl
 		splDataType.Panel2.Controls.Add(label5);
 		splDataType.Panel2.Controls.Add(label4);
 		splDataType.Panel2.Controls.Add(label3);
-		splDataType.Size = new System.Drawing.Size(888, 20);
+		splDataType.Size = new System.Drawing.Size(890, 20);
 		splDataType.SplitterDistance = 175;
-		splDataType.SplitterWidth = 5;
+		splDataType.SplitterWidth = 3;
 		splDataType.TabIndex = 0;
 		splDataType.SplitterMoved += splDataType_SplitterMoved;
 		// 
@@ -121,7 +121,7 @@ partial class PropGridCtl
 		// 
 		label8.BackColor = System.Drawing.SystemColors.ScrollBar;
 		label8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		label8.Location = new System.Drawing.Point(319, 0);
+		label8.Location = new System.Drawing.Point(329, 0);
 		label8.Name = "label8";
 		label8.Size = new System.Drawing.Size(53, 20);
 		label8.TabIndex = 8;
@@ -132,7 +132,7 @@ partial class PropGridCtl
 		// 
 		label9.BackColor = System.Drawing.SystemColors.ScrollBar;
 		label9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		label9.Location = new System.Drawing.Point(267, 0);
+		label9.Location = new System.Drawing.Point(277, 0);
 		label9.Name = "label9";
 		label9.Size = new System.Drawing.Size(53, 20);
 		label9.TabIndex = 7;
@@ -143,7 +143,7 @@ partial class PropGridCtl
 		// 
 		label6.BackColor = System.Drawing.SystemColors.ScrollBar;
 		label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		label6.Location = new System.Drawing.Point(215, 0);
+		label6.Location = new System.Drawing.Point(225, 0);
 		label6.Name = "label6";
 		label6.Size = new System.Drawing.Size(53, 20);
 		label6.TabIndex = 6;
@@ -154,7 +154,7 @@ partial class PropGridCtl
 		// 
 		label7.BackColor = System.Drawing.SystemColors.ScrollBar;
 		label7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		label7.Location = new System.Drawing.Point(163, 0);
+		label7.Location = new System.Drawing.Point(173, 0);
 		label7.Name = "label7";
 		label7.Size = new System.Drawing.Size(53, 20);
 		label7.TabIndex = 5;
@@ -165,7 +165,7 @@ partial class PropGridCtl
 		// 
 		label5.BackColor = System.Drawing.SystemColors.ScrollBar;
 		label5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		label5.Location = new System.Drawing.Point(111, 0);
+		label5.Location = new System.Drawing.Point(121, 0);
 		label5.Name = "label5";
 		label5.Size = new System.Drawing.Size(53, 20);
 		label5.TabIndex = 4;
@@ -176,7 +176,7 @@ partial class PropGridCtl
 		// 
 		label4.BackColor = System.Drawing.SystemColors.ScrollBar;
 		label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		label4.Location = new System.Drawing.Point(59, 0);
+		label4.Location = new System.Drawing.Point(69, 0);
 		label4.Name = "label4";
 		label4.Size = new System.Drawing.Size(53, 20);
 		label4.TabIndex = 3;
@@ -189,7 +189,7 @@ partial class PropGridCtl
 		label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		label3.Location = new System.Drawing.Point(2, 0);
 		label3.Name = "label3";
-		label3.Size = new System.Drawing.Size(58, 20);
+		label3.Size = new System.Drawing.Size(68, 20);
 		label3.TabIndex = 2;
 		label3.Text = "Max Len";
 		label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

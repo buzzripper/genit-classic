@@ -24,8 +24,6 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 	public EntityMainEditCtl(EntityModel entity) : base(entity)
 	{
 		InitializeComponent();
-
-
 	}
 
 	private void EntityMainEditCtl_Load(object sender, EventArgs e)
@@ -41,10 +39,10 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		txtSchema.Text = _entity.Schema;
 		txtTableName.Text = _entity.TableName;
 		txtNamespace.Text = _entity.Namespace;
+		ckbEnabled.Checked = _entity.Enabled;
 
 		sleAttrs.Items = _entity.Attributes;
 		sleUsings.Items = _entity.AddlUsings;
-
 		propGridCtl.DataSource = _entity.Properties;
 
 		_suspendUpdates = false;

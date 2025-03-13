@@ -2,6 +2,7 @@
 using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -93,13 +94,13 @@ public class DbContextGenerator
 		usings.Add("Microsoft.EntityFrameworkCore");
 		usings.Add("System.Collections.Generic");
 
-		dbContextMdl.AddlUsings?.ForEach(u => usings.Add(u));
+		dbContextMdl.AddlUsings?.ToList().ForEach(u => usings.Add(u));
 		usings.Add(dbContextMdl.EntitiesNamespace);
 
 		return usings;
 	}
 
-	private List<string> GenerateProperties(List<EntityModel> entities)
+	private List<string> GenerateProperties(ObservableCollection<EntityModel> entities)
 	{
 		if (!entities.Any())
 			return new List<string>();
@@ -118,7 +119,7 @@ public class DbContextGenerator
 		return propsList;
 	}
 
-	private List<string> GenerateOnModelCreating(List<EntityModel> entities)
+	private List<string> GenerateOnModelCreating(ObservableCollection<EntityModel> entities)
 	{
 		var outList = new List<string>();
 

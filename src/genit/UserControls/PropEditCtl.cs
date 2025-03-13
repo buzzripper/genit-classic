@@ -10,7 +10,7 @@ public partial class PropEditCtl : UserControlBase
 		InitializeComponent();
 	}
 
-	public void Initialize(PropertyModel property)
+	public void Initialize(Models.PropertyModel property)
 	{
 		bindingSrc.DataSource = property;
 		dataTypeCtl1.SetDataTypes(property.PrimitiveType, property.EnumType);

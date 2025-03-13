@@ -38,6 +38,13 @@ public partial class DataTypeCtl : UserControlBase
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 	public EnumModel EnumModel { get; private set; }
 
+	[Browsable(true)]
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+	public new bool Enabled { 
+		get { return cmbItems.Enabled; } 
+		set { cmbItems.Enabled = value; }
+	}
+
 	#endregion
 
 	public void SetDataTypes(PrimitiveType primitiveType, EnumModel enumMdl)
@@ -70,10 +77,10 @@ public partial class DataTypeCtl : UserControlBase
 		cmbItems.Items.Clear();
 
 		cmbItems.Items.Add(new DataTypeItem("Primitives", null, null));
-		PrimitiveType.GetAll().ForEach(pt => cmbItems.Items.Add(new DataTypeItem($"     {pt.CSType}", pt, null)));
+		PrimitiveType.GetAll().ForEach(pt => cmbItems.Items.Add(new DataTypeItem(pt.CSType, pt, null)));
 		cmbItems.Items.Add(new DataTypeItem("Enums", null, null));
 		foreach (var enumModel in enumModels)
-			cmbItems.Items.Add(new DataTypeItem($"     {enumModel.Name}", null, enumModel));
+			cmbItems.Items.Add(new DataTypeItem(enumModel.Name, null, enumModel));
 
 		cmbItems.ResumeLayout();
 	}
@@ -106,6 +113,7 @@ public partial class DataTypeCtl : UserControlBase
 
 	private void SetValues(PrimitiveType primitiveType, EnumModel enumType)
 	{
+
 		this.PrimitiveType = primitiveType;
 		this.EnumModel = enumType;
 
@@ -117,6 +125,9 @@ public partial class DataTypeCtl : UserControlBase
 	{
 		var selectedDataTypeItem = cmbItems.SelectedItem as DataTypeItem;
 		if (selectedDataTypeItem == null)
+			return;
+
+		if (selectedDataTypeItem.PrimitiveType == this.PrimitiveType && selectedDataTypeItem.EnumType == this.EnumModel)
 			return;
 
 		if (selectedDataTypeItem.PrimitiveType != null) {

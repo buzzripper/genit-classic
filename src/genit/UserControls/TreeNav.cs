@@ -262,9 +262,9 @@ public class EntityModelEventArgs : EventArgs
 
 public class PropertyModelEventArgs : EventArgs
 {
-	public PropertyModel Property { get; }
+	public Models.PropertyModel Property { get; }
 
-	public PropertyModelEventArgs(PropertyModel property)
+	public PropertyModelEventArgs(Models.PropertyModel property)
 	{
 		Property = property;
 	}

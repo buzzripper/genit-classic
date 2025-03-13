@@ -47,7 +47,7 @@ public partial class PropertyEditCtl : EntityEditCtlBase
 	{
 		this.SuspendLayout();
 
-		var prop = lbxProps.SelectedItem as PropertyModel;
+		var prop = lbxProps.SelectedItem as Models.PropertyModel;
 		if (prop != null) {
 			propEditCtl.Initialize(prop);
 			propEditCtl.Visible = true;

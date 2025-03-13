@@ -32,7 +32,9 @@ namespace Dyvenix.Genit.UserControls
 		{
 			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl()));
 			//_childEditors.Add(new EntityEditorItem(nbProperties, new PropertyEditCtl()));
-			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl()));
+			//_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl()));
+
+			EntityMainEditCtl entityMainEditCtl = null;
 
 			foreach (var childEditor in _childEditors) {
 				var ctl = childEditor.Ctl;
@@ -41,14 +43,21 @@ namespace Dyvenix.Genit.UserControls
 				ctl.Width = this.Width;
 				ctl.Height = this.Height - toolStrip1.Height;
 				ctl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-				Controls.Add(ctl);
+
+				this.Controls.Add(ctl);
 
 				var entityEditCtl = ctl as EntityEditCtlBase;
-				if (entityEditCtl != null)
+				if (entityEditCtl != null) {
 					entityEditCtl.Initialize(_entity);
+					if (entityMainEditCtl == null)
+						entityMainEditCtl = entityEditCtl as EntityMainEditCtl;
+				}
 			}
-		
+
 			SelectControl(cIdxMain);
+
+			if (entityMainEditCtl != null)
+				entityMainEditCtl.InitializeGrid();
 		}
 
 		private void nbMain_Click(object sender, EventArgs e)
@@ -85,6 +94,10 @@ namespace Dyvenix.Genit.UserControls
 			}
 
 			this.ResumeLayout();
+
+			foreach (var ce in _childEditors)
+				if (ce.Ctl is EntityMainEditCtl)
+					((EntityMainEditCtl)ce.Ctl).InitializeGrid();
 		}
 
 		//private void nbMain_EnabledChanged(object sender, EventArgs e)

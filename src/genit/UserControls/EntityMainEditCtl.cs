@@ -2,8 +2,12 @@
 using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -19,14 +23,18 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 	private const int cColIsIndexed = 7;
 	private const int cColIsIndexUnique = 8;
 	private const int cColIsIndexClustered = 9;
+	private const int cColFK = 10;
+	private const int cColDel = 11;
 
 	private readonly List<PrimitiveType> _primitiveTypes;
 	private List<string> _datatypes;
+	private bool _gridInitialized = false;
 
 	public EntityMainEditCtl()
 	{
+		this.Visible = false;
 		InitializeComponent();
-		grdProps.AutoGenerateColumns = false;
+		//grdProps.AutoGenerateColumns = false;
 		_primitiveTypes = PrimitiveType.GetAll();
 	}
 
@@ -38,9 +46,28 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		InitializeDatatypeColumn();
 		Globals.DbContext.Enums.CollectionChanged += Enums_CollectionChanged;
 
-		grdProps.DataSource = _entity.Properties;
+		propGridCtl.DataSource = _entity.Properties;
 		sleAttrs.Items = _entity.Attributes;
 		sleUsings.Items = _entity.AddlUsings;
+	}
+
+	private void EntityMainEditCtl_VisibleChanged(object sender, EventArgs e)
+	{
+		//if (!_gridInitialized && this.Visible) {
+		//	_gridInitialized = true;
+		//	InitializeGrid();
+		//}
+	}
+
+	public void InitializeGrid()
+	{
+		//foreach (DataGridViewRow row in grdProps.Rows) {
+		//	var prop = GetPropFromRow(row);
+		//	if (prop == null)
+		//		continue;
+
+		//	SetRowState(row, prop);
+		//}
 	}
 
 	#region Data Events
@@ -69,17 +96,20 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 
 	private void InitializeDatatypeColumn()
 	{
-		var colDatatype = grdProps.Columns[cColDatatype] as DataGridViewComboBoxColumn;
-		if (colDatatype == null)
-			throw new ApplicationException($"Column {cColDatatype} is not a combo box column.");
+		//var colDatatype = grdProps.Columns[cColDatatype] as DataGridViewComboBoxColumn;
+		//if (colDatatype == null)
+		//	throw new ApplicationException($"Column {cColDatatype} is not a combo box column.");
 
-		colDatatype.HeaderText = "Data Type";
-		colDatatype.DataPropertyName = "DatatypeName";
+		//colDatatype.HeaderText = "Data Type";
+		//colDatatype.DataPropertyName = "DatatypeName";
 		//colDatatype.Name = "DatatypeColumn";
-		colDatatype.DataSource = _datatypes;
+		//colDatatype.DataSource = _datatypes;
 		//colDatatype.DisplayMember = "Name"; // The property to display in the combo box
 		//colDatatype.ValueMember = "Id"; // The property to use as the actual value
 	}
+
+	#region Cell Updates
+
 
 	private void grdProps_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
 	{
@@ -91,57 +121,129 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		}
 	}
 
+	// Fired when the combo dropdown selection is made
 	private void ComboBox_SelectionChangeCommitted(object sender, EventArgs e)
 	{
-		if (!(sender is DataGridViewComboBoxEditingControl comboBox))
-			return;
+		//var cmbCell = sender as DataGridViewComboBoxEditingControl;
+		//var row = grdProps.Rows[cmbCell.EditingControlRowIndex];
+		//var prop = GetPropFromRow(row);
+		//if (prop == null)
+		//	return;
 
-		var datatypeStr = comboBox.SelectedItem.ToString();
-		var id = GetIdFromCell(grdProps.SelectedCells[0].OwningRow.Cells[cColId]);
+		//var selectedStr = cmbCell.SelectedItem.ToString();
 
-		UpdateDatatypeValue(id, datatypeStr);
-	}
+		//var idx = _primitiveTypes.Select(pt => pt.CSType).ToList().IndexOf(selectedStr);
+		//if (idx > -1) {
+		//	prop.PrimitiveType = _primitiveTypes[idx];
+		//	prop.EnumType = null;
 
-	private Guid GetIdFromCell(DataGridViewCell cell)
-	{
-		if (!Guid.TryParse(cell.Value?.ToString(), out Guid id))
-			throw new ApplicationException("Unable to parse Id");
-		return id;
-	}
+		//	// Set states of cells
+		//	SetRowState(row, prop);
 
-	private void grdProps_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-	{
-		//if (e.ColumnIndex == cColDatatype) {
-		//	var idStr = grdProps.Rows[e.RowIndex].Cells[cColId].Value?.ToString();
-		//	if (!Guid.TryParse(idStr?.ToString(), out Guid id))
-		//		return;
-
-		//	var cmbCell = grdProps.Rows[e.RowIndex].Cells[e.ColumnIndex] as DataGridViewComboBoxCell;
-		//	var x = cmbCell.Value;
-		//	var datatypeStr = grdProps.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
-
-		//	UpdateDatatypeValue(id, datatypeStr);
+		//} else {
+		//	var enumModel = Globals.DbContext.Enums.FirstOrDefault(e => e.Name == selectedStr);
+		//	if (enumModel != null) {
+		//		prop.EnumType = enumModel;
+		//		prop.PrimitiveType = null;
+		//	}
 		//}
 	}
 
-	private void UpdateDatatypeValue(Guid propId, string selectedStr)
-	{
-		var prop = _entity.Properties.FirstOrDefault(p => p.Id == propId);
-		if (prop == null)
-			return;
+	//private void CellUpdated_Datatype(DataGridViewComboBoxEditingControl comboBox, DataGridViewRow row, PropertyModel prop)
+	//{
+	//}
 
-		var idx = _primitiveTypes.Select(pt => pt.CSType).ToList().IndexOf(selectedStr);
-		if (idx > -1) {
-			prop.PrimitiveType = _primitiveTypes[idx];
-			prop.EnumType = null;
+	private void SetRowState(DataGridViewRow row, Models.PropertyModel prop)
+	{
+		SetState_Datatype(row, prop);
+		SetState_MaxLength(row, prop);
+		SetState_IsIdentity(row, prop);
+		SetState_IsIndexed(row, prop);
+		SetState_IsIndexUnique(row, prop);
+		SetState_IsIndexClustered(row, prop);
+	}
+
+	private void SetState_Datatype(DataGridViewRow row, Models.PropertyModel prop)
+	{
+		row.Cells[cColDatatype].ReadOnly = prop.IsForeignKey;
+	}
+
+	private void SetState_MaxLength(DataGridViewRow row, Models.PropertyModel prop)
+	{
+		if ((prop.PrimitiveType.Id == PrimitiveType.String.Id || prop.PrimitiveType.Id == PrimitiveType.ByteArray.Id)) {
+			row.Cells[cColMaxLength].ReadOnly = prop.IsForeignKey; // Read-only if FK
+			row.Cells[cColMaxLength].Style.ForeColor = row.Cells[0].Style.BackColor;
 
 		} else {
-			var enumModel = Globals.DbContext.Enums.FirstOrDefault(e => e.Name == selectedStr);
-			if (enumModel != null) {
-				prop.EnumType = enumModel;
-				prop.PrimitiveType = null;
-			}
+			row.Cells[cColMaxLength].Style.ForeColor = Color.Black;
+			row.Cells[cColMaxLength].ReadOnly = true;
 		}
+	}
+
+	private void SetState_IsIdentity(DataGridViewRow row, Models.PropertyModel prop)
+	{
+		if ((bool)row.Cells[cColIsPrimaryKey].Value)
+			row.Cells[cColIsIdentity].ReadOnly = prop.IsForeignKey;
+		else
+			row.Cells[cColIsIdentity].ReadOnly = true;
+	}
+
+	private void SetState_IsIndexed(DataGridViewRow row, Models.PropertyModel prop)
+	{
+		var isPrimaryKey = (bool)row.Cells[cColIsPrimaryKey].Value;
+		if (isPrimaryKey || prop.IsForeignKey) {
+			row.Cells[cColIsIndexed].ReadOnly = true;
+			row.Cells[cColIsIndexed].Value = true;
+		} else {
+			row.Cells[cColIsIndexed].ReadOnly = false;
+		}
+	}
+
+	private void SetState_IsIndexUnique(DataGridViewRow row, Models.PropertyModel prop)
+	{
+		row.Cells[cColIsIndexUnique].ReadOnly = prop.IsForeignKey || (bool)row.Cells[cColIsIndexed].Value;
+	}
+
+	private void SetState_IsIndexClustered(DataGridViewRow row, Models.PropertyModel prop)
+	{
+		row.Cells[cColIsIndexClustered].ReadOnly = prop.IsForeignKey || (bool)row.Cells[cColIsIndexed].Value;
+	}
+
+	#endregion
+
+	#region Helpers
+
+	private Models.PropertyModel GetPropFromRow(DataGridViewRow row)
+	{
+		if (!Guid.TryParse(row.Cells[cColId].Value?.ToString(), out Guid id))
+			throw new ApplicationException("Unable to parse Id");
+
+		return _entity.Properties.FirstOrDefault(p => p.Id == id);
+	}
+
+	#endregion
+
+	private void grdProps_CellClick(object sender, DataGridViewCellEventArgs e)
+	{
+		//switch (e.ColumnIndex) {
+		//	case cColFK:
+		//		var fkProp = GetPropFromRow(grdProps.Rows[e.RowIndex]);
+		//		break;
+
+		//	case cColDel:
+		//		var delProp = GetPropFromRow(grdProps.Rows[e.RowIndex]);
+		//		//_entity.Properties.Remove(delProp);
+
+		//		//SetRowState(grdProps.Rows[e.RowIndex], delProp);
+		//		this.InitializeGrid();
+
+		//		break;
+
+		//	default:
+		//		break;
+		//}
+
+
 	}
 }
 

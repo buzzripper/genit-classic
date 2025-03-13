@@ -92,6 +92,11 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
+	[JsonIgnore]
+	public bool IsForeignKey
+	{
+		get => (this.FKAssoc != null);
+	}
 
 	private AssocModel _fkAssoc;
 	public AssocModel FKAssoc

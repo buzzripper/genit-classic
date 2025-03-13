@@ -42,19 +42,8 @@ partial class EntityMainEditCtl
 		label5 = new System.Windows.Forms.Label();
 		sleAttrs = new StringListEditor();
 		label6 = new System.Windows.Forms.Label();
-		grdProps = new System.Windows.Forms.DataGridView();
-		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-		colDataTypexXX = new System.Windows.Forms.DataGridViewComboBoxColumn();
-		colMaxLength = new System.Windows.Forms.DataGridViewTextBoxColumn();
-		colIsPrimaryKey = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colIsIdentity = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colNullable = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colIsIndexed = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colIsIndexUnique = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colIsIndexClustered = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		propGridCtl = new PropGridCtl();
 		((System.ComponentModel.ISupportInitialize)bindingSource).BeginInit();
-		((System.ComponentModel.ISupportInitialize)grdProps).BeginInit();
 		SuspendLayout();
 		// 
 		// label1
@@ -184,102 +173,22 @@ partial class EntityMainEditCtl
 		label6.TabIndex = 12;
 		label6.Text = "Class Attributes";
 		// 
-		// grdProps
+		// propGridCtl
 		// 
-		grdProps.AllowUserToResizeRows = false;
-		grdProps.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-		grdProps.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-		grdProps.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colDataTypexXX, colMaxLength, colIsPrimaryKey, colIsIdentity, colNullable, colIsIndexed, colIsIndexUnique, colIsIndexClustered });
-		grdProps.Location = new System.Drawing.Point(29, 119);
-		grdProps.Name = "grdProps";
-		grdProps.RowHeadersVisible = false;
-		grdProps.Size = new System.Drawing.Size(1338, 399);
-		grdProps.TabIndex = 16;
-		grdProps.VirtualMode = true;
-		grdProps.CellEndEdit += grdProps_CellEndEdit;
-		grdProps.EditingControlShowing += grdProps_EditingControlShowing;
-		// 
-		// colId
-		// 
-		colId.DataPropertyName = "Id";
-		colId.HeaderText = "Id";
-		colId.Name = "colId";
-		colId.Visible = false;
-		colId.Width = 75;
-		// 
-		// colName
-		// 
-		colName.DataPropertyName = "Name";
-		colName.HeaderText = "Name";
-		colName.Name = "colName";
-		colName.Width = 200;
-		// 
-		// colDataTypexXX
-		// 
-		colDataTypexXX.HeaderText = "Datatype";
-		colDataTypexXX.Name = "colDataTypexXX";
-		colDataTypexXX.Width = 200;
-		// 
-		// colMaxLength
-		// 
-		colMaxLength.DataPropertyName = "MaxLength";
-		colMaxLength.HeaderText = "Max Len";
-		colMaxLength.Name = "colMaxLength";
-		colMaxLength.Width = 85;
-		// 
-		// colIsPrimaryKey
-		// 
-		colIsPrimaryKey.DataPropertyName = "IsPrimaryKey";
-		colIsPrimaryKey.HeaderText = "Pri";
-		colIsPrimaryKey.Name = "colIsPrimaryKey";
-		colIsPrimaryKey.ToolTipText = "Primary Key";
-		colIsPrimaryKey.Width = 40;
-		// 
-		// colIsIdentity
-		// 
-		colIsIdentity.DataPropertyName = "IsIdentity";
-		colIsIdentity.HeaderText = "Idty";
-		colIsIdentity.Name = "colIsIdentity";
-		colIsIdentity.Width = 40;
-		// 
-		// colNullable
-		// 
-		colNullable.DataPropertyName = "Nullable";
-		colNullable.HeaderText = "Nul";
-		colNullable.Name = "colNullable";
-		colNullable.ToolTipText = "Nullable";
-		colNullable.Width = 40;
-		// 
-		// colIsIndexed
-		// 
-		colIsIndexed.DataPropertyName = "IsIndexed";
-		colIsIndexed.HeaderText = "Idx";
-		colIsIndexed.Name = "colIsIndexed";
-		colIsIndexed.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-		colIsIndexed.ToolTipText = "Indexed";
-		colIsIndexed.Width = 40;
-		// 
-		// colIsIndexUnique
-		// 
-		colIsIndexUnique.DataPropertyName = "IsIndexUnique";
-		colIsIndexUnique.HeaderText = "UI";
-		colIsIndexUnique.Name = "colIsIndexUnique";
-		colIsIndexUnique.ToolTipText = "Unique Index";
-		colIsIndexUnique.Width = 40;
-		// 
-		// colIsIndexClustered
-		// 
-		colIsIndexClustered.DataPropertyName = "IsIndexClustered";
-		colIsIndexClustered.HeaderText = "CI";
-		colIsIndexClustered.Name = "colIsIndexClustered";
-		colIsIndexClustered.Width = 40;
+		propGridCtl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+		propGridCtl.AutoScroll = true;
+		propGridCtl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+		propGridCtl.Location = new System.Drawing.Point(12, 121);
+		propGridCtl.Name = "propGridCtl";
+		propGridCtl.Size = new System.Drawing.Size(1358, 416);
+		propGridCtl.TabIndex = 13;
 		// 
 		// EntityMainEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ActiveBorder;
-		Controls.Add(grdProps);
+		Controls.Add(propGridCtl);
 		Controls.Add(label6);
 		Controls.Add(sleAttrs);
 		Controls.Add(label5);
@@ -296,8 +205,8 @@ partial class EntityMainEditCtl
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "EntityMainEditCtl";
 		Size = new System.Drawing.Size(1389, 552);
+		VisibleChanged += EntityMainEditCtl_VisibleChanged;
 		((System.ComponentModel.ISupportInitialize)bindingSource).EndInit();
-		((System.ComponentModel.ISupportInitialize)grdProps).EndInit();
 		ResumeLayout(false);
 		PerformLayout();
 	}
@@ -318,15 +227,5 @@ partial class EntityMainEditCtl
 	private System.Windows.Forms.Label label5;
 	private StringListEditor sleAttrs;
 	private System.Windows.Forms.Label label6;
-	private System.Windows.Forms.DataGridView grdProps;
-	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
-	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
-	private System.Windows.Forms.DataGridViewComboBoxColumn colDataTypexXX;
-	private System.Windows.Forms.DataGridViewTextBoxColumn colMaxLength;
-	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsPrimaryKey;
-	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIdentity;
-	private System.Windows.Forms.DataGridViewCheckBoxColumn colNullable;
-	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIndexed;
-	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIndexUnique;
-	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsIndexClustered;
+	private PropGridCtl propGridCtl;
 }

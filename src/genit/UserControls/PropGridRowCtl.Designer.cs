@@ -38,6 +38,8 @@ partial class PropGridRowCtl
 		picDelete = new System.Windows.Forms.PictureBox();
 		picEditAssoc = new System.Windows.Forms.PictureBox();
 		splName = new System.Windows.Forms.SplitContainer();
+		splDragImg = new System.Windows.Forms.SplitContainer();
+		picDrag = new System.Windows.Forms.PictureBox();
 		txtName = new System.Windows.Forms.TextBox();
 		splDatatype = new System.Windows.Forms.SplitContainer();
 		dtcDatatype = new DataTypeCtl();
@@ -48,6 +50,11 @@ partial class PropGridRowCtl
 		splName.Panel1.SuspendLayout();
 		splName.Panel2.SuspendLayout();
 		splName.SuspendLayout();
+		((System.ComponentModel.ISupportInitialize)splDragImg).BeginInit();
+		splDragImg.Panel1.SuspendLayout();
+		splDragImg.Panel2.SuspendLayout();
+		splDragImg.SuspendLayout();
+		((System.ComponentModel.ISupportInitialize)picDrag).BeginInit();
 		((System.ComponentModel.ISupportInitialize)splDatatype).BeginInit();
 		splDatatype.Panel1.SuspendLayout();
 		splDatatype.Panel2.SuspendLayout();
@@ -156,16 +163,49 @@ partial class PropGridRowCtl
 		// 
 		// splName.Panel1
 		// 
-		splName.Panel1.Controls.Add(txtName);
+		splName.Panel1.Controls.Add(splDragImg);
 		// 
 		// splName.Panel2
 		// 
 		splName.Panel2.Controls.Add(splDatatype);
-		splName.Size = new System.Drawing.Size(784, 28);
-		splName.SplitterDistance = 140;
+		splName.Size = new System.Drawing.Size(1271, 23);
+		splName.SplitterDistance = 226;
 		splName.SplitterWidth = 3;
 		splName.TabIndex = 11;
 		splName.TabStop = false;
+		// 
+		// splDragImg
+		// 
+		splDragImg.Dock = System.Windows.Forms.DockStyle.Fill;
+		splDragImg.IsSplitterFixed = true;
+		splDragImg.Location = new System.Drawing.Point(0, 0);
+		splDragImg.Name = "splDragImg";
+		// 
+		// splDragImg.Panel1
+		// 
+		splDragImg.Panel1.Controls.Add(picDrag);
+		splDragImg.Panel1MinSize = 20;
+		// 
+		// splDragImg.Panel2
+		// 
+		splDragImg.Panel2.Controls.Add(txtName);
+		splDragImg.Size = new System.Drawing.Size(226, 23);
+		splDragImg.SplitterDistance = 40;
+		splDragImg.SplitterWidth = 1;
+		splDragImg.TabIndex = 2;
+		// 
+		// picDrag
+		// 
+		picDrag.Image = (System.Drawing.Image)resources.GetObject("picDrag.Image");
+		picDrag.Location = new System.Drawing.Point(8, 1);
+		picDrag.Name = "picDrag";
+		picDrag.Size = new System.Drawing.Size(21, 21);
+		picDrag.TabIndex = 1;
+		picDrag.TabStop = false;
+		picDrag.DragDrop += picDrag_DragDrop;
+		picDrag.DragEnter += picDrag_DragEnter;
+		picDrag.DragLeave += picDrag_DragLeave;
+		picDrag.MouseDown += picDrag_MouseDown;
 		// 
 		// txtName
 		// 
@@ -173,7 +213,7 @@ partial class PropGridRowCtl
 		txtName.Dock = System.Windows.Forms.DockStyle.Fill;
 		txtName.Location = new System.Drawing.Point(0, 0);
 		txtName.Name = "txtName";
-		txtName.Size = new System.Drawing.Size(140, 16);
+		txtName.Size = new System.Drawing.Size(185, 16);
 		txtName.TabIndex = 0;
 		txtName.TextChanged += txtName_TextChanged;
 		// 
@@ -198,8 +238,8 @@ partial class PropGridRowCtl
 		splDatatype.Panel2.Controls.Add(ckbIsIndexed);
 		splDatatype.Panel2.Controls.Add(ckbIsIndexUnique);
 		splDatatype.Panel2.Controls.Add(ckbIsIdentity);
-		splDatatype.Size = new System.Drawing.Size(641, 28);
-		splDatatype.SplitterDistance = 125;
+		splDatatype.Size = new System.Drawing.Size(1042, 28);
+		splDatatype.SplitterDistance = 203;
 		splDatatype.SplitterWidth = 3;
 		splDatatype.TabIndex = 0;
 		splDatatype.TabStop = false;
@@ -210,8 +250,9 @@ partial class PropGridRowCtl
 		dtcDatatype.Dock = System.Windows.Forms.DockStyle.Fill;
 		dtcDatatype.Location = new System.Drawing.Point(0, 0);
 		dtcDatatype.Name = "dtcDatatype";
-		dtcDatatype.Size = new System.Drawing.Size(125, 28);
+		dtcDatatype.Size = new System.Drawing.Size(203, 28);
 		dtcDatatype.TabIndex = 0;
+		dtcDatatype.ValueChanged += dtcDatatype_ValueChanged;
 		// 
 		// PropGridRowCtl
 		// 
@@ -220,16 +261,21 @@ partial class PropGridRowCtl
 		BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		Controls.Add(splName);
 		Name = "PropGridRowCtl";
-		Size = new System.Drawing.Size(784, 24);
+		Size = new System.Drawing.Size(1271, 43);
 		Load += PropGridRowCtl_Load;
 		((System.ComponentModel.ISupportInitialize)numMaxLength).EndInit();
 		((System.ComponentModel.ISupportInitialize)picDelete).EndInit();
 		((System.ComponentModel.ISupportInitialize)picEditAssoc).EndInit();
 		splName.Panel1.ResumeLayout(false);
-		splName.Panel1.PerformLayout();
 		splName.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splName).EndInit();
 		splName.ResumeLayout(false);
+		splDragImg.Panel1.ResumeLayout(false);
+		splDragImg.Panel2.ResumeLayout(false);
+		splDragImg.Panel2.PerformLayout();
+		((System.ComponentModel.ISupportInitialize)splDragImg).EndInit();
+		splDragImg.ResumeLayout(false);
+		((System.ComponentModel.ISupportInitialize)picDrag).EndInit();
 		splDatatype.Panel1.ResumeLayout(false);
 		splDatatype.Panel2.ResumeLayout(false);
 		splDatatype.Panel2.PerformLayout();
@@ -252,4 +298,6 @@ partial class PropGridRowCtl
 	private System.Windows.Forms.SplitContainer splDatatype;
 	private System.Windows.Forms.TextBox txtName;
 	private DataTypeCtl dtcDatatype;
+	private System.Windows.Forms.PictureBox picDrag;
+	private System.Windows.Forms.SplitContainer splDragImg;
 }

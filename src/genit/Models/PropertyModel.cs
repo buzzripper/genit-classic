@@ -154,46 +154,11 @@ public class PropertyModel : INotifyPropertyChanged
 		set => SetProperty(ref _isIndexClustered, value);
 	}
 
-	private bool _multiIndex1;
-	public bool MultiIndex1
+	private int _displayOrder;
+	public int DisplayOrder
 	{
-		get => _multiIndex1;
-		set => SetProperty(ref _multiIndex1, value);
-	}
-
-	private bool _multiIndex1Unique;
-	public bool MultiIndex1Unique
-	{
-		get => _multiIndex1Unique;
-		set => SetProperty(ref _multiIndex1Unique, value);
-	}
-
-	private bool _multiIndex2;
-	public bool MultiIndex2
-	{
-		get => _multiIndex2;
-		set => SetProperty(ref _multiIndex2, value);
-	}
-
-	private bool _multiIndex2Unique;
-	public bool MultiIndex2Unique
-	{
-		get => _multiIndex2Unique;
-		set => SetProperty(ref _multiIndex2Unique, value);
-	}
-
-	private bool _isSortCol;
-	public bool IsSortCol
-	{
-		get => _isSortCol;
-		set => SetProperty(ref _isSortCol, value);
-	}
-
-	private bool _isSortDesc;
-	public bool IsSortDesc
-	{
-		get => _isSortDesc;
-		set => SetProperty(ref _isSortDesc, value);
+		get => _displayOrder;
+		set => SetProperty(ref _displayOrder, value);
 	}
 
 	private ObservableCollection<string> _attributes = new ObservableCollection<string>();

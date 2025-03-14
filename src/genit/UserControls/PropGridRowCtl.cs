@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Dyvenix.Genit.Models;
+using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
-using Dyvenix.Genit.Models;
 
 namespace Dyvenix.Genit.UserControls;
 
 public partial class PropGridRowCtl : UserControl
 {
 	public event EventHandler<PropertyModelChangedEventArgs> PropertyModelChanged;
+	public event EventHandler<RowMovedEventArgs> RowMoved;
 
 	private readonly PropertyModel _propertyMdl;
 	private bool _suspendUpdates;
@@ -28,10 +30,12 @@ public partial class PropGridRowCtl : UserControl
 	private void PropGridRowCtl_Load(object sender, EventArgs e)
 	{
 		PopulateControls();
+		picDrag.AllowDrop = true;
 	}
 
 	private void PopulateControls()
 	{
+		this.SuspendLayout();
 		_suspendUpdates = true;
 
 		txtName.Text = _propertyMdl.Name;
@@ -47,6 +51,7 @@ public partial class PropGridRowCtl : UserControl
 		SetState();
 
 		_suspendUpdates = false;
+		this.ResumeLayout();
 	}
 
 	#endregion
@@ -133,6 +138,19 @@ public partial class PropGridRowCtl : UserControl
 		if (_suspendUpdates) return;
 		_propertyMdl.IsIndexClustered = ckbIsIndexClustered.Checked;
 		SetState();
+	}
+
+	private void picDelete_Click(object sender, EventArgs e)
+	{
+		if (MessageBox.Show("Are you sure you want to delete this property?", "Delete Property", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+			return;
+
+		PropertyModelChanged?.Invoke(this, new PropertyModelChangedEventArgs(ModelPropertyChangedAction.Deleted, _propertyMdl.Id, _propertyMdl));
+	}
+
+	private void picEditAssoc_Click(object sender, EventArgs e)
+	{
+
 	}
 
 	#endregion
@@ -243,19 +261,43 @@ public partial class PropGridRowCtl : UserControl
 
 	#endregion
 
-	private void picDelete_Click(object sender, EventArgs e)
-	{
-		if (MessageBox.Show("Are you sure you want to delete this property?", "Delete Property", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-			return;
+	#region Rearrange Rows
 
-		PropertyModelChanged?.Invoke(this, new PropertyModelChangedEventArgs(ModelPropertyChangedAction.Deleted, _propertyMdl.Id, _propertyMdl));
-		
+	private void picDrag_MouseDown(object sender, MouseEventArgs e)
+	{
+		picDrag.DoDragDrop(_propertyMdl.Id.ToString(), DragDropEffects.Move);
 	}
 
-	private void picEditAssoc_Click(object sender, EventArgs e)
+	private void picDrag_DragEnter(object sender, DragEventArgs e)
 	{
-
+		if (e.Data.GetDataPresent(DataFormats.Text)) {
+			var picDrag = (PictureBox)sender;
+			picDrag.BackColor = Color.DarkGray;
+		}
+		e.Effect = DragDropEffects.Move; // Show copy cursor
 	}
+
+	private void picDrag_DragLeave(object sender, EventArgs e)
+	{
+		var picDrag = sender as PictureBox;
+		if (picDrag != null)
+			picDrag.BackColor = SystemColors.Control;
+	}
+
+	private void picDrag_DragDrop(object sender, DragEventArgs e)
+	{
+		if (e.Data.GetDataPresent(DataFormats.Text)) {
+			var srcIdStr = e.Data.GetData(DataFormats.Text) as string;
+			if (srcIdStr != null)
+				RowMoved?.Invoke(this, new RowMovedEventArgs(new Guid(srcIdStr), _propertyMdl.Id));
+
+			var picDrag = sender as PictureBox;
+			if (picDrag != null)
+				picDrag.BackColor = SystemColors.Control;
+		}
+	}
+
+	#endregion
 }
 
 #region Event Arg Classes
@@ -278,6 +320,18 @@ public class PropertyModelChangedEventArgs : EventArgs
 		Action = action;
 		PropertyId = propertyId;
 		PropertyModel = propMdl;
+	}
+}
+
+public class RowMovedEventArgs : EventArgs
+{
+	public Guid SourceId { get; }
+	public Guid TargetId { get; }
+
+	public RowMovedEventArgs(Guid sourceId, Guid targetId)
+	{
+		SourceId = sourceId;
+		TargetId = targetId;
 	}
 }
 

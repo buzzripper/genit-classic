@@ -63,10 +63,6 @@ namespace Dyvenix.Genit
 				TableName = "",
 				Enabled = true,
 				Namespace = "",
-				InclSingleQuery = true,
-				InclListQuery = true,
-				UseListPaging = true,
-				UseListSorting = true
 			};
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
@@ -77,16 +73,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = true,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = true,
 				IsIndexUnique = true,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 0
 			};
 			entity.Properties.Add(prop);
 
@@ -98,16 +87,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 100,
-
 				IsIndexed = true,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 1
 			};
 			entity.Properties.Add(prop);
 
@@ -119,16 +101,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 100,
-
 				IsIndexed = true,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 2
 			};
 			entity.Properties.Add(prop);
 
@@ -140,16 +115,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 100,
-
 				IsIndexed = true,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 3
 			};
 			entity.Properties.Add(prop);
 
@@ -161,16 +129,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 200,
-
 				IsIndexed = true,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 4
 			};
 			entity.Properties.Add(prop);
 
@@ -182,16 +143,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 5
 			};
 			entity.Properties.Add(prop);
 
@@ -203,37 +157,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
-			};
-			entity.Properties.Add(prop);
-
-			prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "Population",
-				PrimitiveType = PrimitiveType.Long,
-				EnumType = null,
-				Nullable = true,
-				IsPrimaryKey = false,
-				IsIdentity = false,
-				MaxLength = 0,
-
-				IsIndexed = false,
-				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 6
 			};
 			entity.Properties.Add(prop);
 
@@ -245,16 +171,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 7
 			};
 			entity.Properties.Add(prop);
 
@@ -266,16 +185,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 8
 			};
 			entity.Properties.Add(prop);
 
@@ -287,16 +199,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 10,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 9
 			};
 			entity.Properties.Add(prop);
 
@@ -308,16 +213,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 10
 			};
 			entity.Properties.Add(prop);
 
@@ -332,11 +230,7 @@ namespace Dyvenix.Genit
 				TableName = "",
 				Enabled = true,
 				Namespace = "",
-				InclSingleQuery = true,
-				InclListQuery = true,
-				UseListPaging = true,
-				UseListSorting = true
-				//AddlUsings = new List<string> { "System.Data", "System.Text" }
+				AddlUsings = new ObservableCollection<string> { "System.Data", "System.Text" }
 			};
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
@@ -347,16 +241,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = true,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = true,
 				IsIndexUnique = true,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 0
 			};
 			entity.Properties.Add(prop);
 
@@ -368,17 +255,10 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 50,
-
 				IsIndexed = true,
 				IsIndexUnique = true,
 				IsIndexClustered = true,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 1
 			};
 			entity.Properties.Add(prop);
 
@@ -390,16 +270,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 50,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 2
 			};
 			entity.Properties.Add(prop);
 
@@ -414,10 +287,6 @@ namespace Dyvenix.Genit
 				TableName = "LogEvents",
 				Enabled = true,
 				Namespace = "",
-				InclSingleQuery = true,
-				InclListQuery = true,
-				UseListPaging = true,
-				UseListSorting = true,
 				AddlUsings = new ObservableCollection<string> { "System.Linq", "System.Text" }
 			};
 
@@ -429,17 +298,10 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = true,
 				IsIdentity = true,
 				MaxLength = 0,
-
 				IsIndexed = true,
 				IsIndexUnique = true,
 				IsIndexClustered = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 0
 			};
 			entity.Properties.Add(prop);
 
@@ -451,16 +313,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 1
 			};
 			entity.Properties.Add(prop);
 
@@ -472,17 +327,10 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = true,
 				IsIndexUnique = false,
 				IsIndexClustered = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 2
 			};
 			entity.Properties.Add(prop);
 
@@ -494,16 +342,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 3
 			};
 			entity.Properties.Add(prop);
 
@@ -515,16 +356,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 0,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 4
 			};
 			entity.Properties.Add(prop);
 
@@ -536,16 +370,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 200,
-
 				IsIndexed = true,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 5
 			};
 			entity.Properties.Add(prop);
 
@@ -557,16 +384,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 200,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 6
 			};
 			entity.Properties.Add(prop);
 
@@ -578,16 +398,9 @@ namespace Dyvenix.Genit
 				IsPrimaryKey = false,
 				IsIdentity = false,
 				MaxLength = 50,
-
 				IsIndexed = false,
 				IsIndexUnique = false,
-				MultiIndex1 = false,
-				MultiIndex1Unique = false,
-				MultiIndex2 = false,
-				MultiIndex2Unique = false,
-
-				IsSortCol = false,
-				IsSortDesc = false
+				DisplayOrder = 7
 			};
 			entity.Properties.Add(prop);
 

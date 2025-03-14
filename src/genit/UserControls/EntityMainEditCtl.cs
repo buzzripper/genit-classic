@@ -77,4 +77,9 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		if (!_suspendUpdates)
 			_entity.Enabled = ckbEnabled.Checked;
 	}
+
+	private void lkbAdd_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+	{
+		_entity.Properties.Add(new PropertyModel(Guid.NewGuid()));
+	}
 }

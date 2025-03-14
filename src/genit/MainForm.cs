@@ -289,6 +289,8 @@ public partial class MainForm : Form
 			outputCtl.WriteInfo($"File saved ({CurrDocFilepath})");
 
 		} catch (ValidationException ex) {
+			foreach(var err in ex.Errors)
+				outputCtl.WriteError(err);
 			MessageBox.Show($"Validation error(s). See output for detail.");
 
 		} catch (Exception ex) {

@@ -56,6 +56,7 @@ partial class PropGridCtl
 		// 
 		// splMain.Panel1
 		// 
+		splMain.Panel1.BackColor = System.Drawing.SystemColors.ScrollBar;
 		splMain.Panel1.Controls.Add(label1);
 		// 
 		// splMain.Panel2
@@ -71,10 +72,9 @@ partial class PropGridCtl
 		// 
 		label1.BackColor = System.Drawing.SystemColors.ScrollBar;
 		label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		label1.Dock = System.Windows.Forms.DockStyle.Top;
-		label1.Location = new System.Drawing.Point(0, 0);
+		label1.Location = new System.Drawing.Point(21, 0);
 		label1.Name = "label1";
-		label1.Size = new System.Drawing.Size(197, 20);
+		label1.Size = new System.Drawing.Size(173, 20);
 		label1.TabIndex = 0;
 		label1.Text = "Name";
 		label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

@@ -43,6 +43,8 @@ partial class EntityMainEditCtl
 		sleAttrs = new StringListEditor();
 		label6 = new System.Windows.Forms.Label();
 		propGridCtl = new PropGridCtl();
+		label7 = new System.Windows.Forms.Label();
+		lkbAdd = new System.Windows.Forms.LinkLabel();
 		((System.ComponentModel.ISupportInitialize)bindingSource).BeginInit();
 		SuspendLayout();
 		// 
@@ -188,11 +190,40 @@ partial class EntityMainEditCtl
 		propGridCtl.Size = new System.Drawing.Size(1035, 423);
 		propGridCtl.TabIndex = 13;
 		// 
+		// label7
+		// 
+		label7.AutoSize = true;
+		label7.Location = new System.Drawing.Point(14, 97);
+		label7.Name = "label7";
+		label7.Size = new System.Drawing.Size(71, 19);
+		label7.TabIndex = 14;
+		label7.Text = "Properties";
+		// 
+		// lkbAdd
+		// 
+		lkbAdd.AutoSize = true;
+		lkbAdd.Cursor = System.Windows.Forms.Cursors.Hand;
+		lkbAdd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+		lkbAdd.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+		lkbAdd.LinkColor = System.Drawing.SystemColors.ControlText;
+		lkbAdd.Location = new System.Drawing.Point(133, 96);
+		lkbAdd.Name = "lkbAdd";
+		lkbAdd.Size = new System.Drawing.Size(65, 19);
+		lkbAdd.TabIndex = 15;
+		lkbAdd.TabStop = true;
+		lkbAdd.Text = "Add New";
+		lkbAdd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+		lkbAdd.UseMnemonic = false;
+		lkbAdd.VisitedLinkColor = System.Drawing.SystemColors.ControlText;
+		lkbAdd.LinkClicked += lkbAdd_LinkClicked;
+		// 
 		// EntityMainEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ActiveBorder;
+		Controls.Add(lkbAdd);
+		Controls.Add(label7);
 		Controls.Add(propGridCtl);
 		Controls.Add(label6);
 		Controls.Add(sleAttrs);
@@ -233,4 +264,6 @@ partial class EntityMainEditCtl
 	private StringListEditor sleAttrs;
 	private System.Windows.Forms.Label label6;
 	private PropGridCtl propGridCtl;
+	private System.Windows.Forms.Label label7;
+	private System.Windows.Forms.LinkLabel lkbAdd;
 }

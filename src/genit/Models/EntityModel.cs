@@ -84,35 +84,35 @@ namespace Dyvenix.Genit.Models
             set => SetProperty(ref _addlUsings, value);
         }
 
-        public bool InclSingleQuery
-        {
-            get => _inclSingleQuery;
-            set => SetProperty(ref _inclSingleQuery, value);
-        }
+        //public bool InclSingleQuery
+        //{
+        //    get => _inclSingleQuery;
+        //    set => SetProperty(ref _inclSingleQuery, value);
+        //}
 
-        public bool InclListQuery
-        {
-            get => _inclListQuery;
-            set => SetProperty(ref _inclListQuery, value);
-        }
+        //public bool InclListQuery
+        //{
+        //    get => _inclListQuery;
+        //    set => SetProperty(ref _inclListQuery, value);
+        //}
 
-        public bool InclListInfoQuery
-        {
-            get => _inclListInfoQuery;
-            set => SetProperty(ref _inclListInfoQuery, value);
-        }
+        //public bool InclListInfoQuery
+        //{
+        //    get => _inclListInfoQuery;
+        //    set => SetProperty(ref _inclListInfoQuery, value);
+        //}
 
-        public bool UseListPaging
-        {
-            get => _useListPaging;
-            set => SetProperty(ref _useListPaging, value);
-        }
+        //public bool UseListPaging
+        //{
+        //    get => _useListPaging;
+        //    set => SetProperty(ref _useListPaging, value);
+        //}
 
-        public bool UseListSorting
-        {
-            get => _useListSorting;
-            set => SetProperty(ref _useListSorting, value);
-        }
+        //public bool UseListSorting
+        //{
+        //    get => _useListSorting;
+        //    set => SetProperty(ref _useListSorting, value);
+        //}
 
         public ObservableCollection<PropertyModel> Properties
         {
@@ -137,7 +137,8 @@ namespace Dyvenix.Genit.Models
         public Guid AddForeignKey(AssocModel assoc)
         {
             var property = new PropertyModel(Guid.NewGuid(), assoc);
-            Properties.Add(property);
+            property.DisplayOrder = Properties.Count;
+			Properties.Add(property);
             return property.Id;
         }
 

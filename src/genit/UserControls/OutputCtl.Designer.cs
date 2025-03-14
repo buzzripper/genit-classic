@@ -62,10 +62,10 @@ partial class OutputCtl
 		colErrLevel.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
 		colErrLevel.FillWeight = 10F;
 		colErrLevel.HeaderText = "ErrLevel";
-		colErrLevel.MinimumWidth = 50;
+		colErrLevel.MinimumWidth = 75;
 		colErrLevel.Name = "colErrLevel";
 		colErrLevel.ReadOnly = true;
-		colErrLevel.Width = 50;
+		colErrLevel.Width = 75;
 		// 
 		// colMessages
 		// 

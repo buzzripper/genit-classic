@@ -27,22 +27,31 @@ partial class SvcMethodsEditCtl
 	/// </summary>
 	private void InitializeComponent()
 	{
+		textBox1 = new System.Windows.Forms.TextBox();
 		label1 = new System.Windows.Forms.Label();
 		SuspendLayout();
+		// 
+		// textBox1
+		// 
+		textBox1.Location = new System.Drawing.Point(324, 144);
+		textBox1.Name = "textBox1";
+		textBox1.Size = new System.Drawing.Size(100, 23);
+		textBox1.TabIndex = 0;
 		// 
 		// label1
 		// 
 		label1.AutoSize = true;
-		label1.Location = new System.Drawing.Point(139, 178);
+		label1.Location = new System.Drawing.Point(129, 153);
 		label1.Name = "label1";
-		label1.Size = new System.Drawing.Size(75, 15);
-		label1.TabIndex = 0;
-		label1.Text = "Svc Methods";
+		label1.Size = new System.Drawing.Size(38, 15);
+		label1.TabIndex = 1;
+		label1.Text = "label1";
 		// 
-		// SvcMethodEditCtl
+		// SvcMethodsEditCtl
 		// 
 		Controls.Add(label1);
-		Name = "SvcMethodEditCtl";
+		Controls.Add(textBox1);
+		Name = "SvcMethodsEditCtl";
 		Size = new System.Drawing.Size(605, 419);
 		ResumeLayout(false);
 		PerformLayout();
@@ -50,5 +59,6 @@ partial class SvcMethodsEditCtl
 
 	#endregion
 
+	private System.Windows.Forms.TextBox textBox1;
 	private System.Windows.Forms.Label label1;
 }

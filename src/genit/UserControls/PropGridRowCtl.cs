@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls;
 
-public partial class PropGridRowCtl : UserControl
+public partial class PropGridRowCtl : UserControlBase
 {
 	public event EventHandler<PropertyModelChangedEventArgs> PropertyModelChanged;
 	public event EventHandler<RowMovedEventArgs> RowMoved;
@@ -76,7 +76,6 @@ public partial class PropGridRowCtl : UserControl
 
 	#region UI Events
 
-
 	private void txtName_TextChanged(object sender, EventArgs e)
 	{
 		if (!_suspendUpdates)
@@ -144,6 +143,8 @@ public partial class PropGridRowCtl : UserControl
 	{
 		if (MessageBox.Show("Are you sure you want to delete this property?", "Delete Property", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 			return;
+
+		//ShowCenteredMessageBox(this, "This is a message.", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 		PropertyModelChanged?.Invoke(this, new PropertyModelChangedEventArgs(ModelPropertyChangedAction.Deleted, _propertyMdl.Id, _propertyMdl));
 	}

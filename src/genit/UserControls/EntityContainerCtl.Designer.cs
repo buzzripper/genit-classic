@@ -31,7 +31,6 @@ partial class EntityContainerCtl
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
 		lblEntityName = new System.Windows.Forms.ToolStripLabel();
 		nbMain = new System.Windows.Forms.ToolStripButton();
-		nbProperties = new System.Windows.Forms.ToolStripButton();
 		nbSvcMethods = new System.Windows.Forms.ToolStripButton();
 		toolStrip1.SuspendLayout();
 		SuspendLayout();
@@ -41,7 +40,7 @@ partial class EntityContainerCtl
 		toolStrip1.AutoSize = false;
 		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblEntityName, nbMain, nbProperties, nbSvcMethods });
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblEntityName, nbMain, nbSvcMethods });
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
 		toolStrip1.Size = new System.Drawing.Size(832, 30);
@@ -68,17 +67,6 @@ partial class EntityContainerCtl
 		nbMain.Size = new System.Drawing.Size(69, 27);
 		nbMain.Text = "Main";
 		nbMain.Click += nbMain_Click;
-		// 
-		// nbProperties
-		// 
-		nbProperties.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-		nbProperties.Image = (System.Drawing.Image)resources.GetObject("nbProperties.Image");
-		nbProperties.ImageTransparentColor = System.Drawing.Color.Magenta;
-		nbProperties.Name = "nbProperties";
-		nbProperties.Padding = new System.Windows.Forms.Padding(0, 0, 75, 0);
-		nbProperties.Size = new System.Drawing.Size(150, 27);
-		nbProperties.Text = "Properties";
-		nbProperties.Click += nbProperties_Click;
 		// 
 		// nbSvcMethods
 		// 
@@ -110,7 +98,6 @@ partial class EntityContainerCtl
 	private System.Windows.Forms.ToolStrip toolStrip1;
 	private System.Windows.Forms.ToolStripLabel lblEntityName;
 	private System.Windows.Forms.ToolStripButton nbMain;
-	private System.Windows.Forms.ToolStripButton nbProperties;
 	private System.Windows.Forms.ToolStripButton nbSvcMethods;
 	private System.Windows.Forms.Button button1;
 }

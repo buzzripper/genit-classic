@@ -1,29 +1,32 @@
-﻿using Dyvenix.Genit.Misc;
-using Dyvenix.Genit.Models;
+﻿using Dyvenix.Genit.Models;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Dyvenix.Genit.UserControls;
 
 public partial class EntityMainEditCtl : EntityEditCtlBase
 {
+	#region Fields
+
+	private ObservableCollection<EntityModel> _allEntities;
 	private bool _suspendUpdates;
+	private AssocEditForm _assocEditForm;
+
+	#endregion
+
+	#region Ctors / Init
 
 	public EntityMainEditCtl() : base()
 	{
 		InitializeComponent();
 	}
 
-	public EntityMainEditCtl(EntityModel entity) : base(entity)
+	public EntityMainEditCtl(EntityModel entity, ObservableCollection<EntityModel> allEntities) : base(entity)
 	{
 		InitializeComponent();
+		_allEntities = allEntities;
 	}
 
 	private void EntityMainEditCtl_Load(object sender, EventArgs e)
@@ -44,9 +47,26 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		sleAttrs.Items = _entity.Attributes;
 		sleUsings.Items = _entity.AddlUsings;
 		propGridCtl.DataSource = _entity.Properties;
+		navPropGridCtl.DataSource = _entity.NavAssocs;
 
 		_suspendUpdates = false;
 	}
+
+	#endregion
+
+	#region Properties
+
+	[Browsable(false)]
+	private AssocEditForm AssocEditForm
+	{
+		get {
+			return _assocEditForm ?? (_assocEditForm = new AssocEditForm());
+		}
+	}
+
+	#endregion
+
+	#region UI Events
 
 	private void txtName_TextChanged(object sender, EventArgs e)
 	{
@@ -78,8 +98,18 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 			_entity.Enabled = ckbEnabled.Checked;
 	}
 
-	private void lkbAdd_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+	private void lkbAddNewProp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 	{
 		_entity.Properties.Add(new PropertyModel(Guid.NewGuid()));
 	}
+
+	private void lkbAddNewNavProp_Click(object sender, EventArgs e)
+	{
+		if (this.AssocEditForm.Run(_allEntities) == DialogResult.OK) {
+			var assocMdl = new AssocModel(Guid.NewGuid(), _entity, this.AssocEditForm.PrimaryPropertyName, this.AssocEditForm.RelatedEntity, this.AssocEditForm.RelatedPropertyName,  this.AssocEditForm.Cardinality);
+			_entity.NavAssocs.Add(assocMdl);
+		}
+	}
+
+	#endregion
 }

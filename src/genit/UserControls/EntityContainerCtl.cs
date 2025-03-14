@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Dyvenix.Genit.Models;
+using System.Collections.ObjectModel;
 
 namespace Dyvenix.Genit.UserControls
 {
@@ -21,23 +22,20 @@ namespace Dyvenix.Genit.UserControls
 		private readonly EntityModel _entity;
 		private readonly List<EntityEditorItem> _childEditors = new List<EntityEditorItem>();
 
-		public EntityContainerCtl(EntityModel entity)
+		public EntityContainerCtl(EntityModel entity, ObservableCollection<EntityModel> allEntities)
 		{
 			InitializeComponent();
 			_entity = entity;
-			Initialize();
+			Initialize(allEntities);
 		}
 
-		private void Initialize()
+		private void Initialize(ObservableCollection<EntityModel> allEntities)
 		{
 			lblEntityName.Text = _entity.Name;
 			_entity.PropertyChanged += _entity_PropertyChanged;
 
-			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl(_entity)));
-			//_childEditors.Add(new EntityEditorItem(nbProperties, new PropertyEditCtl()));
-			//_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl()));
-
-			//EntityMainEditCtl entityMainEditCtl = null;
+			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl(_entity, allEntities)));
+			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl(_entity)));
 
 			foreach (var childEditor in _childEditors) {
 				var ctl = childEditor.Ctl;
@@ -48,18 +46,9 @@ namespace Dyvenix.Genit.UserControls
 				ctl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
 				this.Controls.Add(ctl);
-
-				//var entityEditCtl = ctl as EntityEditCtlBase;
-				//if (entityEditCtl != null) {
-				//	if (entityMainEditCtl == null)
-				//		entityMainEditCtl = entityEditCtl as EntityMainEditCtl;
-				//}
 			}
 
 			SelectControl(cIdxMain);
-
-			//if (entityMainEditCtl != null)
-			//	entityMainEditCtl.InitializeGrid();
 		}
 
 		private void _entity_PropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -18,11 +18,6 @@ namespace Dyvenix.Genit.Models
         private string _namespace;
         private ObservableCollection<string> _attributes = new ObservableCollection<string>();
         private ObservableCollection<string> _addlUsings = new ObservableCollection<string>();
-        private bool _inclSingleQuery;
-        private bool _inclListQuery;
-        private bool _inclListInfoQuery;
-        private bool _useListPaging;
-        private bool _useListSorting;
         private ObservableCollection<PropertyModel> _properties = new ObservableCollection<PropertyModel>();
         private ObservableCollection<AssocModel> _navAssocs = new ObservableCollection<AssocModel>();
 

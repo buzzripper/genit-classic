@@ -43,7 +43,7 @@ public partial class PropGridCtl : UserControl
 		set {
 			_propertyModels = value;
 			_propertyModels.CollectionChanged += OnPopertyModels_CollectionChanged;
-			PopulateGrid();
+			PopulateRows();
 		}
 	}
 
@@ -63,7 +63,7 @@ public partial class PropGridCtl : UserControl
 
 	#endregion
 
-	private void PopulateGrid()
+	private void PopulateRows()
 	{
 		if (this.DesignMode)
 			return;
@@ -127,7 +127,7 @@ public partial class PropGridCtl : UserControl
 			targetProp.DisplayOrder = targetOrder + 1;
 		}
 
-		PopulateGrid();
+		PopulateRows();
 
 		_suspendUpdates = false;	
 		ResumeLayout();
@@ -143,7 +143,7 @@ public partial class PropGridCtl : UserControl
 	private void OnPopertyModels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{
 		if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Remove) {
-			PopulateGrid();
+			PopulateRows();
 		}
 	}
 

@@ -423,7 +423,7 @@ public partial class MainForm : Form
 
 		if (!multiPageCtl.Select(e.Id)) {
 			var entity = _doc.DbContexts[0].Entities.First(ent => ent.Id == e.Id);
-			var entityCtl = new EntityContainerCtl(entity);
+			var entityCtl = new EntityContainerCtl(entity, _doc.DbContexts[0].Entities);
 			multiPageCtl.Add(e.Id, entity.Name, entityCtl);
 			multiPageCtl.Select(e.Id);
 		}

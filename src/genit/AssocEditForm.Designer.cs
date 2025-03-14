@@ -110,9 +110,9 @@ partial class AssocEditForm
 		// 
 		// btnOk
 		// 
-		btnOk.BackColor = System.Drawing.SystemColors.MenuHighlight;
+		btnOk.BackColor = System.Drawing.SystemColors.HotTrack;
 		btnOk.ForeColor = System.Drawing.SystemColors.Control;
-		btnOk.Location = new System.Drawing.Point(118, 176);
+		btnOk.Location = new System.Drawing.Point(126, 176);
 		btnOk.Name = "btnOk";
 		btnOk.Size = new System.Drawing.Size(75, 32);
 		btnOk.TabIndex = 8;
@@ -122,9 +122,9 @@ partial class AssocEditForm
 		// 
 		// btnCancel
 		// 
-		btnCancel.BackColor = System.Drawing.SystemColors.MenuHighlight;
+		btnCancel.BackColor = System.Drawing.SystemColors.HotTrack;
 		btnCancel.ForeColor = System.Drawing.SystemColors.Control;
-		btnCancel.Location = new System.Drawing.Point(208, 176);
+		btnCancel.Location = new System.Drawing.Point(216, 176);
 		btnCancel.Name = "btnCancel";
 		btnCancel.Size = new System.Drawing.Size(75, 32);
 		btnCancel.TabIndex = 9;

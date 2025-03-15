@@ -17,8 +17,6 @@ public partial class TreeNav : UserControl
 	public event EventHandler<PropertyModelEventArgs> PropertyModelSelected;
 	public event EventHandler<EnumsNodeEventArgs> EnumsNodeSelected;
 	public event EventHandler<EnumModelEventArgs> EnumModelSelected;
-	public event EventHandler<AssocsNodeEventArgs> AssocsNodeSelected;
-	public event EventHandler<AssocModelEventArgs> AssocModelSelected;
 	public event EventHandler<EventArgs> GeneratorsNodeSelected;
 	public event EventHandler<GeneratorModelEventArgs> GeneratorModelSelected;
 
@@ -68,7 +66,6 @@ public partial class TreeNav : UserControl
 		this.BuildDbContextNode();
 		_entitiesNode = this.BuildEntitiesNode();
 		this.BuildEnumsNode();
-		this.BuildAssocsNode();
 		this.BuildGeneratorsNode();
 
 		 treeView1.SelectedNode = treeView1.Nodes[0];
@@ -163,27 +160,6 @@ public partial class TreeNav : UserControl
 		enumsNode.Collapse();
 	}
 
-	private void BuildAssocsNode()
-	{
-		TreeNode assocsNode = new TreeNode(cNodeName_Assocs) {
-			SelectedImageKey = cKey_Assoc,
-			ImageKey = cKey_Assoc,
-			Tag = Guid.NewGuid()
-		};
-
-		foreach (var assocMdl in _dbContextModel.Assocs) {
-			TreeNode assocNode = new TreeNode(assocMdl.Name) {
-				SelectedImageKey = cKey_Assoc,
-				ImageKey = cKey_Assoc,
-				Tag = assocMdl.Id
-			};
-			assocsNode.Nodes.Add(assocNode);
-		}
-
-		treeView1.Nodes.Add(assocsNode);
-		assocsNode.Collapse();
-	}
-
 	private void BuildGeneratorsNode()
 	{
 		TreeNode gensNode = new TreeNode(cNodeName_Gen) {
@@ -223,9 +199,6 @@ public partial class TreeNav : UserControl
 
 		} else if (e.Node.Text == cNodeName_Enums) {
 			EnumsNodeSelected?.Invoke(this, new EnumsNodeEventArgs((List<EnumModel>)e.Node.Tag));
-
-		} else if (e.Node.Text == cNodeName_Assocs) {
-			AssocsNodeSelected?.Invoke(this, new AssocsNodeEventArgs((List<AssocModel>)e.Node.Tag));
 
 		} else if (e.Node.Text == cNodeName_Gen) {
 			GeneratorsNodeSelected?.Invoke(this, new EventArgs());
@@ -322,26 +295,6 @@ public class EnumModelEventArgs : EventArgs
 	public EnumModelEventArgs(EnumModel enumModel)
 	{
 		Enum = enumModel;
-	}
-}
-
-public class AssocsNodeEventArgs : EventArgs
-{
-	public List<AssocModel> Assocs { get; }
-
-	public AssocsNodeEventArgs(List<AssocModel> assocs)
-	{
-		Assocs = assocs;
-	}
-}
-
-public class AssocModelEventArgs : EventArgs
-{
-	public AssocModel Assoc { get; }
-
-	public AssocModelEventArgs(AssocModel assoc)
-	{
-		Assoc = assoc;
 	}
 }
 

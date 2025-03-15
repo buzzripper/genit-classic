@@ -45,8 +45,6 @@ namespace Dyvenix.Genit
 			var appUserMdl = CreateAppUserEntityModel(dbContext);
 			dbContext.Entities.Add(appUserMdl);
 
-			dbContext.AddAssoc(appUserMdl, "AccessClaims", accessClaimMdl, "AppUserId", CardinalityModel.OneToMany);
-
 			var logEventsMdl = CreateLogEventsEntityModel(dbContext, appUserMdl.Id, logLevelEnumMdl);
 			dbContext.Entities.Add(logEventsMdl);
 

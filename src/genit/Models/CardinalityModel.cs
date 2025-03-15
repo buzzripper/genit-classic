@@ -2,8 +2,8 @@
 {
 	public enum CardinalityModel
 	{
-		OneToOne,
 		OneToMany,
+		OneToOne
 		//ManyToMany
 	}
 }

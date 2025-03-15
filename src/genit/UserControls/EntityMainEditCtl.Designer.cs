@@ -209,6 +209,7 @@ partial class EntityMainEditCtl
 		// 
 		// lkbAddNewProp
 		// 
+		lkbAddNewProp.ActiveLinkColor = System.Drawing.Color.Azure;
 		lkbAddNewProp.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		lkbAddNewProp.AutoSize = true;
 		lkbAddNewProp.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -260,6 +261,7 @@ partial class EntityMainEditCtl
 		// 
 		// lkbAddNewNavProp
 		// 
+		lkbAddNewNavProp.ActiveLinkColor = System.Drawing.Color.Azure;
 		lkbAddNewNavProp.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		lkbAddNewNavProp.AutoSize = true;
 		lkbAddNewNavProp.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -275,6 +277,7 @@ partial class EntityMainEditCtl
 		lkbAddNewNavProp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 		lkbAddNewNavProp.UseMnemonic = false;
 		lkbAddNewNavProp.VisitedLinkColor = System.Drawing.SystemColors.ControlText;
+		lkbAddNewNavProp.LinkClicked += lkbAddNewNavProp_LinkClicked;
 		lkbAddNewNavProp.Click += lkbAddNewNavProp_Click;
 		// 
 		// label8

@@ -10,9 +10,7 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 {
 	#region Fields
 
-	private ObservableCollection<EntityModel> _allEntities;
 	private bool _suspendUpdates;
-	private AssocEditForm _assocEditForm;
 
 	#endregion
 
@@ -23,10 +21,9 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		InitializeComponent();
 	}
 
-	public EntityMainEditCtl(EntityModel entity, ObservableCollection<EntityModel> allEntities) : base(entity)
+	public EntityMainEditCtl(EntityModel entity) : base(entity)
 	{
 		InitializeComponent();
-		_allEntities = allEntities;
 	}
 
 	private void EntityMainEditCtl_Load(object sender, EventArgs e)
@@ -47,7 +44,7 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		sleAttrs.Items = _entity.Attributes;
 		sleUsings.Items = _entity.AddlUsings;
 		propGridCtl.DataSource = _entity.Properties;
-		navPropGridCtl.DataSource = _entity.NavAssocs;
+		navPropGridCtl.DataSource = _entity.NavProperties;
 
 		_suspendUpdates = false;
 	}
@@ -55,14 +52,6 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 	#endregion
 
 	#region Properties
-
-	[Browsable(false)]
-	private AssocEditForm AssocEditForm
-	{
-		get {
-			return _assocEditForm ?? (_assocEditForm = new AssocEditForm());
-		}
-	}
 
 	#endregion
 
@@ -105,11 +94,16 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 
 	private void lkbAddNewNavProp_Click(object sender, EventArgs e)
 	{
-		if (this.AssocEditForm.Run(_allEntities) == DialogResult.OK) {
-			var assocMdl = new AssocModel(Guid.NewGuid(), _entity, this.AssocEditForm.PrimaryPropertyName, this.AssocEditForm.RelatedEntity, this.AssocEditForm.RelatedPropertyName,  this.AssocEditForm.Cardinality);
-			_entity.NavAssocs.Add(assocMdl);
-		}
+		//if (this.AssocEditForm.Run(null) == DialogResult.OK) {
+		//	var assocMdl = new AssocModel(Guid.NewGuid(), _entity, this.AssocEditForm.PrimaryPropertyName, this.AssocEditForm.RelatedEntity, this.AssocEditForm.RelatedPropertyName,  this.AssocEditForm.Cardinality);
+		//	_entity.NavAssocs.Add(assocMdl);
+		//}
 	}
 
 	#endregion
+
+	private void lkbAddNewNavProp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+	{
+		_entity.NavProperties.Add(new NavPropertyModel(Guid.NewGuid(), _entity));
+	}
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
@@ -15,7 +13,6 @@ public partial class EntityListCtl : UserControl
 
 	#region Fields
 
-	private ObservableCollection<EntityModel> _entities;
 	private bool _suspendUpdates;
 
 	#endregion
@@ -30,24 +27,18 @@ public partial class EntityListCtl : UserControl
 	private void EntityListCtl_Load(object sender, EventArgs e)
 	{
 		this.Height = cmbEntities.Height;
+		Doc.Instance.DbContexts[0].Entities.CollectionChanged += Entities_CollectionChanged;
+		cmbEntities.DataSource = Doc.Instance.DbContexts[0].Entities.OrderBy(e => e.Name).ToList();
+	}
+
+	private void Entities_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		cmbEntities.DataSource = Doc.Instance.DbContexts[0].Entities.OrderBy(e => e.Name).ToList();
 	}
 
 	#endregion
 
 	#region Properties
-
-	[Browsable(false)]
-	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-	public ObservableCollection<EntityModel> DataSource
-	{
-		get {
-			return _entities;
-		}
-		set {
-			_entities = value;
-			PopulateDropdown();
-		}
-	}
 
 	[Browsable(false)]
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -74,17 +65,6 @@ public partial class EntityListCtl : UserControl
 	#endregion
 
 	#region Methods
-
-	private void PopulateDropdown()
-	{
-		_suspendUpdates = true;
-
-		cmbEntities.Items.Clear();
-		//cmbEntities.DataSource = _entities.ToList().OrderBy(e => e.Name);
-		cmbEntities.DataSource = _entities.OrderBy(e => e.Name).ToList();
-
-		_suspendUpdates = false;
-	}
 
 	#endregion
 }

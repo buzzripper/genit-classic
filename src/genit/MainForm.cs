@@ -29,7 +29,7 @@ public partial class MainForm : Form
 	//private DetailForm _detailForm;
 	private bool _suspendUpdates;
 	private AppConfig _appConfig;
-	private Doc _doc;
+	//private Doc _doc;
 	private int _outputHeight;
 	private string _currDocFilepath;
 
@@ -179,11 +179,11 @@ public partial class MainForm : Form
 
 	private Doc Doc
 	{
-		get { return _doc; }
+		get { return Doc.Instance; }
 		set {
-			_doc = value;
-			SetState(_doc == null ? GenitAppState.NoDoc : GenitAppState.DocLoaded);
-			PopulateForm(_doc);
+			Doc.Instance = value;
+			SetState(Doc.Instance == null ? GenitAppState.NoDoc : GenitAppState.DocLoaded);
+			PopulateForm(Doc.Instance);
 			Globals.DbContext = value?.DbContexts[0];
 		}
 	}
@@ -352,16 +352,16 @@ public partial class MainForm : Form
 	private void uiGenerate_Click(object sender, EventArgs e)
 	{
 		try {
-			if (_doc == null) {
+			if (this.Doc == null) {
 				outputCtl.WriteInfo("No document loaded.");
 				return;
 			}
 
-			var dbContextMdl = _doc.DbContexts[0];
+			var dbContextMdl = this.Doc.DbContexts[0];
 
 			var errors = new List<string>();
 
-			_doc.Validate(errors);
+			this.Doc.Validate(errors);
 
 			if (errors.Count > 0) {
 				errors.Insert(0, "Validation Errors:");
@@ -410,8 +410,8 @@ public partial class MainForm : Form
 			return;
 
 		if (!multiPageCtl.Select(e.Id)) {
-			var dbContextCtl = new DbContextEditCtl(_doc.DbContexts[0]);
-			multiPageCtl.Add(e.Id, _doc.DbContexts[0].Name, dbContextCtl);
+			var dbContextCtl = new DbContextEditCtl(this.Doc.DbContexts[0]);
+			multiPageCtl.Add(e.Id, this.Doc.DbContexts[0].Name, dbContextCtl);
 			multiPageCtl.Select(e.Id);
 		}
 	}
@@ -422,8 +422,8 @@ public partial class MainForm : Form
 			return;
 
 		if (!multiPageCtl.Select(e.Id)) {
-			var entity = _doc.DbContexts[0].Entities.First(ent => ent.Id == e.Id);
-			var entityCtl = new EntityContainerCtl(entity, _doc.DbContexts[0].Entities);
+			var entity = this.Doc.DbContexts[0].Entities.First(ent => ent.Id == e.Id);
+			var entityCtl = new EntityContainerCtl(entity);
 			multiPageCtl.Add(e.Id, entity.Name, entityCtl);
 			multiPageCtl.Select(e.Id);
 		}
@@ -434,10 +434,6 @@ public partial class MainForm : Form
 	}
 
 	private void TreeNav_EnumModelSelected(object sender, UserControls.EnumModelEventArgs e)
-	{
-	}
-
-	private void TreeNav_AssocModelSelected(object sender, UserControls.AssocModelEventArgs e)
 	{
 	}
 

@@ -2,13 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Dyvenix.Genit.Models;
-using System.Collections.ObjectModel;
 
 namespace Dyvenix.Genit.UserControls
 {
@@ -18,23 +13,22 @@ namespace Dyvenix.Genit.UserControls
 		private const int cIdxProperties = 1;
 		private const int cIdxSvcMethods = 2;
 
-		private int _currIdx = 0;
 		private readonly EntityModel _entity;
 		private readonly List<EntityEditorItem> _childEditors = new List<EntityEditorItem>();
 
-		public EntityContainerCtl(EntityModel entity, ObservableCollection<EntityModel> allEntities)
+		public EntityContainerCtl(EntityModel entity)
 		{
 			InitializeComponent();
 			_entity = entity;
-			Initialize(allEntities);
+			Initialize();
 		}
 
-		private void Initialize(ObservableCollection<EntityModel> allEntities)
+		private void Initialize()
 		{
 			lblEntityName.Text = _entity.Name;
 			_entity.PropertyChanged += _entity_PropertyChanged;
 
-			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl(_entity, allEntities)));
+			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl(_entity)));
 			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl(_entity)));
 
 			foreach (var childEditor in _childEditors) {

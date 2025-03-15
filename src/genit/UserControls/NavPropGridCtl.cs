@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Dyvenix.Genit.Models;
-using System.Xml.XPath;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -18,9 +12,8 @@ namespace Dyvenix.Genit.UserControls
 	{
 		#region Fields
 
-		private ObservableCollection<AssocModel> _assocModels;
-		private List<NavPropGridRowCtl> _assocGridRows = new List<NavPropGridRowCtl>();
-		private bool _suspendUpdates;
+		private ObservableCollection<NavPropertyModel> _navPropModels = new ObservableCollection<NavPropertyModel>();
+		private List<NavPropGridRowCtl> _navPropGridRowCtls = new List<NavPropGridRowCtl>();
 
 		#endregion
 
@@ -34,17 +27,20 @@ namespace Dyvenix.Genit.UserControls
 		private void NavPropGridCtl_Load(object sender, EventArgs e)
 		{
 			splMain.Height = lblPrimaryPropertyName.Height + 4;
+			splMain_SplitterMoved(null, null);
+			splCardinality_SplitterMoved(null, null);
+			splRelPropName_SplitterMoved(null, null);
 		}
 
 		#endregion
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public ObservableCollection<AssocModel> DataSource
+		public ObservableCollection<NavPropertyModel> DataSource
 		{
-			get { return _assocModels; }
+			get { return _navPropModels; }
 			set {
-				_assocModels = value;
-				_assocModels.CollectionChanged += AssocModels_CollectionChanged;
+				_navPropModels = value;
+				_navPropModels.CollectionChanged += AssocModels_CollectionChanged;
 				PopulateRows();
 			}
 		}
@@ -54,38 +50,32 @@ namespace Dyvenix.Genit.UserControls
 			if (this.DesignMode)
 				return;
 
-			_suspendUpdates = true;
 			SuspendLayout();
 
 			try {
-				foreach (var row in _assocGridRows) {
+				foreach (var row in _navPropGridRowCtls) {
 					this.Controls.Remove(row);
 					row.Dispose();
 				}
-				_assocGridRows.Clear();
+				_navPropGridRowCtls.Clear();
 
 				var count = 0;
-				foreach (var assocMdl in _assocModels) {
-					NavPropGridRowCtl navPropGridRowCtl = new NavPropGridRowCtl(assocMdl);
+				foreach (var navPropMdl in _navPropModels) {
+					NavPropGridRowCtl navPropGridRowCtl = new NavPropGridRowCtl(navPropMdl);
 					navPropGridRowCtl.Top = splMain.Height + (count++ * 35);
 					navPropGridRowCtl.Left = 0;
 					navPropGridRowCtl.Width = this.Width;
 					navPropGridRowCtl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 					navPropGridRowCtl.NavigationPropertyChanged += NavPropGridRowCtl_NavigationPropertyChanged;
 
-					_assocGridRows.Add(navPropGridRowCtl);
+					_navPropGridRowCtls.Add(navPropGridRowCtl);
 					this.Controls.Add(navPropGridRowCtl);
 				}
-
-				splMain_SplitterMoved(null, null);
-				splCardinality_SplitterMoved(null, null);
-				splRelPropName_SplitterMoved(null, null);
 
 			} catch (Exception ex) {
 				MessageBox.Show(ex.Message);
 
 			} finally {
-				_suspendUpdates = false;
 				ResumeLayout();
 			}
 		}
@@ -95,10 +85,10 @@ namespace Dyvenix.Genit.UserControls
 		private void NavPropGridRowCtl_NavigationPropertyChanged(object sender, NavPropChangedEventArgs e)
 		{
 			if (e.Action == NavPropChangedAction.Deleted)
-				_assocModels.Remove(e.Assoc);
+				_navPropModels.Remove(e.NavPropertyModel);
 		}
 
-		private void AssocModels_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		private void AssocModels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Remove)
 				PopulateRows();
@@ -106,23 +96,29 @@ namespace Dyvenix.Genit.UserControls
 
 		private void splMain_SplitterMoved(object sender, SplitterEventArgs e)
 		{
-			foreach (var ctl in _assocGridRows)
-				if (ctl is NavPropGridRowCtl)
+			foreach (var ctl in _navPropGridRowCtls)
+				if (ctl is NavPropGridRowCtl) { 
 					((NavPropGridRowCtl)ctl).Col1Width = splMain.SplitterDistance;
+					((NavPropGridRowCtl)ctl).Col2Width = splCardinality.SplitterDistance;
+					((NavPropGridRowCtl)ctl).Col3Width = splRelPropName.SplitterDistance;
+				}
 		}
 
 		private void splCardinality_SplitterMoved(object sender, SplitterEventArgs e)
 		{
-			foreach (var ctl in _assocGridRows)
-				if (ctl is NavPropGridRowCtl)
-					((NavPropGridRowCtl)ctl).Col2Width = splMain.SplitterDistance;
+			foreach (var ctl in _navPropGridRowCtls)
+				if (ctl is NavPropGridRowCtl) {
+					((NavPropGridRowCtl)ctl).Col2Width = splCardinality.SplitterDistance;
+					((NavPropGridRowCtl)ctl).Col3Width = splRelPropName.SplitterDistance;
+				}
 		}
 
 		private void splRelPropName_SplitterMoved(object sender, SplitterEventArgs e)
 		{
-			foreach (var ctl in _assocGridRows)
-				if (ctl is NavPropGridRowCtl)
-					((NavPropGridRowCtl)ctl).Col3Width = splMain.SplitterDistance;
+			foreach (var ctl in _navPropGridRowCtls)
+				if (ctl is NavPropGridRowCtl) {
+					((NavPropGridRowCtl)ctl).Col3Width = splRelPropName.SplitterDistance;
+				}
 		}
 
 		#endregion

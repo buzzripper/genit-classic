@@ -30,7 +30,7 @@ partial class NavPropGridCtl
 		splCardinality = new System.Windows.Forms.SplitContainer();
 		lblCardinality = new System.Windows.Forms.Label();
 		splRelPropName = new System.Windows.Forms.SplitContainer();
-		lblRelatedPropertyName = new System.Windows.Forms.Label();
+		lblDatatype = new System.Windows.Forms.Label();
 		lblPrimaryPropertyName = new System.Windows.Forms.Label();
 		splMain = new System.Windows.Forms.SplitContainer();
 		((System.ComponentModel.ISupportInitialize)splCardinality).BeginInit();
@@ -67,7 +67,7 @@ partial class NavPropGridCtl
 		// lblCardinality
 		// 
 		lblCardinality.AutoSize = true;
-		lblCardinality.Location = new System.Drawing.Point(0, 0);
+		lblCardinality.Location = new System.Drawing.Point(3, 0);
 		lblCardinality.Name = "lblCardinality";
 		lblCardinality.Size = new System.Drawing.Size(74, 19);
 		lblCardinality.TabIndex = 0;
@@ -82,26 +82,26 @@ partial class NavPropGridCtl
 		// 
 		// splRelPropName.Panel1
 		// 
-		splRelPropName.Panel1.Controls.Add(lblRelatedPropertyName);
+		splRelPropName.Panel1.Controls.Add(lblDatatype);
 		splRelPropName.Size = new System.Drawing.Size(565, 30);
 		splRelPropName.SplitterDistance = 200;
 		splRelPropName.TabIndex = 0;
 		splRelPropName.SplitterMoved += splRelPropName_SplitterMoved;
 		// 
-		// lblRelatedPropertyName
+		// lblDatatype
 		// 
-		lblRelatedPropertyName.AutoSize = true;
-		lblRelatedPropertyName.Location = new System.Drawing.Point(0, 0);
-		lblRelatedPropertyName.Name = "lblRelatedPropertyName";
-		lblRelatedPropertyName.Size = new System.Drawing.Size(151, 19);
-		lblRelatedPropertyName.TabIndex = 0;
-		lblRelatedPropertyName.Text = "Related Property Name";
-		lblRelatedPropertyName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+		lblDatatype.AutoSize = true;
+		lblDatatype.Location = new System.Drawing.Point(3, 0);
+		lblDatatype.Name = "lblDatatype";
+		lblDatatype.Size = new System.Drawing.Size(70, 19);
+		lblDatatype.TabIndex = 0;
+		lblDatatype.Text = "Data Type";
+		lblDatatype.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		// 
 		// lblPrimaryPropertyName
 		// 
 		lblPrimaryPropertyName.AutoSize = true;
-		lblPrimaryPropertyName.Location = new System.Drawing.Point(0, 0);
+		lblPrimaryPropertyName.Location = new System.Drawing.Point(3, 0);
 		lblPrimaryPropertyName.Name = "lblPrimaryPropertyName";
 		lblPrimaryPropertyName.Size = new System.Drawing.Size(153, 19);
 		lblPrimaryPropertyName.TabIndex = 0;
@@ -157,7 +157,7 @@ partial class NavPropGridCtl
 	private System.Windows.Forms.SplitContainer splCardinality;
 	private System.Windows.Forms.Label lblCardinality;
 	private System.Windows.Forms.SplitContainer splRelPropName;
-	private System.Windows.Forms.Label lblRelatedPropertyName;
+	private System.Windows.Forms.Label lblDatatype;
 	private System.Windows.Forms.Label lblPrimaryPropertyName;
 	private System.Windows.Forms.SplitContainer splMain;
 }

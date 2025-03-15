@@ -306,7 +306,6 @@ partial class MainForm
 		treeNav.EntitiesNodeSelected += treeNav_EntitiesNodeSelected;
 		treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
 		treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
-		treeNav.AssocModelSelected += TreeNav_AssocModelSelected;
 		treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
 		// 
 		// splContent

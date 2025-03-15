@@ -10,7 +10,11 @@ namespace Dyvenix.Genit.Models;
 
 public class PropertyModel : INotifyPropertyChanged
 {
+	#region Fields
+
 	private string _name;
+
+	#endregion
 
 	#region Ctors
 
@@ -24,30 +28,21 @@ public class PropertyModel : INotifyPropertyChanged
 		Id = id;
 	}
 
-	public PropertyModel(Guid id, AssocModel assoc)
+	public PropertyModel(Guid id, string name, NavPropertyModel navPropertyMdl)
 	{
 		Id = id;
-		Name = assoc.RelatedPropertyName;
-		PrimitiveType = assoc.PrimaryPKType;
-		FKAssoc = assoc;
+		Name = name;
+		FKNavPropertyId = navPropertyMdl.Id;
+		FKNavProperty = navPropertyMdl;
 	}
 
 	#endregion
 
+	#region Properties
+
 	public Guid Id { get; init; }
-	public string Name
-	{
-		get {
-			if (FKAssoc != null)
-				return FKAssoc.RelatedPropertyName;
-			return _name;
-		}
-		set {
-			if (FKAssoc != null)
-				throw new ApplicationException($"Can't rename property, it is a FK association property.");
-			SetProperty(ref _name, value);
-		}
-	}
+
+	public string Name { get; set; }
 
 	public int PrimitiveTypeId { get; set; }
 
@@ -62,7 +57,7 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
-	public Guid EnumTypeId { get; set; }
+	public Guid? EnumTypeId { get; set; }
 
 	private EnumModel _enumType;
 	[JsonIgnore]
@@ -70,7 +65,7 @@ public class PropertyModel : INotifyPropertyChanged
 	{
 		get => _enumType;
 		set {
-			EnumTypeId = (value != null) ? value.Id : Guid.Empty;
+			EnumTypeId = (value != null) ? value.Id : null;
 			SetProperty(ref _enumType, value);
 		}
 	}
@@ -83,8 +78,8 @@ public class PropertyModel : INotifyPropertyChanged
 				return this.PrimitiveType.CSType;
 			else if (this.EnumType != null)
 				return this.EnumType.Name;
-			else if (this.FKAssoc != null)
-				return this.FKAssoc.RelatedEntity.Name;
+			else if (this.FKNavProperty != null)
+				return this.FKNavProperty.GetParentPkDatatype().Name;
 			else
 				return string.Empty;
 		}
@@ -92,17 +87,20 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
+	private Guid? _fkNavPropertyId;
+	public Guid? FKNavPropertyId
+	{
+		get => _fkNavPropertyId;
+		set => SetProperty(ref _fkNavPropertyId, value);
+	}
+
+	[JsonIgnore]
+	public NavPropertyModel FKNavProperty { get; set; }
+
 	[JsonIgnore]
 	public bool IsForeignKey
 	{
-		get => (this.FKAssoc != null);
-	}
-
-	private AssocModel _fkAssoc;
-	public AssocModel FKAssoc
-	{
-		get => _fkAssoc;
-		set => SetProperty(ref _fkAssoc, value);
+		get => this.FKNavPropertyId.HasValue;
 	}
 
 	private bool _isPrimaryKey;
@@ -175,6 +173,8 @@ public class PropertyModel : INotifyPropertyChanged
 		set => SetProperty(ref _addlUsings, value);
 	}
 
+	#endregion
+
 	#region Methods
 
 	public void InitializeOnLoad(ObservableCollection<EnumModel> enums)
@@ -202,9 +202,6 @@ public class PropertyModel : INotifyPropertyChanged
 			}
 
 		} else if (this.EnumType != null) {
-
-
-		} else if (this.FKAssoc != null) {
 
 
 		} else {

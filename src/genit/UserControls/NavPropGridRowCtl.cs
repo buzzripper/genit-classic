@@ -12,7 +12,8 @@ public partial class NavPropGridRowCtl : UserControl
 
 	#region Fields
 
-	private readonly AssocModel _assocModel;
+	private readonly NavPropertyModel _navPropertyModel;
+	private bool _suspendUpdates;
 
 	#endregion
 
@@ -23,13 +24,15 @@ public partial class NavPropGridRowCtl : UserControl
 		InitializeComponent();
 	}
 
-	public NavPropGridRowCtl(AssocModel assocMdl) : this()
+	public NavPropGridRowCtl(NavPropertyModel navPropMdl) : this()
 	{
-		_assocModel = assocMdl;
+		_navPropertyModel = navPropMdl;
+		_navPropertyModel.PropertyChanged += NavPropModel_PropertyChanged;
 	}
 
 	private void NavPropGridRowCtrl_Load(object sender, EventArgs e)
 	{
+		cmbCardinality.DataSource = Enum.GetValues(typeof(CardinalityModel));
 		splMain.Height = picDelete.Height + 4;
 		this.Height = splMain.Height;
 
@@ -42,12 +45,20 @@ public partial class NavPropGridRowCtl : UserControl
 
 	private void Populate()
 	{
-		lblPrimaryPropertyName.Text = _assocModel.PrimaryPropertyName;
-		lblRelatedPropertyName.Text = _assocModel.RelatedPropertyName;
-		lblCardinality.Text = _assocModel.Cardinality.ToString();
+		txtName.Text = _navPropertyModel.Name;
+		cmbCardinality.SelectedItem = _navPropertyModel.Datatype;
+		entityListCtl.SelectedItem = _navPropertyModel.Datatype;
+		//lblRelatedPropertyName.Text = _navPropertyModel.RelatedPropertyName;
+		//lblCardinality.Text = _navPropertyModel.Cardinality.ToString();
 	}
 
 	#endregion
+
+	private void NavPropModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (_suspendUpdates)
+			return;
+	}
 
 	#region Properties
 
@@ -81,10 +92,25 @@ public partial class NavPropGridRowCtl : UserControl
 		if (MessageBox.Show("Are you sure you want to delete this property?", "Delete Property", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 			return;
 
-		NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_assocModel, NavPropChangedAction.Deleted));
+		NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_navPropertyModel, NavPropChangedAction.Deleted));
 	}
 
 	#endregion
+
+	private void txtName_TextChanged(object sender, EventArgs e)
+	{
+		_navPropertyModel.Name = txtName.Text;
+	}
+
+	private void cmbCardinality_SelectedIndexChanged(object sender, EventArgs e)
+	{
+		_navPropertyModel.Cardinality = (CardinalityModel)cmbCardinality.SelectedItem;
+	}
+
+	private void entityListCtl_ValueChanged(object sender, EntitySelectionChangedEventArgs e)
+	{
+		_navPropertyModel.Datatype = entityListCtl.SelectedItem;
+	}
 }
 
 #region Event Args
@@ -97,12 +123,12 @@ public enum NavPropChangedAction
 
 public class NavPropChangedEventArgs : EventArgs
 {
-	public AssocModel Assoc { get; }
+	public NavPropertyModel NavPropertyModel { get; }
 	public NavPropChangedAction Action { get; }
 
-	public NavPropChangedEventArgs(AssocModel assocModel, NavPropChangedAction action)
+	public NavPropChangedEventArgs(NavPropertyModel navPropertyModel, NavPropChangedAction action)
 	{
-		Assoc = assocModel;
+		NavPropertyModel = navPropertyModel;
 		Action = action;
 	}
 }

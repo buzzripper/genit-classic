@@ -4,6 +4,8 @@ namespace Dyvenix.Genit.Models;
 
 public class Doc
 {
+	public static Doc Instance { get; set; }
+
 	public string Name { get; set; }
 	public string Description { get; set; }
 	public string Version { get; set; } = "1.0.0";

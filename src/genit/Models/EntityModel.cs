@@ -1,168 +1,177 @@
-﻿using System;
+﻿using Dyvenix.Genit.UserControls;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 
-namespace Dyvenix.Genit.Models
+namespace Dyvenix.Genit.Models;
+
+public class EntityModel : INotifyPropertyChanged
 {
-    public class EntityModel : INotifyPropertyChanged
-    {
-        private Guid _id;
-        private string _name;
-        private string _schema;
-        private string _tableName;
-        private bool _enabled;
-        private string _namespace;
-        private ObservableCollection<string> _attributes = new ObservableCollection<string>();
-        private ObservableCollection<string> _addlUsings = new ObservableCollection<string>();
-        private ObservableCollection<PropertyModel> _properties = new ObservableCollection<PropertyModel>();
-        private ObservableCollection<AssocModel> _navAssocs = new ObservableCollection<AssocModel>();
+	#region Fields
 
-        [JsonConstructor]
-        public EntityModel()
-        {
-        }
+	private Guid _id;
+	private string _name;
+	private string _schema;
+	private string _tableName;
+	private bool _enabled;
+	private string _namespace;
+	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
+	private ObservableCollection<string> _addlUsings = new ObservableCollection<string>();
+	private ObservableCollection<PropertyModel> _properties = new ObservableCollection<PropertyModel>();
+	private ObservableCollection<NavPropertyModel> _navProperties = new ObservableCollection<NavPropertyModel>();
 
-        public EntityModel(Guid id)
-        {
-            Id = id;
-        }
+	#endregion
 
-        public Guid Id
-        {
-            get => _id;
-            set => SetProperty(ref _id, value);
-        }
+	#region Properties
 
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
+	[JsonConstructor]
+	public EntityModel()
+	{
+	}
 
-        public string Schema
-        {
-            get => _schema;
-            set => SetProperty(ref _schema, value);
-        }
+	public EntityModel(Guid id)
+	{
+		Id = id;
+	}
 
-        public string TableName
-        {
-            get => _tableName;
-            set => SetProperty(ref _tableName, value);
-        }
+	public Guid Id
+	{
+		get => _id;
+		set => SetProperty(ref _id, value);
+	}
 
-        public bool Enabled
-        {
-            get => _enabled;
-            set => SetProperty(ref _enabled, value);
-        }
+	public string Name
+	{
+		get => _name;
+		set => SetProperty(ref _name, value);
+	}
 
-        public string Namespace
-        {
-            get => _namespace;
-            set => SetProperty(ref _namespace, value);
-        }
+	public string Schema
+	{
+		get => _schema;
+		set => SetProperty(ref _schema, value);
+	}
 
-        public ObservableCollection<string> Attributes
-        {
-            get => _attributes;
-            set => SetProperty(ref _attributes, value);
-        }
+	public string TableName
+	{
+		get => _tableName;
+		set => SetProperty(ref _tableName, value);
+	}
 
-        public ObservableCollection<string> AddlUsings
-        {
-            get => _addlUsings;
-            set => SetProperty(ref _addlUsings, value);
-        }
+	public bool Enabled
+	{
+		get => _enabled;
+		set => SetProperty(ref _enabled, value);
+	}
 
-        //public bool InclSingleQuery
-        //{
-        //    get => _inclSingleQuery;
-        //    set => SetProperty(ref _inclSingleQuery, value);
-        //}
+	public string Namespace
+	{
+		get => _namespace;
+		set => SetProperty(ref _namespace, value);
+	}
 
-        //public bool InclListQuery
-        //{
-        //    get => _inclListQuery;
-        //    set => SetProperty(ref _inclListQuery, value);
-        //}
+	public ObservableCollection<string> Attributes
+	{
+		get => _attributes;
+		set => SetProperty(ref _attributes, value);
+	}
 
-        //public bool InclListInfoQuery
-        //{
-        //    get => _inclListInfoQuery;
-        //    set => SetProperty(ref _inclListInfoQuery, value);
-        //}
+	public ObservableCollection<string> AddlUsings
+	{
+		get => _addlUsings;
+		set => SetProperty(ref _addlUsings, value);
+	}
 
-        //public bool UseListPaging
-        //{
-        //    get => _useListPaging;
-        //    set => SetProperty(ref _useListPaging, value);
-        //}
+	public ObservableCollection<PropertyModel> Properties
+	{
+		get => _properties;
+		set => SetProperty(ref _properties, value);
+	}
 
-        //public bool UseListSorting
-        //{
-        //    get => _useListSorting;
-        //    set => SetProperty(ref _useListSorting, value);
-        //}
+	public ObservableCollection<NavPropertyModel> NavProperties
+	{
+		get => _navProperties;
+		set {
+			_navProperties.CollectionChanged += NavProperties_CollectionChanged;
+			SetProperty(ref _navProperties, value);
+		}
+	}
 
-        public ObservableCollection<PropertyModel> Properties
-        {
-            get => _properties;
-            set => SetProperty(ref _properties, value);
-        }
+	private void NavProperties_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		if (e.Action == NotifyCollectionChangedAction.Add) {
+			var navProp = (NavPropertyModel)e.OldItems[0];
+			NavPropertyAdded?.Invoke(this, new NavPropertyAddedEventArgs(this, navProp));
+		}
+	}
 
-        public ObservableCollection<AssocModel> NavAssocs
-        {
-            get => _navAssocs;
-            set => SetProperty(ref _navAssocs, value);
-        }
+	#endregion
 
-        public void InitializeOnLoad(ObservableCollection<EnumModel> enums)
-        {
-            foreach (var property in Properties)
-            {
-                property.InitializeOnLoad(enums);
-            }
-        }
+	#region Methods
 
-        public Guid AddForeignKey(AssocModel assoc)
-        {
-            var property = new PropertyModel(Guid.NewGuid(), assoc);
-            property.DisplayOrder = Properties.Count;
-			Properties.Add(property);
-            return property.Id;
-        }
+	public void InitializeOnLoad(ObservableCollection<EnumModel> enums)
+	{
+		foreach (var property in Properties) {
+			property.InitializeOnLoad(enums);
+		}
+	}
 
-        public void Validate(List<string> errorList)
-        {
-            foreach (var property in Properties)
-            {
-                property.Validate(Name, errorList);
-            }
-        }
+	public Guid AddForeignKey(string fkPropName, NavPropertyModel navPropertyMdl)
+	{
+		var property = new PropertyModel(Guid.NewGuid(), fkPropName, navPropertyMdl);
+		property.DisplayOrder = Properties.Count;
+		Properties.Add(property);
+		return property.Id;
+	}
 
-        public override string ToString()
-        {
-            return Name;
-        }
+	public void Validate(List<string> errorList)
+	{
+		foreach (var property in Properties) {
+			property.Validate(Name, errorList);
+		}
+	}
 
-        public event PropertyChangedEventHandler PropertyChanged;
+	public override string ToString()
+	{
+		return Name;
+	}
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+	#endregion
 
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-    }
+	#region IPropertyNotifyEvent
+
+	public event PropertyChangedEventHandler PropertyChanged;
+	public event EventHandler<NavPropertyAddedEventArgs> NavPropertyAdded;
+
+	protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+	{
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+	{
+		if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+		field = value;
+		OnPropertyChanged(propertyName);
+		return true;
+	}
+
+	#endregion
+}
+
+public class NavPropertyAddedEventArgs : EventArgs
+{
+	public EntityModel EntityModel { get; private set; }
+	public NavPropertyModel NavPropertyModel { get; private set; }
+
+	public NavPropertyAddedEventArgs(EntityModel entityModel, NavPropertyModel navPropertyMdl)
+	{
+		EntityModel = entityModel;
+		NavPropertyModel = navPropertyMdl;
+	}
 }

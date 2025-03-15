@@ -10,9 +10,14 @@ namespace Dyvenix.Genit.Models;
 
 public class NavPropertyModel : INotifyPropertyChanged
 {
+	public event PropertyChangedEventHandler PropertyChanged;
+
 	#region Fields
 
-	private readonly EntityModel _entityMdl;
+	private string _name;
+	private Guid? _assocId;
+	private int _displayOrder;
+	private AssocModel _assoc;
 
 	#endregion
 
@@ -23,10 +28,14 @@ public class NavPropertyModel : INotifyPropertyChanged
 	{
 	}
 
-	public NavPropertyModel(Guid id, EntityModel entityMdl)
+	public NavPropertyModel(Guid id)
 	{
-		Id = id;
-		_entityMdl = entityMdl;
+		this.Id = id;
+	}
+
+	public void InitializeOnLoad(AssocModel assocModel)
+	{
+		this.Assoc = assocModel;
 	}
 
 	#endregion
@@ -35,25 +44,18 @@ public class NavPropertyModel : INotifyPropertyChanged
 
 	public Guid Id { get; init; }
 
-	private string _name;
 	public string Name
 	{
 		get => _name;
 		set => SetProperty(ref _name, value);
 	}
 
-	private Cardinality _cardinality;
-	public Cardinality Cardinality
+	public Guid? AssocId
 	{
-		get => _cardinality;
-		set => SetProperty(ref _cardinality, value);
+		get => _assocId;
+		set => SetProperty(ref _assocId, value);
 	}
 
-	public Guid RelatedEntityId { get; set; }
-
-	public Guid RelatedFKPropertyId { get; set; }
-
-	private int _displayOrder;
 	public int DisplayOrder
 	{
 		get => _displayOrder;
@@ -69,58 +71,96 @@ public class NavPropertyModel : INotifyPropertyChanged
 
 	// Non-serialized properties
 
-	private EntityModel _relatedEntity;
 	[JsonIgnore]
-	public EntityModel RelatedEntity
-	{
-		get => _relatedEntity;
-		set {
-			RelatedEntityId = value.Id;
-			SetProperty(ref _relatedEntity, value);
+	public AssocModel Assoc { 
+		get { return _assoc; }
+		set{ 
+			_assocId = value?.Id;
+			SetProperty(ref _assoc, value);
 		}
 	}
 
-	private PropertyModel _relatedFKProperty;
 	[JsonIgnore]
-	public PropertyModel RelatedFKProperty
+	public Cardinality Cardinality
 	{
-		get => _relatedFKProperty;
-		set => SetProperty(ref _relatedFKProperty, value);
+		get { return Assoc == null ? Models.Cardinality.None : Assoc.Cardinality; }
+		set {
+			if (Assoc != null)
+				Assoc.Cardinality = value;
+		}
 	}
+
+	[JsonIgnore]
+	public EntityModel FKEntity
+	{
+		get { return Assoc?.FKEntity; }
+		set { 
+			if (Assoc != null)
+				Assoc.FKEntity = value;
+		}
+	}
+
+	[JsonIgnore]
+	public PropertyModel FKProperty
+	{
+		get { return Assoc?.FKProperty; }
+		set { 
+			if (Assoc != null)
+				Assoc.FKProperty = value;
+		}
+	}
+
+	//private Cardinality _cardinality;
+	//private EntityModel _relatedEntity;
+	//private PropertyModel _relatedFKProperty;
+	//private readonly EntityModel _entityMdl;
+
+	//[JsonIgnore]
+	//public EntityModel RelatedEntity
+	//{
+	//	get => _relatedEntity;
+	//	set {
+	//		RelatedEntityId = value.Id;
+	//		_relatedEntity = value;
+	//	}
+	//}
+
+	//[JsonIgnore]
+	//public PropertyModel RelatedFKProperty
+	//{
+	//	get => _relatedFKProperty;
+	//	set {
+	//		RelatedFKPropertyId = _relatedEntity.Id;
+	//		_relatedFKProperty = value;
+	//	}
+	//}
 
 	#endregion
 
 	#region Methods
 
-	public void InitializeOnLoad(ObservableCollection<EntityModel> entities)
-	{
-		this.RelatedEntity = entities.FirstOrDefault(e => e.Id == RelatedEntityId);
-		this.RelatedFKProperty = this.RelatedEntity.Properties.FirstOrDefault(p => p.Id == RelatedFKPropertyId);
-	}
-
-	public PrimitiveType GetParentPkDatatype()
-	{
-		var pkProp = _entityMdl.Properties.FirstOrDefault(p => p.IsPrimaryKey);
-		return pkProp?.PrimitiveType ?? PrimitiveType.None;
-	}
+	//public PrimitiveType GetParentPkDatatype()
+	//{
+	//	var pkProp = _entityMdl.Properties.FirstOrDefault(p => p.IsPrimaryKey);
+	//	return pkProp?.PrimitiveType ?? PrimitiveType.None;
+	//}
 
 	public bool Validate(string entityName, List<string> errorList)
 	{
 		var errs = new List<string>();
 
-		if (string.IsNullOrWhiteSpace(this.Name))
-			errs.Add($"NavProperty {entityName}.{this.Name}: Name is required.");
+		//if (string.IsNullOrWhiteSpace(this.Name))
+		//	errs.Add($"NavProperty {entityName}.{this.Name}: Name is required.");
 
-		if (this.Cardinality == Cardinality.None)
-			errs.Add($"NavProperty {entityName}.{this.Name}: Cardinality is required.");
+		//if (this.Cardinality == Cardinality.None)
+		//	errs.Add($"NavProperty {entityName}.{this.Name}: Cardinality is required.");
 
-		errorList.AddRange(errs);
+		//errorList.AddRange(errs);
+
 		return (errs.Count == 0);
 	}
 
 	#endregion
-
-	public event PropertyChangedEventHandler PropertyChanged;
 
 	protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
 	{

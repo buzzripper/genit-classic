@@ -118,6 +118,17 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="picEditNavProp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAEeSURBVEhLtZM9TsQwFIRzga2Q9gJbcR0OR7U32IYTUHAO
+        lB+JEoSgoUJmJnpGMyaBtckWn5x5nve5SpdSuiiLwy1ZHG6JhXEcW7gdhuEZ5z3OK2BOC8XiOdxBmDJ9
+        3z9itlPnfx4wufCgztYH1uQz6mx5IMs/VSoc1Vn7QJa/4fsAbvD9EbMU9+a0EJI1vuXgQBFmO5zvnPN+
+        mqaOc3VaEFnJD3mcL2CW5y7v1GkhlwrW5MwmJ7xXpwUtBlVywo46LRTlajlhT50WpNgkJ+yq00KUmuWE
+        fXVaQOFECXgF1XLCHXVaoCTYswiq5IR76rRAUcDva1AlJ9xVpwXKSrB0tpxgx5wWcPkE5l8/5KdS8Be/
+        PnAJFodbsjjcjtR9AednpkrLBnnPAAAAAElFTkSuQmCC
+</value>
+  </data>
   <data name="picDelete.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL

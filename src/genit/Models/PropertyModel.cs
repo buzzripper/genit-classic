@@ -12,7 +12,7 @@ public class PropertyModel : INotifyPropertyChanged
 {
 	#region Fields
 
-	private string _name;
+	private bool _suspendUpdates;
 
 	#endregion
 
@@ -28,12 +28,20 @@ public class PropertyModel : INotifyPropertyChanged
 		Id = id;
 	}
 
-	public PropertyModel(Guid id, string name, NavPropertyModel navPropertyMdl)
+	public PropertyModel(Guid id, string name, EntityModel pkEntity)
 	{
+		_suspendUpdates = true;
+
 		Id = id;
 		Name = name;
-		FKNavPropertyId = navPropertyMdl.Id;
-		FKNavProperty = navPropertyMdl;
+		ParentEntity = pkEntity;
+
+		//PrimitiveType = primitiveType;
+		//FKNavPropertyId = navPropertyId;
+		//FKNavPropertyId = navPropertyMdl.Id;
+		//FKNavProperty = navPropertyMdl;
+
+		_suspendUpdates = false;
 	}
 
 	#endregion
@@ -50,7 +58,12 @@ public class PropertyModel : INotifyPropertyChanged
 	[JsonIgnore]
 	public PrimitiveType PrimitiveType
 	{
-		get => _primitiveType;
+		get {
+			if(this.ParentEntity == null)
+				return _primitiveType;
+			else
+				return this.ParentEntity.GetPKProperty().PrimitiveType;
+		}
 		set {
 			PrimitiveTypeId = (value != null) ? value.Id : -1;
 			SetProperty(ref _primitiveType, value);
@@ -71,37 +84,15 @@ public class PropertyModel : INotifyPropertyChanged
 	}
 
 	[JsonIgnore]
-	public string DatatypeName
-	{
-		get {
-			if (this.PrimitiveType != PrimitiveType.None)
-				return this.PrimitiveType.CSType;
-			else if (this.EnumType != null)
-				return this.EnumType.Name;
-			else if (this.FKNavProperty != null)
-				return this.FKNavProperty.GetParentPkDatatype().Name;
-			else
-				return string.Empty;
-		}
-		set {
-		}
-	}
-
-	private Guid? _fkNavPropertyId;
-	public Guid? FKNavPropertyId
-	{
-		get => _fkNavPropertyId;
-		set => SetProperty(ref _fkNavPropertyId, value);
-	}
-
-	[JsonIgnore]
-	public NavPropertyModel FKNavProperty { get; set; }
-
-	[JsonIgnore]
 	public bool IsForeignKey
 	{
-		get => this.FKNavPropertyId.HasValue;
+		get => this.ParentEntity != null;
 	}
+
+	[JsonIgnore]
+	public EntityModel ParentEntity { get; set; }
+	[JsonIgnore]
+	public NavPropertyModel ParentNavProperty { get; set; }
 
 	private bool _isPrimaryKey;
 	public bool IsPrimaryKey
@@ -182,7 +173,7 @@ public class PropertyModel : INotifyPropertyChanged
 		if (this.PrimitiveTypeId > 0) {
 			this.PrimitiveType = PrimitiveType.GetAll().First(p => p.Id == this.PrimitiveTypeId);
 
-		} else if (this.EnumTypeId != Guid.Empty) {
+		} else if (this.EnumTypeId != null) {
 			this.EnumType = enums.First(e => e.Id == this.EnumTypeId);
 		}
 	}
@@ -212,12 +203,12 @@ public class PropertyModel : INotifyPropertyChanged
 		return (errs.Count == 0);
 	}
 
-	#endregion
-
 	public override string ToString()
 	{
 		return this.Name;
 	}
+
+	#endregion
 
 	public event PropertyChangedEventHandler PropertyChanged;
 
@@ -230,7 +221,10 @@ public class PropertyModel : INotifyPropertyChanged
 	{
 		if (EqualityComparer<T>.Default.Equals(field, value)) return false;
 		field = value;
-		OnPropertyChanged(propertyName);
+
+		if (!_suspendUpdates)
+			OnPropertyChanged(propertyName);
+
 		return true;
 	}
 }

@@ -279,15 +279,20 @@ public partial class MainForm : Form
 
 	private void Save()
 	{
-		if (string.IsNullOrWhiteSpace(CurrDocFilepath))
-			return;
+		if (string.IsNullOrWhiteSpace(CurrDocFilepath)) {
+			if (saveFileDlg.ShowDialog(this) == DialogResult.OK) {
+				CurrDocFilepath = saveFileDlg.FileName;
+			} else {
+				return;
+			}
+		}
 
 		try {
 			DocManager.SaveDoc(this.Doc, CurrDocFilepath);
 			outputCtl.WriteInfo($"File saved ({CurrDocFilepath})");
 
 		} catch (ValidationException ex) {
-			foreach(var err in ex.Errors)
+			foreach (var err in ex.Errors)
 				outputCtl.WriteError(err);
 			MessageBox.Show($"Validation error(s). See output for detail.");
 

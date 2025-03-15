@@ -1,168 +1,192 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.ComponentModel;
-//using System.Linq;
-//using System.Runtime.CompilerServices;
-//using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
-//namespace Dyvenix.Genit.Models
-//{
-//    public class AssocModel : INotifyPropertyChanged
-//    {
-//        public event PropertyChangedEventHandler PropertyChanged;
+namespace Dyvenix.Genit.Models
+{
+	public class AssocModel : INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
 
-//        #region Fields
+		#region Fields
 
-//        private Guid _id;
-//        private Guid _primaryEntityId;
-//        private string _primaryPropertyName;
-//        private PrimitiveType _primaryPKType;
-//        private Guid _relatedEntityId;
-//        private string _relatedPropertyName;
-//        private CardinalityModel _cardinality;
-//        private EntityModel _primaryEntity;
-//        private EntityModel _relatedEntity;
+		private Guid _id;
+		private Guid _primaryEntityId;
+		private Guid _navPropertyId;
+		private Guid _fkEntityId;
+		private Guid _fkPropertyId;
+		private Cardinality _cardinality;
 
-//        #endregion
+		private bool _suspendUpdates;
 
-//        #region Ctors
+		//private string _primaryPropertyName;
+		//private PrimitiveType _primaryPKType;
+		//private string _relatedPropertyName;
+		//private EntityModel _primaryEntity;
+		//private EntityModel _relatedEntity;
 
-//        [JsonConstructor]
-//        public AssocModel()
-//        {
-//        }
+		#endregion
 
-//        public AssocModel(Guid id, EntityModel primaryEntityMdl, string name, EntityModel relatedEntityMdl, string relatedPropertyName, CardinalityModel cardinality)
-//        {
-//            Id = id;
-//            PrimaryEntity = primaryEntityMdl;
-//            PrimaryEntityId = primaryEntityMdl.Id;
-//            PrimaryPropertyName = name;
-//            RelatedEntity = relatedEntityMdl;
-//            RelatedEntityId = relatedEntityMdl.Id;
-//            RelatedPropertyName = relatedPropertyName;
-//            Cardinality = cardinality;
+		#region Ctors
 
-//            PrimaryPKType = primaryEntityMdl.Properties.FirstOrDefault(p => p.IsPrimaryKey)?.PrimitiveType;
-//        }
+		[JsonConstructor]
+		public AssocModel()
+		{
+		}
 
-//        public void InitializeOnLoad(EntityModel primaryEntityMdl, EntityModel relatedEntityMdl)
-//        {
-//            this.PrimaryEntity = primaryEntityMdl;
-//            var navAssoc = primaryEntityMdl.NavAssocs.FirstOrDefault(a => a.Id == this.Id);
-//			if (navAssoc == null)
-//				primaryEntityMdl.NavAssocs.Add(this);
-//			this.RelatedEntity = relatedEntityMdl;
-//        }
+		//public AssocModel(Guid id, EntityModel primaryEntityMdl, string name, EntityModel relatedEntityMdl, string relatedPropertyName, CardinalityModel cardinality)
+		//{
+		// _suspendUpdates = true;
+		//	Id = id;
+		//	PrimaryEntity = primaryEntityMdl;
+		//	PrimaryEntityId = primaryEntityMdl.Id;
+		//	PrimaryPropertyName = name;
+		//	RelatedEntity = relatedEntityMdl;
+		//	RelatedEntityId = relatedEntityMdl.Id;
+		//	RelatedPropertyName = relatedPropertyName;
+		//	Cardinality = cardinality;
 
-//        #endregion
+		//	PrimaryPKType = primaryEntityMdl.Properties.FirstOrDefault(p => p.IsPrimaryKey)?.PrimitiveType;
+		// _suspendUpdates = false;
+		//}
 
-//        #region Properties 
+		public void InitializeOnLoad(EntityModel primaryEntityMdl, EntityModel relatedEntityMdl)
+		{
+			_suspendUpdates = true;
 
-//        public Guid Id
-//        {
-//            get => _id;
-//            set => SetProperty(ref _id, value);
-//        }
+			PrimaryEntity = primaryEntityMdl;
+			NavProperty = primaryEntityMdl.NavProperties.FirstOrDefault(np => np.Id == NavPropertyId);
 
-//        public Guid PrimaryEntityId
-//        {
-//            get => _primaryEntityId;
-//            set => SetProperty(ref _primaryEntityId, value);
-//        }
+			FKEntity = relatedEntityMdl;
+			FKProperty = relatedEntityMdl.Properties.FirstOrDefault(p => p.Id == FKPropertyId);
 
-//        public string PrimaryPropertyName
-//        {
-//            get => _primaryPropertyName;
-//            set => SetProperty(ref _primaryPropertyName, value);
-//        }
+			_suspendUpdates = false;
+		}
 
-//        public PrimitiveType PrimaryPKType
-//        {
-//            get => _primaryPKType;
-//            set => SetProperty(ref _primaryPKType, value);
-//        }
+		#endregion
 
-//        public Guid RelatedEntityId
-//        {
-//            get => _relatedEntityId;
-//            set => SetProperty(ref _relatedEntityId, value);
-//        }
+		#region Properties 
 
-//        public string RelatedPropertyName
-//        {
-//            get => _relatedPropertyName;
-//            set => SetProperty(ref _relatedPropertyName, value);
-//        }
+		public Guid Id
+		{
+			get => _id;
+			set => SetProperty(ref _id, value);
+		}
 
-//        public CardinalityModel Cardinality
-//        {
-//            get => _cardinality;
-//            set => SetProperty(ref _cardinality, value);
-//        }
+		public Guid PrimaryEntityId
+		{
+			get => _primaryEntityId;
+			set => SetProperty(ref _primaryEntityId, value);
+		}
 
-//        [JsonIgnore]
-//        public EntityModel PrimaryEntity
-//        {
-//            get => _primaryEntity;
-//            set => SetProperty(ref _primaryEntity, value);
-//        }
+		public Guid NavPropertyId
+		{
+			get => _navPropertyId;
+			set => SetProperty(ref _navPropertyId, value);
+		}
 
-//        [JsonIgnore]
-//        public EntityModel RelatedEntity
-//        {
-//            get => _relatedEntity;
-//            set => SetProperty(ref _relatedEntity, value);
-//        }
+		public Guid FKEntityId
+		{
+			get => _fkEntityId;
+			set => SetProperty(ref _fkEntityId, value);
+		}
 
-//        [JsonIgnore]
-//        public string Name
-//        {
-//            get => $"{this.PrimaryEntity?.Name} - {this.RelatedEntity?.Name}";
-//        }
+		public Guid FKPropertyId
+		{
+			get => _fkPropertyId;
+			set => SetProperty(ref _fkPropertyId, value);
+		}
 
-//        #endregion
+		public Cardinality Cardinality
+		{ 
+			get => _cardinality;
+			set => SetProperty(ref _cardinality, value);
+		}
 
-//        #region Methods
+		[JsonIgnore]
+		public EntityModel PrimaryEntity { get; set; }
 
-//        public void Validate(List<string> errorList)
-//        {
-//            if (string.IsNullOrWhiteSpace(PrimaryPropertyName))
-//                errorList.Add($"Invalid AssocModel. PrimaryPropertyName not defined.");
+		[JsonIgnore]
+		public NavPropertyModel NavProperty { get; set; }
 
-//            if (PrimaryEntityId == Guid.Empty)
-//                errorList.Add($"Invalid AssocModel '{this.PrimaryPropertyName}'. No PrimaryEntityId defined.");
+		[JsonIgnore]
+		public EntityModel FKEntity { get; set; }
 
-//            if (this.PrimaryEntity == null)
-//                errorList.Add($"Invalid AssocModel '{this.PrimaryPropertyName}'. No PrimaryEntity defined.");
+		[JsonIgnore]
+		public PropertyModel FKProperty { get; set; }
 
-//            if (string.IsNullOrWhiteSpace(RelatedPropertyName))
-//                errorList.Add($"Invalid AssocModel. RelatedPropertyName not defined.");
+		//public string PrimaryPropertyName
+		//{
+		//    get => _primaryPropertyName;
+		//    set => SetProperty(ref _primaryPropertyName, value);
+		//}
 
-//            if (RelatedEntityId == Guid.Empty)
-//                errorList.Add($"Invalid AssocModel '{this.PrimaryPropertyName}'. No RelatedEntityId defined.");
+		//public PrimitiveType PrimaryPKType
+		//{
+		//    get => _primaryPKType;
+		//    set => SetProperty(ref _primaryPKType, value);
+		//}
 
-//            if (this.RelatedEntity == null)
-//                errorList.Add($"Invalid AssocModel '{this.PrimaryPropertyName}'. No RelatedEntity defined.");
-//        }
+		//public string RelatedPropertyName
+		//{
+		//    get => _relatedPropertyName;
+		//    set => SetProperty(ref _relatedPropertyName, value);
+		//}
 
-//        #endregion
+		//[JsonIgnore]
+		//public string Name
+		//{
+		//    get => $"{this.PrimaryEntity?.Name} - {this.RelatedEntity?.Name}";
+		//}
 
-//        #region INotifyPropertyChanged
+		#endregion
 
-//        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-//        {
-//            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-//        }
+		#region Methods
 
-//        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-//        {
-//            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-//            field = value;
-//            OnPropertyChanged(propertyName);
-//            return true;
-//        }
+		public void Validate(List<string> errorList)
+		{
+			//if (string.IsNullOrWhiteSpace(PrimaryPropertyName))
+			//	errorList.Add($"Invalid AssocModel. PrimaryPropertyName not defined.");
 
-//        #endregion
-//    }
-//}
+			//if (PrimaryEntityId == Guid.Empty)
+			//	errorList.Add($"Invalid AssocModel '{this.PrimaryPropertyName}'. No PrimaryEntityId defined.");
+
+			//if (this.PrimaryEntity == null)
+			//	errorList.Add($"Invalid AssocModel '{this.PrimaryPropertyName}'. No PrimaryEntity defined.");
+
+			//if (string.IsNullOrWhiteSpace(RelatedPropertyName))
+			//	errorList.Add($"Invalid AssocModel. RelatedPropertyName not defined.");
+
+			//if (RelatedEntityId == Guid.Empty)
+			//	errorList.Add($"Invalid AssocModel '{this.PrimaryPropertyName}'. No RelatedEntityId defined.");
+
+			//if (this.RelatedEntity == null)
+			//	errorList.Add($"Invalid AssocModel '{this.PrimaryPropertyName}'. No RelatedEntity defined.");
+		}
+
+		#endregion
+
+		#region INotifyPropertyChanged
+
+		protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+			field = value;
+
+			if (!_suspendUpdates)
+				OnPropertyChanged(propertyName);
+			
+			return true;
+		}
+
+		#endregion
+	}
+}

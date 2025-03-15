@@ -278,7 +278,6 @@ partial class EntityMainEditCtl
 		lkbAddNewNavProp.UseMnemonic = false;
 		lkbAddNewNavProp.VisitedLinkColor = System.Drawing.SystemColors.ControlText;
 		lkbAddNewNavProp.LinkClicked += lkbAddNewNavProp_LinkClicked;
-		lkbAddNewNavProp.Click += lkbAddNewNavProp_Click;
 		// 
 		// label8
 		// 

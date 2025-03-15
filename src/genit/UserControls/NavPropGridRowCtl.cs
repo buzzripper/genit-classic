@@ -12,8 +12,10 @@ public partial class NavPropGridRowCtl : UserControl
 
 	#region Fields
 
-	private readonly NavPropertyModel _navPropertyModel;
+	private readonly EntityModel _entity;
+	private readonly NavPropertyModel _navProperty;
 	private bool _suspendUpdates;
+	private AssocEditForm _navPropEditForm;
 
 	#endregion
 
@@ -24,10 +26,11 @@ public partial class NavPropGridRowCtl : UserControl
 		InitializeComponent();
 	}
 
-	public NavPropGridRowCtl(NavPropertyModel navPropMdl) : this()
+	public NavPropGridRowCtl(EntityModel entity, NavPropertyModel navPropMdl) : this()
 	{
-		_navPropertyModel = navPropMdl;
-		_navPropertyModel.PropertyChanged += NavPropModel_PropertyChanged;
+		_entity = entity;
+		_navProperty = navPropMdl;
+		_navProperty.PropertyChanged += NavPropModel_PropertyChanged;
 	}
 
 	private void NavPropGridRowCtrl_Load(object sender, EventArgs e)
@@ -47,9 +50,13 @@ public partial class NavPropGridRowCtl : UserControl
 
 	private void Populate()
 	{
-		txtName.Text = _navPropertyModel.Name;
-		cmbCardinality.SelectedIndex = (int)_navPropertyModel.Cardinality;
-		entityListCtl.SelectedItem = _navPropertyModel.RelatedEntity;
+		_suspendUpdates = true;
+
+		txtName.Text = _navProperty.Name;
+		cmbCardinality.SelectedIndex = (int)_navProperty.Cardinality;
+		entityListCtl.SelectedEntity = _navProperty.FKEntity;
+
+		_suspendUpdates = false;
 	}
 
 	private Cardinality GetCardinality(string cardinality)
@@ -84,6 +91,16 @@ public partial class NavPropGridRowCtl : UserControl
 		set { splRelPropName.SplitterDistance = value; }
 	}
 
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+	public AssocEditForm NavPropEditForm
+	{
+		get {
+			if (_navPropEditForm == null)
+				_navPropEditForm = new AssocEditForm();
+			return _navPropEditForm;
+		}
+	}
+
 	#endregion
 
 	#region UI Events
@@ -93,31 +110,40 @@ public partial class NavPropGridRowCtl : UserControl
 		if (MessageBox.Show("Are you sure you want to delete this property?", "Delete Property", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 			return;
 
-		NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_navPropertyModel, NavPropChangedAction.Deleted));
+		NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_navProperty, NavPropChangedAction.Deleted));
 	}
 
 	private void NavPropModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
-		if (_suspendUpdates)
-			return;
 	}
 
 	private void txtName_TextChanged(object sender, EventArgs e)
 	{
-		_navPropertyModel.Name = txtName.Text;
+		if (!_suspendUpdates)
+			_navProperty.Name = txtName.Text;
 	}
 
 	private void cmbCardinality_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		_navPropertyModel.Cardinality = GetCardinality(cmbCardinality.SelectedItem.ToString());
+		if (!_suspendUpdates)
+			_navProperty.Cardinality = GetCardinality(cmbCardinality.SelectedItem.ToString());
 	}
 
 	private void entityListCtl_ValueChanged(object sender, EntitySelectionChangedEventArgs e)
 	{
-		_navPropertyModel.RelatedEntity = entityListCtl.SelectedItem;
+		if (!_suspendUpdates)
+			_navProperty.FKEntity = entityListCtl.SelectedEntity;
 	}
 
 	#endregion
+
+	private void picEditNavProp_Click(object sender, EventArgs e)
+	{
+		if (NavPropEditForm.Run(_navProperty.Assoc) == DialogResult.Cancel)
+			return;
+
+		NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_navProperty, NavPropChangedAction.Updated));
+	}
 }
 
 #region Event Args

@@ -11,6 +11,7 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 	#region Fields
 
 	private bool _suspendUpdates;
+	private AssocEditForm _navPropEditForm;
 
 	#endregion
 
@@ -53,6 +54,16 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 
 	#region Properties
 
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+	public AssocEditForm NavPropEditForm
+	{
+		get {
+			if (_navPropEditForm == null)
+				_navPropEditForm = new AssocEditForm();
+			return _navPropEditForm;
+		}
+	}
+
 	#endregion
 
 	#region UI Events
@@ -92,18 +103,17 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		_entity.Properties.Add(new PropertyModel(Guid.NewGuid()));
 	}
 
-	private void lkbAddNewNavProp_Click(object sender, EventArgs e)
+	private void lkbAddNewNavProp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 	{
-		//if (this.AssocEditForm.Run(null) == DialogResult.OK) {
-		//	var assocMdl = new AssocModel(Guid.NewGuid(), _entity, this.AssocEditForm.PrimaryPropertyName, this.AssocEditForm.RelatedEntity, this.AssocEditForm.RelatedPropertyName,  this.AssocEditForm.Cardinality);
-		//	_entity.NavAssocs.Add(assocMdl);
-		//}
+		var assoc = new AssocModel();
+		assoc.Id = Guid.NewGuid();
+		assoc.PrimaryEntity = _entity;
+
+		if (NavPropEditForm.Run(assoc) == DialogResult.Cancel)
+			return;
+
+		_entity.NavProperties.Add(new NavPropertyModel(Guid.NewGuid()));
 	}
 
 	#endregion
-
-	private void lkbAddNewNavProp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-	{
-		_entity.NavProperties.Add(new NavPropertyModel(Guid.NewGuid(), _entity));
-	}
 }

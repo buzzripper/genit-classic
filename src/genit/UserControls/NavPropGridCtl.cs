@@ -12,7 +12,7 @@ namespace Dyvenix.Genit.UserControls
 	{
 		#region Fields
 
-		private ObservableCollection<NavPropertyModel> _navPropModels = new ObservableCollection<NavPropertyModel>();
+		private ObservableCollection<NavPropertyModel> _navProperties = new ObservableCollection<NavPropertyModel>();
 		private List<NavPropGridRowCtl> _navPropGridRowCtls = new List<NavPropGridRowCtl>();
 
 		#endregion
@@ -27,9 +27,6 @@ namespace Dyvenix.Genit.UserControls
 		private void NavPropGridCtl_Load(object sender, EventArgs e)
 		{
 			splMain.Height = lblPrimaryPropertyName.Height + 4;
-			splMain_SplitterMoved(null, null);
-			splCardinality_SplitterMoved(null, null);
-			splRelPropName_SplitterMoved(null, null);
 		}
 
 		#endregion
@@ -37,10 +34,10 @@ namespace Dyvenix.Genit.UserControls
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ObservableCollection<NavPropertyModel> DataSource
 		{
-			get { return _navPropModels; }
+			get { return _navProperties; }
 			set {
-				_navPropModels = value;
-				_navPropModels.CollectionChanged += AssocModels_CollectionChanged;
+				_navProperties = value;
+				_navProperties.CollectionChanged += AssocModels_CollectionChanged;
 				PopulateRows();
 			}
 		}
@@ -60,8 +57,8 @@ namespace Dyvenix.Genit.UserControls
 				_navPropGridRowCtls.Clear();
 
 				var count = 0;
-				foreach (var navPropMdl in _navPropModels) {
-					NavPropGridRowCtl navPropGridRowCtl = new NavPropGridRowCtl(navPropMdl);
+				foreach (var navProperty in _navProperties) {
+					NavPropGridRowCtl navPropGridRowCtl = new NavPropGridRowCtl();
 					navPropGridRowCtl.Top = splMain.Height + (count++ * 35);
 					navPropGridRowCtl.Left = 0;
 					navPropGridRowCtl.Width = this.Width;
@@ -71,6 +68,10 @@ namespace Dyvenix.Genit.UserControls
 					_navPropGridRowCtls.Add(navPropGridRowCtl);
 					this.Controls.Add(navPropGridRowCtl);
 				}
+
+				splMain_SplitterMoved(null, null);
+				splCardinality_SplitterMoved(null, null);
+				splRelPropName_SplitterMoved(null, null);
 
 			} catch (Exception ex) {
 				MessageBox.Show(ex.Message);
@@ -85,7 +86,7 @@ namespace Dyvenix.Genit.UserControls
 		private void NavPropGridRowCtl_NavigationPropertyChanged(object sender, NavPropChangedEventArgs e)
 		{
 			if (e.Action == NavPropChangedAction.Deleted)
-				_navPropModels.Remove(e.NavPropertyModel);
+				_navProperties.Remove(e.NavPropertyModel);
 		}
 
 		private void AssocModels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -97,7 +98,7 @@ namespace Dyvenix.Genit.UserControls
 		private void splMain_SplitterMoved(object sender, SplitterEventArgs e)
 		{
 			foreach (var ctl in _navPropGridRowCtls)
-				if (ctl is NavPropGridRowCtl) { 
+				if (ctl is NavPropGridRowCtl) {
 					((NavPropGridRowCtl)ctl).Col1Width = splMain.SplitterDistance;
 					((NavPropGridRowCtl)ctl).Col2Width = splCardinality.SplitterDistance;
 					((NavPropGridRowCtl)ctl).Col3Width = splRelPropName.SplitterDistance;

@@ -35,6 +35,7 @@ partial class NavPropGridRowCtl
 		splRelPropName = new System.Windows.Forms.SplitContainer();
 		entityListCtl = new EntityListCtl();
 		picDelete = new System.Windows.Forms.PictureBox();
+		picEditNavProp = new System.Windows.Forms.PictureBox();
 		((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
 		splMain.Panel1.SuspendLayout();
 		splMain.Panel2.SuspendLayout();
@@ -48,6 +49,7 @@ partial class NavPropGridRowCtl
 		splRelPropName.Panel2.SuspendLayout();
 		splRelPropName.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)picDelete).BeginInit();
+		((System.ComponentModel.ISupportInitialize)picEditNavProp).BeginInit();
 		SuspendLayout();
 		// 
 		// splMain
@@ -116,6 +118,7 @@ partial class NavPropGridRowCtl
 		// 
 		// splRelPropName.Panel2
 		// 
+		splRelPropName.Panel2.Controls.Add(picEditNavProp);
 		splRelPropName.Panel2.Controls.Add(picDelete);
 		splRelPropName.Size = new System.Drawing.Size(753, 41);
 		splRelPropName.SplitterDistance = 240;
@@ -134,12 +137,23 @@ partial class NavPropGridRowCtl
 		// 
 		picDelete.Cursor = System.Windows.Forms.Cursors.Hand;
 		picDelete.Image = (System.Drawing.Image)resources.GetObject("picDelete.Image");
-		picDelete.Location = new System.Drawing.Point(31, 0);
+		picDelete.Location = new System.Drawing.Point(58, 0);
 		picDelete.Name = "picDelete";
 		picDelete.Size = new System.Drawing.Size(22, 25);
 		picDelete.TabIndex = 1;
 		picDelete.TabStop = false;
 		picDelete.Click += picDelete_Click;
+		// 
+		// picEditNavProp
+		// 
+		picEditNavProp.Cursor = System.Windows.Forms.Cursors.Hand;
+		picEditNavProp.Image = (System.Drawing.Image)resources.GetObject("picEditNavProp.Image");
+		picEditNavProp.Location = new System.Drawing.Point(15, 0);
+		picEditNavProp.Name = "picEditNavProp";
+		picEditNavProp.Size = new System.Drawing.Size(22, 25);
+		picEditNavProp.TabIndex = 2;
+		picEditNavProp.TabStop = false;
+		picEditNavProp.Click += picEditNavProp_Click;
 		// 
 		// NavPropGridRowCtl
 		// 
@@ -165,6 +179,7 @@ partial class NavPropGridRowCtl
 		((System.ComponentModel.ISupportInitialize)splRelPropName).EndInit();
 		splRelPropName.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)picDelete).EndInit();
+		((System.ComponentModel.ISupportInitialize)picEditNavProp).EndInit();
 		ResumeLayout(false);
 	}
 
@@ -178,4 +193,5 @@ partial class NavPropGridRowCtl
 	private System.Windows.Forms.TextBox txtName;
 	private System.Windows.Forms.ComboBox cmbCardinality;
 	private EntityListCtl entityListCtl;
+	private System.Windows.Forms.PictureBox picEditNavProp;
 }

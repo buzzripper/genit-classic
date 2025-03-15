@@ -27,13 +27,23 @@ public partial class EntityListCtl : UserControl
 	private void EntityListCtl_Load(object sender, EventArgs e)
 	{
 		this.Height = cmbEntities.Height;
+
+		_suspendUpdates = true;
+
+		cmbEntities.Items.Add(new ListItem(null));
+		foreach(var entity in Doc.Instance.DbContexts[0].Entities.OrderBy(e => e.Name))
+			cmbEntities.Items.Add(new ListItem(entity));
+		
 		Doc.Instance.DbContexts[0].Entities.CollectionChanged += Entities_CollectionChanged;
-		cmbEntities.DataSource = Doc.Instance.DbContexts[0].Entities.OrderBy(e => e.Name).ToList();
+
+		_suspendUpdates = false;
 	}
 
 	private void Entities_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 	{
+		_suspendUpdates = true;
 		cmbEntities.DataSource = Doc.Instance.DbContexts[0].Entities.OrderBy(e => e.Name).ToList();
+		_suspendUpdates = false;
 	}
 
 	#endregion
@@ -42,13 +52,19 @@ public partial class EntityListCtl : UserControl
 
 	[Browsable(false)]
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-	public EntityModel SelectedItem
+	public EntityModel SelectedEntity
 	{
 		get {
-			return cmbEntities.SelectedItem as EntityModel;
+			var listItem = cmbEntities.SelectedItem as ListItem;
+			return listItem.Entity;
 		}
 		set {
-			cmbEntities.SelectedItem = value;
+			foreach(ListItem listItem in cmbEntities.Items) {
+				if (listItem.Entity == value) {
+					cmbEntities.SelectedItem = listItem;
+					break;
+				}
+			}
 		}
 	}
 
@@ -67,6 +83,23 @@ public partial class EntityListCtl : UserControl
 	#region Methods
 
 	#endregion
+
+	private class ListItem
+	{
+		public string Display { get; set; }
+		public EntityModel Entity { get; set; }
+		
+		public ListItem(EntityModel entity)
+		{
+			Display = entity?.Name;
+			Entity = entity;
+		}
+		
+		public override string ToString()
+		{
+			return Display;
+		}
+	}
 }
 
 public class EntitySelectionChangedEventArgs : EventArgs

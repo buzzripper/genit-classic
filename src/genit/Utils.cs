@@ -42,7 +42,7 @@ namespace Dyvenix.Genit
 			var accessClaimMdl = CreateAccessClaimEntityModel(dbContext);
 			dbContext.Entities.Add(accessClaimMdl);
 
-			var appUserMdl = CreateAppUserEntityModel(dbContext);
+			var appUserMdl = CreateAppUserEntityModel(dbContext, accessClaimMdl);
 			dbContext.Entities.Add(appUserMdl);
 
 			var logEventsMdl = CreateLogEventsEntityModel(dbContext, appUserMdl.Id, logLevelEnumMdl);
@@ -50,10 +50,70 @@ namespace Dyvenix.Genit
 
 			CreateGeneratorModels(dbContext);
 
+			dbContext.InitializeOnLoad();
+
 			return doc;
 		}
 
-		private static EntityModel CreateAppUserEntityModel(DbContextModel dbContextMdl)
+		private static EntityModel CreateAccessClaimEntityModel(DbContextModel dbContextMdl)
+		{
+			var entity = new EntityModel(Guid.NewGuid()) {
+				Name = "AccessClaim",
+				Schema = "",
+				TableName = "",
+				Enabled = true,
+				Namespace = ""
+			};
+			entity.AddlUsings.Add("System.Data");
+			entity.AddlUsings.Add("System.Text");
+
+			var prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "Id",
+				PrimitiveType = PrimitiveType.Guid,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = true,
+				IsIdentity = false,
+				MaxLength = 0,
+				IsIndexed = true,
+				IsIndexUnique = true,
+				DisplayOrder = 0
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "ClaimName",
+				PrimitiveType = PrimitiveType.String,
+				EnumType = null,
+				Nullable = true,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 50,
+				IsIndexed = true,
+				IsIndexUnique = true,
+				IsIndexClustered = true,
+				DisplayOrder = 1
+			};
+			entity.Properties.Add(prop);
+
+			prop = new PropertyModel(Guid.NewGuid()) {
+				Name = "ClaimValue",
+				PrimitiveType = PrimitiveType.String,
+				EnumType = null,
+				Nullable = false,
+				IsPrimaryKey = false,
+				IsIdentity = false,
+				MaxLength = 50,
+				IsIndexed = false,
+				IsIndexUnique = false,
+				DisplayOrder = 2
+			};
+			entity.Properties.Add(prop);
+
+			return entity;
+		}
+
+		private static EntityModel CreateAppUserEntityModel(DbContextModel dbContextMdl, EntityModel accessClaimMdl)
 		{
 			var entity = new EntityModel(Guid.NewGuid()) {
 				Name = "AppUser",
@@ -217,62 +277,16 @@ namespace Dyvenix.Genit
 			};
 			entity.Properties.Add(prop);
 
-			return entity;
-		}
-
-		private static EntityModel CreateAccessClaimEntityModel(DbContextModel dbContextMdl)
-		{
-			var entity = new EntityModel(Guid.NewGuid()) {
-				Name = "AccessClaim",
-				Schema = "",
-				TableName = "",
-				Enabled = true,
-				Namespace = "",
-				AddlUsings = new ObservableCollection<string> { "System.Data", "System.Text" }
-			};
-
-			var prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "Id",
-				PrimitiveType = PrimitiveType.Guid,
-				EnumType = null,
-				Nullable = false,
-				IsPrimaryKey = true,
-				IsIdentity = false,
-				MaxLength = 0,
-				IsIndexed = true,
-				IsIndexUnique = true,
-				DisplayOrder = 0
-			};
-			entity.Properties.Add(prop);
-
-			prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "ClaimName",
-				PrimitiveType = PrimitiveType.String,
-				EnumType = null,
-				Nullable = true,
-				IsPrimaryKey = false,
-				IsIdentity = false,
-				MaxLength = 50,
-				IsIndexed = true,
-				IsIndexUnique = true,
-				IsIndexClustered = true,
-				DisplayOrder = 1
-			};
-			entity.Properties.Add(prop);
-
-			prop = new PropertyModel(Guid.NewGuid()) {
-				Name = "ClaimValue",
-				PrimitiveType = PrimitiveType.String,
-				EnumType = null,
-				Nullable = false,
-				IsPrimaryKey = false,
-				IsIdentity = false,
-				MaxLength = 50,
-				IsIndexed = false,
-				IsIndexUnique = false,
-				DisplayOrder = 2
-			};
-			entity.Properties.Add(prop);
+			//var navProperty = new NavPropertyModel(Guid.NewGuid(), accessClaimMdl) {
+			//	Name = "Claims",
+			//	Cardinality = Cardinality.OneToMany,
+			//	RelatedEntity = accessClaimMdl,
+			//	RelatedEntityId = accessClaimMdl.Id,
+			//	DisplayOrder = 0
+			//};
+			////var fkProperty = accessClaimMdl.AddForeignKey("AppUserId", entity.GetPKProperty().PrimitiveType, navProperty);
+			////navProperty.RelatedFKProperty = fkProperty;
+			//entity.NavProperties.Add(navProperty);
 
 			return entity;
 		}
@@ -284,9 +298,10 @@ namespace Dyvenix.Genit
 				Schema = "Logs",
 				TableName = "LogEvents",
 				Enabled = true,
-				Namespace = "",
-				AddlUsings = new ObservableCollection<string> { "System.Linq", "System.Text" }
+				Namespace = ""
 			};
+			entity.AddlUsings.Add("System.Linq");
+			entity.AddlUsings.Add("System.Text");
 
 			var prop = new PropertyModel(Guid.NewGuid()) {
 				Name = "Id",

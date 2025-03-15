@@ -114,11 +114,12 @@ public class EntityModel : INotifyPropertyChanged
 
 	#region Methods
 
-	public void InitializeOnLoad(ObservableCollection<EnumModel> enums)
+	public void InitializeOnLoad(ObservableCollection<EntityModel> entities, ObservableCollection<EnumModel> enums)
 	{
-		foreach (var property in Properties) {
+		foreach (var property in Properties)
 			property.InitializeOnLoad(enums);
-		}
+		foreach (var navProperty in NavProperties)
+			navProperty.InitializeOnLoad(entities);
 	}
 
 	public Guid AddForeignKey(string fkPropName, NavPropertyModel navPropertyMdl)

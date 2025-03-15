@@ -1,7 +1,8 @@
 ﻿namespace Dyvenix.Genit.Models
 {
-	public enum CardinalityModel
+	public enum Cardinality
 	{
+		None,
 		OneToMany,
 		OneToOne
 		//ManyToMany

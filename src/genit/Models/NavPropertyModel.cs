@@ -42,39 +42,16 @@ public class NavPropertyModel : INotifyPropertyChanged
 		set => SetProperty(ref _name, value);
 	}
 
-	private EntityModel _datatype;
-	[JsonIgnore]
-	public EntityModel Datatype
-	{
-		get => _datatype;
-		set {
-			DatatypeId = value.Id;
-			SetProperty(ref _datatype, value);
-		}
-	}
-
-	private Guid DatatypeId { get; set; }
-
-	private Guid _relatedFKPropertyId;
-	public Guid RelatedFKPropertyId
-	{
-		get => _relatedFKPropertyId;
-		set => SetProperty(ref _relatedFKPropertyId, value);
-	}
-
-	private string _relatedFKPropertyName;
-	public string RelatedFKPropertyName
-	{
-		get => _relatedFKPropertyName;
-		set => SetProperty(ref _relatedFKPropertyName, value);
-	}
-
-	private CardinalityModel _cardinality;
-	public CardinalityModel Cardinality
+	private Cardinality _cardinality;
+	public Cardinality Cardinality
 	{
 		get => _cardinality;
 		set => SetProperty(ref _cardinality, value);
 	}
+
+	public Guid RelatedEntityId { get; set; }
+
+	public Guid RelatedFKPropertyId { get; set; }
 
 	private int _displayOrder;
 	public int DisplayOrder
@@ -90,9 +67,36 @@ public class NavPropertyModel : INotifyPropertyChanged
 		set => SetProperty(ref _attributes, value);
 	}
 
+	// Non-serialized properties
+
+	private EntityModel _relatedEntity;
+	[JsonIgnore]
+	public EntityModel RelatedEntity
+	{
+		get => _relatedEntity;
+		set {
+			RelatedEntityId = value.Id;
+			SetProperty(ref _relatedEntity, value);
+		}
+	}
+
+	private PropertyModel _relatedFKProperty;
+	[JsonIgnore]
+	public PropertyModel RelatedFKProperty
+	{
+		get => _relatedFKProperty;
+		set => SetProperty(ref _relatedFKProperty, value);
+	}
+
 	#endregion
 
 	#region Methods
+
+	public void InitializeOnLoad(ObservableCollection<EntityModel> entities)
+	{
+		this.RelatedEntity = entities.FirstOrDefault(e => e.Id == RelatedEntityId);
+		this.RelatedFKProperty = this.RelatedEntity.Properties.FirstOrDefault(p => p.Id == RelatedFKPropertyId);
+	}
 
 	public PrimitiveType GetParentPkDatatype()
 	{
@@ -104,36 +108,17 @@ public class NavPropertyModel : INotifyPropertyChanged
 	{
 		var errs = new List<string>();
 
-		//if (this.PrimitiveType != PrimitiveType.None) {
-		//	if (this.PrimitiveType == PrimitiveType.String) {
-		//		if (this.MaxLength < 0)
-		//			errs.Add($"Property {entityName}.{this.Name}: String values must have a MaxLength >= 0 (0 == NVARCHAR(MAX))");
+		if (string.IsNullOrWhiteSpace(this.Name))
+			errs.Add($"NavProperty {entityName}.{this.Name}: Name is required.");
 
-		//	} else if (this.PrimitiveType == PrimitiveType.ByteArray) {
-		//		if (this.MaxLength <= 0)
-		//			errs.Add($"Property {entityName}.{this.Name}: Byte array type must have a MaxLength > 0");
-		//	}
-
-		//} else if (this.EnumType != null) {
-
-
-		//} else if (this.FKAssoc != null) {
-
-
-		//} else {
-		//	errs.Add($"Property {entityName}.{this.Name}: No data type defined.");
-		//}
+		if (this.Cardinality == Cardinality.None)
+			errs.Add($"NavProperty {entityName}.{this.Name}: Cardinality is required.");
 
 		errorList.AddRange(errs);
 		return (errs.Count == 0);
 	}
 
 	#endregion
-
-	public override string ToString()
-	{
-		return this.Name;
-	}
 
 	public event PropertyChangedEventHandler PropertyChanged;
 

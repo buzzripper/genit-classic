@@ -23,7 +23,7 @@ public class DbContextModel
 			AddlUsings = new ObservableCollection<string>();
 
 		foreach (var entity in Entities) {
-			entity.InitializeOnLoad(Enums);
+			entity.InitializeOnLoad(Entities, Enums);
 			entity.NavPropertyAdded += Entity_NavPropertyAdded;
 		}
 	}

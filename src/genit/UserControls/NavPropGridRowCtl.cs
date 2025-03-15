@@ -32,7 +32,9 @@ public partial class NavPropGridRowCtl : UserControl
 
 	private void NavPropGridRowCtrl_Load(object sender, EventArgs e)
 	{
-		cmbCardinality.DataSource = Enum.GetValues(typeof(CardinalityModel));
+		foreach (Cardinality cardinality in Enum.GetValues(typeof(Cardinality)))
+			cmbCardinality.Items.Add(cardinality == Cardinality.None ? string.Empty : cardinality.ToString());
+
 		splMain.Height = picDelete.Height + 4;
 		this.Height = splMain.Height;
 
@@ -46,19 +48,18 @@ public partial class NavPropGridRowCtl : UserControl
 	private void Populate()
 	{
 		txtName.Text = _navPropertyModel.Name;
-		cmbCardinality.SelectedItem = _navPropertyModel.Datatype;
-		entityListCtl.SelectedItem = _navPropertyModel.Datatype;
-		//lblRelatedPropertyName.Text = _navPropertyModel.RelatedPropertyName;
-		//lblCardinality.Text = _navPropertyModel.Cardinality.ToString();
+		cmbCardinality.SelectedIndex = (int)_navPropertyModel.Cardinality;
+		entityListCtl.SelectedItem = _navPropertyModel.RelatedEntity;
+	}
+
+	private Cardinality GetCardinality(string cardinality)
+	{
+		if (string.IsNullOrEmpty(cardinality))
+			return Cardinality.None;
+		return (Cardinality)Enum.Parse(typeof(Cardinality), cardinality);
 	}
 
 	#endregion
-
-	private void NavPropModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-	{
-		if (_suspendUpdates)
-			return;
-	}
 
 	#region Properties
 
@@ -95,7 +96,11 @@ public partial class NavPropGridRowCtl : UserControl
 		NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_navPropertyModel, NavPropChangedAction.Deleted));
 	}
 
-	#endregion
+	private void NavPropModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (_suspendUpdates)
+			return;
+	}
 
 	private void txtName_TextChanged(object sender, EventArgs e)
 	{
@@ -104,13 +109,15 @@ public partial class NavPropGridRowCtl : UserControl
 
 	private void cmbCardinality_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		_navPropertyModel.Cardinality = (CardinalityModel)cmbCardinality.SelectedItem;
+		_navPropertyModel.Cardinality = GetCardinality(cmbCardinality.SelectedItem.ToString());
 	}
 
 	private void entityListCtl_ValueChanged(object sender, EntitySelectionChangedEventArgs e)
 	{
-		_navPropertyModel.Datatype = entityListCtl.SelectedItem;
+		_navPropertyModel.RelatedEntity = entityListCtl.SelectedItem;
 	}
+
+	#endregion
 }
 
 #region Event Args

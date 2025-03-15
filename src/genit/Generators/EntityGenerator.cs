@@ -143,21 +143,6 @@ public class EntityGenerator
 		}
 	}
 
-	//private void GenerateFKProperty(AssocModel navProperty, List<string> propOutputList, List<string> usings)
-	//{
-	//	var tabCount = 1;
-
-	//	string typeStr = navProperty.Cardinality switch {
-	//		CardinalityModel.OneToOne => $"{navProperty.RelatedEntity.Name}",
-	//		CardinalityModel.OneToMany => $"List<{navProperty.RelatedEntity.Name}>",
-	//		_ => throw new ApplicationException($"Error determining data type for property '{navProperty.PrimaryPropertyName}': Cardinality '{navProperty.Cardinality}' not supported.")
-	//	};
-
-	//	propOutputList.AddLine(tabCount, $"public {navProperty.RelatedEntity.Name} {navProperty.PrimaryPropertyName} {{ get; set; }}");
-
-	//	this.AddEntityNamespace(navProperty.RelatedEntity, usings);
-	//}
-
 	private void GenerateProperty(PropertyModel prop, List<string> propOutputList, List<string> usings)
 	{
 		var tc = 1;

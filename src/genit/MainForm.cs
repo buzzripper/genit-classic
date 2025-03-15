@@ -26,10 +26,8 @@ public partial class MainForm : Form
 
 	#region Fields
 
-	//private DetailForm _detailForm;
 	private bool _suspendUpdates;
 	private AppConfig _appConfig;
-	//private Doc _doc;
 	private int _outputHeight;
 	private string _currDocFilepath;
 
@@ -48,8 +46,8 @@ public partial class MainForm : Form
 		InitializeLayout(_appConfig);
 
 		// DEBUG
-		this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
-		this.Doc = DocManager.LoadDoc(CurrDocFilepath);
+		//this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
+		//this.Doc = DocManager.LoadDoc(CurrDocFilepath);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)

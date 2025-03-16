@@ -28,9 +28,10 @@ public class NavPropertyModel : INotifyPropertyChanged
 	{
 	}
 
-	public NavPropertyModel(Guid id)
+	public NavPropertyModel(Guid id, AssocModel assoc)
 	{
 		this.Id = id;
+		this.Assoc = assoc;
 	}
 
 	public void InitializeOnLoad(AssocModel assocModel)

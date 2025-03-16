@@ -36,6 +36,7 @@ partial class AssocEditForm
 		cmbCardinality = new System.Windows.Forms.ComboBox();
 		btnOk = new System.Windows.Forms.Button();
 		btnCancel = new System.Windows.Forms.Button();
+		entityListCtl = new Dyvenix.Genit.UserControls.EntityListCtl();
 		SuspendLayout();
 		// 
 		// label1
@@ -53,7 +54,7 @@ partial class AssocEditForm
 		txtName.Location = new System.Drawing.Point(151, 25);
 		txtName.Name = "txtName";
 		txtName.Size = new System.Drawing.Size(252, 25);
-		txtName.TabIndex = 1;
+		txtName.TabIndex = 0;
 		// 
 		// txtRelPropName
 		// 
@@ -97,7 +98,7 @@ partial class AssocEditForm
 		cmbCardinality.Location = new System.Drawing.Point(151, 59);
 		cmbCardinality.Name = "cmbCardinality";
 		cmbCardinality.Size = new System.Drawing.Size(144, 25);
-		cmbCardinality.TabIndex = 7;
+		cmbCardinality.TabIndex = 1;
 		// 
 		// btnOk
 		// 
@@ -106,7 +107,7 @@ partial class AssocEditForm
 		btnOk.Location = new System.Drawing.Point(126, 176);
 		btnOk.Name = "btnOk";
 		btnOk.Size = new System.Drawing.Size(75, 32);
-		btnOk.TabIndex = 8;
+		btnOk.TabIndex = 4;
 		btnOk.Text = "OK";
 		btnOk.UseVisualStyleBackColor = false;
 		btnOk.Click += btnOk_Click;
@@ -118,10 +119,17 @@ partial class AssocEditForm
 		btnCancel.Location = new System.Drawing.Point(216, 176);
 		btnCancel.Name = "btnCancel";
 		btnCancel.Size = new System.Drawing.Size(75, 32);
-		btnCancel.TabIndex = 9;
+		btnCancel.TabIndex = 5;
 		btnCancel.Text = "Cancel";
 		btnCancel.UseVisualStyleBackColor = false;
 		btnCancel.Click += btnCancel_Click;
+		// 
+		// entityListCtl
+		// 
+		entityListCtl.Location = new System.Drawing.Point(151, 94);
+		entityListCtl.Name = "entityListCtl";
+		entityListCtl.Size = new System.Drawing.Size(252, 23);
+		entityListCtl.TabIndex = 2;
 		// 
 		// AssocEditForm
 		// 
@@ -131,6 +139,7 @@ partial class AssocEditForm
 		CancelButton = btnCancel;
 		ClientSize = new System.Drawing.Size(415, 220);
 		ControlBox = false;
+		Controls.Add(entityListCtl);
 		Controls.Add(btnCancel);
 		Controls.Add(btnOk);
 		Controls.Add(cmbCardinality);
@@ -158,9 +167,9 @@ partial class AssocEditForm
 	private System.Windows.Forms.TextBox txtRelPropName;
 	private System.Windows.Forms.Label label2;
 	private System.Windows.Forms.Label label3;
-	private UserControls.EntityListCtl entityListCtl;
 	private System.Windows.Forms.Label label4;
 	private System.Windows.Forms.ComboBox cmbCardinality;
 	private System.Windows.Forms.Button btnOk;
 	private System.Windows.Forms.Button btnCancel;
+	private UserControls.EntityListCtl entityListCtl;
 }

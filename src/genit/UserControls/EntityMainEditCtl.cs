@@ -112,7 +112,7 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		if (NavPropEditForm.Run(assoc) == DialogResult.Cancel)
 			return;
 
-		_entity.NavProperties.Add(new NavPropertyModel(Guid.NewGuid()));
+		_entity.NavProperties.Add(new NavPropertyModel(Guid.NewGuid(), assoc));
 	}
 
 	#endregion

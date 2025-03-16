@@ -1,14 +1,5 @@
 ﻿using Dyvenix.Genit.Models;
-using Dyvenix.Genit.UserControls;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Dyvenix.Genit
@@ -64,7 +55,7 @@ namespace Dyvenix.Genit
 			if (!Validate())
 				return;
 
-			// See the rel entity has changed
+			//See the rel entity has changed
 			if (_assoc.FKEntity != entityListCtl.SelectedEntity) {
 				// Remove the old fk property
 				if (_assoc?.FKProperty != null)

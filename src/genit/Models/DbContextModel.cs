@@ -78,13 +78,10 @@ public class DbContextModel
 
 	private void Assocs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 	{
-		throw new NotImplementedException();
 	}
 
 	private void Entity_NavPropertyAdded(object sender, NavPropertyAddedEventArgs e)
 	{
-		//var fkPropMdl = new PropertyModel(Guid.NewGuid(), $"{e.EntityModel.Name}Id", e.EntityModel.GetPKProperty().PrimitiveType, e.NavPropertyModel);
-		//e.EntityModel.Properties.Add(fkPropMdl);
+		Assocs.Add(e.NavPropertyModel.Assoc);
 	}
-
 }

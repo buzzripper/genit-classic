@@ -54,7 +54,7 @@ partial class EntityContainerCtl
 		lblEntityName.Name = "lblEntityName";
 		lblEntityName.Size = new System.Drawing.Size(300, 27);
 		lblEntityName.Text = "Entity";
-		lblEntityName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+		lblEntityName.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 		// 
 		// nbMain
 		// 
@@ -62,6 +62,7 @@ partial class EntityContainerCtl
 		nbMain.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 		nbMain.Image = (System.Drawing.Image)resources.GetObject("nbMain.Image");
 		nbMain.ImageTransparentColor = System.Drawing.Color.Magenta;
+		nbMain.Margin = new System.Windows.Forms.Padding(0, 1, 15, 2);
 		nbMain.Name = "nbMain";
 		nbMain.Padding = new System.Windows.Forms.Padding(0, 0, 25, 0);
 		nbMain.Size = new System.Drawing.Size(69, 27);

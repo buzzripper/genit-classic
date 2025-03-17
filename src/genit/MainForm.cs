@@ -559,21 +559,23 @@ public partial class MainForm : Form
 
 	private void btnTest2_Click(object sender, EventArgs e)
 	{
-		//var items = new List<string> { "Item 1", "Item 2", "Item 3" };
-		//stringListEditor1.Items = items;
+		//var doc = new Doc();
+		//doc.DbContexts.Add(new DbContextModel {
+		//	Name = "TestDbContext",
+		//	ContextNamespace = "TestNamespace",
+		//	EntitiesNamespace = "TestNamespace.Entities"
+		//});
 
-		//listBox1.Items.Clear();
-		//listBox1.Items.AddRange(items.ToArray());
+		////doc.DbContexts[0].Entities.Add(new EntityModel {
+		////	Name = "TestEntity",
+		////	TableName = "TestTable"
+		////});
 
-		//stringListEditor1.ItemAdded += (s, e) => {
-		//	listBox1.Items.Add(e.Value);
-		//};	
-		//stringListEditor1.ItemChanged += (s, e) => {
-		//	listBox1.Items[e.Index] = e.Value;
-		//};
-		//stringListEditor1.ItemDeleted += (s, e) => {
-		//	listBox1.Items.RemoveAt(e.Index);
-		//};
+
+		//this.Doc = doc;
+
+		//Save();
+
 	}
 
 	private void multiPageCtl_SelectedItemChanged(object sender, SelectedItemChangedEventArgs e)

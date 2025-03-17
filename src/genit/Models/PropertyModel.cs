@@ -12,11 +12,27 @@ public class PropertyModel : INotifyPropertyChanged
 {
 	#region Fields
 
+	private bool _isPrimaryKey;
+	private bool _isIdentity;
+	private Guid? _assocId;
+	private bool _nullable;
+	private int _maxLength;
+	private bool _isIndexed;
+	private bool _isIndexUnique;
+	private bool _isIndexClustered;
+	private int _displayOrder;
+	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
+	private ObservableCollection<string> _addlUsings = new ObservableCollection<string>();
+
+	private EnumModel _enumType;
+	private PrimitiveType _primitiveType;
+	private AssocModel _assoc;
+
 	private bool _suspendUpdates;
 
 	#endregion
 
-	#region Ctors
+	#region Ctors / Initialization
 
 	[JsonConstructor]
 	public PropertyModel()
@@ -36,11 +52,6 @@ public class PropertyModel : INotifyPropertyChanged
 		Name = name;
 		ParentEntity = pkEntity;
 
-		//PrimitiveType = primitiveType;
-		//FKNavPropertyId = navPropertyId;
-		//FKNavPropertyId = navPropertyMdl.Id;
-		//FKNavProperty = navPropertyMdl;
-
 		_suspendUpdates = false;
 	}
 
@@ -54,7 +65,77 @@ public class PropertyModel : INotifyPropertyChanged
 
 	public int PrimitiveTypeId { get; set; }
 
-	private PrimitiveType _primitiveType;
+	public Guid? EnumTypeId { get; set; }
+
+	public Guid? AssocId { get; set; }
+
+	public bool IsPrimaryKey
+	{
+		get => _isPrimaryKey;
+		set => SetProperty(ref _isPrimaryKey, value);
+	}
+
+	public bool IsIdentity
+	{
+		get => _isIdentity;
+		set => SetProperty(ref _isIdentity, value);
+	}
+
+	public bool Nullable
+	{
+		get => _nullable;
+		set => SetProperty(ref _nullable, value);
+	}
+
+	public int MaxLength
+	{
+		get => _maxLength;
+		set => SetProperty(ref _maxLength, value);
+	}
+
+	public bool IsIndexed
+	{
+		get => _isIndexed;
+		set => SetProperty(ref _isIndexed, value);
+	}
+
+	public bool IsIndexUnique
+	{
+		get => _isIndexUnique;
+		set => SetProperty(ref _isIndexUnique, value);
+	}
+
+	public bool IsIndexClustered
+	{
+		get => _isIndexClustered;
+		set => SetProperty(ref _isIndexClustered, value);
+	}
+
+	public int DisplayOrder
+	{
+		get => _displayOrder;
+		set => SetProperty(ref _displayOrder, value);
+	}
+
+	public ObservableCollection<string> Attributes
+	{
+		get => _attributes;
+		set => SetProperty(ref _attributes, value);
+	}
+
+	public ObservableCollection<string> AddlUsings
+	{
+		get => _addlUsings;
+		set => SetProperty(ref _addlUsings, value);
+	}
+
+	#endregion
+
+	#region Non-serialized Properties
+
+	[JsonIgnore]
+	public EntityModel ParentEntity { get; set; }
+
 	[JsonIgnore]
 	public PrimitiveType PrimitiveType
 	{
@@ -70,9 +151,6 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
-	public Guid? EnumTypeId { get; set; }
-
-	private EnumModel _enumType;
 	[JsonIgnore]
 	public EnumModel EnumType
 	{
@@ -84,97 +162,35 @@ public class PropertyModel : INotifyPropertyChanged
 	}
 
 	[JsonIgnore]
+	public AssocModel Assoc
+	{
+		get => _assoc;
+		set {
+			AssocId = (value != null) ? value.Id : null;
+			SetProperty(ref _assoc, value);
+		}
+	}
+
+	[JsonIgnore]
 	public bool IsForeignKey
 	{
-		get => this.ParentEntity != null;
-	}
-
-	[JsonIgnore]
-	public EntityModel ParentEntity { get; set; }
-	[JsonIgnore]
-	public NavPropertyModel ParentNavProperty { get; set; }
-
-	private bool _isPrimaryKey;
-	public bool IsPrimaryKey
-	{
-		get => _isPrimaryKey;
-		set => SetProperty(ref _isPrimaryKey, value);
-	}
-
-	private bool _isIdentity;
-	public bool IsIdentity
-	{
-		get => _isIdentity;
-		set => SetProperty(ref _isIdentity, value);
-	}
-
-	private bool _nullable;
-	public bool Nullable
-	{
-		get => _nullable;
-		set => SetProperty(ref _nullable, value);
-	}
-
-	private int _maxLength;
-	public int MaxLength
-	{
-		get => _maxLength;
-		set => SetProperty(ref _maxLength, value);
-	}
-
-	private bool _isIndexed;
-	public bool IsIndexed
-	{
-		get => _isIndexed;
-		set => SetProperty(ref _isIndexed, value);
-	}
-
-	private bool _isIndexUnique;
-	public bool IsIndexUnique
-	{
-		get => _isIndexUnique;
-		set => SetProperty(ref _isIndexUnique, value);
-	}
-
-	private bool _isIndexClustered;
-	public bool IsIndexClustered
-	{
-		get => _isIndexClustered;
-		set => SetProperty(ref _isIndexClustered, value);
-	}
-
-	private int _displayOrder;
-	public int DisplayOrder
-	{
-		get => _displayOrder;
-		set => SetProperty(ref _displayOrder, value);
-	}
-
-	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
-	public ObservableCollection<string> Attributes
-	{
-		get => _attributes;
-		set => SetProperty(ref _attributes, value);
-	}
-
-	private ObservableCollection<string> _addlUsings = new ObservableCollection<string>();
-	public ObservableCollection<string> AddlUsings
-	{
-		get => _addlUsings;
-		set => SetProperty(ref _addlUsings, value);
+		get => this.AssocId != null;
 	}
 
 	#endregion
 
 	#region Methods
 
-	public void InitializeOnLoad(ObservableCollection<EnumModel> enums)
+	public void InitializeOnLoad(ObservableCollection<EnumModel> enums, AssocModel assoc)
 	{
 		if (this.PrimitiveTypeId > 0) {
 			this.PrimitiveType = PrimitiveType.GetAll().First(p => p.Id == this.PrimitiveTypeId);
 
 		} else if (this.EnumTypeId != null) {
 			this.EnumType = enums.First(e => e.Id == this.EnumTypeId);
+
+		} else if (assoc != null) {
+			this.Assoc = assoc;
 		}
 	}
 

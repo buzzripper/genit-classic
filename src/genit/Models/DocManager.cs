@@ -20,7 +20,7 @@ namespace Dyvenix.Genit.Models
 			var doc = JsonSerializer.Deserialize<Doc>(File.ReadAllText(filepath));
 			doc.ModelFilepath = filepath;
 
-			doc.Initialize();
+			doc.InitializeOnLoad();
 
 			return doc;
 		}

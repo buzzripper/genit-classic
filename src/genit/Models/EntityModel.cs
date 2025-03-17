@@ -1,20 +1,20 @@
-﻿using Dyvenix.Genit.UserControls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace Dyvenix.Genit.Models;
 
-public class EntityModel : INotifyPropertyChanged
+public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 {
 	public event PropertyChangedEventHandler PropertyChanged;
 	public event EventHandler<NavPropertyAddedEventArgs> NavPropertyAdded;
+	public event EventHandler<NavPropertyRemovedEventArgs> NavPropertyRemoved;
 
 	#region Fields
 
@@ -24,23 +24,34 @@ public class EntityModel : INotifyPropertyChanged
 	private string _tableName;
 	private bool _enabled;
 	private string _namespace;
-	
 
 	#endregion
 
-	#region Properties
+	#region Ctors / Initialization
 
 	[JsonConstructor]
-	public EntityModel()
+	public EntityModel(Guid id)
+	{
+		Id = id;
+	}
+
+	public void InitializeOnLoad(ObservableCollection<EnumModel> enums, ObservableCollection<AssocModel> assocs)
+	{
+		foreach (var property in Properties) {
+			var assoc = assocs.FirstOrDefault(a => a.FKPropertyId == property.Id);
+			property.InitializeOnLoad(enums, assoc);
+		}
+	}
+
+	public void OnDeserialization(object sender)
 	{
 		Properties.CollectionChanged += Properties_CollectionChanged;
 		NavProperties.CollectionChanged += NavProperties_CollectionChanged;
 	}
 
-	public EntityModel(Guid id) : this()
-	{
-		Id = id;
-	}
+	#endregion
+
+	#region Properties
 
 	public Guid Id
 	{
@@ -78,13 +89,13 @@ public class EntityModel : INotifyPropertyChanged
 		set => SetProperty(ref _namespace, value);
 	}
 
-	public ObservableCollection<PropertyModel> Properties { get; private set; } = new ObservableCollection<PropertyModel>();
+	public ObservableCollection<PropertyModel> Properties { get; set; } = new ObservableCollection<PropertyModel>();
 
-	public ObservableCollection<NavPropertyModel> NavProperties { get; private set; } = new ObservableCollection<NavPropertyModel>();
+	public ObservableCollection<NavPropertyModel> NavProperties { get; set; } = new ObservableCollection<NavPropertyModel>();
 
-	public ObservableCollection<string> Attributes { get; private set; } = new ObservableCollection<string>();
+	public ObservableCollection<string> Attributes { get; set; } = new ObservableCollection<string>();
 
-	public ObservableCollection<string> AddlUsings { get; private set; } = new ObservableCollection<string>();
+	public ObservableCollection<string> AddlUsings { get; set; } = new ObservableCollection<string>();
 
 	private void Properties_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{
@@ -96,18 +107,17 @@ public class EntityModel : INotifyPropertyChanged
 			var navProp = e.NewItems?[0] as NavPropertyModel;
 			if (navProp != null)
 				NavPropertyAdded?.Invoke(this, new NavPropertyAddedEventArgs(this, navProp));
+
+		} else if (e.Action == NotifyCollectionChangedAction.Remove) {
+			var navProp = e.NewItems?[0] as NavPropertyModel;
+			if (navProp != null)
+				NavPropertyRemoved?.Invoke(this, new NavPropertyRemovedEventArgs(this, navProp));
 		}
 	}
 
 	#endregion
 
 	#region Methods
-
-	public void InitializeOnLoad(ObservableCollection<EnumModel> enums)
-	{
-		foreach (var property in Properties)
-			property.InitializeOnLoad(enums);
-	}
 
 	public PropertyModel AddForeignKey(string fkPropName, EntityModel pkEntity)
 	{
@@ -120,7 +130,7 @@ public class EntityModel : INotifyPropertyChanged
 	public PropertyModel GetPKProperty()
 	{
 		return Properties.FirstOrDefault(p => p.IsPrimaryKey);
-	}	
+	}
 
 	public void Validate(List<string> errorList)
 	{
@@ -160,6 +170,19 @@ public class NavPropertyAddedEventArgs : EventArgs
 	public NavPropertyModel NavPropertyModel { get; private set; }
 
 	public NavPropertyAddedEventArgs(EntityModel entityModel, NavPropertyModel navPropertyMdl)
+	{
+		EntityModel = entityModel;
+		NavPropertyModel = navPropertyMdl;
+	}
+}
+
+
+public class NavPropertyRemovedEventArgs : EventArgs
+{
+	public EntityModel EntityModel { get; private set; }
+	public NavPropertyModel NavPropertyModel { get; private set; }
+
+	public NavPropertyRemovedEventArgs(EntityModel entityModel, NavPropertyModel navPropertyMdl)
 	{
 		EntityModel = entityModel;
 		NavPropertyModel = navPropertyMdl;

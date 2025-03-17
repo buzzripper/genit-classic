@@ -12,7 +12,7 @@ namespace Dyvenix.Genit.UserControls
 	{
 		#region Fields
 
-		private ObservableCollection<NavPropertyModel> _navProperties = new ObservableCollection<NavPropertyModel>();
+		private ObservableCollection<NavPropertyModel> _navProperties; // = new ObservableCollection<NavPropertyModel>();
 		private List<NavPropGridRowCtl> _navPropGridRowCtls = new List<NavPropGridRowCtl>();
 
 		#endregion
@@ -37,7 +37,7 @@ namespace Dyvenix.Genit.UserControls
 			get { return _navProperties; }
 			set {
 				_navProperties = value;
-				_navProperties.CollectionChanged += AssocModels_CollectionChanged;
+				_navProperties.CollectionChanged += NavProperties_CollectionChanged;
 				PopulateRows();
 			}
 		}
@@ -58,7 +58,7 @@ namespace Dyvenix.Genit.UserControls
 
 				var count = 0;
 				foreach (var navProperty in _navProperties) {
-					NavPropGridRowCtl navPropGridRowCtl = new NavPropGridRowCtl();
+					NavPropGridRowCtl navPropGridRowCtl = new NavPropGridRowCtl(navProperty);
 					navPropGridRowCtl.Top = splMain.Height + (count++ * 35);
 					navPropGridRowCtl.Left = 0;
 					navPropGridRowCtl.Width = this.Width;
@@ -89,7 +89,7 @@ namespace Dyvenix.Genit.UserControls
 				_navProperties.Remove(e.NavPropertyModel);
 		}
 
-		private void AssocModels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		private void NavProperties_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
 			if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Remove)
 				PopulateRows();

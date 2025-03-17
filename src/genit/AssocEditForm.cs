@@ -8,6 +8,7 @@ namespace Dyvenix.Genit
 	{
 		#region Fields
 
+		private EntityModel _priEntity;
 		private AssocModel _assoc;
 
 		#endregion
@@ -17,11 +18,15 @@ namespace Dyvenix.Genit
 		public AssocEditForm()
 		{
 			InitializeComponent();
+			cmbCardinality.DataSource = Enum.GetValues(typeof(Cardinality));
+		}
+
+		private void AssocEditForm_Shown(object sender, EventArgs e)
+		{
 		}
 
 		private void AssocEditForm_Load(object sender, EventArgs e)
 		{
-			cmbCardinality.DataSource = Enum.GetValues(typeof(Cardinality));
 		}
 
 		#endregion
@@ -31,18 +36,22 @@ namespace Dyvenix.Genit
 		public string NavPropertyName => txtName.Text;
 		public EntityModel FKEntity => entityListCtl.SelectedEntity as EntityModel;
 		public Cardinality Cardinality => (Cardinality)cmbCardinality.SelectedItem;
-		public string RelatedPropertyName => txtRelPropName.Text;
+		public string RelatedPropertyName => txtFKPropName.Text;
 
 		#endregion
 
 		public DialogResult Run(AssocModel assoc)
 		{
+			if (assoc.PrimaryEntity == null)
+				throw new ArgumentException("Primary entity is required.");
+
 			txtName.Text = assoc.NavProperty?.Name;
 			cmbCardinality.SelectedItem = assoc.Cardinality;
 
 			entityListCtl.SelectedEntity = assoc.FKEntity;
-			txtRelPropName.Text = assoc?.FKProperty?.Name;
+			txtFKPropName.Text = assoc?.FKProperty?.Name;
 
+			_priEntity = assoc.PrimaryEntity;
 			_assoc = assoc;
 
 			return this.ShowDialog();
@@ -52,23 +61,29 @@ namespace Dyvenix.Genit
 
 		private void btnOk_Click(object sender, EventArgs e)
 		{
-			if (!Validate())
+			if (!ValidateEntries())
 				return;
 
-			//See the rel entity has changed
+			//See if the FK entity has changed
 			if (_assoc.FKEntity != entityListCtl.SelectedEntity) {
 				// Remove the old fk property
 				if (_assoc?.FKProperty != null)
 					_assoc.FKEntity.Properties.Remove(_assoc.FKProperty);
 				// Add the new
 				_assoc.FKEntity = entityListCtl.SelectedEntity;
-				_assoc.FKProperty = _assoc.FKEntity.AddForeignKey(txtRelPropName.Text, _assoc.PrimaryEntity);
+				_assoc.FKProperty = _assoc.FKEntity.AddForeignKey(txtFKPropName.Text, _assoc.PrimaryEntity);
+
+			} else {
+				_assoc.FKProperty.Name = txtFKPropName.Text;
 			}
+
+			_assoc.NavProperty.Name = txtName.Text;
+			_assoc.Cardinality = (Cardinality)cmbCardinality.SelectedItem;
 
 			this.DialogResult = DialogResult.OK;
 		}
 
-		private bool Validate()
+		private bool ValidateEntries()
 		{
 			if (string.IsNullOrWhiteSpace(txtName.Text)) {
 				MessageBox.Show("Name is required.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

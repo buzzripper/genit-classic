@@ -8,11 +8,16 @@ namespace Dyvenix.Genit.UserControls;
 
 public partial class PropGridRowCtl : UserControlBase
 {
+	#region Fields
+
 	public event EventHandler<PropertyModelChangedEventArgs> PropertyModelChanged;
 	public event EventHandler<RowMovedEventArgs> RowMoved;
 
 	private readonly PropertyModel _propertyMdl;
 	private bool _suspendUpdates;
+
+	#endregion
+
 
 	#region Ctors / Init
 
@@ -25,6 +30,7 @@ public partial class PropGridRowCtl : UserControlBase
 	public PropGridRowCtl(PropertyModel propertyMdl) : this()
 	{
 		_propertyMdl = propertyMdl;
+		_propertyMdl.PropertyChanged += PropertyMdl_OnPropertyChanged;
 	}
 
 	private void PropGridRowCtl_Load(object sender, EventArgs e)
@@ -75,6 +81,15 @@ public partial class PropGridRowCtl : UserControlBase
 	#endregion
 
 	#region UI Events
+
+	private void PropertyMdl_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == "Name") {
+			_suspendUpdates = true;
+			txtName.Text = _propertyMdl.Name;
+			_suspendUpdates = false;
+		}
+	}
 
 	private void txtName_TextChanged(object sender, EventArgs e)
 	{
@@ -169,6 +184,7 @@ public partial class PropGridRowCtl : UserControlBase
 		SetState_IsIndexed();
 		SetState_IsIndexUnique();
 		SetState_IsIndexClustered();
+		SetState_EditFK();
 	}
 
 	private void SetState_Name()
@@ -258,6 +274,11 @@ public partial class PropGridRowCtl : UserControlBase
 
 		if (_propertyMdl.IsForeignKey)
 			ckbIsIndexClustered.Enabled = false;
+	}
+
+	private void SetState_EditFK()
+	{
+		picEditAssoc.Visible = _propertyMdl.IsForeignKey;
 	}
 
 	#endregion

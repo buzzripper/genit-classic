@@ -26,9 +26,8 @@ public partial class NavPropGridRowCtl : UserControl
 		InitializeComponent();
 	}
 
-	public NavPropGridRowCtl(EntityModel entity, NavPropertyModel navPropMdl) : this()
+	public NavPropGridRowCtl(NavPropertyModel navPropMdl) : this()
 	{
-		_entity = entity;
 		_navProperty = navPropMdl;
 		_navProperty.PropertyChanged += NavPropModel_PropertyChanged;
 	}
@@ -52,9 +51,13 @@ public partial class NavPropGridRowCtl : UserControl
 	{
 		_suspendUpdates = true;
 
-		txtName.Text = _navProperty.Name;
-		cmbCardinality.SelectedIndex = (int)_navProperty.Cardinality;
-		entityListCtl.SelectedEntity = _navProperty.FKEntity;
+		//txtName.Text = _navProperty.Name;
+		//cmbCardinality.SelectedIndex = (int)_navProperty.Cardinality;
+		//entityListCtl.SelectedEntity = _navProperty.FKEntity;
+
+		lblName.Text = _navProperty.Name;
+		lblCardinality.Text = _navProperty.Cardinality.ToString();
+		lblFKEntity.Text = _navProperty.FKEntity.Name;
 
 		_suspendUpdates = false;
 	}
@@ -113,8 +116,19 @@ public partial class NavPropGridRowCtl : UserControl
 		NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_navProperty, NavPropChangedAction.Deleted));
 	}
 
+	private void picEditNavProp_Click(object sender, EventArgs e)
+	{
+		if (NavPropEditForm.Run(_navProperty.Assoc) == DialogResult.Cancel)
+			return;
+
+		//NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_navProperty, NavPropChangedAction.Updated));
+		Populate();
+	}
+
 	private void NavPropModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
+		if (!_suspendUpdates)
+			Populate();
 	}
 
 	private void txtName_TextChanged(object sender, EventArgs e)
@@ -136,14 +150,6 @@ public partial class NavPropGridRowCtl : UserControl
 	}
 
 	#endregion
-
-	private void picEditNavProp_Click(object sender, EventArgs e)
-	{
-		if (NavPropEditForm.Run(_navProperty.Assoc) == DialogResult.Cancel)
-			return;
-
-		NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_navProperty, NavPropChangedAction.Updated));
-	}
 }
 
 #region Event Args

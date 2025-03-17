@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -34,9 +33,10 @@ public class NavPropertyModel : INotifyPropertyChanged
 		this.Assoc = assoc;
 	}
 
-	public void InitializeOnLoad(AssocModel assocModel)
+	public void InitializeOnLoad(AssocModel assocModel, EntityModel fkEntity)
 	{
 		this.Assoc = assocModel;
+		this.FKEntity = fkEntity;
 	}
 
 	#endregion
@@ -70,7 +70,9 @@ public class NavPropertyModel : INotifyPropertyChanged
 		set => SetProperty(ref _attributes, value);
 	}
 
-	// Non-serialized properties
+	#endregion
+
+	#region Non-serialized Properties
 
 	[JsonIgnore]
 	public AssocModel Assoc { 
@@ -111,52 +113,21 @@ public class NavPropertyModel : INotifyPropertyChanged
 		}
 	}
 
-	//private Cardinality _cardinality;
-	//private EntityModel _relatedEntity;
-	//private PropertyModel _relatedFKProperty;
-	//private readonly EntityModel _entityMdl;
-
-	//[JsonIgnore]
-	//public EntityModel RelatedEntity
-	//{
-	//	get => _relatedEntity;
-	//	set {
-	//		RelatedEntityId = value.Id;
-	//		_relatedEntity = value;
-	//	}
-	//}
-
-	//[JsonIgnore]
-	//public PropertyModel RelatedFKProperty
-	//{
-	//	get => _relatedFKProperty;
-	//	set {
-	//		RelatedFKPropertyId = _relatedEntity.Id;
-	//		_relatedFKProperty = value;
-	//	}
-	//}
-
 	#endregion
 
 	#region Methods
-
-	//public PrimitiveType GetParentPkDatatype()
-	//{
-	//	var pkProp = _entityMdl.Properties.FirstOrDefault(p => p.IsPrimaryKey);
-	//	return pkProp?.PrimitiveType ?? PrimitiveType.None;
-	//}
 
 	public bool Validate(string entityName, List<string> errorList)
 	{
 		var errs = new List<string>();
 
-		//if (string.IsNullOrWhiteSpace(this.Name))
-		//	errs.Add($"NavProperty {entityName}.{this.Name}: Name is required.");
+		if (string.IsNullOrWhiteSpace(this.Name))
+			errs.Add($"NavProperty {entityName}.{this.Name}: Name is required.");
 
-		//if (this.Cardinality == Cardinality.None)
-		//	errs.Add($"NavProperty {entityName}.{this.Name}: Cardinality is required.");
+		if (this.Assoc == null)
+			errs.Add($"NavProperty {entityName}.{this.Name}: Assoc is required.");
 
-		//errorList.AddRange(errs);
+		errorList.AddRange(errs);
 
 		return (errs.Count == 0);
 	}

@@ -8,10 +8,14 @@ namespace Dyvenix.Genit.UserControls;
 
 public partial class EntityMainEditCtl : EntityEditCtlBase
 {
+	private const string cAddUsingsLabel = "Additional Usings";
+	private const string cClassAttrsLabel = "Class Attributes";
+
 	#region Fields
 
 	private bool _suspendUpdates;
 	private AssocEditForm _navPropEditForm;
+	private StringListForm _slForm;
 
 	#endregion
 
@@ -42,8 +46,9 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		txtNamespace.Text = _entity.Namespace;
 		ckbEnabled.Checked = _entity.Enabled;
 
-		sleAttrs.Items = _entity.Attributes;
-		sleUsings.Items = _entity.AddlUsings;
+		SetUsingsLabel();
+		SetAttrsLabel();
+
 		propGridCtl.DataSource = _entity.Properties;
 		navPropGridCtl.DataSource = _entity.NavProperties;
 
@@ -62,6 +67,29 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 				_navPropEditForm = new AssocEditForm();
 			return _navPropEditForm;
 		}
+	}
+
+	private StringListForm StrListForm
+	{
+		get {
+			if (_slForm == null)
+				_slForm = new StringListForm();
+			return _slForm;
+		}
+	}
+
+	#endregion
+
+	#region Methods
+
+	private void SetUsingsLabel()
+	{
+		lkbAddlUsings.Text = $"{cAddUsingsLabel} ({_entity.AddlUsings?.Count})";
+	}
+
+	private void SetAttrsLabel()
+	{
+		lkbClassAttributes.Text = $"{cClassAttrsLabel} ({_entity.Attributes?.Count})";
 	}
 
 	#endregion
@@ -109,11 +137,28 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		assoc.Id = Guid.NewGuid();
 		assoc.PrimaryEntity = _entity;
 
+		var navProperty = new NavPropertyModel(Guid.NewGuid(), assoc);
+		navProperty.Name = NavPropEditForm.NavPropertyName;
+		assoc.NavProperty = navProperty;
+
 		if (NavPropEditForm.Run(assoc) == DialogResult.Cancel)
 			return;
 
-		_entity.NavProperties.Add(new NavPropertyModel(Guid.NewGuid(), assoc));
+		_entity.NavProperties.Add(navProperty);
+	}
+
+	private void lkbAddlUsings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+	{
+		this.StrListForm.Run("Additional Usings", _entity.AddlUsings);
+		SetUsingsLabel();
+	}
+
+	private void lkbClassAttributes_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+	{
+		this.StrListForm.Run("Additional Usings", _entity.Attributes);
+		SetAttrsLabel();
 	}
 
 	#endregion
 }
+

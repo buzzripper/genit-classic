@@ -139,7 +139,8 @@ public partial class StringListEditor : UserControlBase
 	private void grdItems_CellEndEdit(object sender, DataGridViewCellEventArgs e)
 	{
 		var newValue = grdItems.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
-		_items[e.RowIndex] = newValue;
+		if (_items.Count > 0)
+			_items[e.RowIndex] = newValue;
 		ItemChanged?.Invoke(this, new ItemChangedEventArgs(e.RowIndex, newValue));
 	}
 

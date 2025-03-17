@@ -11,7 +11,7 @@ public class Doc
 	public string Version { get; set; } = "1.0.0";
 
 	public string ModelFilepath { get; set; }
-	public List<DbContextModel> DbContexts { get; set; }
+	public List<DbContextModel> DbContexts { get; set; } = new List<DbContextModel>();
 
 	public void Validate(List<string> errorList)
 	{
@@ -19,7 +19,7 @@ public class Doc
 			dbContext.Validate(errorList);
 	}
 
-	public void Initialize()
+	public void InitializeOnLoad()
 	{
 		foreach (var dbContext in DbContexts)
 			dbContext.InitializeOnLoad();

@@ -20,6 +20,11 @@ namespace Dyvenix.Genit.Models
 		private Guid _fkPropertyId;
 		private Cardinality _cardinality;
 
+		private EntityModel _primaryEntity;
+		private NavPropertyModel _navProperty;
+		private EntityModel _fkEntity;
+		private PropertyModel _fkProperty;
+
 		private bool _suspendUpdates;
 
 		//private string _primaryPropertyName;
@@ -53,15 +58,17 @@ namespace Dyvenix.Genit.Models
 		// _suspendUpdates = false;
 		//}
 
-		public void InitializeOnLoad(EntityModel primaryEntityMdl, EntityModel relatedEntityMdl)
+		public void InitializeOnLoad(EntityModel primaryEntityMdl, EntityModel fkEntity)
 		{
 			_suspendUpdates = true;
 
 			PrimaryEntity = primaryEntityMdl;
 			NavProperty = primaryEntityMdl.NavProperties.FirstOrDefault(np => np.Id == NavPropertyId);
+			if (NavProperty != null) 
+				NavProperty.InitializeOnLoad(this, fkEntity);
 
-			FKEntity = relatedEntityMdl;
-			FKProperty = relatedEntityMdl.Properties.FirstOrDefault(p => p.Id == FKPropertyId);
+			FKEntity = fkEntity;
+			FKProperty = fkEntity.Properties.FirstOrDefault(p => p.Id == FKPropertyId);
 
 			_suspendUpdates = false;
 		}
@@ -101,46 +108,51 @@ namespace Dyvenix.Genit.Models
 		}
 
 		public Cardinality Cardinality
-		{ 
+		{
 			get => _cardinality;
 			set => SetProperty(ref _cardinality, value);
 		}
 
 		[JsonIgnore]
-		public EntityModel PrimaryEntity { get; set; }
+		public EntityModel PrimaryEntity
+		{
+			get { return _primaryEntity; }
+			set {
+				PrimaryEntityId = value.Id;
+				_primaryEntity = value;
+			}
+		}
 
 		[JsonIgnore]
-		public NavPropertyModel NavProperty { get; set; }
+		public NavPropertyModel NavProperty
+		{
+			get { return _navProperty; }
+			set {
+				NavPropertyId = value.Id;
+				_navProperty = value;
+			}
+		}
 
 		[JsonIgnore]
-		public EntityModel FKEntity { get; set; }
+		public EntityModel FKEntity
+		{
+			get { return _fkEntity; }
+			set {
+				FKEntityId = value.Id;
+				_fkEntity = value;
+			}
+		}
 
 		[JsonIgnore]
-		public PropertyModel FKProperty { get; set; }
+		public PropertyModel FKProperty
+		{
+			get { return _fkProperty; }
+			set {
+				FKPropertyId = value.Id;
+				_fkProperty = value;
+			}
+		}
 
-		//public string PrimaryPropertyName
-		//{
-		//    get => _primaryPropertyName;
-		//    set => SetProperty(ref _primaryPropertyName, value);
-		//}
-
-		//public PrimitiveType PrimaryPKType
-		//{
-		//    get => _primaryPKType;
-		//    set => SetProperty(ref _primaryPKType, value);
-		//}
-
-		//public string RelatedPropertyName
-		//{
-		//    get => _relatedPropertyName;
-		//    set => SetProperty(ref _relatedPropertyName, value);
-		//}
-
-		//[JsonIgnore]
-		//public string Name
-		//{
-		//    get => $"{this.PrimaryEntity?.Name} - {this.RelatedEntity?.Name}";
-		//}
 
 		#endregion
 
@@ -183,7 +195,7 @@ namespace Dyvenix.Genit.Models
 
 			if (!_suspendUpdates)
 				OnPropertyChanged(propertyName);
-			
+
 			return true;
 		}
 

@@ -27,9 +27,9 @@ public class DbContextModel
 	public string ContextNamespace { get; set; }
 	public string EntitiesNamespace { get; set; }
 	public ObservableCollection<string> AddlUsings { get; set; } = new ObservableCollection<string>();
-	public ObservableCollection<EntityModel> Entities { get; private set; } = new ObservableCollection<EntityModel>();
-	public ObservableCollection<EnumModel> Enums { get; private set; } = new ObservableCollection<EnumModel>();
-	public ObservableCollection<AssocModel> Assocs { get; private set; } = new ObservableCollection<AssocModel>();
+	public ObservableCollection<EntityModel> Entities { get; set; } = new ObservableCollection<EntityModel>();
+	public ObservableCollection<EnumModel> Enums { get; set; } = new ObservableCollection<EnumModel>();
+	public ObservableCollection<AssocModel> Assocs { get; set; } = new ObservableCollection<AssocModel>();
 	public List<GenModelBase> Generators { get; private set; } = new List<GenModelBase>();
 
 	#endregion
@@ -41,15 +41,16 @@ public class DbContextModel
 		if (AddlUsings == null)
 			AddlUsings = new ObservableCollection<string>();
 
-		foreach (var entity in Entities) {
-			entity.InitializeOnLoad(Enums);
-			entity.NavPropertyAdded += Entity_NavPropertyAdded;
-		}
-
 		foreach (var assoc in Assocs) {
 			var priEntity = Entities.FirstOrDefault(e => e.Id == assoc.PrimaryEntityId);
 			var fkEntity = Entities.FirstOrDefault(e => e.Id == assoc.FKEntityId);
 			assoc.InitializeOnLoad(priEntity, fkEntity);
+		}
+
+		foreach (var entity in Entities) {
+			entity.InitializeOnLoad(Enums, Assocs);
+			entity.NavPropertyAdded += Entity_NavPropertyAdded;
+			entity.NavPropertyRemoved += Entity_NavPropertyRemoved;
 		}
 	}
 
@@ -83,5 +84,10 @@ public class DbContextModel
 	private void Entity_NavPropertyAdded(object sender, NavPropertyAddedEventArgs e)
 	{
 		Assocs.Add(e.NavPropertyModel.Assoc);
+	}
+
+	private void Entity_NavPropertyRemoved(object sender, NavPropertyRemovedEventArgs e)
+	{
+		Assocs.Remove(e.NavPropertyModel.Assoc);
 	}
 }

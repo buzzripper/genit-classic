@@ -38,10 +38,6 @@ partial class EntityMainEditCtl
 		txtTableName = new System.Windows.Forms.TextBox();
 		txtNamespace = new System.Windows.Forms.TextBox();
 		ckbEnabled = new System.Windows.Forms.CheckBox();
-		sleUsings = new StringListEditor();
-		label5 = new System.Windows.Forms.Label();
-		sleAttrs = new StringListEditor();
-		label6 = new System.Windows.Forms.Label();
 		propGridCtl = new PropGridCtl();
 		label7 = new System.Windows.Forms.Label();
 		lkbAddNewProp = new System.Windows.Forms.LinkLabel();
@@ -49,6 +45,8 @@ partial class EntityMainEditCtl
 		navPropGridCtl = new NavPropGridCtl();
 		lkbAddNewNavProp = new System.Windows.Forms.LinkLabel();
 		label8 = new System.Windows.Forms.Label();
+		lkbAddlUsings = new System.Windows.Forms.LinkLabel();
+		lkbClassAttributes = new System.Windows.Forms.LinkLabel();
 		((System.ComponentModel.ISupportInitialize)bindingSource).BeginInit();
 		((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
 		splitContainer1.Panel1.SuspendLayout();
@@ -140,53 +138,13 @@ partial class EntityMainEditCtl
 		// 
 		ckbEnabled.AutoSize = true;
 		ckbEnabled.DataBindings.Add(new System.Windows.Forms.Binding("Checked", bindingSource, "Enabled", true));
-		ckbEnabled.Location = new System.Drawing.Point(603, 39);
+		ckbEnabled.Location = new System.Drawing.Point(471, 83);
 		ckbEnabled.Name = "ckbEnabled";
 		ckbEnabled.Size = new System.Drawing.Size(76, 23);
 		ckbEnabled.TabIndex = 4;
 		ckbEnabled.Text = "Enabled";
 		ckbEnabled.UseVisualStyleBackColor = true;
 		ckbEnabled.CheckedChanged += ckbEnabled_CheckedChanged;
-		// 
-		// sleUsings
-		// 
-		sleUsings.BackColor = System.Drawing.SystemColors.Control;
-		sleUsings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		sleUsings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		sleUsings.Location = new System.Drawing.Point(688, 32);
-		sleUsings.Name = "sleUsings";
-		sleUsings.Size = new System.Drawing.Size(154, 70);
-		sleUsings.TabIndex = 5;
-		sleUsings.ToolbarDockStyle = System.Windows.Forms.DockStyle.Right;
-		// 
-		// label5
-		// 
-		label5.AutoSize = true;
-		label5.Location = new System.Drawing.Point(688, 10);
-		label5.Name = "label5";
-		label5.Size = new System.Drawing.Size(116, 19);
-		label5.TabIndex = 10;
-		label5.Text = "Additional Usings";
-		// 
-		// sleAttrs
-		// 
-		sleAttrs.BackColor = System.Drawing.SystemColors.Control;
-		sleAttrs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		sleAttrs.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		sleAttrs.Location = new System.Drawing.Point(871, 32);
-		sleAttrs.Name = "sleAttrs";
-		sleAttrs.Size = new System.Drawing.Size(170, 70);
-		sleAttrs.TabIndex = 6;
-		sleAttrs.ToolbarDockStyle = System.Windows.Forms.DockStyle.Right;
-		// 
-		// label6
-		// 
-		label6.AutoSize = true;
-		label6.Location = new System.Drawing.Point(873, 10);
-		label6.Name = "label6";
-		label6.Size = new System.Drawing.Size(105, 19);
-		label6.TabIndex = 12;
-		label6.Text = "Class Attributes";
 		// 
 		// propGridCtl
 		// 
@@ -195,7 +153,7 @@ partial class EntityMainEditCtl
 		propGridCtl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		propGridCtl.Location = new System.Drawing.Point(2, 25);
 		propGridCtl.Name = "propGridCtl";
-		propGridCtl.Size = new System.Drawing.Size(755, 222);
+		propGridCtl.Size = new System.Drawing.Size(634, 221);
 		propGridCtl.TabIndex = 13;
 		// 
 		// label7
@@ -216,7 +174,7 @@ partial class EntityMainEditCtl
 		lkbAddNewProp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		lkbAddNewProp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		lkbAddNewProp.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-		lkbAddNewProp.Location = new System.Drawing.Point(691, 3);
+		lkbAddNewProp.Location = new System.Drawing.Point(570, 3);
 		lkbAddNewProp.Name = "lkbAddNewProp";
 		lkbAddNewProp.Size = new System.Drawing.Size(65, 19);
 		lkbAddNewProp.TabIndex = 15;
@@ -230,7 +188,7 @@ partial class EntityMainEditCtl
 		// splitContainer1
 		// 
 		splitContainer1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-		splitContainer1.Location = new System.Drawing.Point(16, 117);
+		splitContainer1.Location = new System.Drawing.Point(16, 118);
 		splitContainer1.Name = "splitContainer1";
 		splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
 		// 
@@ -245,8 +203,8 @@ partial class EntityMainEditCtl
 		splitContainer1.Panel2.Controls.Add(navPropGridCtl);
 		splitContainer1.Panel2.Controls.Add(lkbAddNewNavProp);
 		splitContainer1.Panel2.Controls.Add(label8);
-		splitContainer1.Size = new System.Drawing.Size(759, 447);
-		splitContainer1.SplitterDistance = 248;
+		splitContainer1.Size = new System.Drawing.Size(638, 446);
+		splitContainer1.SplitterDistance = 247;
 		splitContainer1.TabIndex = 16;
 		// 
 		// navPropGridCtl
@@ -256,7 +214,7 @@ partial class EntityMainEditCtl
 		navPropGridCtl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		navPropGridCtl.Location = new System.Drawing.Point(3, 35);
 		navPropGridCtl.Name = "navPropGridCtl";
-		navPropGridCtl.Size = new System.Drawing.Size(754, 157);
+		navPropGridCtl.Size = new System.Drawing.Size(633, 157);
 		navPropGridCtl.TabIndex = 18;
 		// 
 		// lkbAddNewNavProp
@@ -268,7 +226,7 @@ partial class EntityMainEditCtl
 		lkbAddNewNavProp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		lkbAddNewNavProp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		lkbAddNewNavProp.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-		lkbAddNewNavProp.Location = new System.Drawing.Point(691, 12);
+		lkbAddNewNavProp.Location = new System.Drawing.Point(570, 12);
 		lkbAddNewNavProp.Name = "lkbAddNewNavProp";
 		lkbAddNewNavProp.Size = new System.Drawing.Size(65, 19);
 		lkbAddNewNavProp.TabIndex = 17;
@@ -288,16 +246,52 @@ partial class EntityMainEditCtl
 		label8.TabIndex = 16;
 		label8.Text = "Navigation Properties";
 		// 
+		// lkbAddlUsings
+		// 
+		lkbAddlUsings.ActiveLinkColor = System.Drawing.Color.Azure;
+		lkbAddlUsings.AutoSize = true;
+		lkbAddlUsings.Cursor = System.Windows.Forms.Cursors.Hand;
+		lkbAddlUsings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+		lkbAddlUsings.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+		lkbAddlUsings.LinkColor = System.Drawing.SystemColors.MenuHighlight;
+		lkbAddlUsings.Location = new System.Drawing.Point(59, 84);
+		lkbAddlUsings.Name = "lkbAddlUsings";
+		lkbAddlUsings.Size = new System.Drawing.Size(116, 19);
+		lkbAddlUsings.TabIndex = 18;
+		lkbAddlUsings.TabStop = true;
+		lkbAddlUsings.Text = "Additional Usings";
+		lkbAddlUsings.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+		lkbAddlUsings.UseMnemonic = false;
+		lkbAddlUsings.VisitedLinkColor = System.Drawing.SystemColors.ControlText;
+		lkbAddlUsings.LinkClicked += lkbAddlUsings_LinkClicked;
+		// 
+		// lkbClassAttributes
+		// 
+		lkbClassAttributes.ActiveLinkColor = System.Drawing.Color.Azure;
+		lkbClassAttributes.AutoSize = true;
+		lkbClassAttributes.Cursor = System.Windows.Forms.Cursors.Hand;
+		lkbClassAttributes.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+		lkbClassAttributes.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+		lkbClassAttributes.LinkColor = System.Drawing.SystemColors.MenuHighlight;
+		lkbClassAttributes.Location = new System.Drawing.Point(240, 84);
+		lkbClassAttributes.Name = "lkbClassAttributes";
+		lkbClassAttributes.Size = new System.Drawing.Size(105, 19);
+		lkbClassAttributes.TabIndex = 19;
+		lkbClassAttributes.TabStop = true;
+		lkbClassAttributes.Text = "Class Attributes";
+		lkbClassAttributes.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+		lkbClassAttributes.UseMnemonic = false;
+		lkbClassAttributes.VisitedLinkColor = System.Drawing.SystemColors.ControlText;
+		lkbClassAttributes.LinkClicked += lkbClassAttributes_LinkClicked;
+		// 
 		// EntityMainEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ActiveBorder;
+		Controls.Add(lkbClassAttributes);
+		Controls.Add(lkbAddlUsings);
 		Controls.Add(splitContainer1);
-		Controls.Add(label6);
-		Controls.Add(sleAttrs);
-		Controls.Add(label5);
-		Controls.Add(sleUsings);
 		Controls.Add(ckbEnabled);
 		Controls.Add(txtNamespace);
 		Controls.Add(txtTableName);
@@ -309,7 +303,7 @@ partial class EntityMainEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "EntityMainEditCtl";
-		Size = new System.Drawing.Size(792, 580);
+		Size = new System.Drawing.Size(671, 580);
 		Load += EntityMainEditCtl_Load;
 		((System.ComponentModel.ISupportInitialize)bindingSource).EndInit();
 		splitContainer1.Panel1.ResumeLayout(false);
@@ -334,10 +328,6 @@ partial class EntityMainEditCtl
 	private System.Windows.Forms.TextBox txtNamespace;
 	private System.Windows.Forms.BindingSource bindingSource;
 	private System.Windows.Forms.CheckBox ckbEnabled;
-	private StringListEditor sleUsings;
-	private System.Windows.Forms.Label label5;
-	private StringListEditor sleAttrs;
-	private System.Windows.Forms.Label label6;
 	private PropGridCtl propGridCtl;
 	private System.Windows.Forms.Label label7;
 	private System.Windows.Forms.LinkLabel lkbAddNewProp;
@@ -345,4 +335,6 @@ partial class EntityMainEditCtl
 	private NavPropGridCtl navPropGridCtl;
 	private System.Windows.Forms.LinkLabel lkbAddNewNavProp;
 	private System.Windows.Forms.Label label8;
+	private System.Windows.Forms.LinkLabel lkbAddlUsings;
+	private System.Windows.Forms.LinkLabel lkbClassAttributes;
 }

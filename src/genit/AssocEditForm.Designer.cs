@@ -29,7 +29,7 @@ partial class AssocEditForm
 	{
 		label1 = new System.Windows.Forms.Label();
 		txtName = new System.Windows.Forms.TextBox();
-		txtRelPropName = new System.Windows.Forms.TextBox();
+		txtFKPropName = new System.Windows.Forms.TextBox();
 		label2 = new System.Windows.Forms.Label();
 		label3 = new System.Windows.Forms.Label();
 		label4 = new System.Windows.Forms.Label();
@@ -56,13 +56,13 @@ partial class AssocEditForm
 		txtName.Size = new System.Drawing.Size(252, 25);
 		txtName.TabIndex = 0;
 		// 
-		// txtRelPropName
+		// txtFKPropName
 		// 
-		txtRelPropName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-		txtRelPropName.Location = new System.Drawing.Point(151, 131);
-		txtRelPropName.Name = "txtRelPropName";
-		txtRelPropName.Size = new System.Drawing.Size(252, 25);
-		txtRelPropName.TabIndex = 3;
+		txtFKPropName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+		txtFKPropName.Location = new System.Drawing.Point(151, 131);
+		txtFKPropName.Name = "txtFKPropName";
+		txtFKPropName.Size = new System.Drawing.Size(252, 25);
+		txtFKPropName.TabIndex = 3;
 		// 
 		// label2
 		// 
@@ -145,7 +145,7 @@ partial class AssocEditForm
 		Controls.Add(cmbCardinality);
 		Controls.Add(label4);
 		Controls.Add(label3);
-		Controls.Add(txtRelPropName);
+		Controls.Add(txtFKPropName);
 		Controls.Add(label2);
 		Controls.Add(txtName);
 		Controls.Add(label1);
@@ -156,6 +156,7 @@ partial class AssocEditForm
 		StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 		Text = "Association";
 		Load += AssocEditForm_Load;
+		Shown += AssocEditForm_Shown;
 		ResumeLayout(false);
 		PerformLayout();
 	}
@@ -164,7 +165,7 @@ partial class AssocEditForm
 
 	private System.Windows.Forms.Label label1;
 	private System.Windows.Forms.TextBox txtName;
-	private System.Windows.Forms.TextBox txtRelPropName;
+	private System.Windows.Forms.TextBox txtFKPropName;
 	private System.Windows.Forms.Label label2;
 	private System.Windows.Forms.Label label3;
 	private System.Windows.Forms.Label label4;

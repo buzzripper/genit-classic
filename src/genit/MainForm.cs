@@ -46,8 +46,8 @@ public partial class MainForm : Form
 		InitializeLayout(_appConfig);
 
 		// DEBUG
-		//this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
-		//this.Doc = DocManager.LoadDoc(CurrDocFilepath);
+		this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
+		this.Doc = DocManager.LoadDoc(CurrDocFilepath);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
@@ -436,8 +436,17 @@ public partial class MainForm : Form
 	{
 	}
 
-	private void TreeNav_EnumModelSelected(object sender, UserControls.EnumModelEventArgs e)
+	private void TreeNav_EnumModelSelected(object sender, NavTreeNodeSelectedEventArgs e)
 	{
+		if (SelectTabPageById(e.Id))
+			return;
+
+		if (!multiPageCtl.Select(e.Id)) {
+			var enumMdl = this.Doc.DbContexts[0].Enums.First(en => en.Id == e.Id);
+			var enumEditCtl = new EnumEditCtl(enumMdl);
+			multiPageCtl.Add(enumMdl.Id, enumMdl.Name, enumEditCtl);
+			multiPageCtl.Select(enumMdl.Id);
+		}
 	}
 
 	private void TreeNav_GeneratorModelSelected(object sender, UserControls.GeneratorModelEventArgs e)

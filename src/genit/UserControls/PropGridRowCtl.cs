@@ -45,7 +45,7 @@ public partial class PropGridRowCtl : UserControlBase
 		_suspendUpdates = true;
 
 		txtName.Text = _propertyMdl.Name;
-		dtcDatatype.SetDataTypes(_propertyMdl.PrimitiveType, _propertyMdl.EnumType);
+		dtcDatatype.SetDataTypes(_propertyMdl);
 		numMaxLength.Value = _propertyMdl.MaxLength;
 		ckbIsPrimaryKey.Checked = _propertyMdl.IsPrimaryKey;
 		ckbIsIdentity.Checked = _propertyMdl.IsIdentity;
@@ -54,11 +54,17 @@ public partial class PropGridRowCtl : UserControlBase
 		ckbIsIndexUnique.Checked = _propertyMdl.IsIndexUnique;
 		ckbIsIndexClustered.Checked = _propertyMdl.IsIndexClustered;
 
+		//_propertyMdl.PropertyChanged += PropMdl_PropertyChanged;
+
 		SetState();
 
 		_suspendUpdates = false;
 		this.ResumeLayout();
 	}
+
+	//private void PropMdl_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	//{
+	//}
 
 	#endregion
 

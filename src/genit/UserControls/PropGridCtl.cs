@@ -88,8 +88,6 @@ public partial class PropGridCtl : UserControl
 				propGridRowCtl.PropertyModelChanged += OnPropGridRowCtl_PropertyModelChanged;
 				propGridRowCtl.RowMoved += PropGridRowCtl_RowMoved;
 
-				propMdl.PropertyChanged += PropMdl_PropertyChanged;
-
 				_rows.Add(propGridRowCtl);
 				this.Controls.Add(propGridRowCtl);
 			}
@@ -106,11 +104,7 @@ public partial class PropGridCtl : UserControl
 		}
 	}
 
-	private void PropMdl_PropertyChanged(object sender, PropertyChangedEventArgs e)
-	{
-		throw new NotImplementedException();
-	}
-
+	
 	private void PropGridRowCtl_RowMoved(object sender, RowMovedEventArgs e)
 	{
 		var srcProp = _propertyModels.FirstOrDefault(p => p.Id == e.SourceId);

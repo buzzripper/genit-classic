@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -13,11 +15,11 @@ public partial class TreeNav : UserControl
 	public event EventHandler<NavTreeNodeSelectedEventArgs> DbContextModelSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityModelSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntitiesNodeSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumModelSelected;
 
-	public event EventHandler<PropertyModelEventArgs> PropertyModelSelected;
-	public event EventHandler<EnumsNodeEventArgs> EnumsNodeSelected;
-	public event EventHandler<EnumModelEventArgs> EnumModelSelected;
-	public event EventHandler<EventArgs> GeneratorsNodeSelected;
+	//public event EventHandler<PropertyModelEventArgs> PropertyModelSelected;
+	//public event EventHandler<NavTreeNodeSelectedEventArgs> EnumsNodeSelected;
+	//public event EventHandler<EventArgs> GeneratorsNodeSelected;
 	public event EventHandler<GeneratorModelEventArgs> GeneratorModelSelected;
 
 	private const string cKey_Db = "db";
@@ -35,6 +37,8 @@ public partial class TreeNav : UserControl
 	private const string cNodeName_Gen = "Generators";
 
 	private DbContextModel _dbContextModel;
+
+	private TreeNode _dbContextNode;
 	private TreeNode _entitiesNode;
 	private TreeNode _enumsNode;
 	private TreeNode _generatorsNode;
@@ -52,7 +56,10 @@ public partial class TreeNav : UserControl
 		}
 		set {
 			_dbContextModel = value;
+			_dbContextModel.Entities.CollectionChanged += Entities_CollectionChanged;
+
 			BuildTree();
+			Populate();
 		}
 	}
 
@@ -63,12 +70,15 @@ public partial class TreeNav : UserControl
 		if (_dbContextModel == null)
 			return;
 
-		this.BuildDbContextNode();
-		_entitiesNode = this.BuildEntitiesNode();
-		this.BuildEnumsNode();
-		this.BuildGeneratorsNode();
+		_dbContextNode = this.BuildDbContextNode();
 
-		 treeView1.SelectedNode = treeView1.Nodes[0];
+		_entitiesNode = this.BuildEntitiesNode();
+
+		_enumsNode = this.BuildEnumsNode();
+
+		_generatorsNode = this.BuildGeneratorsNode();
+
+		//treeView1.SelectedNode = treeView1.Nodes[0];
 	}
 
 	public void Clear()
@@ -76,7 +86,7 @@ public partial class TreeNav : UserControl
 		treeView1.Nodes.Clear();
 	}
 
-	private void BuildDbContextNode()
+	private TreeNode BuildDbContextNode()
 	{
 		TreeNode dbNode = new TreeNode(cNodeName_Db) {
 			SelectedImageKey = cKey_Db,
@@ -84,6 +94,8 @@ public partial class TreeNav : UserControl
 			Tag = _dbContextModel.Id
 		};
 		treeView1.Nodes.Add(dbNode);
+
+		return dbNode;
 	}
 
 	private TreeNode BuildEntitiesNode()
@@ -94,22 +106,141 @@ public partial class TreeNav : UserControl
 			Tag = _dbContextModel.Entities
 		};
 
+		treeView1.Nodes.Add(entitiesNode);
+
+		return entitiesNode;
+	}
+
+	private TreeNode BuildEnumsNode()
+	{
+		TreeNode enumsNode = new TreeNode(cNodeName_Enums) {
+			SelectedImageKey = cKey_Enum,
+			ImageKey = cKey_Enum,
+			Tag = Guid.NewGuid()
+		};
+
+		treeView1.Nodes.Add(enumsNode);
+		enumsNode.Collapse();
+
+		return enumsNode;
+	}
+
+	private TreeNode BuildGeneratorsNode()
+	{
+		TreeNode generatorsNode = new TreeNode(cNodeName_Gen) {
+			SelectedImageKey = cKey_Gens,
+			ImageKey = cKey_Gens,
+			Tag = Guid.NewGuid()
+		};
+
+		treeView1.Nodes.Add(generatorsNode);
+		generatorsNode.Collapse();
+
+		return generatorsNode;
+	}
+
+	#region Populate methods
+
+	private void Populate()
+	{
+		PopulateEntities();
+		PopulateEnums();
+		PopulateGenerators();
+	}
+
+	private void PopulateEntities()
+	{
+		_entitiesNode.Nodes.Clear();
 		foreach (var entity in _dbContextModel.Entities) {
 			TreeNode entNode = new TreeNode(entity.Name) {
+				Name = entity.Id.ToString(),
 				SelectedImageKey = cKey_Entity,
 				ImageKey = cKey_Entity,
 				Tag = entity.Id
 			};
-			entitiesNode.Nodes.Add(entNode);
+			_entitiesNode.Nodes.Add(entNode);
 			entity.PropertyChanged += Entity_PropertyChanged;
 		}
+		_entitiesNode.Expand();
+	}
 
-		treeView1.Nodes.Add(entitiesNode);
-		entitiesNode.Expand();
+	private void PopulateEnums()
+	{
+		_enumsNode.Nodes.Clear();
+		foreach (var enumMdl in _dbContextModel.Enums) {
+			TreeNode enumNode = new TreeNode(enumMdl.Name) {
+				Name = enumMdl.Id.ToString(),
+				SelectedImageKey = cKey_Enum,
+				ImageKey = cKey_Enum,
+				Tag = enumMdl.Id
+			};
+			_enumsNode.Nodes.Add(enumNode);
+		}
+		_enumsNode.Expand();
+	}
 
-		_dbContextModel.Entities.CollectionChanged += Entities_CollectionChanged;
+	private void PopulateGenerators()
+	{
+		_generatorsNode.Nodes.Clear();
 
-		return entitiesNode;
+		foreach (var genMdl in _dbContextModel.Generators) {
+			TreeNode genNode = new TreeNode(genMdl.Name) {
+				Name = genMdl.Id.ToString(),
+				SelectedImageKey = cKey_Gen,
+				ImageKey = cKey_Gen,
+				Tag = genMdl.Id
+			};
+			_generatorsNode.Nodes.Add(genNode);
+		}
+	}
+
+	#endregion
+
+	public bool Select(Guid id)
+	{
+		foreach (TreeNode node in treeView1.Nodes) {
+			var tagId = node.Tag as Guid?;
+			if (tagId.HasValue) {
+				if (tagId.Value == id) {
+					treeView1.SelectedNode = node;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+	{
+		// Top level nodes
+
+		if (!Guid.TryParse(e.Node.Tag.ToString(), out Guid id))
+			return;
+
+		if (e.Node == _dbContextNode) {
+			DbContextModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		} else if (e.Node.Parent == _entitiesNode) {
+			EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		} else if (e.Node == _enumsNode) {
+			EntitiesNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		} else if (e.Node.Parent == _enumsNode) {
+			EnumModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+		}
+
+		//} else if (e.Node.Text == cNodeName_Enums) {
+		//	EnumsNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		//} else if (e.Node.Text == cNodeName_Gen) {
+		//	GeneratorsNodeSelected?.Invoke(this, new EventArgs());
+
+		// Other nodes
+
+		//} else if (e.Node.Tag is EntityModel) {
+		//	EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
 	}
 
 	private void Entity_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -139,92 +270,88 @@ public partial class TreeNav : UserControl
 		}
 	}
 
-	private void BuildEnumsNode()
+	private void ctxMenuStrip_Opening(object sender, CancelEventArgs e)
 	{
-		TreeNode enumsNode = new TreeNode(cNodeName_Enums) {
-			SelectedImageKey = cKey_Enum,
-			ImageKey = cKey_Enum,
-			Tag = Guid.NewGuid()
+		if (treeView1.SelectedNode == _entitiesNode) {
+			// Entities list
+			mnuAdd.Text = "Add Entity";
+			mnuAdd.Visible = true;
+			mnuAdd.Click -= MnuAddEnum_OnClick;
+			mnuAdd.Click += MnuAddEntity_OnClick;
+			mnuDelete.Visible = false;
+
+		} else if (treeView1.SelectedNode.Parent == _entitiesNode) {
+			// Single entity	
+			mnuAdd.Visible = false;
+			mnuDelete.Text = "Delete Entity";
+			mnuDelete.Click -= MnuDeleteEnum_OnClick;
+			mnuDelete.Click += MnuDeleteEntity_OnClick;
+			mnuDelete.Visible = true;
+
+		} else if (treeView1.SelectedNode == _enumsNode) {
+			// Enums list
+			mnuAdd.Text = "Add Enum";
+			mnuAdd.Click -= MnuAddEntity_OnClick;
+			mnuAdd.Click += MnuAddEnum_OnClick;
+			mnuAdd.Visible = true;
+			mnuDelete.Visible = false;
+
+
+		} else if (treeView1.SelectedNode.Parent == _enumsNode) {
+			// Single enum
+			mnuAdd.Visible = false;
+			mnuDelete.Text = "Delete Enum";
+			mnuDelete.Click -= MnuDeleteEntity_OnClick;
+			mnuDelete.Click += MnuDeleteEnum_OnClick;
+			mnuDelete.Visible = true;
+
+		} else {
+			e.Cancel = true;
+		}
+	}
+
+	private void MnuAddEntity_OnClick(object sender, EventArgs e)
+	{
+
+	}
+
+	private void MnuDeleteEntity_OnClick(object sender, EventArgs e)
+	{
+
+	}
+
+	private void MnuAddEnum_OnClick(object sender, EventArgs e)
+	{
+		var newEnumName = GetUniqueName("NewEnum");
+		var newEnumMdl = new EnumModel {
+			Id = Guid.NewGuid(),
+			Name = newEnumName,
+			IsExternal = false,
+			IsFlags = false,
+			Namespace = ""
 		};
-
-		foreach (var enumMdl in _dbContextModel.Enums) {
-			TreeNode enumNode = new TreeNode(enumMdl.Name) {
-				SelectedImageKey = cKey_Enum,
-				ImageKey = cKey_Enum,
-				Tag = enumMdl.Id
-			};
-			enumsNode.Nodes.Add(enumNode);
-		}
-
-		treeView1.Nodes.Add(enumsNode);
-		enumsNode.Collapse();
+		_dbContextModel.Enums.Add(newEnumMdl);
+		PopulateEnums();
+		var nodes = _enumsNode.Nodes.Find(newEnumMdl.Id.ToString(), false);
+		if (nodes.Length == 0)
+			MessageBox.Show("New node not found");
+		treeView1.SelectedNode = nodes[0];
 	}
 
-	private void BuildGeneratorsNode()
+	private void MnuDeleteEnum_OnClick(object sender, EventArgs e)
 	{
-		TreeNode gensNode = new TreeNode(cNodeName_Gen) {
-			SelectedImageKey = cKey_Gens,
-			ImageKey = cKey_Gens,
-			Tag = Guid.NewGuid()
-		};
 
-		foreach (var genMdl in _dbContextModel.Generators) {
-			TreeNode genNode = new TreeNode(genMdl.Name) {
-				SelectedImageKey = cKey_Gen,
-				ImageKey = cKey_Gen,
-				Tag = genMdl.Id
-			};
-			gensNode.Nodes.Add(genNode);
-		}
-
-		treeView1.Nodes.Add(gensNode);
-		gensNode.Collapse();
 	}
 
-	private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+	private string GetUniqueName(string prefix)
 	{
-		// Top level nodes
-
-		if (!Guid.TryParse(e.Node.Tag.ToString(), out Guid id))
-			return;
-
-		if (e.Node.Text == cNodeName_Db) {
-			DbContextModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
-
-		} else if (e.Node.Level == 1 && e.Node.Parent?.Text == cNodeName_Entities) {
-			EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
-
-		} else if (e.Node.Text == cNodeName_Entities) {
-			EntitiesNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
-
-		} else if (e.Node.Text == cNodeName_Enums) {
-			EnumsNodeSelected?.Invoke(this, new EnumsNodeEventArgs((List<EnumModel>)e.Node.Tag));
-
-		} else if (e.Node.Text == cNodeName_Gen) {
-			GeneratorsNodeSelected?.Invoke(this, new EventArgs());
-
-			// Other nodes
-
-		} else if (e.Node.Tag is EntityModel) {
-			EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
-
-		} else if (e.Node.Text == cNodeName_Enums) {
-			EnumModelSelected?.Invoke(this, new EnumModelEventArgs((EnumModel)e.Node.Tag));
+		var name = prefix;
+		var i = 1;
+		while (_dbContextModel.Enums.Any(e => e.Name == name)) {
+			name = $"{prefix}{i}";
+			i++;
 		}
-	}
-
-	public bool Select(Guid id)
-	{
-		foreach(TreeNode node in treeView1.Nodes) {
-			var tagId = node.Tag as Guid?;
-			if (tagId.HasValue) {
-				if (tagId.Value == id) {
-					treeView1.SelectedNode = node;
-					return true;
-				}
-			}
-		}	
-		return false;
+		return name;
 	}
 }
 

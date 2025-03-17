@@ -31,6 +31,10 @@ partial class TreeNav
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TreeNav));
 		tvImgList = new System.Windows.Forms.ImageList(components);
 		treeView1 = new System.Windows.Forms.TreeView();
+		ctxMenuStrip = new System.Windows.Forms.ContextMenuStrip(components);
+		mnuAdd = new System.Windows.Forms.ToolStripMenuItem();
+		mnuDelete = new System.Windows.Forms.ToolStripMenuItem();
+		ctxMenuStrip.SuspendLayout();
 		SuspendLayout();
 		// 
 		// tvImgList
@@ -48,6 +52,7 @@ partial class TreeNav
 		// 
 		// treeView1
 		// 
+		treeView1.ContextMenuStrip = ctxMenuStrip;
 		treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
 		treeView1.ImageIndex = 0;
 		treeView1.ImageList = tvImgList;
@@ -58,6 +63,25 @@ partial class TreeNav
 		treeView1.TabIndex = 0;
 		treeView1.AfterSelect += treeView1_AfterSelect;
 		// 
+		// ctxMenuStrip
+		// 
+		ctxMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuAdd, mnuDelete });
+		ctxMenuStrip.Name = "ctxMenuStrip";
+		ctxMenuStrip.Size = new System.Drawing.Size(181, 70);
+		ctxMenuStrip.Opening += ctxMenuStrip_Opening;
+		// 
+		// mnuAdd
+		// 
+		mnuAdd.Name = "mnuAdd";
+		mnuAdd.Size = new System.Drawing.Size(180, 22);
+		mnuAdd.Text = "Add...";
+		// 
+		// mnuDelete
+		// 
+		mnuDelete.Name = "mnuDelete";
+		mnuDelete.Size = new System.Drawing.Size(180, 22);
+		mnuDelete.Text = "Delete...";
+		// 
 		// TreeNav
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -66,6 +90,7 @@ partial class TreeNav
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "TreeNav";
 		Size = new System.Drawing.Size(123, 391);
+		ctxMenuStrip.ResumeLayout(false);
 		ResumeLayout(false);
 	}
 
@@ -73,4 +98,7 @@ partial class TreeNav
 
 	private System.Windows.Forms.ImageList tvImgList;
 	private System.Windows.Forms.TreeView treeView1;
+	private System.Windows.Forms.ContextMenuStrip ctxMenuStrip;
+	private System.Windows.Forms.ToolStripMenuItem mnuAdd;
+	private System.Windows.Forms.ToolStripMenuItem mnuDelete;
 }

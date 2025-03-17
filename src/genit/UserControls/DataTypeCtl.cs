@@ -5,6 +5,7 @@ using System.Linq;
 using Dyvenix.Genit.Models;
 using Dyvenix.Genit.Misc;
 using System.ComponentModel;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -12,6 +13,7 @@ public partial class DataTypeCtl : UserControlBase
 {
 	public event EventHandler<DataTypeChangedEventArgs> ValueChanged;
 
+	private PropertyModel _propertyMdl;
 	private bool _suspendUpdates;
 
 	public DataTypeCtl()
@@ -36,39 +38,41 @@ public partial class DataTypeCtl : UserControlBase
 
 	[Browsable(false)]
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-	public EnumModel EnumModel { get; private set; }
+	public EnumModel EnumType { get; private set; }
 
 	[Browsable(true)]
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-	public new bool Enabled { 
-		get { return cmbItems.Enabled; } 
+	public new bool Enabled
+	{
+		get { return cmbItems.Enabled; }
 		set { cmbItems.Enabled = value; }
 	}
 
 	#endregion
 
-	public void SetDataTypes(PrimitiveType primitiveType, EnumModel enumMdl)
-	{
-		//_suspendUpdates = true;
+	#region Methods
 
-		this.PrimitiveType = primitiveType;
-		this.EnumModel = enumMdl;
+	public void SetDataTypes(PropertyModel propertyMdl)
+	{
+		this.PrimitiveType = propertyMdl.PrimitiveType;
+		this.EnumType = propertyMdl.EnumType;
 		Globals.DbContext.Enums.CollectionChanged += Enums_CollectionChanged;
 
-		FillComboList(Globals.DbContext.Enums.ToList());
+		propertyMdl.PropertyChanged += PropertyMdl_OnPropertyChanged;
 
-		if (primitiveType != null)
-			Select(primitiveType);
-		else if (enumMdl != null)
-			Select(enumMdl);
+		Populate();
+
+		if (this.PrimitiveType != null)
+			Select(this.PrimitiveType);
+		else if (this.EnumType != null)
+			Select(this.EnumType);
 		else
 			SelectNone();
 	}
 
-	private void Enums_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	private void Populate()
 	{
-		var enumModels = e.NewItems?.Cast<EnumModel>();
-		FillComboList(enumModels);
+		FillComboList(Globals.DbContext.Enums.ToList());
 	}
 
 	private void FillComboList(IEnumerable<EnumModel> enumModels)
@@ -113,10 +117,36 @@ public partial class DataTypeCtl : UserControlBase
 	{
 
 		this.PrimitiveType = primitiveType;
-		this.EnumModel = enumType;
+		this.EnumType = enumType;
 
 		if (!_suspendUpdates)
 			ValueChanged?.Invoke(this, new DataTypeChangedEventArgs(primitiveType, enumType));
+	}
+
+	#endregion
+
+	#region Events
+
+	private void PropertyMdl_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == "PrimitiveType") {
+			if (this.PrimitiveType != null)
+				Select(this.PrimitiveType);
+			else
+				SelectNone();
+
+		} else if (e.PropertyName == "EnumType") {
+			if (this.EnumType != null)
+				Select(this.EnumType);
+			else
+				SelectNone();
+		}
+	}
+
+	private void Enums_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		var enumModels = e.NewItems?.Cast<EnumModel>();
+		FillComboList(enumModels);
 	}
 
 	private void cmbItems_SelectedIndexChanged(object sender, EventArgs e)
@@ -125,7 +155,7 @@ public partial class DataTypeCtl : UserControlBase
 		if (selectedDataTypeItem == null)
 			return;
 
-		if (selectedDataTypeItem.PrimitiveType == this.PrimitiveType && selectedDataTypeItem.EnumType == this.EnumModel)
+		if (selectedDataTypeItem.PrimitiveType == this.PrimitiveType && selectedDataTypeItem.EnumType == this.EnumType)
 			return;
 
 		if (selectedDataTypeItem.PrimitiveType != null) {
@@ -140,6 +170,8 @@ public partial class DataTypeCtl : UserControlBase
 			cmbItems.SelectedIndex = 1;
 		}
 	}
+
+	#endregion
 
 	private class DataTypeItem
 	{

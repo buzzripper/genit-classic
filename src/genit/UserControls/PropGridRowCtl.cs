@@ -24,7 +24,7 @@ public partial class PropGridRowCtl : UserControlBase
 	public PropGridRowCtl()
 	{
 		InitializeComponent();
-		this.Height = txtName.Height + 8;
+		this.Height = picDelete.Height;
 	}
 
 	public PropGridRowCtl(PropertyModel propertyMdl) : this()

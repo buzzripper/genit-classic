@@ -132,6 +132,11 @@ public class NavPropertyModel : INotifyPropertyChanged
 		return (errs.Count == 0);
 	}
 
+	public override string ToString()
+	{
+		return this.Name;
+	}
+
 	#endregion
 
 	protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

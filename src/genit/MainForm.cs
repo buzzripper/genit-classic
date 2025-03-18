@@ -46,8 +46,8 @@ public partial class MainForm : Form
 		InitializeLayout(_appConfig);
 
 		// DEBUG
-		this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
-		this.Doc = DocManager.LoadDoc(CurrDocFilepath);
+		//this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
+		//this.Doc = DocManager.LoadDoc(CurrDocFilepath);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)

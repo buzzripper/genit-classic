@@ -198,7 +198,14 @@ public class PropertyModel : INotifyPropertyChanged
 	{
 		var errs = new List<string>();
 
-		if (this.PrimitiveType != PrimitiveType.None) {
+		if (this.PrimitiveType == null || this.PrimitiveType == PrimitiveType.None) {
+			if (this.EnumType == null) {
+				errs.Add($"Property {entityName}.{this.Name}: No data type defined.");
+			} else {
+				// It's an enum
+			}
+		} else {
+			// It's a primitive
 			if (this.PrimitiveType == PrimitiveType.String) {
 				if (this.MaxLength < 0)
 					errs.Add($"Property {entityName}.{this.Name}: String values must have a MaxLength >= 0 (0 == NVARCHAR(MAX))");
@@ -207,12 +214,6 @@ public class PropertyModel : INotifyPropertyChanged
 				if (this.MaxLength <= 0)
 					errs.Add($"Property {entityName}.{this.Name}: Byte array type must have a MaxLength > 0");
 			}
-
-		} else if (this.EnumType != null) {
-
-
-		} else {
-			errs.Add($"Property {entityName}.{this.Name}: No data type defined.");
 		}
 
 		errorList.AddRange(errs);

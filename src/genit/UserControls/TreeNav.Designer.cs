@@ -75,12 +75,14 @@ partial class TreeNav
 		mnuAdd.Name = "mnuAdd";
 		mnuAdd.Size = new System.Drawing.Size(180, 22);
 		mnuAdd.Text = "Add...";
+		mnuAdd.Click += mnuAdd_Click;
 		// 
 		// mnuDelete
 		// 
 		mnuDelete.Name = "mnuDelete";
 		mnuDelete.Size = new System.Drawing.Size(180, 22);
 		mnuDelete.Text = "Delete...";
+		mnuDelete.Click += mnuDelete_Click;
 		// 
 		// TreeNav
 		// 

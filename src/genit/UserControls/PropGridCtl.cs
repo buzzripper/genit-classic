@@ -63,6 +63,8 @@ public partial class PropGridCtl : UserControl
 
 	#endregion
 
+	#region Methods
+
 	private void PopulateRows()
 	{
 		if (this.DesignMode)
@@ -104,7 +106,10 @@ public partial class PropGridCtl : UserControl
 		}
 	}
 
-	
+	#endregion
+
+	#region Events
+
 	private void PropGridRowCtl_RowMoved(object sender, RowMovedEventArgs e)
 	{
 		var srcProp = _propertyModels.FirstOrDefault(p => p.Id == e.SourceId);
@@ -130,7 +135,7 @@ public partial class PropGridCtl : UserControl
 
 		PopulateRows();
 
-		_suspendUpdates = false;	
+		_suspendUpdates = false;
 		ResumeLayout();
 	}
 
@@ -161,4 +166,6 @@ public partial class PropGridCtl : UserControl
 			if (ctl is PropGridRowCtl)
 				((PropGridRowCtl)ctl).Col2Width = splDataType.SplitterDistance;
 	}
+
+	#endregion
 }

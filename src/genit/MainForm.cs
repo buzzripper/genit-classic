@@ -109,15 +109,37 @@ public partial class MainForm : Form
 			}
 
 			treeNav.DataSource = doc.DbContexts[0];
-			//treeNav.AssocModelSelected += TreeNav_AssocModelSelected;
-			//treeNav.DbContextModelSelected += TreeNav_DbContextModelSelected;
-			//treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
-			//treeNav.EntityModelSelected += TreeNav_EntityModelSelected;
-			//treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
-			//treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
+			treeNav.EntityDeleted += TreeNav_OnEntityDeleted;
+			treeNav.EnumDeleted += TreeNav_OnEnumDeleted;
 
 		} finally {
 			_suspendUpdates = false;
+		}
+	}
+
+	private void TreeNav_OnEntityDeleted(object sender, EntityDeletedEventArgs e)
+	{
+		foreach(var ctl in multiPageCtl.Controls) {
+			if (ctl is EntityContainerCtl entityCtl) {
+				if (entityCtl.Entity.Id == e.Entity.Id) {
+					multiPageCtl.Remove(entityCtl.Entity.Id);
+					entityCtl.Dispose();
+					break;
+				}
+			}
+		}
+	}
+
+	private void TreeNav_OnEnumDeleted(object sender, EnumDeletedEventArgs e)
+	{
+		foreach(var ctl in multiPageCtl.Controls) {
+			if (ctl is EnumEditCtl enumEditCtl) {
+				if (enumEditCtl.EnumModel.Id == e.EnumModel.Id) {
+					multiPageCtl.Remove(enumEditCtl.EnumModel.Id);
+					enumEditCtl.Dispose();
+					break;
+				}
+			}
 		}
 	}
 
@@ -182,7 +204,7 @@ public partial class MainForm : Form
 			Doc.Instance = value;
 			SetState(Doc.Instance == null ? GenitAppState.NoDoc : GenitAppState.DocLoaded);
 			PopulateForm(Doc.Instance);
-			Globals.DbContext = value?.DbContexts[0];
+			Doc.Instance.DbContexts[0] = value?.DbContexts[0];
 		}
 	}
 

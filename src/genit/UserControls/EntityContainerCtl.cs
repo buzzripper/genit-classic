@@ -9,27 +9,32 @@ namespace Dyvenix.Genit.UserControls
 {
 	public partial class EntityContainerCtl : UserControl
 	{
+		#region Fields
+
 		private const int cIdxMain = 0;
 		private const int cIdxProperties = 1;
 		private const int cIdxSvcMethods = 2;
 
-		private readonly EntityModel _entity;
 		private readonly List<EntityEditorItem> _childEditors = new List<EntityEditorItem>();
+
+		#endregion
+
+		#region Ctors / Init
 
 		public EntityContainerCtl(EntityModel entity)
 		{
 			InitializeComponent();
-			_entity = entity;
+			Entity = entity;
 			Initialize();
 		}
 
 		private void Initialize()
 		{
-			lblEntityName.Text = _entity.Name;
-			_entity.PropertyChanged += _entity_PropertyChanged;
+			lblEntityName.Text = Entity.Name;
+			Entity.PropertyChanged += _entity_PropertyChanged;
 
-			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl(_entity)));
-			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl(_entity)));
+			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl(Entity)));
+			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl(Entity)));
 
 			foreach (var childEditor in _childEditors) {
 				var ctl = childEditor.Ctl;
@@ -45,10 +50,20 @@ namespace Dyvenix.Genit.UserControls
 			SelectControl(cIdxMain);
 		}
 
+		#endregion
+
+		#region Properties
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public EntityModel Entity { get; private set; }
+
+		#endregion
+
 		private void _entity_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == "Name")
-				lblEntityName.Text = _entity.Name;
+				lblEntityName.Text = Entity.Name;
 		}
 
 		private void nbMain_Click(object sender, EventArgs e)

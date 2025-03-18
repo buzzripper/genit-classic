@@ -13,8 +13,13 @@ namespace Dyvenix.Genit.UserControls
 {
 	public partial class EnumEditCtl : UserControlBase
 	{
-		private readonly EnumModel _enumMdl;
+		#region Fields
+
 		private bool _suspendUpdates;
+
+		#endregion
+
+		#region Ctors / Init
 
 		public EnumEditCtl()
 		{
@@ -23,7 +28,7 @@ namespace Dyvenix.Genit.UserControls
 
 		public EnumEditCtl(EnumModel enumMdl) : this()
 		{
-			_enumMdl = enumMdl;
+			EnumModel = enumMdl;
 			Populate();
 		}
 
@@ -31,44 +36,54 @@ namespace Dyvenix.Genit.UserControls
 		{
 			_suspendUpdates = true;
 
-			lblName.Text = _enumMdl.Name;
-			txtName.Text = _enumMdl.Name;
-			slMembers.Items = _enumMdl.Members;
-			txtNamespace.Text = _enumMdl.Namespace;
-			ckbIsExternal.Checked = _enumMdl.IsExternal;
-			ckbIsFlags.Checked = _enumMdl.IsFlags;
+			lblName.Text = EnumModel.Name;
+			txtName.Text = EnumModel.Name;
+			slMembers.Items = EnumModel.Members;
+			txtNamespace.Text = EnumModel.Namespace;
+			ckbIsExternal.Checked = EnumModel.IsExternal;
+			ckbIsFlags.Checked = EnumModel.IsFlags;
 
-			_enumMdl.PropertyChanged += EnumMdl_OnPropertyChanged;
+			EnumModel.PropertyChanged += EnumMdl_OnPropertyChanged;
 			_suspendUpdates = false;
 		}
 
+		#endregion
+
+		#region Properties
+
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public EnumModel EnumModel { get; private set; }
+
+		#endregion
+
 		private void EnumMdl_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			
+
 		}
 
 		private void txtName_TextChanged(object sender, EventArgs e)
 		{
 			if (!_suspendUpdates)
-				_enumMdl.Name = txtName.Text;
+				EnumModel.Name = txtName.Text;
 		}
 
 		private void txtNamespace_TextChanged(object sender, EventArgs e)
 		{
 			if (!_suspendUpdates)
-				_enumMdl.Namespace = txtNamespace.Text;
+				EnumModel.Namespace = txtNamespace.Text;
 		}
 
 		private void ckbIsFlags_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_suspendUpdates)
-				_enumMdl.IsFlags= ckbIsFlags.Checked;
+				EnumModel.IsFlags = ckbIsFlags.Checked;
 		}
 
 		private void ckbIsExternal_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_suspendUpdates)
-				_enumMdl.IsExternal = ckbIsExternal.Checked;
+				EnumModel.IsExternal = ckbIsExternal.Checked;
 		}
 	}
 }

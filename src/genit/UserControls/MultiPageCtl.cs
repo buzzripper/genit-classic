@@ -95,15 +95,15 @@ public partial class MultiPageCtl : UserControl
 		btn.Text = text;
 		btn.Padding = new Padding(5, 0, 5, 0);
 		btn.Click += Btn_Click;
-		var newIdx = toolStrip.Items.Add(btn);
 
 		var mpItem = new MultiPageItem(id, btn, control);
 		_items.Add(mpItem);
 
-		AddControl(control);
-
 		btn.Tag = mpItem;
 
+		AddControl(control);
+
+		var newIdx = toolStrip.Items.Add(btn);
 		return newIdx;
 	}
 
@@ -182,8 +182,10 @@ public partial class MultiPageCtl : UserControl
 	{
 		this.Controls.Remove(item.Ctl);
 		item.Ctl.Dispose();
+
 		toolStrip.Items.Remove(item.Button);
 		item.Button.Dispose();
+
 		_items.Remove(item);
 	}
 

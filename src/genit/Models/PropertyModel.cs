@@ -187,7 +187,7 @@ public class PropertyModel : INotifyPropertyChanged
 			this.PrimitiveType = PrimitiveType.GetAll().First(p => p.Id == this.PrimitiveTypeId);
 
 		} else if (this.EnumTypeId != null) {
-			this.EnumType = enums.First(e => e.Id == this.EnumTypeId);
+			this.EnumType = enums.FirstOrDefault(e => e.Id == this.EnumTypeId);
 
 		} else if (assoc != null) {
 			this.Assoc = assoc;

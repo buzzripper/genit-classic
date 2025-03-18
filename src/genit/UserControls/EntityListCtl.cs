@@ -33,11 +33,6 @@ public partial class EntityListCtl : UserControl
 
 		_suspendUpdates = true;
 
-		//cmbEntities.Items.Clear();
-		//cmbEntities.Items.Add(new ListItem(null));
-		//foreach (var entity in Doc.Instance?.DbContexts[0].Entities.OrderBy(e => e.Name))
-		//	cmbEntities.Items.Add(new ListItem(entity));
-		
 		cmbEntities.DataSource = Doc.Instance.DbContexts[0].Entities.OrderBy(e => e.Name).ToList();
 		Doc.Instance.DbContexts[0].Entities.CollectionChanged += Entities_CollectionChanged;
 

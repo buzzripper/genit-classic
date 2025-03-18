@@ -16,6 +16,8 @@ public partial class TreeNav : UserControl
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityModelSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntitiesNodeSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumModelSelected;
+	public event EventHandler<EntityDeletedEventArgs> EntityDeleted;
+	public event EventHandler<EnumDeletedEventArgs> EnumDeleted;
 
 	//public event EventHandler<PropertyModelEventArgs> PropertyModelSelected;
 	//public event EventHandler<NavTreeNodeSelectedEventArgs> EnumsNodeSelected;
@@ -276,23 +278,17 @@ public partial class TreeNav : UserControl
 			// Entities list
 			mnuAdd.Text = "Add Entity";
 			mnuAdd.Visible = true;
-			mnuAdd.Click -= MnuAddEnum_OnClick;
-			mnuAdd.Click += MnuAddEntity_OnClick;
 			mnuDelete.Visible = false;
 
 		} else if (treeView1.SelectedNode.Parent == _entitiesNode) {
 			// Single entity	
 			mnuAdd.Visible = false;
 			mnuDelete.Text = "Delete Entity";
-			mnuDelete.Click -= MnuDeleteEnum_OnClick;
-			mnuDelete.Click += MnuDeleteEntity_OnClick;
 			mnuDelete.Visible = true;
 
 		} else if (treeView1.SelectedNode == _enumsNode) {
 			// Enums list
 			mnuAdd.Text = "Add Enum";
-			mnuAdd.Click -= MnuAddEntity_OnClick;
-			mnuAdd.Click += MnuAddEnum_OnClick;
 			mnuAdd.Visible = true;
 			mnuDelete.Visible = false;
 
@@ -301,8 +297,6 @@ public partial class TreeNav : UserControl
 			// Single enum
 			mnuAdd.Visible = false;
 			mnuDelete.Text = "Delete Enum";
-			mnuDelete.Click -= MnuDeleteEntity_OnClick;
-			mnuDelete.Click += MnuDeleteEnum_OnClick;
 			mnuDelete.Visible = true;
 
 		} else {
@@ -310,17 +304,53 @@ public partial class TreeNav : UserControl
 		}
 	}
 
-	private void MnuAddEntity_OnClick(object sender, EventArgs e)
+	private void mnuAdd_Click(object sender, EventArgs e)
 	{
+		if (treeView1.SelectedNode == _entitiesNode) {
+			AddNewEntity();
 
+		} else if (treeView1.SelectedNode == _enumsNode) {
+			AddNewEnum();
+		}
 	}
 
-	private void MnuDeleteEntity_OnClick(object sender, EventArgs e)
+	private void mnuDelete_Click(object sender, EventArgs e)
 	{
+		if (treeView1.SelectedNode.Parent == _entitiesNode) {
+			DeleteSelectedEntity();
 
+		} else if (treeView1.SelectedNode.Parent == _enumsNode) {
+			DeleteSelectedEnum();
+		}
 	}
 
-	private void MnuAddEnum_OnClick(object sender, EventArgs e)
+	private void AddNewEntity()
+	{
+		var newEntityName = GetUniqueName("NewEntity");
+		var newEntityMdl = new EntityModel(Guid.NewGuid()) {
+			Name = newEntityName
+		};
+		_dbContextModel.Entities.Add(newEntityMdl);
+
+		PopulateEnums();
+		var nodes = _entitiesNode.Nodes.Find(newEntityMdl.Id.ToString(), false);
+		if (nodes.Length == 0)
+			MessageBox.Show("New node not found");
+
+		treeView1.SelectedNode = nodes[0];
+	}
+
+	private void DeleteSelectedEntity()
+	{
+		var entityToDelete = _dbContextModel.Entities.FirstOrDefault(e => e.Id == Guid.Parse(treeView1.SelectedNode.Name));
+		_dbContextModel.Entities.Remove(entityToDelete);
+		
+		_entitiesNode.Nodes.Remove(treeView1.SelectedNode);
+
+		EntityDeleted?.Invoke(this, new EntityDeletedEventArgs(entityToDelete));
+	}
+
+	private void AddNewEnum()
 	{
 		var newEnumName = GetUniqueName("NewEnum");
 		var newEnumMdl = new EnumModel {
@@ -338,9 +368,14 @@ public partial class TreeNav : UserControl
 		treeView1.SelectedNode = nodes[0];
 	}
 
-	private void MnuDeleteEnum_OnClick(object sender, EventArgs e)
+	private void DeleteSelectedEnum()
 	{
+		var enumToDelete = _dbContextModel.Enums.FirstOrDefault(e => e.Id == Guid.Parse(treeView1.SelectedNode.Name));
+		_dbContextModel.Enums.Remove(enumToDelete);
+		
+		_enumsNode.Nodes.Remove(treeView1.SelectedNode);
 
+		EnumDeleted?.Invoke(this, new EnumDeletedEventArgs(enumToDelete));
 	}
 
 	private string GetUniqueName(string prefix)
@@ -425,16 +460,6 @@ public class EnumModelEventArgs : EventArgs
 	}
 }
 
-//public class GeneratorsNodeEventArgs : EventArgs
-//{
-//	public List<GenModelBase> Generators { get; }
-
-//	public GeneratorsNodeEventArgs(List<IGenerator> generators)
-//	{
-//		Generators = generators;
-//	}
-//}
-
 public class GeneratorModelEventArgs : EventArgs
 {
 	public GenModelBase GenModel { get; }
@@ -442,5 +467,25 @@ public class GeneratorModelEventArgs : EventArgs
 	public GeneratorModelEventArgs(GenModelBase genModel)
 	{
 		GenModel = genModel;
+	}
+}
+
+public class EntityDeletedEventArgs : EventArgs
+{
+	public EntityModel Entity { get; }
+
+	public EntityDeletedEventArgs(EntityModel entity)
+	{
+		Entity = entity;
+	}
+}
+
+public class EnumDeletedEventArgs : EventArgs
+{
+	public EnumModel EnumModel { get; }
+
+	public EnumDeletedEventArgs(EnumModel enumMdl)
+	{
+		EnumModel = enumMdl;
 	}
 }

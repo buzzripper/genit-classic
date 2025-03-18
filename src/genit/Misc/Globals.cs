@@ -4,5 +4,5 @@ namespace Dyvenix.Genit.Misc;
 
 public static class Globals
 {
-	public static DbContextModel DbContext { get; set; }
+	//public static DbContextModel DbContext { get; set; }
 }

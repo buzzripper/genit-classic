@@ -56,7 +56,7 @@ public partial class DataTypeCtl : UserControlBase
 	{
 		this.PrimitiveType = propertyMdl.PrimitiveType;
 		this.EnumType = propertyMdl.EnumType;
-		Globals.DbContext.Enums.CollectionChanged += Enums_CollectionChanged;
+		Doc.Instance.DbContexts[0].Enums.CollectionChanged += Enums_CollectionChanged;
 
 		propertyMdl.PropertyChanged += PropertyMdl_OnPropertyChanged;
 
@@ -72,7 +72,7 @@ public partial class DataTypeCtl : UserControlBase
 
 	private void Populate()
 	{
-		FillComboList(Globals.DbContext.Enums.ToList());
+		FillComboList(Doc.Instance?.DbContexts?[0].Enums.ToList());
 	}
 
 	private void FillComboList(IEnumerable<EnumModel> enumModels)
@@ -145,8 +145,11 @@ public partial class DataTypeCtl : UserControlBase
 
 	private void Enums_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 	{
-		var enumModels = e.NewItems?.Cast<EnumModel>();
-		FillComboList(enumModels);
+		if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) {
+			Populate();
+			//var enumModels = e.OldItems?.Cast<EnumModel>();
+			//FillComboList(enumModels);
+		}
 	}
 
 	private void cmbItems_SelectedIndexChanged(object sender, EventArgs e)

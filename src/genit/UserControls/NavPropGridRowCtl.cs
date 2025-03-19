@@ -9,6 +9,7 @@ namespace Dyvenix.Genit.UserControls;
 public partial class NavPropGridRowCtl : UserControl
 {
 	public event EventHandler<NavPropChangedEventArgs> NavigationPropertyChanged;
+	public event EventHandler<NavPropertyEditEventArgs> NavPropertyEdit;
 
 	#region Fields
 
@@ -50,10 +51,6 @@ public partial class NavPropGridRowCtl : UserControl
 	private void Populate()
 	{
 		_suspendUpdates = true;
-
-		//txtName.Text = _navProperty.Name;
-		//cmbCardinality.SelectedIndex = (int)_navProperty.Cardinality;
-		//entityListCtl.SelectedEntity = _navProperty.FKEntity;
 
 		lblName.Text = _navProperty.Name;
 		lblCardinality.Text = _navProperty.Cardinality.ToString();
@@ -118,11 +115,7 @@ public partial class NavPropGridRowCtl : UserControl
 
 	private void picEditNavProp_Click(object sender, EventArgs e)
 	{
-		if (NavPropEditForm.Run(_navProperty.Assoc) == DialogResult.Cancel)
-			return;
-
-		//NavigationPropertyChanged?.Invoke(this, new NavPropChangedEventArgs(_navProperty, NavPropChangedAction.Updated));
-		Populate();
+		NavPropertyEdit?.Invoke(this, new NavPropertyEditEventArgs(_navProperty));
 	}
 
 	private void NavPropModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -169,6 +162,16 @@ public class NavPropChangedEventArgs : EventArgs
 	{
 		NavPropertyModel = navPropertyModel;
 		Action = action;
+	}
+}
+
+public class NavPropertyEditEventArgs : EventArgs
+{
+	public NavPropertyModel NavProperty { get; }
+
+	public NavPropertyEditEventArgs(NavPropertyModel navProperty)
+	{
+		NavProperty = navProperty;
 	}
 }
 

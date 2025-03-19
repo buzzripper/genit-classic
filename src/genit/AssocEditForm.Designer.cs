@@ -29,8 +29,6 @@ partial class AssocEditForm
 	{
 		label1 = new System.Windows.Forms.Label();
 		txtName = new System.Windows.Forms.TextBox();
-		txtFKPropName = new System.Windows.Forms.TextBox();
-		label2 = new System.Windows.Forms.Label();
 		label3 = new System.Windows.Forms.Label();
 		label4 = new System.Windows.Forms.Label();
 		cmbCardinality = new System.Windows.Forms.ComboBox();
@@ -53,25 +51,8 @@ partial class AssocEditForm
 		txtName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtName.Location = new System.Drawing.Point(151, 25);
 		txtName.Name = "txtName";
-		txtName.Size = new System.Drawing.Size(252, 25);
+		txtName.Size = new System.Drawing.Size(245, 25);
 		txtName.TabIndex = 0;
-		// 
-		// txtFKPropName
-		// 
-		txtFKPropName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-		txtFKPropName.Location = new System.Drawing.Point(151, 131);
-		txtFKPropName.Name = "txtFKPropName";
-		txtFKPropName.Size = new System.Drawing.Size(252, 25);
-		txtFKPropName.TabIndex = 3;
-		// 
-		// label2
-		// 
-		label2.AutoSize = true;
-		label2.Location = new System.Drawing.Point(20, 134);
-		label2.Name = "label2";
-		label2.Size = new System.Drawing.Size(124, 19);
-		label2.TabIndex = 2;
-		label2.Text = "FK Property Name:";
 		// 
 		// label3
 		// 
@@ -102,9 +83,10 @@ partial class AssocEditForm
 		// 
 		// btnOk
 		// 
+		btnOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 		btnOk.BackColor = System.Drawing.SystemColors.HotTrack;
 		btnOk.ForeColor = System.Drawing.SystemColors.Control;
-		btnOk.Location = new System.Drawing.Point(126, 176);
+		btnOk.Location = new System.Drawing.Point(114, 141);
 		btnOk.Name = "btnOk";
 		btnOk.Size = new System.Drawing.Size(75, 32);
 		btnOk.TabIndex = 4;
@@ -114,9 +96,10 @@ partial class AssocEditForm
 		// 
 		// btnCancel
 		// 
+		btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
 		btnCancel.BackColor = System.Drawing.SystemColors.HotTrack;
 		btnCancel.ForeColor = System.Drawing.SystemColors.Control;
-		btnCancel.Location = new System.Drawing.Point(216, 176);
+		btnCancel.Location = new System.Drawing.Point(214, 141);
 		btnCancel.Name = "btnCancel";
 		btnCancel.Size = new System.Drawing.Size(75, 32);
 		btnCancel.TabIndex = 5;
@@ -126,9 +109,10 @@ partial class AssocEditForm
 		// 
 		// entityListCtl
 		// 
+		entityListCtl.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		entityListCtl.Location = new System.Drawing.Point(151, 94);
 		entityListCtl.Name = "entityListCtl";
-		entityListCtl.Size = new System.Drawing.Size(252, 23);
+		entityListCtl.Size = new System.Drawing.Size(246, 23);
 		entityListCtl.TabIndex = 2;
 		// 
 		// AssocEditForm
@@ -137,7 +121,7 @@ partial class AssocEditForm
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		CancelButton = btnCancel;
-		ClientSize = new System.Drawing.Size(415, 220);
+		ClientSize = new System.Drawing.Size(408, 185);
 		ControlBox = false;
 		Controls.Add(entityListCtl);
 		Controls.Add(btnCancel);
@@ -145,8 +129,6 @@ partial class AssocEditForm
 		Controls.Add(cmbCardinality);
 		Controls.Add(label4);
 		Controls.Add(label3);
-		Controls.Add(txtFKPropName);
-		Controls.Add(label2);
 		Controls.Add(txtName);
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
@@ -165,8 +147,6 @@ partial class AssocEditForm
 
 	private System.Windows.Forms.Label label1;
 	private System.Windows.Forms.TextBox txtName;
-	private System.Windows.Forms.TextBox txtFKPropName;
-	private System.Windows.Forms.Label label2;
 	private System.Windows.Forms.Label label3;
 	private System.Windows.Forms.Label label4;
 	private System.Windows.Forms.ComboBox cmbCardinality;

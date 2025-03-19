@@ -128,7 +128,7 @@ namespace Dyvenix.Genit.Models
 		{
 			get { return _navProperty; }
 			set {
-				NavPropertyId = value.Id;
+				NavPropertyId = value != null ? value.Id : Guid.Empty;
 				_navProperty = value;
 			}
 		}
@@ -138,7 +138,7 @@ namespace Dyvenix.Genit.Models
 		{
 			get { return _fkEntity; }
 			set {
-				FKEntityId = value.Id;
+				FKEntityId = value != null ? value.Id : Guid.Empty;
 				_fkEntity = value;
 			}
 		}
@@ -148,7 +148,7 @@ namespace Dyvenix.Genit.Models
 		{
 			get { return _fkProperty; }
 			set {
-				FKPropertyId = value.Id;
+				FKPropertyId = value != null ? value.Id : Guid.Empty;
 				_fkProperty = value;
 			}
 		}

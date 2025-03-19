@@ -80,10 +80,10 @@ public partial class PropGridCtl : UserControl
 			}
 			_rows.Clear();
 
-			var top = 0;
+			var count = 0;
 			foreach (var propMdl in _propertyModels.OrderBy(p => p.DisplayOrder)) {
 				PropGridRowCtl propGridRowCtl = new PropGridRowCtl(propMdl);
-				propGridRowCtl.Top = top += 35;
+				propGridRowCtl.Top = ++count * (propGridRowCtl.Height + 2);
 				propGridRowCtl.Left = 0;
 				propGridRowCtl.Width = this.Width;
 				propGridRowCtl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;

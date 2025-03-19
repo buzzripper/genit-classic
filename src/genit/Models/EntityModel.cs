@@ -119,9 +119,11 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 
 	#region Methods
 
-	public PropertyModel AddForeignKey(string fkPropName, EntityModel pkEntity)
+	public PropertyModel AddForeignKey(string fkPropName, EntityModel pkEntity, AssocModel assoc)
 	{
-		var property = new PropertyModel(Guid.NewGuid(), fkPropName, pkEntity);
+		var property = new PropertyModel(Guid.NewGuid(), fkPropName, assoc.Id, pkEntity);
+		property.PrimitiveType = pkEntity.GetPKProperty().PrimitiveType;
+		property.IsIndexed = true;
 		property.DisplayOrder = Properties.Count;
 		Properties.Add(property);
 		return property;

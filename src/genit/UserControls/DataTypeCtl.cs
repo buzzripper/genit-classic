@@ -6,6 +6,8 @@ using Dyvenix.Genit.Models;
 using Dyvenix.Genit.Misc;
 using System.ComponentModel;
 using System.Diagnostics.Eventing.Reader;
+using System.Configuration;
+using System.Drawing;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -15,6 +17,7 @@ public partial class DataTypeCtl : UserControlBase
 
 	private PropertyModel _propertyMdl;
 	private bool _suspendUpdates;
+	private bool _readOnly;
 
 	public DataTypeCtl()
 	{
@@ -42,10 +45,14 @@ public partial class DataTypeCtl : UserControlBase
 
 	[Browsable(true)]
 	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-	public new bool Enabled
+	public bool ReadOnly
 	{
-		get { return cmbItems.Enabled; }
-		set { cmbItems.Enabled = value; }
+		get { return _readOnly; }
+		set {
+			cmbItems.Visible = !value;
+			txtDatatypeName.Visible = value;
+			_readOnly = value;
+		}
 	}
 
 	#endregion
@@ -60,7 +67,7 @@ public partial class DataTypeCtl : UserControlBase
 
 		propertyMdl.PropertyChanged += PropertyMdl_OnPropertyChanged;
 
-		Populate();
+		InitializeDatatypeList();
 
 		if (this.PrimitiveType != null)
 			Select(this.PrimitiveType);
@@ -70,13 +77,10 @@ public partial class DataTypeCtl : UserControlBase
 			SelectNone();
 	}
 
-	private void Populate()
+	private void InitializeDatatypeList()
 	{
-		FillComboList(Doc.Instance?.DbContexts?[0].Enums.ToList());
-	}
+		var enumModels = Doc.Instance?.DbContexts?[0].Enums.ToList();
 
-	private void FillComboList(IEnumerable<EnumModel> enumModels)
-	{
 		cmbItems.SuspendLayout();
 		cmbItems.Items.Clear();
 
@@ -89,21 +93,28 @@ public partial class DataTypeCtl : UserControlBase
 
 	public void Select(PrimitiveType primitiveType)
 	{
-		if (primitiveType == null)
-			cmbItems.SelectedIndex = -1;
-		else
-			cmbItems.SelectedItem = cmbItems.Items.Cast<DataTypeItem>().FirstOrDefault(i => i.PrimitiveType == primitiveType);
+		if (!ReadOnly) {
+			if (primitiveType == null)
+				cmbItems.SelectedIndex = -1;
+			else
+				cmbItems.SelectedItem = cmbItems.Items.Cast<DataTypeItem>().FirstOrDefault(i => i.PrimitiveType == primitiveType);
+		} else {
+			txtDatatypeName.Text = primitiveType?.CSType;
+		}
 
 		this.SetValues(primitiveType, null);
 	}
 
 	public void Select(EnumModel enumModel)
 	{
-		if (enumModel == null)
-			cmbItems.SelectedIndex = -1;
-		else
-			cmbItems.SelectedItem = cmbItems.Items.Cast<DataTypeItem>().FirstOrDefault(i => i.EnumType == enumModel);
-
+		if (!ReadOnly) {
+			if (enumModel == null)
+				cmbItems.SelectedIndex = -1;
+			else
+				cmbItems.SelectedItem = cmbItems.Items.Cast<DataTypeItem>().FirstOrDefault(i => i.EnumType == enumModel);
+		} else {
+			txtDatatypeName.Text = enumModel?.ToString();
+		}
 		this.SetValues(null, enumModel);
 	}
 
@@ -115,7 +126,6 @@ public partial class DataTypeCtl : UserControlBase
 
 	private void SetValues(PrimitiveType primitiveType, EnumModel enumType)
 	{
-
 		this.PrimitiveType = primitiveType;
 		this.EnumType = enumType;
 
@@ -146,7 +156,7 @@ public partial class DataTypeCtl : UserControlBase
 	private void Enums_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 	{
 		if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) {
-			Populate();
+			InitializeDatatypeList();
 			//var enumModels = e.OldItems?.Cast<EnumModel>();
 			//FillComboList(enumModels);
 		}

@@ -204,7 +204,10 @@ public partial class MainForm : Form
 			Doc.Instance = value;
 			SetState(Doc.Instance == null ? GenitAppState.NoDoc : GenitAppState.DocLoaded);
 			PopulateForm(Doc.Instance);
-			Doc.Instance.DbContexts[0] = value?.DbContexts[0];
+			if (value != null)
+				Doc.Instance.DbContexts[0] = value?.DbContexts[0];
+			else
+				CurrDocFilepath = null;
 		}
 	}
 

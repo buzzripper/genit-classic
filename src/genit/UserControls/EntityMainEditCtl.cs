@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls;
@@ -133,18 +134,65 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 
 	private void lkbAddNewNavProp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 	{
+		if (NavPropEditForm.New() == DialogResult.Cancel)
+			return;
+
+		var navPropName = NavPropEditForm.NavPropertyName;
+		var fkEntity = NavPropEditForm.FKEntity;
+		var fkPropName = $"{_entity.Name}Id";
+		var cardinality = NavPropEditForm.Cardinality;
+
 		var assoc = new AssocModel();
 		assoc.Id = Guid.NewGuid();
 		assoc.PrimaryEntity = _entity;
 
 		var navProperty = new NavPropertyModel(Guid.NewGuid(), assoc);
-		navProperty.Name = NavPropEditForm.NavPropertyName;
-		assoc.NavProperty = navProperty;
+		navProperty.Name = navPropName;
+		navProperty.Cardinality = cardinality;
 
-		if (NavPropEditForm.Run(assoc) == DialogResult.Cancel)
-			return;
+		var fkProp = fkEntity.AddForeignKey(fkPropName, _entity, assoc);
+
+		assoc.NavProperty = navProperty;
+		assoc.FKEntity = navProperty.FKEntity;
+		assoc.FKProperty = fkProp;
+
+		navProperty.FKEntity = fkEntity;
 
 		_entity.NavProperties.Add(navProperty);
+		Doc.Instance.DbContexts[0].Assocs.Add(assoc);
+	}
+
+	private void navPropGridCtl_NavPropertyEdit(object sender, NavPropertyEditEventArgs e)
+	{
+		var navProperty = e.NavProperty;
+
+		if (NavPropEditForm.Edit(navProperty.Name, navProperty.Cardinality, navProperty.FKEntity) == DialogResult.Cancel)
+			return;
+
+		navProperty.Name = NavPropEditForm.NavPropertyName;
+		navProperty.Cardinality = NavPropEditForm.Cardinality;
+		navProperty.FKEntity = NavPropEditForm.FKEntity;
+
+		navPropGridCtl.Reload();
+	}
+
+	private void EditNavProp(NavPropertyModel navProp)
+	{
+		////See if the FK entity has changed
+		//if (_assoc.FKEntity != entityListCtl.SelectedEntity) {
+		//	// Remove the old fk property
+		//	if (_assoc?.FKProperty != null)
+		//		_assoc.FKEntity.Properties.Remove(_assoc.FKProperty);
+		//	// Add the new
+		//	_assoc.FKEntity = entityListCtl.SelectedEntity;
+		//	_assoc.FKProperty = _assoc.FKEntity.AddForeignKey(txtFKPropName.Text, _assoc.PrimaryEntity);
+
+		//} else {
+		//	_assoc.FKProperty.Name = txtFKPropName.Text;
+		//}
+
+		//_assoc.NavProperty.Name = txtName.Text;
+		//_assoc.Cardinality = (Cardinality)cmbCardinality.SelectedItem;
 	}
 
 	private void lkbAddlUsings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

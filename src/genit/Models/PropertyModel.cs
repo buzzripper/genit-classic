@@ -44,13 +44,14 @@ public class PropertyModel : INotifyPropertyChanged
 		Id = id;
 	}
 
-	public PropertyModel(Guid id, string name, EntityModel pkEntity)
+	public PropertyModel(Guid id, string name, Guid assocId, EntityModel pkEntity)
 	{
 		_suspendUpdates = true;
 
 		Id = id;
 		Name = name;
 		ParentEntity = pkEntity;
+		AssocId = assocId;
 
 		_suspendUpdates = false;
 	}
@@ -161,15 +162,15 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
-	[JsonIgnore]
-	public AssocModel Assoc
-	{
-		get => _assoc;
-		set {
-			AssocId = (value != null) ? value.Id : null;
-			SetProperty(ref _assoc, value);
-		}
-	}
+	//[JsonIgnore]
+	//public AssocModel Assoc
+	//{
+	//	get => _assoc;
+	//	set {
+	//		AssocId = (value != null) ? value.Id : null;
+	//		SetProperty(ref _assoc, value);
+	//	}
+	//}
 
 	[JsonIgnore]
 	public bool IsForeignKey
@@ -188,9 +189,6 @@ public class PropertyModel : INotifyPropertyChanged
 
 		} else if (this.EnumTypeId != null) {
 			this.EnumType = enums.FirstOrDefault(e => e.Id == this.EnumTypeId);
-
-		} else if (assoc != null) {
-			this.Assoc = assoc;
 		}
 	}
 
@@ -227,6 +225,8 @@ public class PropertyModel : INotifyPropertyChanged
 
 	#endregion
 
+	#region PropertyChanged
+
 	public event PropertyChangedEventHandler PropertyChanged;
 
 	protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -244,4 +244,6 @@ public class PropertyModel : INotifyPropertyChanged
 
 		return true;
 	}
+
+	#endregion
 }

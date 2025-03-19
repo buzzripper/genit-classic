@@ -216,6 +216,7 @@ partial class EntityMainEditCtl
 		navPropGridCtl.Name = "navPropGridCtl";
 		navPropGridCtl.Size = new System.Drawing.Size(631, 157);
 		navPropGridCtl.TabIndex = 18;
+		navPropGridCtl.NavPropertyEdit += navPropGridCtl_NavPropertyEdit;
 		// 
 		// lkbAddNewNavProp
 		// 

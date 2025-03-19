@@ -44,6 +44,8 @@ public partial class PropGridRowCtl : UserControlBase
 		this.SuspendLayout();
 		_suspendUpdates = true;
 
+		SetState();
+
 		txtName.Text = _propertyMdl.Name;
 		dtcDatatype.SetDataTypes(_propertyMdl);
 		numMaxLength.Value = _propertyMdl.MaxLength;
@@ -56,15 +58,9 @@ public partial class PropGridRowCtl : UserControlBase
 
 		//_propertyMdl.PropertyChanged += PropMdl_PropertyChanged;
 
-		SetState();
-
 		_suspendUpdates = false;
 		this.ResumeLayout();
 	}
-
-	//private void PropMdl_PropertyChanged(object sender, PropertyChangedEventArgs e)
-	//{
-	//}
 
 	#endregion
 
@@ -165,14 +161,7 @@ public partial class PropGridRowCtl : UserControlBase
 		if (MessageBox.Show("Are you sure you want to delete this property?", "Delete Property", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 			return;
 
-		//ShowCenteredMessageBox(this, "This is a message.", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
 		PropertyModelChanged?.Invoke(this, new PropertyModelChangedEventArgs(ModelPropertyChangedAction.Deleted, _propertyMdl.Id, _propertyMdl));
-	}
-
-	private void picEditAssoc_Click(object sender, EventArgs e)
-	{
-
 	}
 
 	#endregion
@@ -190,17 +179,17 @@ public partial class PropGridRowCtl : UserControlBase
 		SetState_IsIndexed();
 		SetState_IsIndexUnique();
 		SetState_IsIndexClustered();
-		SetState_EditFK();
+		SetState_DeletePic();
 	}
 
 	private void SetState_Name()
 	{
-		txtName.Enabled = !_propertyMdl.IsForeignKey;
+		txtName.ReadOnly = !_propertyMdl.IsForeignKey;
 	}
 
 	private void SetState_Datatype()
 	{
-		dtcDatatype.Enabled = !_propertyMdl.IsForeignKey;
+		dtcDatatype.ReadOnly = _propertyMdl.IsForeignKey;
 	}
 
 	private void SetState_MaxLength()
@@ -282,9 +271,9 @@ public partial class PropGridRowCtl : UserControlBase
 			ckbIsIndexClustered.Enabled = false;
 	}
 
-	private void SetState_EditFK()
+	private void SetState_DeletePic()
 	{
-		picEditAssoc.Visible = _propertyMdl.IsForeignKey;
+		picDelete.Visible = !_propertyMdl.IsForeignKey;
 	}
 
 	#endregion

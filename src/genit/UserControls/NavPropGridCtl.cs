@@ -10,9 +10,11 @@ namespace Dyvenix.Genit.UserControls
 {
 	public partial class NavPropGridCtl : UserControl
 	{
+		public event EventHandler<NavPropertyEditEventArgs> NavPropertyEdit;
+
 		#region Fields
 
-		private ObservableCollection<NavPropertyModel> _navProperties; // = new ObservableCollection<NavPropertyModel>();
+		private ObservableCollection<NavPropertyModel> _navProperties;
 		private List<NavPropGridRowCtl> _navPropGridRowCtls = new List<NavPropGridRowCtl>();
 
 		#endregion
@@ -29,8 +31,6 @@ namespace Dyvenix.Genit.UserControls
 			splMain.Height = lblPrimaryPropertyName.Height + 4;
 		}
 
-		#endregion
-
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ObservableCollection<NavPropertyModel> DataSource
 		{
@@ -41,6 +41,10 @@ namespace Dyvenix.Genit.UserControls
 				PopulateRows();
 			}
 		}
+
+		#endregion
+
+		#region Methods
 
 		private void PopulateRows()
 		{
@@ -64,6 +68,7 @@ namespace Dyvenix.Genit.UserControls
 					navPropGridRowCtl.Width = this.Width;
 					navPropGridRowCtl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 					navPropGridRowCtl.NavigationPropertyChanged += NavPropGridRowCtl_NavigationPropertyChanged;
+					navPropGridRowCtl.NavPropertyEdit += NavPropGridRowCtl_OnNavPropertyEdit;
 
 					_navPropGridRowCtls.Add(navPropGridRowCtl);
 					this.Controls.Add(navPropGridRowCtl);
@@ -81,12 +86,26 @@ namespace Dyvenix.Genit.UserControls
 			}
 		}
 
+		public void Reload()
+		{
+			PopulateRows();
+		}
+
+		#endregion
+
 		#region UI Events
 
 		private void NavPropGridRowCtl_NavigationPropertyChanged(object sender, NavPropChangedEventArgs e)
 		{
-			if (e.Action == NavPropChangedAction.Deleted)
+			if (e.Action == NavPropChangedAction.Deleted) {
 				_navProperties.Remove(e.NavPropertyModel);
+				e.NavPropertyModel.FKEntity.Properties.Remove(e.NavPropertyModel.FKProperty);
+			}
+		}
+		
+		private void NavPropGridRowCtl_OnNavPropertyEdit(object sender, NavPropertyEditEventArgs e)
+		{
+			NavPropertyEdit?.Invoke(this, e);
 		}
 
 		private void NavProperties_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

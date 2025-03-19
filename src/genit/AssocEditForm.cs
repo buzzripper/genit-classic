@@ -8,9 +8,6 @@ namespace Dyvenix.Genit
 	{
 		#region Fields
 
-		private EntityModel _priEntity;
-		private AssocModel _assoc;
-
 		#endregion
 
 		#region Ctors / Init
@@ -36,23 +33,25 @@ namespace Dyvenix.Genit
 		public string NavPropertyName => txtName.Text;
 		public EntityModel FKEntity => entityListCtl.SelectedEntity as EntityModel;
 		public Cardinality Cardinality => (Cardinality)cmbCardinality.SelectedItem;
-		public string RelatedPropertyName => txtFKPropName.Text;
+		//public string FKPropertyName => txtFKPropName.Text;
 
 		#endregion
 
-		public DialogResult Run(AssocModel assoc)
+		public DialogResult New()
 		{
-			if (assoc.PrimaryEntity == null)
-				throw new ArgumentException("Primary entity is required.");
+			txtName.Text = string.Empty;
+			cmbCardinality.SelectedItem = Cardinality.None;
+			entityListCtl.SelectedEntity = null;
+			//txtFKPropName.Text = string.Empty;
 
-			txtName.Text = assoc.NavProperty?.Name;
-			cmbCardinality.SelectedItem = assoc.Cardinality;
+			return this.ShowDialog();
+		}
 
-			entityListCtl.SelectedEntity = assoc.FKEntity;
-			txtFKPropName.Text = assoc?.FKProperty?.Name;
-
-			_priEntity = assoc.PrimaryEntity;
-			_assoc = assoc;
+		public DialogResult Edit(string navPropName, Cardinality cardinality, EntityModel entity)
+		{
+			txtName.Text = navPropName;
+			cmbCardinality.SelectedItem = cardinality;
+			entityListCtl.SelectedEntity = entity;
 
 			return this.ShowDialog();
 		}
@@ -63,22 +62,6 @@ namespace Dyvenix.Genit
 		{
 			if (!ValidateEntries())
 				return;
-
-			//See if the FK entity has changed
-			if (_assoc.FKEntity != entityListCtl.SelectedEntity) {
-				// Remove the old fk property
-				if (_assoc?.FKProperty != null)
-					_assoc.FKEntity.Properties.Remove(_assoc.FKProperty);
-				// Add the new
-				_assoc.FKEntity = entityListCtl.SelectedEntity;
-				_assoc.FKProperty = _assoc.FKEntity.AddForeignKey(txtFKPropName.Text, _assoc.PrimaryEntity);
-
-			} else {
-				_assoc.FKProperty.Name = txtFKPropName.Text;
-			}
-
-			_assoc.NavProperty.Name = txtName.Text;
-			_assoc.Cardinality = (Cardinality)cmbCardinality.SelectedItem;
 
 			this.DialogResult = DialogResult.OK;
 		}

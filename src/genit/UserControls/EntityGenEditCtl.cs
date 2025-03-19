@@ -64,8 +64,9 @@ namespace Dyvenix.Genit.UserControls
 
 		private void btnBrowseFolder_Click(object sender, EventArgs e)
 		{
+			folderDlg.InitialDirectory = txtOutputFolder.Text;
 			if (folderDlg.ShowDialog() == DialogResult.OK)
-				txtOutputFolder.Text = folderDlg.SelectedPath;	
+				txtOutputFolder.Text = folderDlg.SelectedPath;
 		}
 	}
 }

@@ -374,6 +374,8 @@ public partial class MainForm : Form
 		Application.Exit();
 	}
 
+	#endregion
+
 	private void uiGenerate_Click(object sender, EventArgs e)
 	{
 		try {
@@ -435,8 +437,6 @@ public partial class MainForm : Form
 
 	}
 
-	#endregion
-
 	#region TreeNav
 
 	private void treeNav_DbContextModelSelected(object sender, NavTreeNodeSelectedEventArgs e)
@@ -479,10 +479,6 @@ public partial class MainForm : Form
 			multiPageCtl.Add(enumMdl.Id, enumMdl.Name, enumEditCtl);
 			multiPageCtl.Select(enumMdl.Id);
 		}
-	}
-
-	private void TreeNav_GeneratorModelSelected(object sender, UserControls.GeneratorModelEventArgs e)
-	{
 	}
 
 	private void treeNav_DbContextGenSelected(object sender, NavTreeNodeSelectedEventArgs e)

@@ -308,7 +308,6 @@ partial class MainForm
 		treeNav.DbContextGenSelected += treeNav_DbContextGenSelected;
 		treeNav.EntityGenSelected += treeNav_EntityGenSelected;
 		treeNav.EnumGenSelected += treeNav_EnumGenSelected;
-		treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
 		// 
 		// splContent
 		// 

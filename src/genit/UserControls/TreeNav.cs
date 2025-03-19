@@ -23,11 +23,6 @@ public partial class TreeNav : UserControl
 	public event EventHandler<EntityDeletedEventArgs> EntityDeleted;
 	public event EventHandler<EnumDeletedEventArgs> EnumDeleted;
 
-	//public event EventHandler<PropertyModelEventArgs> PropertyModelSelected;
-	//public event EventHandler<NavTreeNodeSelectedEventArgs> EnumsNodeSelected;
-	//public event EventHandler<EventArgs> GeneratorsNodeSelected;
-	public event EventHandler<GeneratorModelEventArgs> GeneratorModelSelected;
-
 	private const string cKey_Db = "db";
 	private const string cKey_Entity = "ent";
 	private const string cKey_Property = "prop";
@@ -362,7 +357,8 @@ public partial class TreeNav : UserControl
 		};
 		_dbContextModel.Entities.Add(newEntityMdl);
 
-		PopulateEnums();
+		PopulateEntities();
+
 		var nodes = _entitiesNode.Nodes.Find(newEntityMdl.Id.ToString(), false);
 		if (nodes.Length == 0)
 			MessageBox.Show("New node not found");
@@ -391,7 +387,9 @@ public partial class TreeNav : UserControl
 			Namespace = ""
 		};
 		_dbContextModel.Enums.Add(newEnumMdl);
+
 		PopulateEnums();
+
 		var nodes = _enumsNode.Nodes.Find(newEnumMdl.Id.ToString(), false);
 		if (nodes.Length == 0)
 			MessageBox.Show("New node not found");
@@ -419,6 +417,8 @@ public partial class TreeNav : UserControl
 		return name;
 	}
 }
+
+#region EventArg classes
 
 public class NavTreeNodeSelectedEventArgs : EventArgs
 {
@@ -519,3 +519,5 @@ public class EnumDeletedEventArgs : EventArgs
 		EnumModel = enumMdl;
 	}
 }
+
+#endregion

@@ -38,8 +38,6 @@ namespace Dyvenix.Genit.UserControls
 			ckbInclHeader.Checked = _dbCtxGenMdl.InclHeader;
 			ckbEnabled.Checked = _dbCtxGenMdl.Enabled;
 
-			label1.Text = "Fooey";
-
 			_suspendUpdates = false;
 		}
 
@@ -65,6 +63,7 @@ namespace Dyvenix.Genit.UserControls
 
 		private void btnBrowseFolder_Click(object sender, EventArgs e)
 		{
+			folderDlg.InitialDirectory = txtOutputFolder.Text;
 			if (folderDlg.ShowDialog() == DialogResult.OK)
 				txtOutputFolder.Text = folderDlg.SelectedPath;	
 		}

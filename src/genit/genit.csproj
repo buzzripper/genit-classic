@@ -50,9 +50,6 @@
     <Compile Update="UserControls\EnumGenEditCtl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UserControls\EnumGenEditCtrl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="UserControls\EntityGenEditCtl.cs">
       <SubType>UserControl</SubType>
     </Compile>

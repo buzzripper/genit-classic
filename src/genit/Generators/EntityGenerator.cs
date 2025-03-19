@@ -73,23 +73,23 @@ public class EntityGenerator : GeneratorBase
 			propOutputList.AddLine();
 
 			// FK properties
-			//var fkProps = entity.Properties.Where(p => p.FKAssoc != null).ToList();
-			//foreach (var prop in fkProps)
-			//	this.GenerateProperty(prop, propOutputList, usings);
-			//if (fkProps.Count > 0)
-			//	propOutputList.AddLine();
+			var fkProps = entity.Properties.Where(p => p.IsForeignKey).ToList();
+			foreach (var prop in fkProps)
+				this.GenerateProperty(prop, propOutputList, usings);
+			if (fkProps.Count > 0)
+				propOutputList.AddLine();
 
-			//// Normal properties
-			//foreach (var prop in entity.Properties.Where(p => p.FKAssoc == null && !p.IsPrimaryKey))
-			//	this.GenerateProperty(prop, propOutputList, usings);
+			// Normal properties
+			foreach (var prop in entity.Properties.Where(p => !p.IsForeignKey && !p.IsPrimaryKey))
+				this.GenerateProperty(prop, propOutputList, usings);
 
-			//// Navigation properties
-			//if (entity.NavAssocs.Count > 0) {
-			//	propOutputList.AddLine();
-			//	propOutputList.AddLine(1, $"// Navigation properties");
-			//	foreach (var navProperty in entity.NavAssocs)
-			//		this.GenerateNavigationProperty(navProperty, propOutputList, usings);
-			//}
+			// Navigation properties
+			if (entity.NavProperties.Count > 0) {
+				propOutputList.AddLine();
+				propOutputList.AddLine(1, $"// Navigation properties");
+				foreach (var navProperty in entity.NavProperties)
+					this.GenerateNavigationProperty(navProperty, propOutputList, usings);
+			}
 
 			var classEnd = new List<string>();
 			classEnd.Add("}");
@@ -132,24 +132,22 @@ public class EntityGenerator : GeneratorBase
 				usings.AddIfNotExists(usingStr);
 	}
 
-	//private void GenerateNavigationProperty(AssocModel navProperty, List<string> propOutputList, List<string> usings)
-	//{
-	//	var tabCount = 1;
+	private void GenerateNavigationProperty(NavPropertyModel navProperty, List<string> propOutputList, List<string> usings)
+	{
+		var tabCount = 1;
 
-	//	switch (navProperty.Cardinality) {
-	//		case CardinalityModel.OneToOne:
-	//			propOutputList.AddLine(tabCount, $"public {navProperty.RelatedEntity.Name} {navProperty.PrimaryPropertyName} {{ get; set; }}");
-	//			break;
+		switch (navProperty.Cardinality) {
+			case Cardinality.OneToOne:
+				propOutputList.AddLine(tabCount, $"public {navProperty.FKEntity.Name} {navProperty.Name} {{ get; set; }}");
+				break;
 
-	//		case CardinalityModel.OneToMany:
-	//			usings.AddIfNotExists("System.Collections.Generic");
-	//			propOutputList.AddLine(tabCount, $"public virtual ICollection<{navProperty.RelatedEntity.Name}> {navProperty.PrimaryPropertyName} {{ get; set; }} = new List<{navProperty.RelatedEntity.Name}>();");
-	//			break;
+			case Cardinality.OneToMany:
+				usings.AddIfNotExists("System.Collections.Generic");
+				propOutputList.AddLine(tabCount, $"public virtual ICollection<{navProperty.FKEntity.Name}> {navProperty.Name} {{ get; set; }} = new List<{navProperty.FKEntity.Name}>();");
+				break;
 
-	//		default:
-	//			throw new ApplicationException($"Error determining data type for property '{navProperty.PrimaryPropertyName}': Cardinality '{navProperty.Cardinality}' not supported.");
-	//	}
-
-	//	this.AddEntityNamespace(navProperty.RelatedEntity, usings);
-	//}
+			default:
+				throw new ApplicationException($"Error determining data type for property '{navProperty.Name}': Cardinality '{navProperty.Cardinality}' not supported.");
+		}
+	}
 }

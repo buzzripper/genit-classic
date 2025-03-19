@@ -39,7 +39,7 @@ partial class EntityGenEditCtl
 		// label1
 		// 
 		label1.AutoSize = true;
-		label1.Location = new System.Drawing.Point(46, 77);
+		label1.Location = new System.Drawing.Point(52, 74);
 		label1.Name = "label1";
 		label1.Size = new System.Drawing.Size(99, 19);
 		label1.TabIndex = 0;
@@ -50,7 +50,7 @@ partial class EntityGenEditCtl
 		// 
 		txtOutputFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtOutputFolder.Location = new System.Drawing.Point(151, 76);
+		txtOutputFolder.Location = new System.Drawing.Point(157, 72);
 		txtOutputFolder.Name = "txtOutputFolder";
 		txtOutputFolder.Size = new System.Drawing.Size(479, 25);
 		txtOutputFolder.TabIndex = 1;
@@ -69,7 +69,7 @@ partial class EntityGenEditCtl
 		// ckbEnabled
 		// 
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(167, 153);
+		ckbEnabled.Location = new System.Drawing.Point(173, 150);
 		ckbEnabled.Name = "ckbEnabled";
 		ckbEnabled.Size = new System.Drawing.Size(76, 23);
 		ckbEnabled.TabIndex = 3;
@@ -80,7 +80,7 @@ partial class EntityGenEditCtl
 		// ckbInclHeader
 		// 
 		ckbInclHeader.AutoSize = true;
-		ckbInclHeader.Location = new System.Drawing.Point(328, 153);
+		ckbInclHeader.Location = new System.Drawing.Point(334, 150);
 		ckbInclHeader.Name = "ckbInclHeader";
 		ckbInclHeader.Size = new System.Drawing.Size(120, 23);
 		ckbInclHeader.TabIndex = 4;
@@ -91,7 +91,7 @@ partial class EntityGenEditCtl
 		// btnBrowseFolder
 		// 
 		btnBrowseFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseFolder.Location = new System.Drawing.Point(636, 76);
+		btnBrowseFolder.Location = new System.Drawing.Point(641, 72);
 		btnBrowseFolder.Name = "btnBrowseFolder";
 		btnBrowseFolder.Size = new System.Drawing.Size(24, 22);
 		btnBrowseFolder.TabIndex = 6;
@@ -111,7 +111,7 @@ partial class EntityGenEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F);
 		Name = "EntityGenEditCtl";
-		Size = new System.Drawing.Size(719, 389);
+		Size = new System.Drawing.Size(719, 328);
 		Load += EntityGenEditCtl_Load;
 		ResumeLayout(false);
 		PerformLayout();

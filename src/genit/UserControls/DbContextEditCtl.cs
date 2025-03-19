@@ -20,6 +20,7 @@ public partial class DbContextEditCtl : UserControlBase
 		txtName.Text = dbContextMdl.Name;
 		txtContextNamespace.Text = dbContextMdl.ContextNamespace;
 		txtEntitiesNamespace.Text = dbContextMdl.EntitiesNamespace;
+		//txtEnumsNamespace.Text = dbContextMdl.EnumsNamespace;
 		stringListEditor1.Items = dbContextMdl.AddlUsings;
 	}
 

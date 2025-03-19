@@ -108,26 +108,26 @@ partial class DbContextEditCtl
 		// 
 		// txtName
 		// 
-		txtName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		txtName.Location = new System.Drawing.Point(161, 53);
 		txtName.Name = "txtName";
-		txtName.Size = new System.Drawing.Size(331, 18);
+		txtName.Size = new System.Drawing.Size(331, 25);
 		txtName.TabIndex = 11;
 		// 
 		// txtContextNamespace
 		// 
-		txtContextNamespace.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtContextNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		txtContextNamespace.Location = new System.Drawing.Point(161, 85);
 		txtContextNamespace.Name = "txtContextNamespace";
-		txtContextNamespace.Size = new System.Drawing.Size(331, 18);
+		txtContextNamespace.Size = new System.Drawing.Size(331, 25);
 		txtContextNamespace.TabIndex = 12;
 		// 
 		// txtEntitiesNamespace
 		// 
-		txtEntitiesNamespace.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtEntitiesNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		txtEntitiesNamespace.Location = new System.Drawing.Point(161, 117);
 		txtEntitiesNamespace.Name = "txtEntitiesNamespace";
-		txtEntitiesNamespace.Size = new System.Drawing.Size(331, 18);
+		txtEntitiesNamespace.Size = new System.Drawing.Size(331, 25);
 		txtEntitiesNamespace.TabIndex = 13;
 		// 
 		// DbContextEditCtl

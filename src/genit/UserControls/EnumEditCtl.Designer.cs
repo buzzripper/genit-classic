@@ -49,10 +49,10 @@ partial class EnumEditCtl
 		// 
 		// txtName
 		// 
-		txtName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		txtName.Location = new System.Drawing.Point(115, 52);
 		txtName.Name = "txtName";
-		txtName.Size = new System.Drawing.Size(256, 18);
+		txtName.Size = new System.Drawing.Size(256, 25);
 		txtName.TabIndex = 3;
 		txtName.TextChanged += txtName_TextChanged;
 		// 
@@ -87,10 +87,10 @@ partial class EnumEditCtl
 		// 
 		// txtNamespace
 		// 
-		txtNamespace.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		txtNamespace.Location = new System.Drawing.Point(115, 327);
 		txtNamespace.Name = "txtNamespace";
-		txtNamespace.Size = new System.Drawing.Size(256, 18);
+		txtNamespace.Size = new System.Drawing.Size(256, 25);
 		txtNamespace.TabIndex = 8;
 		txtNamespace.TextChanged += txtNamespace_TextChanged;
 		// 

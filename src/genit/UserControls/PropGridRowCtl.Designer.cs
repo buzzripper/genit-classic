@@ -209,11 +209,11 @@ partial class PropGridRowCtl
 		// 
 		// txtName
 		// 
-		txtName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+		txtName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		txtName.Dock = System.Windows.Forms.DockStyle.Fill;
 		txtName.Location = new System.Drawing.Point(0, 0);
 		txtName.Name = "txtName";
-		txtName.Size = new System.Drawing.Size(185, 16);
+		txtName.Size = new System.Drawing.Size(185, 23);
 		txtName.TabIndex = 0;
 		txtName.TextChanged += txtName_TextChanged;
 		// 

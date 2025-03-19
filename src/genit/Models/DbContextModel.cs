@@ -26,11 +26,14 @@ public class DbContextModel
 	public bool Enabled { get; set; }
 	public string ContextNamespace { get; set; }
 	public string EntitiesNamespace { get; set; }
+	public string EnumsNamespace { get; set; }
 	public ObservableCollection<string> AddlUsings { get; set; } = new ObservableCollection<string>();
 	public ObservableCollection<EntityModel> Entities { get; set; } = new ObservableCollection<EntityModel>();
 	public ObservableCollection<EnumModel> Enums { get; set; } = new ObservableCollection<EnumModel>();
 	public ObservableCollection<AssocModel> Assocs { get; set; } = new ObservableCollection<AssocModel>();
-	public List<GenModelBase> Generators { get; private set; } = new List<GenModelBase>();
+	public DbContextGenModel DbContextGen { get; set; }
+	public EntityGenModel EntityGen { get; set; }
+	public EnumGenModel EnumGen { get; set; }
 
 	#endregion
 

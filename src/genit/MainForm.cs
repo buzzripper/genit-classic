@@ -46,8 +46,8 @@ public partial class MainForm : Form
 		InitializeLayout(_appConfig);
 
 		// DEBUG
-		//this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
-		//this.Doc = DocManager.LoadDoc(CurrDocFilepath);
+		this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
+		this.Doc = DocManager.LoadDoc(CurrDocFilepath);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
@@ -119,7 +119,7 @@ public partial class MainForm : Form
 
 	private void TreeNav_OnEntityDeleted(object sender, EntityDeletedEventArgs e)
 	{
-		foreach(var ctl in multiPageCtl.Controls) {
+		foreach (var ctl in multiPageCtl.Controls) {
 			if (ctl is EntityContainerCtl entityCtl) {
 				if (entityCtl.Entity.Id == e.Entity.Id) {
 					multiPageCtl.Remove(entityCtl.Entity.Id);
@@ -132,7 +132,7 @@ public partial class MainForm : Form
 
 	private void TreeNav_OnEnumDeleted(object sender, EnumDeletedEventArgs e)
 	{
-		foreach(var ctl in multiPageCtl.Controls) {
+		foreach (var ctl in multiPageCtl.Controls) {
 			if (ctl is EnumEditCtl enumEditCtl) {
 				if (enumEditCtl.EnumModel.Id == e.EnumModel.Id) {
 					multiPageCtl.Remove(enumEditCtl.EnumModel.Id);
@@ -398,7 +398,7 @@ public partial class MainForm : Form
 				return;
 
 			// DbContext
-			var dbContextGenMdl = dbContextMdl.Generators.First(g => g.GeneratorType == GeneratorType.DbContext) as DbContextGenModel;
+			var dbContextGenMdl = dbContextMdl.DbContextGen;
 			if (dbContextGenMdl == null)
 				throw new ApplicationException("DbContext generator not found.");
 			if (dbContextGenMdl.Enabled) {
@@ -408,13 +408,23 @@ public partial class MainForm : Form
 			}
 
 			// Entities
-			var entityGenMdl = dbContextMdl.Generators.FirstOrDefault(g => g.GeneratorType == GeneratorType.Entity) as EntityGenModel;
+			var entityGenMdl = dbContextMdl.EntityGen;
 			if (entityGenMdl == null)
 				throw new ApplicationException("Entity generator not found.");
 			if (entityGenMdl.Enabled) {
 				var entityGenerator = new EntityGenerator(entityGenMdl);
 				outputCtl.WriteInfo("Running Entities generator...");
-				entityGenerator.Run(dbContextMdl);
+				entityGenerator.Run(dbContextMdl.Entities, dbContextMdl.EntitiesNamespace);
+			}
+
+			// Enums
+			var enumGenMdl = dbContextMdl.EnumGen;
+			if (enumGenMdl == null)
+				throw new ApplicationException("Enum generator not found.");
+			if (enumGenMdl.Enabled) {
+				var enumGenerator = new EnumGenerator(enumGenMdl);
+				outputCtl.WriteInfo("Running Entities generator...");
+				enumGenerator.Run(dbContextMdl.Enums, dbContextMdl.EnumsNamespace);
 			}
 
 			ShowSuccessDlg("Files generated.");
@@ -473,6 +483,45 @@ public partial class MainForm : Form
 
 	private void TreeNav_GeneratorModelSelected(object sender, UserControls.GeneratorModelEventArgs e)
 	{
+	}
+
+	private void treeNav_DbContextGenSelected(object sender, NavTreeNodeSelectedEventArgs e)
+	{
+		if (SelectTabPageById(e.Id))
+			return;
+
+		if (!multiPageCtl.Select(e.Id)) {
+			var dbGenMdl = this.Doc.DbContexts[0].DbContextGen;
+			var dbCtxGenEditCtl = new DbCtxGenEditCtl(dbGenMdl);
+			multiPageCtl.Add(dbGenMdl.Id, dbGenMdl.Name, dbCtxGenEditCtl);
+			multiPageCtl.Select(dbGenMdl.Id);
+		}
+	}
+
+	private void treeNav_EntityGenSelected(object sender, NavTreeNodeSelectedEventArgs e)
+	{
+		if (SelectTabPageById(e.Id))
+			return;
+
+		if (!multiPageCtl.Select(e.Id)) {
+			var entityGenMdl = this.Doc.DbContexts[0].EntityGen;
+			var entityGenEditCtl = new EntityGenEditCtl(entityGenMdl);
+			multiPageCtl.Add(entityGenMdl.Id, entityGenMdl.Name, entityGenEditCtl);
+			multiPageCtl.Select(entityGenMdl.Id);
+		}
+	}
+
+	private void treeNav_EnumGenSelected(object sender, NavTreeNodeSelectedEventArgs e)
+	{
+		if (SelectTabPageById(e.Id))
+			return;
+
+		if (!multiPageCtl.Select(e.Id)) {
+			var enumGenMdl = this.Doc.DbContexts[0].EnumGen;
+			var enumGenEditCtl = new EnumGenEditCtl(enumGenMdl);
+			multiPageCtl.Add(enumGenMdl.Id, enumGenMdl.Name, enumGenEditCtl);
+			multiPageCtl.Select(enumGenMdl.Id);
+		}
 	}
 
 	#endregion

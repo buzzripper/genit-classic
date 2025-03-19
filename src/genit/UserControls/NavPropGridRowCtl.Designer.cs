@@ -84,6 +84,7 @@ partial class NavPropGridRowCtl
 		// 
 		// txtName
 		// 
+		txtName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		txtName.Location = new System.Drawing.Point(0, 36);
 		txtName.Name = "txtName";
 		txtName.Size = new System.Drawing.Size(369, 25);

@@ -10,22 +10,17 @@ using System.Xml.Linq;
 
 namespace Dyvenix.Genit.Generators;
 
-public class EntityGenerator
+public class EntityGenerator : GeneratorBase
 {
 	#region Fields
 
-	private DbContextModel _dbContextMdl;
-	private bool _inclHeader;
 	private string _outputFolder;
-	private bool _enabled;
 
 	#endregion
 		
-	public EntityGenerator(EntityGenModel model)
+	public EntityGenerator(EntityGenModel entityMdl) : base(entityMdl)
 	{
-		_inclHeader = model.InclHeader;
-		_outputFolder = model.OutputRootFolder;
-		_enabled = true;
+		_outputFolder = entityMdl.OutputFolder;
 	}
 
 	#region Properties
@@ -33,58 +28,28 @@ public class EntityGenerator
 
 	#endregion
 
-	public void Run(DbContextModel dbContextMdl)
+	public void Run(ObservableCollection<EntityModel> entities, string entitiesNamespace)
 	{
-		Validate();
-
-		_dbContextMdl = dbContextMdl;
-		var entities = dbContextMdl.Entities;
-
 		if (!this._enabled)
 			return;
 
-		if (dbContextMdl.Entities.Any(e => e.Enabled))
-			this.GenerateEntities(dbContextMdl, dbContextMdl.Entities);
+		Validate();
 
-		if (!dbContextMdl.Enums.All(e => e.IsExternal))
-			this.GenerateEnums(dbContextMdl, dbContextMdl.Enums);
+		if (entities.Any(e => e.Enabled))
+			this.GenerateEntities(entities, entitiesNamespace);
 	}
 
 	private void Validate()
 	{
 		if (!Directory.Exists(_outputFolder))
-			throw new ApplicationException($"OutputRootFolder does not exist: {_outputFolder}");
+			throw new ApplicationException($"OutputFolder does not exist: {_outputFolder}");
 	}
 
-	private void GenerateHeader(List<string> headerLines)
-	{
-		headerLines.Add("//------------------------------------------------------------------------------");
-		headerLines.Add("// This file was auto-generated. Any changes made to it will be lost.");
-		headerLines.Add("//------------------------------------------------------------------------------");
-	}
-
-	private void AddEntityNamespace(EntityModel entityMdl, List<string> usings)
-	{
-		var ns = string.IsNullOrWhiteSpace(entityMdl.Namespace) ?
-			_dbContextMdl.EntitiesNamespace :
-			entityMdl.Namespace;
-
-		if (string.IsNullOrWhiteSpace(ns))
-			throw new ApplicationException($"Cannot determine namespace for entity '{entityMdl.Name}'.");
-
-		if (string.Compare(ns, _dbContextMdl.EntitiesNamespace, true) != 0)
-			usings.AddIfNotExists(ns);
-	}
-
-	private void GenerateEntities(DbContextModel dbContextMdl, ObservableCollection<EntityModel> entities)
+	private void GenerateEntities(ObservableCollection<EntityModel> entities, string entitiesNamespace)
 	{
 		foreach (var entity in entities) {
 			if (!entity.Enabled)
 				continue;
-
-			var header = new List<string>();
-			if (_inclHeader)
-				this.GenerateHeader(header);
 
 			var usings = new List<string>();
 			usings.Add("System");
@@ -94,7 +59,7 @@ public class EntityGenerator
 			var classStart = new List<string>();
 			classStart.Add("");
 			entity.Attributes.ToList().ForEach(a => classStart.Add($"[{a}]"));
-			var ns = string.IsNullOrWhiteSpace(entity.Namespace) ? dbContextMdl.EntitiesNamespace : entity.Namespace;
+			var ns = string.IsNullOrWhiteSpace(entity.Namespace) ? entitiesNamespace : entity.Namespace;
 			classStart.Add($"namespace {ns};");
 			classStart.Add("");
 			classStart.Add($"public partial class {entity.Name}");
@@ -130,7 +95,7 @@ public class EntityGenerator
 			classEnd.Add("}");
 
 			var sb = new StringBuilder();
-			sb.AppendLine(string.Join(Environment.NewLine, header));
+			sb.AppendLine(string.Join(Environment.NewLine, _headerLines));
 			usings.ForEach(u => sb.AppendLine($"using {u};"));
 			sb.AppendLine(string.Join(Environment.NewLine, classStart));
 			sb.AppendLine(string.Join(Environment.NewLine, propOutputList));
@@ -187,49 +152,4 @@ public class EntityGenerator
 
 	//	this.AddEntityNamespace(navProperty.RelatedEntity, usings);
 	//}
-
-	private void GenerateEnums(DbContextModel dbContextMdl, ObservableCollection<EnumModel> enumMdls)
-	{
-		foreach (var enumMdl in enumMdls) {
-			if (enumMdl.IsExternal)
-				continue;
-
-			var header = new List<string>();
-			if (_inclHeader)
-				this.GenerateHeader(header);
-
-			var usings = new List<string>();
-			usings.Add("System");
-
-			// Enum declaration
-			var enumStart = new List<string>();
-			enumStart.Add("");
-			var ns = string.IsNullOrWhiteSpace(enumMdl.Namespace) ? dbContextMdl.EntitiesNamespace : enumMdl.Namespace;
-			enumStart.Add($"namespace {ns};");
-			enumStart.Add("");
-			if (enumMdl.IsFlags)
-				enumStart.Add("[Flags]");
-			enumStart.Add($"public enum {enumMdl.Name}");
-			enumStart.Add("{");
-
-			var propOutputList = new List<string>();
-			foreach (var member in enumMdl.Members)
-				propOutputList.AddLine(1, $"{member},");
-
-			var classEnd = new List<string>();
-			classEnd.Add("}");
-
-			var sb = new StringBuilder();
-			sb.AppendLine(string.Join(Environment.NewLine, header));
-			usings.ForEach(u => sb.AppendLine($"using {u};"));
-			sb.AppendLine(string.Join(Environment.NewLine, enumStart));
-			sb.AppendLine(string.Join(Environment.NewLine, propOutputList));
-			sb.AppendLine(string.Join(Environment.NewLine, classEnd));
-
-			var outputFile = Path.Combine(this._outputFolder, $"{enumMdl.Name}.cs");
-			if (File.Exists(outputFile))
-				File.Delete(outputFile);
-			File.WriteAllText(outputFile, sb.ToString());
-		}
-	}
 }

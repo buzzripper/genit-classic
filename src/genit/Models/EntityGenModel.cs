@@ -1,17 +1,15 @@
 ﻿using Dyvenix.Genit.Generators;
+using System;
 
 namespace Dyvenix.Genit.Models;
 
 public class EntityGenModel : GenModelBase
 {
-	public EntityGenModel()
+	public EntityGenModel(Guid id) : base(id, GeneratorType.Entity)
 	{
-		GeneratorType = GeneratorType.Entity;
 	}
 
-	public bool InclHeader { get; set; }
-	public string OutputRootFolder { get; set; }
-	public bool Enabled { get; set; }
+	public string OutputFolder { get; set; }
 
 	protected override string GetName() => "Entity Generator";
 }

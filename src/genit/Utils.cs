@@ -422,19 +422,26 @@ namespace Dyvenix.Genit
 
 		private static void CreateGeneratorModels(DbContextModel dbContextMdl)
 		{
-			var dbContextGenModel = new DbContextGenModel() {
+			var dbContextGenModel = new DbContextGenModel(Guid.NewGuid()) {
 				InclHeader = true,
 				OutputFolder = "C:\\Temp\\Genit\\Output",
 				Enabled = true
 			};
-			dbContextMdl.Generators.Add(dbContextGenModel);
+			dbContextMdl.DbContextGen = dbContextGenModel;
 
-			var entityGenModel = new EntityGenModel() {
+			var entityGenModel = new EntityGenModel(Guid.NewGuid()) {
 				InclHeader = true,
-				OutputRootFolder = "C:\\Temp\\Genit\\Output",
+				OutputFolder = "C:\\Temp\\Genit\\Output",
 				Enabled = true
 			};
-			dbContextMdl.Generators.Add(entityGenModel);
+			dbContextMdl.EntityGen = entityGenModel;
+
+			var enumGenModel = new EnumGenModel(Guid.NewGuid()) {
+				InclHeader = true,
+				OutputFolder = "C:\\Temp\\Genit\\Output",
+				Enabled = true
+			};
+			dbContextMdl.EnumGen = enumGenModel;
 		}
 	}
 }

@@ -16,6 +16,10 @@ public partial class TreeNav : UserControl
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityModelSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntitiesNodeSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumModelSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> DbContextGenSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityGenSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumGenSelected;
+
 	public event EventHandler<EntityDeletedEventArgs> EntityDeleted;
 	public event EventHandler<EnumDeletedEventArgs> EnumDeleted;
 
@@ -44,6 +48,10 @@ public partial class TreeNav : UserControl
 	private TreeNode _entitiesNode;
 	private TreeNode _enumsNode;
 	private TreeNode _generatorsNode;
+	private TreeNode _dbCtxGenNode;
+	private TreeNode _entityGenNode;
+	private TreeNode _enumGenNode;
+
 
 	public TreeNav()
 	{
@@ -185,15 +193,40 @@ public partial class TreeNav : UserControl
 	{
 		_generatorsNode.Nodes.Clear();
 
-		foreach (var genMdl in _dbContextModel.Generators) {
-			TreeNode genNode = new TreeNode(genMdl.Name) {
-				Name = genMdl.Id.ToString(),
-				SelectedImageKey = cKey_Gen,
-				ImageKey = cKey_Gen,
-				Tag = genMdl.Id
-			};
-			_generatorsNode.Nodes.Add(genNode);
-		}
+		var dbGenMdl = _dbContextModel.DbContextGen;
+		TreeNode genNode = new TreeNode(dbGenMdl.Name) {
+			Name = dbGenMdl.Id.ToString(),
+			SelectedImageKey = cKey_Gen,
+			ImageKey = cKey_Gen,
+			Tag = dbGenMdl.Id
+		};
+
+		_dbCtxGenNode = genNode;
+		_generatorsNode.Nodes.Add(_dbCtxGenNode);
+
+		var entityGenMdl = _dbContextModel.EntityGen;
+		TreeNode entityGenNode = new TreeNode(entityGenMdl.Name) {
+			Name = entityGenMdl.Id.ToString(),
+			SelectedImageKey = cKey_Gen,
+			ImageKey = cKey_Gen,
+			Tag = entityGenMdl.Id
+		};
+
+		_entityGenNode = entityGenNode;
+		_generatorsNode.Nodes.Add(_entityGenNode);
+
+		var enumGenMdl = _dbContextModel.EnumGen;
+		TreeNode enumGenNode = new TreeNode(enumGenMdl.Name) {
+			Name = enumGenMdl.Id.ToString(),
+			SelectedImageKey = cKey_Gen,
+			ImageKey = cKey_Gen,
+			Tag = enumGenMdl.Id
+		};
+
+		_enumGenNode = enumGenNode;
+		_generatorsNode.Nodes.Add(_enumGenNode);
+
+		_generatorsNode.Expand();
 	}
 
 	#endregion
@@ -230,19 +263,16 @@ public partial class TreeNav : UserControl
 
 		} else if (e.Node.Parent == _enumsNode) {
 			EnumModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		} else if (e.Node == _dbCtxGenNode) {
+			DbContextGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		} else if (e.Node == _entityGenNode) {
+			EntityGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		} else if (e.Node == _enumGenNode) {
+			EnumGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 		}
-
-		//} else if (e.Node.Text == cNodeName_Enums) {
-		//	EnumsNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
-
-		//} else if (e.Node.Text == cNodeName_Gen) {
-		//	GeneratorsNodeSelected?.Invoke(this, new EventArgs());
-
-		// Other nodes
-
-		//} else if (e.Node.Tag is EntityModel) {
-		//	EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
-
 	}
 
 	private void Entity_PropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -304,8 +304,10 @@ partial class MainForm
 		treeNav.DbContextModelSelected += treeNav_DbContextModelSelected;
 		treeNav.EntityModelSelected += treeNav_EntityModelSelected_1;
 		treeNav.EntitiesNodeSelected += treeNav_EntitiesNodeSelected;
-		//treeNav.PropertyModelSelected += TreeNav_PropertyModelSelected;
 		treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
+		treeNav.DbContextGenSelected += treeNav_DbContextGenSelected;
+		treeNav.EntityGenSelected += treeNav_EntityGenSelected;
+		treeNav.EnumGenSelected += treeNav_EnumGenSelected;
 		treeNav.GeneratorModelSelected += TreeNav_GeneratorModelSelected;
 		// 
 		// splContent

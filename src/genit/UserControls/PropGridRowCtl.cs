@@ -1,4 +1,5 @@
-﻿using Dyvenix.Genit.Models;
+﻿using Dyvenix.Genit.Misc;
+using Dyvenix.Genit.Models;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -184,7 +185,9 @@ public partial class PropGridRowCtl : UserControlBase
 
 	private void SetState_Name()
 	{
-		txtName.ReadOnly = !_propertyMdl.IsForeignKey;
+		txtName.ReadOnly = _propertyMdl.IsForeignKey;
+		if (_propertyMdl.IsForeignKey)
+			txtName.BackColor = Globals.DarkModeBackColor; 
 	}
 
 	private void SetState_Datatype()

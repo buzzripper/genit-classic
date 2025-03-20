@@ -1,8 +1,8 @@
-﻿using Dyvenix.Genit.Models;
+﻿using System.Drawing;
 
 namespace Dyvenix.Genit.Misc;
 
 public static class Globals
 {
-	//public static DbContextModel DbContext { get; set; }
+	public static Color DarkModeBackColor { get; set; } = Color.FromArgb(255, 50, 50, 50);
 }

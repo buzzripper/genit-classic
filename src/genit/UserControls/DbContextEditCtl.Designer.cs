@@ -36,6 +36,8 @@ partial class DbContextEditCtl
 		txtName = new System.Windows.Forms.TextBox();
 		txtContextNamespace = new System.Windows.Forms.TextBox();
 		txtEntitiesNamespace = new System.Windows.Forms.TextBox();
+		txtEnumsNamespace = new System.Windows.Forms.TextBox();
+		label5 = new System.Windows.Forms.Label();
 		SuspendLayout();
 		// 
 		// label1
@@ -52,7 +54,7 @@ partial class DbContextEditCtl
 		// 
 		lblName.AutoSize = true;
 		lblName.Font = new System.Drawing.Font("Segoe UI", 10F);
-		lblName.Location = new System.Drawing.Point(107, 50);
+		lblName.Location = new System.Drawing.Point(107, 54);
 		lblName.Name = "lblName";
 		lblName.Size = new System.Drawing.Size(48, 19);
 		lblName.TabIndex = 1;
@@ -63,7 +65,7 @@ partial class DbContextEditCtl
 		// 
 		label2.AutoSize = true;
 		label2.Font = new System.Drawing.Font("Segoe UI", 10F);
-		label2.Location = new System.Drawing.Point(21, 82);
+		label2.Location = new System.Drawing.Point(21, 86);
 		label2.Name = "label2";
 		label2.Size = new System.Drawing.Size(134, 19);
 		label2.TabIndex = 3;
@@ -74,7 +76,7 @@ partial class DbContextEditCtl
 		// 
 		label3.AutoSize = true;
 		label3.Font = new System.Drawing.Font("Segoe UI", 10F);
-		label3.Location = new System.Drawing.Point(25, 113);
+		label3.Location = new System.Drawing.Point(25, 118);
 		label3.Name = "label3";
 		label3.Size = new System.Drawing.Size(130, 19);
 		label3.TabIndex = 5;
@@ -86,20 +88,17 @@ partial class DbContextEditCtl
 		stringListEditor1.BackColor = System.Drawing.SystemColors.Control;
 		stringListEditor1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		stringListEditor1.Font = new System.Drawing.Font("Segoe UI", 10F);
-		stringListEditor1.Location = new System.Drawing.Point(161, 154);
+		stringListEditor1.Location = new System.Drawing.Point(161, 182);
 		stringListEditor1.Name = "stringListEditor1";
-		stringListEditor1.Size = new System.Drawing.Size(329, 152);
+		stringListEditor1.Size = new System.Drawing.Size(331, 152);
 		stringListEditor1.TabIndex = 7;
 		stringListEditor1.ToolbarDockStyle = System.Windows.Forms.DockStyle.Right;
-		stringListEditor1.ItemAdded += stringListEditor1_ItemAdded;
-		stringListEditor1.ItemChanged += stringListEditor1_ItemChanged;
-		stringListEditor1.ItemDeleted += stringListEditor1_ItemDeleted;
 		// 
 		// label4
 		// 
 		label4.AutoSize = true;
 		label4.Font = new System.Drawing.Font("Segoe UI", 10F);
-		label4.Location = new System.Drawing.Point(36, 154);
+		label4.Location = new System.Drawing.Point(36, 182);
 		label4.Name = "label4";
 		label4.Size = new System.Drawing.Size(119, 19);
 		label4.TabIndex = 8;
@@ -113,6 +112,7 @@ partial class DbContextEditCtl
 		txtName.Name = "txtName";
 		txtName.Size = new System.Drawing.Size(331, 25);
 		txtName.TabIndex = 11;
+		txtName.TextChanged += txtName_TextChanged;
 		// 
 		// txtContextNamespace
 		// 
@@ -121,6 +121,7 @@ partial class DbContextEditCtl
 		txtContextNamespace.Name = "txtContextNamespace";
 		txtContextNamespace.Size = new System.Drawing.Size(331, 25);
 		txtContextNamespace.TabIndex = 12;
+		txtContextNamespace.TextChanged += txtContextNamespace_TextChanged;
 		// 
 		// txtEntitiesNamespace
 		// 
@@ -129,12 +130,35 @@ partial class DbContextEditCtl
 		txtEntitiesNamespace.Name = "txtEntitiesNamespace";
 		txtEntitiesNamespace.Size = new System.Drawing.Size(331, 25);
 		txtEntitiesNamespace.TabIndex = 13;
+		txtEntitiesNamespace.TextChanged += txtEntitiesNamespace_TextChanged;
+		// 
+		// txtEnumsNamespace
+		// 
+		txtEnumsNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+		txtEnumsNamespace.Location = new System.Drawing.Point(161, 149);
+		txtEnumsNamespace.Name = "txtEnumsNamespace";
+		txtEnumsNamespace.Size = new System.Drawing.Size(331, 25);
+		txtEnumsNamespace.TabIndex = 15;
+		txtEnumsNamespace.TextChanged += txtEnumsNamespace_TextChanged;
+		// 
+		// label5
+		// 
+		label5.AutoSize = true;
+		label5.Font = new System.Drawing.Font("Segoe UI", 10F);
+		label5.Location = new System.Drawing.Point(25, 150);
+		label5.Name = "label5";
+		label5.Size = new System.Drawing.Size(127, 19);
+		label5.TabIndex = 14;
+		label5.Text = "Enums Namespace:";
+		label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 		// 
 		// DbContextEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ActiveBorder;
+		Controls.Add(txtEnumsNamespace);
+		Controls.Add(label5);
 		Controls.Add(txtEntitiesNamespace);
 		Controls.Add(txtContextNamespace);
 		Controls.Add(txtName);
@@ -163,4 +187,6 @@ partial class DbContextEditCtl
 	private System.Windows.Forms.TextBox txtName;
 	private System.Windows.Forms.TextBox txtContextNamespace;
 	private System.Windows.Forms.TextBox txtEntitiesNamespace;
+	private System.Windows.Forms.TextBox txtEnumsNamespace;
+	private System.Windows.Forms.Label label5;
 }

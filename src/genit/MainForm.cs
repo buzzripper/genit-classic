@@ -46,8 +46,8 @@ public partial class MainForm : Form
 		InitializeLayout(_appConfig);
 
 		// DEBUG
-		this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
-		this.Doc = DocManager.LoadDoc(CurrDocFilepath);
+		//this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
+		//this.Doc = DocManager.LoadDoc(CurrDocFilepath);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
@@ -92,6 +92,8 @@ public partial class MainForm : Form
 
 			// Clear any tabs
 			multiPageCtl.Clear();
+
+			UpdateMruFilesMenu(appConfig.MruFilepaths);
 
 		} finally {
 			_suspendUpdates = false;
@@ -149,19 +151,15 @@ public partial class MainForm : Form
 
 	private void SaveSettings()
 	{
-		// Save settings
-		var appConfig = new AppConfig();
-
 		// Window
 		if (this.WindowState == FormWindowState.Normal) {
-			appConfig.WindowPosition = this.Location;
-			appConfig.WindowSize = this.Size;
+			_appConfig.WindowPosition = this.Location;
+			_appConfig.WindowSize = this.Size;
 		} else {
-			appConfig.WindowPosition = this.RestoreBounds.Location;
-			appConfig.WindowSize = this.RestoreBounds.Size;
+			_appConfig.WindowPosition = this.RestoreBounds.Location;
+			_appConfig.WindowSize = this.RestoreBounds.Size;
 		}
-
-		ConfigManager.SaveAppConfig(appConfig);
+		ConfigManager.SaveAppConfig(_appConfig);
 	}
 
 	private void SetFormSizeAndPosition(Size windowSize, Point position)
@@ -286,15 +284,37 @@ public partial class MainForm : Form
 
 	private void uiOpen_Click(object sender, EventArgs e)
 	{
-		if (openFileDlg.ShowDialog(this) == DialogResult.OK) {
-			try {
-				this.Doc = DocManager.LoadDoc(openFileDlg.FileName);
-				CurrDocFilepath = openFileDlg.FileName;
+		if (openFileDlg.ShowDialog(this) == DialogResult.OK)
+			OpenDoc(openFileDlg.FileName);
+	}
 
-			} catch (Exception ex) {
-				MessageBox.Show($"Error opening file: {ex.Message}");
-			}
+	private void OpenDoc(string docFilepath)
+	{
+		try {
+			this.Doc = null;
+			this.Doc = DocManager.LoadDoc(docFilepath);
+			CurrDocFilepath = docFilepath;
+			_appConfig.AddMruFilepath(CurrDocFilepath);
+			UpdateMruFilesMenu(_appConfig.MruFilepaths);
+
+		} catch (Exception ex) {
+			MessageBox.Show($"Error opening file: {ex.Message}");
 		}
+	}
+
+	private void UpdateMruFilesMenu(List<string> mruFilepaths)
+	{
+		mnuRecentFiles.DropDownItems.Clear();
+
+		foreach (var mruFilepath in mruFilepaths) {
+			mnuRecentFiles.DropDownItems.Add(new ToolStripMenuItem(mruFilepath, null, MnuMruFile_Click));
+		}
+	}
+
+	private void MnuMruFile_Click(object sender, EventArgs e)
+	{
+		var mruFilepath = (sender as ToolStripMenuItem).Text;
+		OpenDoc(mruFilepath);
 	}
 
 	private void uiSave_Click(object sender, EventArgs e)

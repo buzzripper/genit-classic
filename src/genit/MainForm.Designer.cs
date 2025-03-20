@@ -42,6 +42,8 @@ partial class MainForm
 		mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
 		mnuClose = new System.Windows.Forms.ToolStripMenuItem();
 		toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+		mnuRecentFiles = new System.Windows.Forms.ToolStripMenuItem();
+		toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 		mnuExit = new System.Windows.Forms.ToolStripMenuItem();
 		editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 		generateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -126,7 +128,7 @@ partial class MainForm
 		// 
 		// toolStripMenuItem1
 		// 
-		toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuNew, mnuOpen, mnuSave, mnuSaveAs, mnuClose, toolStripMenuItem2, mnuExit });
+		toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuNew, mnuOpen, mnuSave, mnuSaveAs, mnuClose, toolStripMenuItem2, mnuRecentFiles, toolStripSeparator1, mnuExit });
 		toolStripMenuItem1.Name = "toolStripMenuItem1";
 		toolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
 		toolStripMenuItem1.Text = "&File";
@@ -134,46 +136,57 @@ partial class MainForm
 		// mnuNew
 		// 
 		mnuNew.Name = "mnuNew";
-		mnuNew.Size = new System.Drawing.Size(140, 22);
+		mnuNew.Size = new System.Drawing.Size(180, 22);
 		mnuNew.Text = "&New Model";
 		// 
 		// mnuOpen
 		// 
 		mnuOpen.Name = "mnuOpen";
-		mnuOpen.Size = new System.Drawing.Size(140, 22);
+		mnuOpen.Size = new System.Drawing.Size(180, 22);
 		mnuOpen.Text = "&Open Model";
 		mnuOpen.Click += uiOpen_Click;
 		// 
 		// mnuSave
 		// 
 		mnuSave.Name = "mnuSave";
-		mnuSave.Size = new System.Drawing.Size(140, 22);
+		mnuSave.Size = new System.Drawing.Size(180, 22);
 		mnuSave.Text = "&Save Model";
 		mnuSave.Click += uiSave_Click;
 		// 
 		// mnuSaveAs
 		// 
 		mnuSaveAs.Name = "mnuSaveAs";
-		mnuSaveAs.Size = new System.Drawing.Size(140, 22);
+		mnuSaveAs.Size = new System.Drawing.Size(180, 22);
 		mnuSaveAs.Text = "Save &As...";
 		mnuSaveAs.Click += uiSaveAs_Click;
 		// 
 		// mnuClose
 		// 
 		mnuClose.Name = "mnuClose";
-		mnuClose.Size = new System.Drawing.Size(140, 22);
+		mnuClose.Size = new System.Drawing.Size(180, 22);
 		mnuClose.Text = "&Close Model";
 		mnuClose.Click += uiClose_Click;
 		// 
 		// toolStripMenuItem2
 		// 
 		toolStripMenuItem2.Name = "toolStripMenuItem2";
-		toolStripMenuItem2.Size = new System.Drawing.Size(137, 6);
+		toolStripMenuItem2.Size = new System.Drawing.Size(177, 6);
+		// 
+		// mnuRecentFiles
+		// 
+		mnuRecentFiles.Name = "mnuRecentFiles";
+		mnuRecentFiles.Size = new System.Drawing.Size(180, 22);
+		mnuRecentFiles.Text = "Recent Files...";
+		// 
+		// toolStripSeparator1
+		// 
+		toolStripSeparator1.Name = "toolStripSeparator1";
+		toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
 		// 
 		// mnuExit
 		// 
 		mnuExit.Name = "mnuExit";
-		mnuExit.Size = new System.Drawing.Size(140, 22);
+		mnuExit.Size = new System.Drawing.Size(180, 22);
 		mnuExit.Text = "E&xit";
 		mnuExit.Click += uiExit_Click;
 		// 
@@ -513,4 +526,6 @@ partial class MainForm
 	private UserControls.OutputCtl outputCtl;
 	private System.Windows.Forms.ToolStripButton btnClearOuput;
 	private UserControls.MultiPageCtl multiPageCtl;
+	private System.Windows.Forms.ToolStripMenuItem mnuRecentFiles;
+	private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 }

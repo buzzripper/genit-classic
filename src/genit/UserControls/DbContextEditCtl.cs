@@ -5,7 +5,14 @@ namespace Dyvenix.Genit.UserControls;
 
 public partial class DbContextEditCtl : UserControlBase
 {
+	#region Fields
+
 	private DbContextModel _dbContextMdl;
+	private bool _suspendUpdates;
+
+	#endregion
+
+	#region Ctors / Init
 
 	public DbContextEditCtl(DbContextModel dbContextMdl)
 	{
@@ -13,34 +20,61 @@ public partial class DbContextEditCtl : UserControlBase
 		SetDbContext(dbContextMdl);
 	}
 
+	private void DbContextEditCtl_Load(object sender, System.EventArgs e)
+	{
+	}
+
 	private void SetDbContext(DbContextModel dbContextMdl)
 	{
+		_suspendUpdates = true;
+
 		_dbContextMdl = dbContextMdl;
 
 		txtName.Text = dbContextMdl.Name;
 		txtContextNamespace.Text = dbContextMdl.ContextNamespace;
 		txtEntitiesNamespace.Text = dbContextMdl.EntitiesNamespace;
-		//txtEnumsNamespace.Text = dbContextMdl.EnumsNamespace;
+		txtEnumsNamespace.Text = dbContextMdl.EnumsNamespace;
 		stringListEditor1.Items = dbContextMdl.AddlUsings;
+
+		_suspendUpdates = false;
 	}
+
+
+	#endregion
 
 	private void stringListEditor1_ItemAdded(object sender, ItemAddedEventArgs e)
 	{
-		//_dbContextMdl.AddlUsings.Add(e.Value);
 	}
 
 	private void stringListEditor1_ItemChanged(object sender, ItemChangedEventArgs e)
 	{
-		//_dbContextMdl.AddlUsings[e.Index] = e.Value;
 	}
 
 	private void stringListEditor1_ItemDeleted(object sender, ItemDeletedEventArgs e)
 	{
-		//_dbContextMdl.AddlUsings.RemoveAt(e.Index);
 	}
 
-	private void DbContextEditCtl_Load(object sender, System.EventArgs e)
+	private void txtName_TextChanged(object sender, System.EventArgs e)
 	{
+		if (!_suspendUpdates)
+			_dbContextMdl.Name = txtName.Text;
+	}
 
+	private void txtContextNamespace_TextChanged(object sender, System.EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_dbContextMdl.ContextNamespace = txtContextNamespace.Text;
+	}
+
+	private void txtEntitiesNamespace_TextChanged(object sender, System.EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_dbContextMdl.EntitiesNamespace = txtEntitiesNamespace.Text;
+	}
+
+	private void txtEnumsNamespace_TextChanged(object sender, System.EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_dbContextMdl.EnumsNamespace = txtEnumsNamespace.Text;
 	}
 }

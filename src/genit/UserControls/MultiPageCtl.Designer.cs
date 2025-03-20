@@ -62,6 +62,7 @@ partial class MultiPageCtl
 		btnCloseItem.Name = "btnCloseItem";
 		btnCloseItem.Size = new System.Drawing.Size(23, 27);
 		btnCloseItem.Text = "toolStripButton1";
+		btnCloseItem.ToolTipText = "Close";
 		btnCloseItem.Click += btnCloseItem_Click;
 		// 
 		// MultiPageCtl

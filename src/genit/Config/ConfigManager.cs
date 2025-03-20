@@ -33,7 +33,6 @@ internal static class ConfigManager
 
 	internal static void SaveAppConfig(AppConfig appConfig)
 	{
-
 		var json = JsonSerializer.Serialize(appConfig, options: _jsonSerializerOptions);
 		File.WriteAllText(_configFilepath, json);
 	}

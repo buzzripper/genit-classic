@@ -16,7 +16,13 @@ public partial class MultiPageCtl : UserControl
 	public event EventHandler<SelectedItemChangedEventArgs> SelectedItemChangedEventArgs;
 	public event EventHandler<SelectedItemChangedEventArgs> SelectedItemChanged;
 
+	#region Fields
+
 	private readonly List<MultiPageItem> _items = new List<MultiPageItem>();
+
+	#endregion
+
+	#region Ctors / Init
 
 	public MultiPageCtl()
 	{
@@ -25,8 +31,9 @@ public partial class MultiPageCtl : UserControl
 
 	private void MultiPageCtl_Load(object sender, EventArgs e)
 	{
-		//toolStrip.Height = 35;
 	}
+
+	#endregion
 
 	#region Properties
 
@@ -84,7 +91,6 @@ public partial class MultiPageCtl : UserControl
 
 	private void MultiButton_SizeChanged(object sender, EventArgs e)
 	{
-		//toolStrip.Height = this.Height;
 	}
 
 	#endregion

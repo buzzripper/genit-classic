@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
+using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
 
 namespace Dyvenix.Genit.UserControls
@@ -64,8 +66,26 @@ namespace Dyvenix.Genit.UserControls
 		private void btnBrowseFolder_Click(object sender, EventArgs e)
 		{
 			folderDlg.InitialDirectory = txtOutputFolder.Text;
-			if (folderDlg.ShowDialog() == DialogResult.OK)
-				txtOutputFolder.Text = folderDlg.SelectedPath;	
+			if (folderDlg.ShowDialog() == DialogResult.OK) {
+
+				// Convert to relative path if possible
+				if (!string.IsNullOrWhiteSpace(Globals.CurrDocFilepath)) {
+
+					// Make sure they're on the same drive
+					if (Directory.GetDirectoryRoot(Globals.CurrDocFilepath) == Directory.GetDirectoryRoot(folderDlg.SelectedPath)) {
+						Uri docUri = new Uri(Globals.CurrDocFilepath);
+						Uri fileUri = new Uri(folderDlg.SelectedPath);
+						txtOutputFolder.Text = Uri.UnescapeDataString(docUri.MakeRelativeUri(fileUri).ToString()).Replace('/', '\\');
+
+						// Check
+						//var docFolder = Path.GetDirectoryName(Globals.CurrDocFilepath);
+						//var newFolder = Path.Combine(docFolder, txtOutputFolder.Text);
+						//var test = Path.GetFullPath(newFolder);
+					}
+				} else {
+					txtOutputFolder.Text = folderDlg.SelectedPath;
+				}
+			}
 		}
 	}
 }

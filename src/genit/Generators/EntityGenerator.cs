@@ -117,11 +117,14 @@ public class EntityGenerator : GeneratorBase
 				propOutputList.AddLine(tc, $"[{attr}]");
 
 		if ((prop.PrimitiveType ?? PrimitiveType.None) != PrimitiveType.None) {
-			propOutputList.AddLine(tc, $"public {prop.PrimitiveType.CSType} {prop.Name} {{ get; set; }}");
+			var nullStr = (prop.Nullable && (prop.PrimitiveType.CSType != "string")) ? "?" : string.Empty;
+			var datatype = $"{prop.PrimitiveType.CSType}{nullStr}";
+			propOutputList.AddLine(tc, $"public {datatype} {prop.Name} {{ get; set; }}");
 
 		} else if (prop.EnumType != null) {
+			var nullStr = prop.Nullable ? string.Empty : "?";
 			propOutputList.AddLine(tc, $"[JsonConverter(typeof(JsonStringEnumConverter))]");
-			propOutputList.AddLine(tc, $"public {prop.EnumType.Name} {prop.Name} {{ get; set; }}");
+			propOutputList.AddLine(tc, $"public {prop.EnumType.Name}{nullStr} {prop.Name} {{ get; set; }}");
 			usings.AddIfNotExists("System.Text.Json.Serialization");
 			if (!string.IsNullOrWhiteSpace(prop.EnumType.Namespace))
 				usings.AddIfNotExists(prop.EnumType.Namespace);

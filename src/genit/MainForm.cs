@@ -29,7 +29,6 @@ public partial class MainForm : Form
 	private bool _suspendUpdates;
 	private AppConfig _appConfig;
 	private int _outputHeight;
-	private string _currDocFilepath;
 
 	#endregion
 
@@ -68,16 +67,6 @@ public partial class MainForm : Form
 	}
 
 	#endregion
-
-	private string CurrDocFilepath
-	{
-		get { return _currDocFilepath; }
-		set {
-			_currDocFilepath = value;
-			var filename = Path.GetFileName(value);
-			this.Text = string.IsNullOrWhiteSpace(value) ? "Genit" : $"Genit - {filename}";
-		}
-	}
 
 	#region Initialization
 
@@ -205,7 +194,17 @@ public partial class MainForm : Form
 			if (value != null)
 				Doc.Instance.DbContexts[0] = value?.DbContexts[0];
 			else
-				CurrDocFilepath = null;
+				Globals.CurrDocFilepath = null;
+		}
+	}
+
+	private string CurrDocFilepath
+	{
+		get { return Globals.CurrDocFilepath; }
+		set {
+			Globals.CurrDocFilepath = value;
+			var filename = Path.GetFileName(value);
+			this.Text = string.IsNullOrWhiteSpace(value) ? "Genit" : $"Genit - {filename}";
 		}
 	}
 
@@ -427,9 +426,8 @@ public partial class MainForm : Form
 			if (dbContextGenMdl == null)
 				throw new ApplicationException("DbContext generator not found.");
 			if (dbContextGenMdl.Enabled) {
-				var dbContextGenerator = new DbContextGenerator(dbContextGenMdl);
 				outputCtl.WriteInfo("Running DbContext generator...");
-				dbContextGenerator.Run(dbContextMdl);
+				new DbContextGenerator().Run(dbContextGenMdl, dbContextMdl);
 			}
 
 			// Entities

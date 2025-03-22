@@ -1,4 +1,5 @@
 ﻿using Dyvenix.Genit.Extensions;
+using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
@@ -21,37 +22,21 @@ public class DbContextGenerator
 
 	#endregion
 
-	#region Fields
-
-	private bool _inclHeader { get; set; }
-	private string _outputFolder { get; set; }
-	private bool _enabled { get; set; }
-
-	#endregion
-		
-	#region Ctor
-
-	public DbContextGenerator(DbContextGenModel model)
-	{
-		_inclHeader = model.InclHeader;
-		_outputFolder = model.OutputFolder;
-		_enabled = true;
-	}
-
-	#endregion
-		
 	#region Properties
 
 	public GeneratorType Type => GeneratorType.DbContext;
 
 	#endregion
 		
-	public void Run(DbContextModel dbContextModel)
+	public void Run(DbContextGenModel genModel, DbContextModel dbContextModel)
 	{
-		if (!_enabled)
+		if (!genModel.Enabled)
 			return;
 
-		Validate(dbContextModel);
+		// Get absolute output folder path
+		var outputFolder = Path.IsPathRooted(genModel.OutputFolder) ? genModel.OutputFolder : Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Globals.CurrDocFilepath), genModel.OutputFolder));
+
+		Validate(outputFolder, dbContextModel);
 
 		// Addl usings
 		var usings = InitializeUsings(dbContextModel);
@@ -65,16 +50,17 @@ public class DbContextGenerator
 		// Replace tokens in template
 		var fileContents = ReplaceTemplateTokens(dbContextModel, usings, propsList, onModelCreatingList);
 
-		var outputFile = Path.Combine(_outputFolder, $"{dbContextModel.Name}.cs");
-		if (File.Exists(outputFile))
-			File.Delete(outputFile);
-		File.WriteAllText(outputFile, fileContents);
+		// Write to file
+		var outputFilepath = Path.Combine(outputFolder, $"{dbContextModel.Name}.cs");;
+		if (File.Exists(outputFilepath))
+			File.Delete(outputFilepath);
+		File.WriteAllText(outputFilepath, fileContents);
 	}
 
-	private void Validate(DbContextModel dbContextModel)
+	private void Validate(string outputFolder, DbContextModel dbContextModel)
 	{
-		if (!Directory.Exists(_outputFolder))
-			throw new ApplicationException($"OutputRootFolder does not exist: {_outputFolder}");
+		if (!Directory.Exists(outputFolder))
+			throw new ApplicationException($"OutputRootFolder does not exist: {outputFolder}");
 
 		if (string.IsNullOrWhiteSpace(dbContextModel.ContextNamespace))
 			throw new ApplicationException($"ContextNamespace not set on db context");
@@ -147,7 +133,7 @@ public class DbContextGenerator
 			outList.AddLine(t + 1, $"entity.ToTable(\"{tableName}\", \"{entity.Schema}\");");
 		outList.AddLine();
 
-		// Primaty key properties
+		// Primary key properties
 		foreach (var prop in entity.Properties.Where(p => p.IsPrimaryKey)) {
 			var sb = new StringBuilder();
 			sb.Append($"entity.HasKey(e => e.{prop.Name})");
@@ -165,27 +151,10 @@ public class DbContextGenerator
 			var sb = new StringBuilder();
 			sb.Append($"entity.Property(e => e.{prop.Name})");
 
-			if (!prop.Nullable)
-				sb.Append($".IsRequired()");
-
-			if (prop.PrimitiveType == PrimitiveType.String && prop.MaxLength > 0) {
-				sb.Append($".HasMaxLength({prop.MaxLength})");
-
-			} else if (prop.PrimitiveType == PrimitiveType.DateTime) {
-				sb.Append($".HasColumnType(\"{PrimitiveType.DateTime.SqlType}\")");
-			}
-
-			sb.Append(";");
-			outList.AddLine(t + 1, sb);
-		}
-
-		// Normal properties
-		foreach (var prop in entity.Properties.Where(p => !p.IsPrimaryKey)) {
-			var sb = new StringBuilder();
-			sb.Append($"entity.Property(e => e.{prop.Name})");
-
-			if (!prop.Nullable)
-				sb.Append($".IsRequired()");
+			if (prop.Nullable)
+				sb.Append($".IsRequired(false)");
+			else
+				sb.Append($".IsRequired(true)");
 
 			if (prop.PrimitiveType == PrimitiveType.String && prop.MaxLength > 0) {
 				sb.Append($".HasMaxLength({prop.MaxLength})");

@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Dyvenix.Genit.Generators;
 
-public class EnumGenerator : GeneratorBase
+public class EnumGenerator
 {
 	#region Fields
 
@@ -17,7 +17,7 @@ public class EnumGenerator : GeneratorBase
 
 	#endregion
 		
-	public EnumGenerator(EnumGenModel enumGenMdl) : base(enumGenMdl)
+	public EnumGenerator(EnumGenModel enumGenMdl)
 	{
 		_outputFolder = enumGenMdl.OutputFolder;
 	}
@@ -31,8 +31,8 @@ public class EnumGenerator : GeneratorBase
 	{
 		Validate();
 
-		if (!this._enabled)
-			return;
+		//if (!this._enabled)
+		//	return;
 
 		if (!enumMdls.All(e => e.IsExternal))
 			this.GenerateEnums(enumMdls, enumsNamespace);
@@ -72,7 +72,7 @@ public class EnumGenerator : GeneratorBase
 			classEnd.Add("}");
 
 			var sb = new StringBuilder();
-			sb.AppendLine(string.Join(Environment.NewLine, _headerLines));
+			//sb.AppendLine(string.Join(Environment.NewLine, _headerLines));
 			usings.ForEach(u => sb.AppendLine($"using {u};"));
 			sb.AppendLine(string.Join(Environment.NewLine, enumStart));
 			sb.AppendLine(string.Join(Environment.NewLine, propOutputList));

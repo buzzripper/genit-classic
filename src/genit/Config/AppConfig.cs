@@ -20,7 +20,7 @@ namespace Dyvenix.Genit.Config
 				MruFilepaths = new List<string>();
 
 			var idx = MruFilepaths.IndexOf(filepath);
-			if (idx >= -1)
+			if (idx > -1)
 				MruFilepaths.RemoveAt(idx);
 
 			MruFilepaths.Insert(0, filepath);

@@ -1,4 +1,5 @@
 ﻿using Dyvenix.Genit.Extensions;
+using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
@@ -6,125 +7,125 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
 
 namespace Dyvenix.Genit.Generators;
 
-public class EntityGenerator : GeneratorBase
+public class EntityGenerator
 {
-	#region Fields
+	#region Constants
 
-	private string _outputFolder;
+	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
+	private const string cToken_AddlUsings = "ADDL_USINGS";
+	private const string cToken_EntitiesNs = "ENTITIES_NS";
+	private const string cToken_EntityName = "ENTITY_NAME";
+	private const string cToken_Properties = "PROPERTIES";
+	private const string cToken_NavProperties = "NAV_PROPERTIES";
 
 	#endregion
-		
-	public EntityGenerator(EntityGenModel entityMdl) : base(entityMdl)
-	{
-		_outputFolder = entityMdl.OutputFolder;
-	}
 
 	#region Properties
 
+	public GeneratorType Type => GeneratorType.Entity;
 
 	#endregion
 
-	public void Run(ObservableCollection<EntityModel> entities, string entitiesNamespace)
+	public void Run(EntityGenModel genModel, ObservableCollection<EntityModel> entities, string entitiesNamespace)
 	{
-		if (!this._enabled)
+		if (!genModel.Enabled)
 			return;
 
-		Validate();
+		// Get absolute paths
+		var templateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.TemplateFilepath);
+		var outputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.OutputFolder);
 
-		if (entities.Any(e => e.Enabled))
-			this.GenerateEntities(entities, entitiesNamespace);
-	}
+		Validate(outputFolder, templateFilepath);
 
-	private void Validate()
-	{
-		if (!Directory.Exists(_outputFolder))
-			throw new ApplicationException($"OutputFolder does not exist: {_outputFolder}");
-	}
+		var template = File.ReadAllText(templateFilepath);
 
-	private void GenerateEntities(ObservableCollection<EntityModel> entities, string entitiesNamespace)
-	{
-		foreach (var entity in entities) {
-			if (!entity.Enabled)
-				continue;
-
-			var usings = new List<string>();
-			usings.Add("System");
-			entity.AddlUsings.ToList().ForEach(u => usings.Add(u));
-
-			// Class declaration
-			var classStart = new List<string>();
-			classStart.Add("");
-			entity.Attributes.ToList().ForEach(a => classStart.Add($"[{a}]"));
-			var ns = string.IsNullOrWhiteSpace(entity.Namespace) ? entitiesNamespace : entity.Namespace;
-			classStart.Add($"namespace {ns};");
-			classStart.Add("");
-			classStart.Add($"public partial class {entity.Name}");
-			classStart.Add("{");
-
-			var propOutputList = new List<string>();
-
-			// PK
-			var pkProp = entity.Properties.FirstOrDefault(p => p.IsPrimaryKey);
-			this.GenerateProperty(pkProp, propOutputList, usings);
-			propOutputList.AddLine();
-
-			// FK properties
-			var fkProps = entity.Properties.Where(p => p.IsForeignKey).ToList();
-			foreach (var prop in fkProps)
-				this.GenerateProperty(prop, propOutputList, usings);
-			if (fkProps.Count > 0)
-				propOutputList.AddLine();
-
-			// Normal properties
-			foreach (var prop in entity.Properties.Where(p => !p.IsForeignKey && !p.IsPrimaryKey))
-				this.GenerateProperty(prop, propOutputList, usings);
-
-			// Navigation properties
-			if (entity.NavProperties.Count > 0) {
-				propOutputList.AddLine();
-				propOutputList.AddLine(1, $"// Navigation properties");
-				foreach (var navProperty in entity.NavProperties)
-					this.GenerateNavigationProperty(navProperty, propOutputList, usings);
-			}
-
-			var classEnd = new List<string>();
-			classEnd.Add("}");
-
-			var sb = new StringBuilder();
-			sb.AppendLine(string.Join(Environment.NewLine, _headerLines));
-			usings.ForEach(u => sb.AppendLine($"using {u};"));
-			sb.AppendLine(string.Join(Environment.NewLine, classStart));
-			sb.AppendLine(string.Join(Environment.NewLine, propOutputList));
-			sb.AppendLine(string.Join(Environment.NewLine, classEnd));
-
-			var outputFile = Path.Combine(this._outputFolder, $"{entity.Name}.cs");
-			if (File.Exists(outputFile))
-				File.Delete(outputFile);
-			File.WriteAllText(outputFile, sb.ToString());
+		foreach (var entity in entities.Where(e => e.Enabled)) {
+			var cleanTemplate = $"{template}";
+			GenerateEntity(entity, entitiesNamespace, $"{cleanTemplate}", outputFolder);
 		}
 	}
 
-	private void GenerateProperty(PropertyModel prop, List<string> propOutputList, List<string> usings)
+	private void Validate(string outputFolder, string templateFilepath)
+	{
+		if (!File.Exists(templateFilepath))
+			throw new ApplicationException($"Template file does not exist: {templateFilepath}");
+
+		if (!Directory.Exists(outputFolder))
+			throw new ApplicationException($"OutputFolder does not exist: {outputFolder}");
+	}
+
+	private void GenerateEntity(EntityModel entity, string entitiesNamespace, string template, string outputFolder)
+	{
+		// Addl usings
+		var usings = BuildAddlUsings(entity);
+
+		var propsOutput = new List<string>();
+
+		// PK
+		propsOutput.AddLine(0, $"// PK");
+		foreach (var property in entity.Properties.Where(p => p.IsPrimaryKey))
+			this.GenerateProperty(property, propsOutput, usings);
+		propsOutput.AddLine();
+
+		// FK properties
+		var fkProperties = entity.Properties.Where(p => p.IsForeignKey);
+		if (fkProperties.Any())
+			propsOutput.AddLine(1, $"// FKs");
+		foreach (var property in fkProperties)
+			GenerateProperty(property, propsOutput, usings);
+		if (fkProperties.Any())
+			propsOutput.AddLine();
+
+		// Properties
+		propsOutput.AddLine(1, $"// Properties");
+		foreach (var property in entity.Properties.Where(p => !p.IsPrimaryKey && !p.IsForeignKey))
+			GenerateProperty(property, propsOutput, usings);
+
+		// Navigation properties
+		var navPropsOutput = new List<string>();
+		if (entity.NavProperties.Any())
+			navPropsOutput.AddLine(0, $"// Navigation Properties");
+		foreach (var navProperty in entity.NavProperties)
+			GenerateNavigationProperty(navProperty, navPropsOutput, usings);
+
+		// Replace tokens in template
+		var fileContents = ReplaceTemplateTokens(template, usings, entitiesNamespace, entity, propsOutput, navPropsOutput);
+
+		var outputFile = Path.Combine(outputFolder, $"{entity.Name}.cs");
+		if (File.Exists(outputFile))
+			File.Delete(outputFile);
+		File.WriteAllText(outputFile, fileContents);
+	}
+
+	private List<string> BuildAddlUsings(EntityModel entity)
+	{
+		var usings = new List<string>();
+
+		entity.AddlUsings?.ToList().ForEach(u => usings.Add(u));
+
+		return usings;
+	}
+
+	private void GenerateProperty(PropertyModel prop, List<string> output, List<string> usings)
 	{
 		var tc = 1;
 
 		if (prop.Attributes.Any())
 			foreach (var attr in prop.Attributes)
-				propOutputList.AddLine(tc, $"[{attr}]");
+				output.AddLine(tc, $"[{attr}]");
 
 		if ((prop.PrimitiveType ?? PrimitiveType.None) != PrimitiveType.None) {
 			var nullStr = (prop.Nullable && (prop.PrimitiveType.CSType != "string")) ? "?" : string.Empty;
 			var datatype = $"{prop.PrimitiveType.CSType}{nullStr}";
-			propOutputList.AddLine(tc, $"public {datatype} {prop.Name} {{ get; set; }}");
+			output.AddLine(tc, $"public {datatype} {prop.Name} {{ get; set; }}");
 
 		} else if (prop.EnumType != null) {
 			var nullStr = prop.Nullable ? string.Empty : "?";
-			propOutputList.AddLine(tc, $"[JsonConverter(typeof(JsonStringEnumConverter))]");
-			propOutputList.AddLine(tc, $"public {prop.EnumType.Name}{nullStr} {prop.Name} {{ get; set; }}");
+			output.AddLine(tc, $"[JsonConverter(typeof(JsonStringEnumConverter))]");
+			output.AddLine(tc, $"public {prop.EnumType.Name}{nullStr} {prop.Name} {{ get; set; }}");
 			usings.AddIfNotExists("System.Text.Json.Serialization");
 			if (!string.IsNullOrWhiteSpace(prop.EnumType.Namespace))
 				usings.AddIfNotExists(prop.EnumType.Namespace);
@@ -152,5 +153,34 @@ public class EntityGenerator : GeneratorBase
 			default:
 				throw new ApplicationException($"Error determining data type for property '{navProperty.Name}': Cardinality '{navProperty.Cardinality}' not supported.");
 		}
+	}
+
+	private string ReplaceTemplateTokens(string template, List<string> usings, string entitiesNamespace, EntityModel entity, List<string> propsOutput, List<string> navPropsOutput)
+	{
+		// Header
+		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
+
+		// Usings
+		var sb = new StringBuilder();
+		usings.ForEach(x => sb.AppendLine($"using {x};"));
+		template = template.Replace(Utils.FmtToken(cToken_AddlUsings), sb.ToString());
+
+		// Entities namespace 		
+		template = template.Replace(Utils.FmtToken(cToken_EntitiesNs), entitiesNamespace);
+
+		// Entity name
+		template = template.Replace(Utils.FmtToken(cToken_EntityName), entity.Name);
+
+		// Properties
+		sb = new StringBuilder();
+		propsOutput.ForEach(x => sb.AppendLine(x));
+		template = template.Replace(Utils.FmtToken(cToken_Properties), sb.ToString());
+
+		// Nav Properties
+		sb = new StringBuilder();
+		navPropsOutput.ForEach(x => sb.AppendLine(x));
+		template = template.Replace(Utils.FmtToken(cToken_NavProperties), sb.ToString());
+
+		return template;
 	}
 }

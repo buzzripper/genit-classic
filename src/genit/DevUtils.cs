@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace Dyvenix.Genit
 {
-	public static class Utils
+	public static class DevUtils
 	{
 		public static Doc GenerateTestDoc()
 		{

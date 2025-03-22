@@ -34,12 +34,16 @@ partial class EnumGenEditCtl
 		ckbInclHeader = new System.Windows.Forms.CheckBox();
 		btnBrowseFolder = new System.Windows.Forms.Button();
 		folderDlg = new System.Windows.Forms.FolderBrowserDialog();
+		btnBrowseTempleFilepath = new System.Windows.Forms.Button();
+		txtTemplateFilepath = new System.Windows.Forms.TextBox();
+		label3 = new System.Windows.Forms.Label();
+		fileDlg = new System.Windows.Forms.OpenFileDialog();
 		SuspendLayout();
 		// 
 		// label1
 		// 
 		label1.AutoSize = true;
-		label1.Location = new System.Drawing.Point(52, 74);
+		label1.Location = new System.Drawing.Point(52, 106);
 		label1.Name = "label1";
 		label1.Size = new System.Drawing.Size(99, 19);
 		label1.TabIndex = 0;
@@ -50,9 +54,9 @@ partial class EnumGenEditCtl
 		txtOutputFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		txtOutputFolder.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		txtOutputFolder.Location = new System.Drawing.Point(157, 72);
+		txtOutputFolder.Location = new System.Drawing.Point(157, 104);
 		txtOutputFolder.Name = "txtOutputFolder";
-		txtOutputFolder.Size = new System.Drawing.Size(487, 25);
+		txtOutputFolder.Size = new System.Drawing.Size(478, 25);
 		txtOutputFolder.TabIndex = 1;
 		txtOutputFolder.TextChanged += txtOutputFolder_TextChanged;
 		// 
@@ -69,7 +73,7 @@ partial class EnumGenEditCtl
 		// ckbEnabled
 		// 
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(173, 150);
+		ckbEnabled.Location = new System.Drawing.Point(173, 182);
 		ckbEnabled.Name = "ckbEnabled";
 		ckbEnabled.Size = new System.Drawing.Size(76, 23);
 		ckbEnabled.TabIndex = 3;
@@ -80,7 +84,7 @@ partial class EnumGenEditCtl
 		// ckbInclHeader
 		// 
 		ckbInclHeader.AutoSize = true;
-		ckbInclHeader.Location = new System.Drawing.Point(334, 150);
+		ckbInclHeader.Location = new System.Drawing.Point(334, 182);
 		ckbInclHeader.Name = "ckbInclHeader";
 		ckbInclHeader.Size = new System.Drawing.Size(120, 23);
 		ckbInclHeader.TabIndex = 4;
@@ -91,7 +95,7 @@ partial class EnumGenEditCtl
 		// btnBrowseFolder
 		// 
 		btnBrowseFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseFolder.Location = new System.Drawing.Point(641, 72);
+		btnBrowseFolder.Location = new System.Drawing.Point(641, 104);
 		btnBrowseFolder.Name = "btnBrowseFolder";
 		btnBrowseFolder.Size = new System.Drawing.Size(24, 22);
 		btnBrowseFolder.TabIndex = 7;
@@ -99,10 +103,48 @@ partial class EnumGenEditCtl
 		btnBrowseFolder.UseVisualStyleBackColor = true;
 		btnBrowseFolder.Click += btnBrowseFolder_Click;
 		// 
+		// btnBrowseTempleFilepath
+		// 
+		btnBrowseTempleFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+		btnBrowseTempleFilepath.Location = new System.Drawing.Point(641, 59);
+		btnBrowseTempleFilepath.Name = "btnBrowseTempleFilepath";
+		btnBrowseTempleFilepath.Size = new System.Drawing.Size(24, 22);
+		btnBrowseTempleFilepath.TabIndex = 11;
+		btnBrowseTempleFilepath.Text = "...";
+		btnBrowseTempleFilepath.UseVisualStyleBackColor = true;
+		btnBrowseTempleFilepath.Click += btnBrowseTempleFilepath_Click;
+		// 
+		// txtTemplateFilepath
+		// 
+		txtTemplateFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+		txtTemplateFilepath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+		txtTemplateFilepath.Location = new System.Drawing.Point(157, 59);
+		txtTemplateFilepath.Name = "txtTemplateFilepath";
+		txtTemplateFilepath.Size = new System.Drawing.Size(478, 25);
+		txtTemplateFilepath.TabIndex = 10;
+		txtTemplateFilepath.TextChanged += txtTemplateFilepath_TextChanged;
+		// 
+		// label3
+		// 
+		label3.AutoSize = true;
+		label3.Location = new System.Drawing.Point(58, 60);
+		label3.Name = "label3";
+		label3.Size = new System.Drawing.Size(91, 19);
+		label3.TabIndex = 9;
+		label3.Text = "Template File:";
+		// 
+		// fileDlg
+		// 
+		fileDlg.DefaultExt = "*.tmpl";
+		fileDlg.Filter = "Template file (*.tmpl)|*.tmpl| All Files (*.*)|*.*";
+		// 
 		// EnumGenEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		Controls.Add(btnBrowseTempleFilepath);
+		Controls.Add(txtTemplateFilepath);
+		Controls.Add(label3);
 		Controls.Add(btnBrowseFolder);
 		Controls.Add(ckbInclHeader);
 		Controls.Add(ckbEnabled);
@@ -126,4 +168,8 @@ partial class EnumGenEditCtl
 	private System.Windows.Forms.CheckBox ckbInclHeader;
 	private System.Windows.Forms.Button btnBrowseFolder;
 	private System.Windows.Forms.FolderBrowserDialog folderDlg;
+	private System.Windows.Forms.Button btnBrowseTempleFilepath;
+	private System.Windows.Forms.TextBox txtTemplateFilepath;
+	private System.Windows.Forms.Label label3;
+	private System.Windows.Forms.OpenFileDialog fileDlg;
 }

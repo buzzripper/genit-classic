@@ -14,7 +14,8 @@ public class DbContextGenerator
 {
 	#region Constants
 
-	private const string cToken_Usings = "USINGS";
+	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
+	private const string cToken_AddlUsings = "ADDL_USINGS";
 	private const string cToken_ContextNs = "CONTEXT_NS";
 	private const string cToken_DbContextName = "DBCONTEXT_NAME";
 	private const string cToken_Properties = "PROPERTIES";
@@ -27,19 +28,20 @@ public class DbContextGenerator
 	public GeneratorType Type => GeneratorType.DbContext;
 
 	#endregion
-		
+
 	public void Run(DbContextGenModel genModel, DbContextModel dbContextModel)
 	{
 		if (!genModel.Enabled)
 			return;
 
-		// Get absolute output folder path
-		var outputFolder = Path.IsPathRooted(genModel.OutputFolder) ? genModel.OutputFolder : Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Globals.CurrDocFilepath), genModel.OutputFolder));
+		// Get absolute paths
+		var templateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.TemplateFilepath);
+		var outputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.OutputFolder);
 
-		Validate(outputFolder, dbContextModel);
+		Validate(outputFolder, templateFilepath, dbContextModel);
 
 		// Addl usings
-		var usings = InitializeUsings(dbContextModel);
+		var usings = BuildAddlUsings(dbContextModel);
 
 		// Properties
 		var propsList = GenerateProperties(dbContextModel.Entities);
@@ -48,17 +50,20 @@ public class DbContextGenerator
 		var onModelCreatingList = GenerateOnModelCreating(dbContextModel.Entities);
 
 		// Replace tokens in template
-		var fileContents = ReplaceTemplateTokens(dbContextModel, usings, propsList, onModelCreatingList);
+		var fileContents = ReplaceTemplateTokens(templateFilepath, dbContextModel, usings, propsList, onModelCreatingList);
 
 		// Write to file
-		var outputFilepath = Path.Combine(outputFolder, $"{dbContextModel.Name}.cs");;
+		var outputFilepath = Path.Combine(outputFolder, $"{dbContextModel.Name}.cs");
 		if (File.Exists(outputFilepath))
 			File.Delete(outputFilepath);
 		File.WriteAllText(outputFilepath, fileContents);
 	}
 
-	private void Validate(string outputFolder, DbContextModel dbContextModel)
+	private void Validate(string outputFolder, string templateFilepath, DbContextModel dbContextModel)
 	{
+		if (!File.Exists(templateFilepath))
+			throw new ApplicationException($"Template file does not exist: {templateFilepath}");
+
 		if (!Directory.Exists(outputFolder))
 			throw new ApplicationException($"OutputRootFolder does not exist: {outputFolder}");
 
@@ -72,13 +77,9 @@ public class DbContextGenerator
 			throw new ApplicationException($"No entities found in DbContext.");
 	}
 
-	private List<string> InitializeUsings(DbContextModel dbContextMdl)
+	private List<string> BuildAddlUsings(DbContextModel dbContextMdl)
 	{
 		var usings = new List<string>();
-
-		usings.Add("System");
-		usings.Add("Microsoft.EntityFrameworkCore");
-		usings.Add("System.Collections.Generic");
 
 		dbContextMdl.AddlUsings?.ToList().ForEach(u => usings.Add(u));
 		usings.Add(dbContextMdl.EntitiesNamespace);
@@ -133,8 +134,9 @@ public class DbContextGenerator
 			outList.AddLine(t + 1, $"entity.ToTable(\"{tableName}\", \"{entity.Schema}\");");
 		outList.AddLine();
 
-		// Primary key properties
+		// Primary key property
 		foreach (var prop in entity.Properties.Where(p => p.IsPrimaryKey)) {
+			outList.AddLine(t + 1, "// PK");
 			var sb = new StringBuilder();
 			sb.Append($"entity.HasKey(e => e.{prop.Name})");
 
@@ -148,6 +150,7 @@ public class DbContextGenerator
 
 		// Normal properties
 		foreach (var prop in entity.Properties.Where(p => !p.IsPrimaryKey)) {
+			outList.AddLine(t + 1, "// Properties");
 			var sb = new StringBuilder();
 			sb.Append($"entity.Property(e => e.{prop.Name})");
 
@@ -189,40 +192,34 @@ public class DbContextGenerator
 		outList.AddLine();
 	}
 
-	private string ReplaceTemplateTokens(DbContextModel dbContextModel, List<string> usings, List<string> propsList, List<string> onModelCreatingList)
+	private string ReplaceTemplateTokens(string templateFilepath, DbContextModel dbContextModel, List<string> usings, List<string> propsList, List<string> onModelCreatingList)
 	{
-		var filepath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Generators\Templates\DbContext.cs.tmpl");
-		if (!File.Exists(filepath))
-			throw new ApplicationException($"Dbcontext template file not found at ''{filepath}");
+		var template = File.ReadAllText(templateFilepath);
 
-		var template = File.ReadAllText(filepath);
+		// Header
+		var token = Utils.FmtToken(cToken_CurrTimestamp);
+		var idx = template.IndexOf(token);
+		if (idx == -1)
+			throw new ApplicationException($"Token '{token}' not found in template file.");
+		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
 
 		// Usings
 		var sb = new StringBuilder();
 		usings.ForEach(x => sb.AppendLine($"using {x};"));
-		template = template.Replace(FmtToken(cToken_Usings), sb.ToString());
+		template = template.Replace(Utils.FmtToken(cToken_AddlUsings), sb.ToString());
 
-		template = template.Replace(FmtToken(cToken_ContextNs), dbContextModel.ContextNamespace);
-		template = template.Replace(FmtToken(cToken_DbContextName), dbContextModel.Name);
+		template = template.Replace(Utils.FmtToken(cToken_ContextNs), dbContextModel.ContextNamespace);
+		template = template.Replace(Utils.FmtToken(cToken_DbContextName), dbContextModel.Name);
 
 
 		sb = new StringBuilder();
 		propsList.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(FmtToken(cToken_Properties), sb.ToString());
+		template = template.Replace(Utils.FmtToken(cToken_Properties), sb.ToString());
 
 		sb = new StringBuilder();
 		onModelCreatingList.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(FmtToken(cToken_OnModelCreating), sb.ToString());
+		template = template.Replace(Utils.FmtToken(cToken_OnModelCreating), sb.ToString());
 
 		return template;
 	}
-
-	#region Utility methods
-
-	private string FmtToken(string tokenTitle)
-	{
-		return $"${{{{{tokenTitle}}}}}";
-	}
-
-	#endregion
 }

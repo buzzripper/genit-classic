@@ -12,7 +12,7 @@ namespace Dyvenix.Genit.Models
 		public static Doc LoadDoc(string filepath)
 		{
 			if (filepath == "TEST")
-				return Utils.GenerateTestDoc();
+				return DevUtils.GenerateTestDoc();
 
 			if (!File.Exists(filepath))
 				throw new FileNotFoundException($"File not found: {filepath}");

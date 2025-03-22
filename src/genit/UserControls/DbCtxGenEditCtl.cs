@@ -36,6 +36,7 @@ namespace Dyvenix.Genit.UserControls
 		{
 			_suspendUpdates = true;
 
+			txtTemplateFilepath.Text = _dbCtxGenMdl.TemplateFilepath;
 			txtOutputFolder.Text = _dbCtxGenMdl.OutputFolder;
 			ckbInclHeader.Checked = _dbCtxGenMdl.InclHeader;
 			ckbEnabled.Checked = _dbCtxGenMdl.Enabled;
@@ -51,6 +52,12 @@ namespace Dyvenix.Genit.UserControls
 				_dbCtxGenMdl.OutputFolder = txtOutputFolder.Text;
 		}
 
+		private void txtTemplateFilepath_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_dbCtxGenMdl.TemplateFilepath = txtTemplateFilepath.Text;
+		}
+
 		private void ckbInclHeader_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_suspendUpdates)
@@ -63,28 +70,18 @@ namespace Dyvenix.Genit.UserControls
 				_dbCtxGenMdl.Enabled = ckbEnabled.Checked;
 		}
 
+		private void btnBrowseTemplateFilepath_Click(object sender, EventArgs e)
+		{
+			fileDlg.InitialDirectory = txtTemplateFilepath.Text;
+			if (fileDlg.ShowDialog() == DialogResult.OK)
+				txtTemplateFilepath.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, fileDlg.FileName);
+		}
+
 		private void btnBrowseFolder_Click(object sender, EventArgs e)
 		{
 			folderDlg.InitialDirectory = txtOutputFolder.Text;
 			if (folderDlg.ShowDialog() == DialogResult.OK) {
-
-				// Convert to relative path if possible
-				if (!string.IsNullOrWhiteSpace(Globals.CurrDocFilepath)) {
-
-					// Make sure they're on the same drive
-					if (Directory.GetDirectoryRoot(Globals.CurrDocFilepath) == Directory.GetDirectoryRoot(folderDlg.SelectedPath)) {
-						Uri docUri = new Uri(Globals.CurrDocFilepath);
-						Uri fileUri = new Uri(folderDlg.SelectedPath);
-						txtOutputFolder.Text = Uri.UnescapeDataString(docUri.MakeRelativeUri(fileUri).ToString()).Replace('/', '\\');
-
-						// Check
-						//var docFolder = Path.GetDirectoryName(Globals.CurrDocFilepath);
-						//var newFolder = Path.Combine(docFolder, txtOutputFolder.Text);
-						//var test = Path.GetFullPath(newFolder);
-					}
-				} else {
-					txtOutputFolder.Text = folderDlg.SelectedPath;
-				}
+				txtOutputFolder.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, folderDlg.SelectedPath);
 			}
 		}
 	}

@@ -435,20 +435,20 @@ public partial class MainForm : Form
 			if (entityGenMdl == null)
 				throw new ApplicationException("Entity generator not found.");
 			if (entityGenMdl.Enabled) {
-				var entityGenerator = new EntityGenerator(entityGenMdl);
+				var entityGenerator = new EntityGenerator();
 				outputCtl.WriteInfo("Running Entities generator...");
-				entityGenerator.Run(dbContextMdl.Entities, dbContextMdl.EntitiesNamespace);
+				entityGenerator.Run(entityGenMdl, dbContextMdl.Entities, dbContextMdl.EntitiesNamespace);
 			}
 
-			// Enums
-			var enumGenMdl = dbContextMdl.EnumGen;
-			if (enumGenMdl == null)
-				throw new ApplicationException("Enum generator not found.");
-			if (enumGenMdl.Enabled) {
-				var enumGenerator = new EnumGenerator(enumGenMdl);
-				outputCtl.WriteInfo("Running Entities generator...");
-				enumGenerator.Run(dbContextMdl.Enums, dbContextMdl.EnumsNamespace);
-			}
+			//// Enums
+			//var enumGenMdl = dbContextMdl.EnumGen;
+			//if (enumGenMdl == null)
+			//	throw new ApplicationException("Enum generator not found.");
+			//if (enumGenMdl.Enabled) {
+			//	var enumGenerator = new EnumGenerator(enumGenMdl);
+			//	outputCtl.WriteInfo("Running Entities generator...");
+			//	enumGenerator.Run(dbContextMdl.Enums, dbContextMdl.EnumsNamespace);
+			//}
 
 			ShowSuccessDlg("Files generated.");
 

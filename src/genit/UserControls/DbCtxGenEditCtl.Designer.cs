@@ -34,6 +34,10 @@ partial class DbCtxGenEditCtl
 		ckbEnabled = new System.Windows.Forms.CheckBox();
 		folderDlg = new System.Windows.Forms.FolderBrowserDialog();
 		btnBrowseFolder = new System.Windows.Forms.Button();
+		btnBrowseTempleFilepath = new System.Windows.Forms.Button();
+		txtTemplateFilepath = new System.Windows.Forms.TextBox();
+		label3 = new System.Windows.Forms.Label();
+		fileDlg = new System.Windows.Forms.OpenFileDialog();
 		SuspendLayout();
 		// 
 		// label1
@@ -49,7 +53,7 @@ partial class DbCtxGenEditCtl
 		// label2
 		// 
 		label2.AutoSize = true;
-		label2.Location = new System.Drawing.Point(52, 74);
+		label2.Location = new System.Drawing.Point(55, 104);
 		label2.Name = "label2";
 		label2.Size = new System.Drawing.Size(99, 19);
 		label2.TabIndex = 1;
@@ -59,7 +63,7 @@ partial class DbCtxGenEditCtl
 		// 
 		txtOutputFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtOutputFolder.Location = new System.Drawing.Point(157, 72);
+		txtOutputFolder.Location = new System.Drawing.Point(160, 102);
 		txtOutputFolder.Name = "txtOutputFolder";
 		txtOutputFolder.Size = new System.Drawing.Size(478, 25);
 		txtOutputFolder.TabIndex = 2;
@@ -90,7 +94,7 @@ partial class DbCtxGenEditCtl
 		// btnBrowseFolder
 		// 
 		btnBrowseFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseFolder.Location = new System.Drawing.Point(641, 72);
+		btnBrowseFolder.Location = new System.Drawing.Point(644, 102);
 		btnBrowseFolder.Name = "btnBrowseFolder";
 		btnBrowseFolder.Size = new System.Drawing.Size(24, 22);
 		btnBrowseFolder.TabIndex = 5;
@@ -98,10 +102,48 @@ partial class DbCtxGenEditCtl
 		btnBrowseFolder.UseVisualStyleBackColor = true;
 		btnBrowseFolder.Click += btnBrowseFolder_Click;
 		// 
+		// btnBrowseTempleFilepath
+		// 
+		btnBrowseTempleFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+		btnBrowseTempleFilepath.Location = new System.Drawing.Point(646, 61);
+		btnBrowseTempleFilepath.Name = "btnBrowseTempleFilepath";
+		btnBrowseTempleFilepath.Size = new System.Drawing.Size(24, 22);
+		btnBrowseTempleFilepath.TabIndex = 8;
+		btnBrowseTempleFilepath.Text = "...";
+		btnBrowseTempleFilepath.UseVisualStyleBackColor = true;
+		btnBrowseTempleFilepath.Click += btnBrowseTemplateFilepath_Click;
+		// 
+		// txtTemplateFilepath
+		// 
+		txtTemplateFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+		txtTemplateFilepath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+		txtTemplateFilepath.Location = new System.Drawing.Point(162, 61);
+		txtTemplateFilepath.Name = "txtTemplateFilepath";
+		txtTemplateFilepath.Size = new System.Drawing.Size(478, 25);
+		txtTemplateFilepath.TabIndex = 7;
+		txtTemplateFilepath.TextChanged += txtTemplateFilepath_TextChanged;
+		// 
+		// label3
+		// 
+		label3.AutoSize = true;
+		label3.Location = new System.Drawing.Point(63, 62);
+		label3.Name = "label3";
+		label3.Size = new System.Drawing.Size(91, 19);
+		label3.TabIndex = 6;
+		label3.Text = "Template File:";
+		// 
+		// fileDlg
+		// 
+		fileDlg.DefaultExt = "*.tmpl";
+		fileDlg.Filter = "Template file (*.tmpl)|*.tmpl| All Files (*.*)|*.*";
+		// 
 		// DbCtxGenEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		Controls.Add(btnBrowseTempleFilepath);
+		Controls.Add(txtTemplateFilepath);
+		Controls.Add(label3);
 		Controls.Add(btnBrowseFolder);
 		Controls.Add(ckbEnabled);
 		Controls.Add(ckbInclHeader);
@@ -125,4 +167,8 @@ partial class DbCtxGenEditCtl
 	private System.Windows.Forms.CheckBox ckbEnabled;
 	private System.Windows.Forms.FolderBrowserDialog folderDlg;
 	private System.Windows.Forms.Button btnBrowseFolder;
+	private System.Windows.Forms.Button btnBrowseTempleFilepath;
+	private System.Windows.Forms.TextBox txtTemplateFilepath;
+	private System.Windows.Forms.Label label3;
+	private System.Windows.Forms.OpenFileDialog fileDlg;
 }

@@ -14,6 +14,7 @@ public abstract class GenModelBase
 
 	public Guid Id { get; protected set; }
 	public GeneratorType GeneratorType { get; protected set; }
+	public string TemplateFilepath { get; set; }
 	public bool Enabled { get; set; }
 	public bool InclHeader { get; set; }
 

@@ -123,7 +123,7 @@ public class EntityGenerator
 			output.AddLine(tc, $"public {datatype} {prop.Name} {{ get; set; }}");
 
 		} else if (prop.EnumType != null) {
-			var nullStr = prop.Nullable ? string.Empty : "?";
+			var nullStr = prop.Nullable ? "?" : string.Empty;
 			output.AddLine(tc, $"[JsonConverter(typeof(JsonStringEnumConverter))]");
 			output.AddLine(tc, $"public {prop.EnumType.Name}{nullStr} {prop.Name} {{ get; set; }}");
 			usings.AddIfNotExists("System.Text.Json.Serialization");

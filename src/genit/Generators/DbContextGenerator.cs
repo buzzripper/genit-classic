@@ -149,8 +149,8 @@ public class DbContextGenerator
 		outList.AddLine();
 
 		// Normal properties
+		outList.AddLine(t + 1, "// Properties");
 		foreach (var prop in entity.Properties.Where(p => !p.IsPrimaryKey)) {
-			outList.AddLine(t + 1, "// Properties");
 			var sb = new StringBuilder();
 			sb.Append($"entity.Property(e => e.{prop.Name})");
 

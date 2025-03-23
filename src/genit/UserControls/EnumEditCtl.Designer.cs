@@ -36,6 +36,7 @@ partial class EnumEditCtl
 		label3 = new System.Windows.Forms.Label();
 		ckbIsFlags = new System.Windows.Forms.CheckBox();
 		ckbIsExternal = new System.Windows.Forms.CheckBox();
+		ckbEnabled = new System.Windows.Forms.CheckBox();
 		SuspendLayout();
 		// 
 		// label1
@@ -106,7 +107,7 @@ partial class EnumEditCtl
 		// ckbIsFlags
 		// 
 		ckbIsFlags.AutoSize = true;
-		ckbIsFlags.Location = new System.Drawing.Point(149, 381);
+		ckbIsFlags.Location = new System.Drawing.Point(115, 381);
 		ckbIsFlags.Name = "ckbIsFlags";
 		ckbIsFlags.Size = new System.Drawing.Size(57, 21);
 		ckbIsFlags.TabIndex = 9;
@@ -117,7 +118,7 @@ partial class EnumEditCtl
 		// ckbIsExternal
 		// 
 		ckbIsExternal.AutoSize = true;
-		ckbIsExternal.Location = new System.Drawing.Point(240, 381);
+		ckbIsExternal.Location = new System.Drawing.Point(205, 381);
 		ckbIsExternal.Name = "ckbIsExternal";
 		ckbIsExternal.Size = new System.Drawing.Size(73, 21);
 		ckbIsExternal.TabIndex = 10;
@@ -125,10 +126,22 @@ partial class EnumEditCtl
 		ckbIsExternal.UseVisualStyleBackColor = true;
 		ckbIsExternal.CheckedChanged += ckbIsExternal_CheckedChanged;
 		// 
+		// ckbEnabled
+		// 
+		ckbEnabled.AutoSize = true;
+		ckbEnabled.Location = new System.Drawing.Point(298, 381);
+		ckbEnabled.Name = "ckbEnabled";
+		ckbEnabled.Size = new System.Drawing.Size(73, 21);
+		ckbEnabled.TabIndex = 11;
+		ckbEnabled.Text = "External";
+		ckbEnabled.UseVisualStyleBackColor = true;
+		ckbEnabled.CheckedChanged += ckbEnabled_CheckedChanged;
+		// 
 		// EnumEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		Controls.Add(ckbEnabled);
 		Controls.Add(ckbIsExternal);
 		Controls.Add(ckbIsFlags);
 		Controls.Add(txtNamespace);
@@ -156,4 +169,5 @@ partial class EnumEditCtl
 	private System.Windows.Forms.Label label3;
 	private System.Windows.Forms.CheckBox ckbIsFlags;
 	private System.Windows.Forms.CheckBox ckbIsExternal;
+	private System.Windows.Forms.CheckBox ckbEnabled;
 }

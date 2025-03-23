@@ -42,6 +42,7 @@ namespace Dyvenix.Genit.UserControls
 			txtNamespace.Text = EnumModel.Namespace;
 			ckbIsExternal.Checked = EnumModel.IsExternal;
 			ckbIsFlags.Checked = EnumModel.IsFlags;
+			ckbEnabled.Checked = EnumModel.Enabled;
 
 			EnumModel.PropertyChanged += EnumMdl_OnPropertyChanged;
 			_suspendUpdates = false;
@@ -84,6 +85,12 @@ namespace Dyvenix.Genit.UserControls
 		{
 			if (!_suspendUpdates)
 				EnumModel.IsExternal = ckbIsExternal.Checked;
+		}
+
+		private void ckbEnabled_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				EnumModel.Enabled = ckbEnabled.Checked;
 		}
 	}
 }

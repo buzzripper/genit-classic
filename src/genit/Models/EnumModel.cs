@@ -8,88 +8,95 @@ using System.Text.Json.Serialization;
 
 namespace Dyvenix.Genit.Models
 {
-    public class EnumModel : INotifyPropertyChanged
-    {
-        private string _name;
-        private bool _isExternal;
-        private bool _isFlags;
-        private string _namespace;
-        private ObservableCollection<string> _members = new();
+	public class EnumModel : INotifyPropertyChanged
+	{
+		private string _name;
+		private bool _isExternal;
+		private bool _isFlags;
+		private string _namespace;
+		private bool _enabled = true;
+		private ObservableCollection<string> _members = new();
 
-        public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        #region Ctors
+		#region Ctors
 
-        [JsonConstructor]
-        public EnumModel()
-        {
-        }
+		[JsonConstructor]
+		public EnumModel()
+		{
+		}
 
-        public EnumModel(Guid id)
-        {
-            Id = id;
-        }
+		public EnumModel(Guid id)
+		{
+			Id = id;
+		}
 
-        #endregion
+		#endregion
 
-        public Guid Id { get; init; }
+		public Guid Id { get; init; }
 
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
+		public string Name
+		{
+			get => _name;
+			set => SetProperty(ref _name, value);
+		}
 
-        public bool IsExternal
-        {
-            get => _isExternal;
-            set => SetProperty(ref _isExternal, value);
-        }
+		public bool IsExternal
+		{
+			get => _isExternal;
+			set => SetProperty(ref _isExternal, value);
+		}
 
-        public bool IsFlags
-        {
-            get => _isFlags;
-            set => SetProperty(ref _isFlags, value);
-        }
+		public bool IsFlags
+		{
+			get => _isFlags;
+			set => SetProperty(ref _isFlags, value);
+		}
 
-        public string Namespace
-        {
-            get => _namespace;
-            set => SetProperty(ref _namespace, value);
-        }
+		public bool Enabled
+		{
+			get => _enabled;
+			set => SetProperty(ref _enabled, value);
+		}
 
-        public ObservableCollection<string> Members
-        {
-            get => _members;
-            set => SetProperty(ref _members, value);
-        }
+		public string Namespace
+		{
+			get => _namespace;
+			set => SetProperty(ref _namespace, value);
+		}
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+		public ObservableCollection<string> Members
+		{
+			get => _members;
+			set => SetProperty(ref _members, value);
+		}
 
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-                return false;
+		protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
 
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
+		protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value))
+				return false;
 
-        public void Validate(List<string> errorList)
-        {
-            if (string.IsNullOrWhiteSpace(Name))
-                errorList.Add("Invalid EnumModel. Name not defined.");
-            if (!Members.Any())
-                errorList.Add($"Invalid EnumModel '{Name}'. No members defined.");
-        }
+			field = value;
+			OnPropertyChanged(propertyName);
+			return true;
+		}
 
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
+		public void Validate(List<string> errorList)
+		{
+			if (string.IsNullOrWhiteSpace(Name))
+				errorList.Add("Invalid EnumModel. Name not defined.");
+			if (!Members.Any())
+				errorList.Add($"Invalid EnumModel '{Name}'. No members defined.");
+		}
+
+		public override string ToString()
+		{
+			return Name;
+		}
+	}
 }

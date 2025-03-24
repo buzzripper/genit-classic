@@ -8,12 +8,11 @@ using System.Text.Json.Serialization;
 
 namespace Dyvenix.Genit.Models.Services;
 
-public class SingleSvcMethodModel : ServiceMethodModelBase, INotifyPropertyChanged
+public class GetListSvcMethodModel : ServiceMethodModelBase
 {
 	#region Fields
 
 	private PropertyModel _property;
-	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
 	private bool _suspendUpdates;
 
 	#endregion
@@ -21,11 +20,11 @@ public class SingleSvcMethodModel : ServiceMethodModelBase, INotifyPropertyChang
 	#region Ctors / Initialization
 
 	[JsonConstructor]
-	public SingleSvcMethodModel()
+	public GetListSvcMethodModel()
 	{
 	}
 
-	public SingleSvcMethodModel(Guid id, PropertyModel property)
+	public GetListSvcMethodModel(Guid id, PropertyModel property)
 	{
 		_suspendUpdates = true;
 
@@ -35,23 +34,20 @@ public class SingleSvcMethodModel : ServiceMethodModelBase, INotifyPropertyChang
 		_suspendUpdates = false;
 	}
 
-	public void InitializeOnLoad()
+	public void InitializeOnLoad(PropertyModel property)
 	{
+		_suspendUpdates = true;
+
+		this.Property = property;
+
+		_suspendUpdates = false;
 	}
 
 	#endregion
 
 	#region Properties
 
-	public override ServiceMethodType Type { get { return ServiceMethodType.GetSingle; } }
-
 	public Guid PropertyId { get; set; }
-
-	public ObservableCollection<string> Attributes
-	{
-		get => _attributes;
-		set => SetProperty(ref _attributes, value);
-	}
 
 	#endregion
 
@@ -124,28 +120,6 @@ public class SingleSvcMethodModel : ServiceMethodModelBase, INotifyPropertyChang
 	{
 		return this.Name;
 	}
-
-	#endregion
-
-	#region PropertyChanged
-
-	public event PropertyChangedEventHandler PropertyChanged;
-
-	protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
-
-	//protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-	//{
-	//	if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-	//	field = value;
-
-	//	if (!_suspendUpdates)
-	//		OnPropertyChanged(propertyName);
-
-	//	return true;
-	//}
 
 	#endregion
 }

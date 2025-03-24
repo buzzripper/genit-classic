@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -41,6 +42,15 @@ public class ServiceModel : INotifyPropertyChanged
 	public void InitializeOnLoad(EntityModel entity)
 	{
 		this.Entity = entity;
+
+		foreach(var getSingleMethod in GetSingleMethods)
+			getSingleMethod.InitializeOnLoad(entity.Properties.FirstOrDefault(p => p.Id == getSingleMethod.PropertyId));
+
+		foreach(var getListMethod in GetListMethods)
+			getListMethod.InitializeOnLoad(entity.Properties.FirstOrDefault(p => p.Id == getListMethod.PropertyId));
+
+		foreach(var queryMethod in QueryMethods)
+			queryMethod.InitializeOnLoad(entity.Properties.Where(p => queryMethod.FilterPropertyIds.Contains(p.Id)).ToList());
 	}
 
 	#endregion
@@ -69,7 +79,9 @@ public class ServiceModel : INotifyPropertyChanged
 		set => SetProperty(ref _addlUsings, value);
 	}
 
-	public ObservableCollection<ServiceMethodModelBase> ServiceMethods { get; set; } = new ObservableCollection<ServiceMethodModelBase>();
+	public ObservableCollection<GetSingleSvcMethodModel> GetSingleMethods { get; set; } = new ObservableCollection<GetSingleSvcMethodModel>();
+	public ObservableCollection<GetListSvcMethodModel> GetListMethods { get; set; } = new ObservableCollection<GetListSvcMethodModel>();
+	public ObservableCollection<QuerySvcMethodModel> QueryMethods { get; set; } = new ObservableCollection<QuerySvcMethodModel>();
 
 	#endregion
 

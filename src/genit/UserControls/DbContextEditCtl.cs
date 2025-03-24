@@ -34,11 +34,12 @@ public partial class DbContextEditCtl : UserControlBase
 		txtEntitiesNamespace.Text = dbContextMdl.EntitiesNamespace;
 		txtEnumsNamespace.Text = dbContextMdl.EnumsNamespace;
 		txtServicesNamespace.Text = dbContextMdl.ServicesNamespace;
+		txtQueriesNamespace.Text = dbContextMdl.QueriesNamespace;
+		txtControllersNamespace.Text = dbContextMdl.ControllersNamespace;
 		stringListEditor1.Items = dbContextMdl.AddlUsings;
 
 		_suspendUpdates = false;
 	}
-
 
 	#endregion
 
@@ -82,5 +83,17 @@ public partial class DbContextEditCtl : UserControlBase
 	{
 		if (!_suspendUpdates)
 			_dbContextMdl.ServicesNamespace = txtServicesNamespace.Text;
+	}
+
+	private void txtQueriesNamespace_TextChanged(object sender, System.EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_dbContextMdl.QueriesNamespace = txtQueriesNamespace.Text;
+	}
+
+	private void txtControllersNamespace_TextChanged(object sender, System.EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_dbContextMdl.ControllersNamespace = txtControllersNamespace.Text;
 	}
 }

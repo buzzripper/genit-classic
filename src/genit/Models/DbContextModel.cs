@@ -30,6 +30,8 @@ public class DbContextModel
 	public string EntitiesNamespace { get; set; }
 	public string EnumsNamespace { get; set; }
 	public string ServicesNamespace { get; set; }
+	public string QueriesNamespace { get; set; }
+	public string ControllersNamespace { get; set; }
 	public ObservableCollection<string> AddlUsings { get; set; } = new ObservableCollection<string>();
 	public ObservableCollection<EntityModel> Entities { get; set; } = new ObservableCollection<EntityModel>();
 	public ObservableCollection<EnumModel> Enums { get; set; } = new ObservableCollection<EnumModel>();

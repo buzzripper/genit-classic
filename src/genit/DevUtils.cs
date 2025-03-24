@@ -68,8 +68,9 @@ namespace Dyvenix.Genit
 
 			var pkProp = appUserMdl.GetPKProperty();
 
-			var method = new SingleSvcMethodModel(Guid.NewGuid(), pkProp);
-			service.ServiceMethods.Add(method);
+			var method = new GetSingleSvcMethodModel(Guid.NewGuid(), pkProp);
+			method.Name = "GetById";
+			service.GetSingleMethods.Add(method);
 
 			return service;
 		}
@@ -466,6 +467,7 @@ namespace Dyvenix.Genit
 				InclHeader = true,
 				TemplateFilepath = @"D:\Code\buzzripper\dyvenix\design\Model\Templates\Services.tmpl",
 				OutputFolder = @"C:\Work\Genit\Output",
+				QueryOutputFolder = @"C:\Work\Genit\Output\Queries",
 				Enabled = true
 			};
 			dbContextMdl.ServiceGen = svcGenModel;

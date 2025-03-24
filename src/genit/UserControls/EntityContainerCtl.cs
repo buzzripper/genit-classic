@@ -12,8 +12,7 @@ namespace Dyvenix.Genit.UserControls
 		#region Fields
 
 		private const int cIdxMain = 0;
-		private const int cIdxProperties = 1;
-		private const int cIdxSvcMethods = 2;
+		private const int cIdxSvcMethods = 1;
 
 		private readonly List<EntityEditorItem> _childEditors = new List<EntityEditorItem>();
 
@@ -69,11 +68,6 @@ namespace Dyvenix.Genit.UserControls
 		private void nbMain_Click(object sender, EventArgs e)
 		{
 			SelectControl(cIdxMain);
-		}
-
-		private void nbProperties_Click(object sender, EventArgs e)
-		{
-			SelectControl(cIdxProperties);
 		}
 
 		private void nbSvcMethods_Click(object sender, EventArgs e)

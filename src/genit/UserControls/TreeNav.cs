@@ -1,12 +1,11 @@
-﻿using Dyvenix.Genit.Generators;
-using Dyvenix.Genit.Models;
+﻿using Dyvenix.Genit.Models;
+using Dyvenix.Genit.Models.Generators;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -25,16 +24,13 @@ public partial class TreeNav : UserControl
 
 	private const string cKey_Db = "db";
 	private const string cKey_Entity = "ent";
-	private const string cKey_Property = "prop";
 	private const string cKey_Enum = "enum";
-	private const string cKey_Assoc = "assoc";
 	private const string cKey_Gens = "gens";
 	private const string cKey_Gen = "gen";
 
 	private const string cNodeName_Db = "DbContext";
 	private const string cNodeName_Entities = "Entities";
 	private const string cNodeName_Enums = "Enums";
-	private const string cNodeName_Assocs = "Assocations";
 	private const string cNodeName_Gen = "Generators";
 
 	private DbContextModel _dbContextModel;
@@ -46,7 +42,6 @@ public partial class TreeNav : UserControl
 	private TreeNode _dbCtxGenNode;
 	private TreeNode _entityGenNode;
 	private TreeNode _enumGenNode;
-
 
 	public TreeNav()
 	{

@@ -1,7 +1,7 @@
 ﻿using Dyvenix.Genit.Generators;
 using System;
 
-namespace Dyvenix.Genit.Models;
+namespace Dyvenix.Genit.Models.Generators;
 
 public class EnumGenModel : GenModelBase
 {

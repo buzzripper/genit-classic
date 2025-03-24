@@ -27,34 +27,14 @@ partial class SvcMethodsEditCtl
 	/// </summary>
 	private void InitializeComponent()
 	{
-		textBox1 = new System.Windows.Forms.TextBox();
-		label1 = new System.Windows.Forms.Label();
 		SuspendLayout();
-		// 
-		// textBox1
-		// 
-		textBox1.Location = new System.Drawing.Point(324, 144);
-		textBox1.Name = "textBox1";
-		textBox1.Size = new System.Drawing.Size(100, 23);
-		textBox1.TabIndex = 0;
-		// 
-		// label1
-		// 
-		label1.AutoSize = true;
-		label1.Location = new System.Drawing.Point(129, 153);
-		label1.Name = "label1";
-		label1.Size = new System.Drawing.Size(38, 15);
-		label1.TabIndex = 1;
-		label1.Text = "label1";
 		// 
 		// SvcMethodsEditCtl
 		// 
-		Controls.Add(label1);
-		Controls.Add(textBox1);
+		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "SvcMethodsEditCtl";
 		Size = new System.Drawing.Size(605, 419);
 		ResumeLayout(false);
-		PerformLayout();
 	}
 
 	#endregion

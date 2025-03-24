@@ -43,14 +43,14 @@ partial class EntityContainerCtl
 		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblEntityName, nbMain, nbSvcMethods });
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(832, 30);
+		toolStrip1.Size = new System.Drawing.Size(832, 34);
 		toolStrip1.TabIndex = 0;
 		toolStrip1.Text = "toolStrip1";
 		// 
 		// lblEntityName
 		// 
 		lblEntityName.AutoSize = false;
-		lblEntityName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+		lblEntityName.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		lblEntityName.Name = "lblEntityName";
 		lblEntityName.Size = new System.Drawing.Size(300, 27);
 		lblEntityName.Text = "Entity";
@@ -65,7 +65,7 @@ partial class EntityContainerCtl
 		nbMain.Margin = new System.Windows.Forms.Padding(0, 1, 15, 2);
 		nbMain.Name = "nbMain";
 		nbMain.Padding = new System.Windows.Forms.Padding(0, 0, 25, 0);
-		nbMain.Size = new System.Drawing.Size(69, 27);
+		nbMain.Size = new System.Drawing.Size(69, 31);
 		nbMain.Text = "Main";
 		nbMain.Click += nbMain_Click;
 		// 
@@ -75,7 +75,7 @@ partial class EntityContainerCtl
 		nbSvcMethods.Image = (System.Drawing.Image)resources.GetObject("nbSvcMethods.Image");
 		nbSvcMethods.ImageTransparentColor = System.Drawing.Color.Magenta;
 		nbSvcMethods.Name = "nbSvcMethods";
-		nbSvcMethods.Size = new System.Drawing.Size(114, 27);
+		nbSvcMethods.Size = new System.Drawing.Size(114, 31);
 		nbSvcMethods.Text = "Service Methods";
 		nbSvcMethods.Click += nbSvcMethods_Click;
 		// 

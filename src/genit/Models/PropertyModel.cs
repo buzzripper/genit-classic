@@ -147,7 +147,7 @@ public class PropertyModel : INotifyPropertyChanged
 				return this.ParentEntity.GetPKProperty().PrimitiveType;
 		}
 		set {
-			PrimitiveTypeId = (value != null) ? value.Id : -1;
+			PrimitiveTypeId = value?.Id ?? -1;
 			SetProperty(ref _primitiveType, value);
 		}
 	}
@@ -157,7 +157,7 @@ public class PropertyModel : INotifyPropertyChanged
 	{
 		get => _enumType;
 		set {
-			EnumTypeId = (value != null) ? value.Id : null;
+			EnumTypeId = value?.Id;
 			SetProperty(ref _enumType, value);
 		}
 	}

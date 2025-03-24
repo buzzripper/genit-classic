@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Dyvenix.Genit.Models.Generators;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -20,6 +21,7 @@ public class EntityGenerator
 	private const string cToken_EntityName = "ENTITY_NAME";
 	private const string cToken_Properties = "PROPERTIES";
 	private const string cToken_NavProperties = "NAV_PROPERTIES";
+	private const string cToken_PropNames = "PROP_NAMES";
 
 	#endregion
 
@@ -91,8 +93,11 @@ public class EntityGenerator
 		foreach (var navProperty in entity.NavProperties)
 			GenerateNavigationProperty(navProperty, navPropsOutput, usings);
 
+		// Property names
+		var propNames = GeneratePropNames(entity);
+
 		// Replace tokens in template
-		var fileContents = ReplaceTemplateTokens(template, usings, entitiesNamespace, entity, propsOutput, navPropsOutput);
+		var fileContents = ReplaceTemplateTokens(template, usings, entitiesNamespace, entity, propsOutput, navPropsOutput, propNames);
 
 		var outputFile = Path.Combine(outputFolder, $"{entity.Name}.cs");
 		if (File.Exists(outputFile))
@@ -155,7 +160,20 @@ public class EntityGenerator
 		}
 	}
 
-	private string ReplaceTemplateTokens(string template, List<string> usings, string entitiesNamespace, EntityModel entity, List<string> propsOutput, List<string> navPropsOutput)
+	private string GeneratePropNames(EntityModel entity)
+	{
+		var sb = new StringBuilder();
+
+		foreach (var prop in entity.Properties) {
+			if (sb.Length > 0)
+				sb.Append(Environment.NewLine);
+			sb.Append($"\t\tpublic const string {prop.Name} = nameof({entity.Name}.{prop.Name});");	
+		}
+			
+		return sb.ToString();
+	}
+
+	private string ReplaceTemplateTokens(string template, List<string> usings, string entitiesNamespace, EntityModel entity, List<string> propsOutput, List<string> navPropsOutput, string propNames)
 	{
 		// Header
 		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
@@ -180,6 +198,9 @@ public class EntityGenerator
 		sb = new StringBuilder();
 		navPropsOutput.ForEach(x => sb.AppendLine(x));
 		template = template.Replace(Utils.FmtToken(cToken_NavProperties), sb.ToString());
+
+		// PropNames
+		template = template.Replace(Utils.FmtToken(cToken_PropNames), propNames);
 
 		return template;
 	}

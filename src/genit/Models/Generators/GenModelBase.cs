@@ -2,7 +2,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace Dyvenix.Genit.Models;
+namespace Dyvenix.Genit.Models.Generators;
 
 public abstract class GenModelBase
 {

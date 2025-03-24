@@ -6,6 +6,7 @@ namespace Dyvenix.Genit.Generators
 		DbContext,
 		Entity,
 		Enum,
-		Assoc
+		Assoc,
+		Service
 	}
 }

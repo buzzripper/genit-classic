@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using Dyvenix.Genit.Models;
+﻿using Dyvenix.Genit.Models;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -34,6 +33,7 @@ public partial class DbContextEditCtl : UserControlBase
 		txtContextNamespace.Text = dbContextMdl.ContextNamespace;
 		txtEntitiesNamespace.Text = dbContextMdl.EntitiesNamespace;
 		txtEnumsNamespace.Text = dbContextMdl.EnumsNamespace;
+		txtServicesNamespace.Text = dbContextMdl.ServicesNamespace;
 		stringListEditor1.Items = dbContextMdl.AddlUsings;
 
 		_suspendUpdates = false;
@@ -76,5 +76,11 @@ public partial class DbContextEditCtl : UserControlBase
 	{
 		if (!_suspendUpdates)
 			_dbContextMdl.EnumsNamespace = txtEnumsNamespace.Text;
+	}
+
+	private void txtServicesNamespace_TextChanged(object sender, System.EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_dbContextMdl.ServicesNamespace = txtServicesNamespace.Text;
 	}
 }

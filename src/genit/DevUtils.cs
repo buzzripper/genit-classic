@@ -1,4 +1,6 @@
 ﻿using Dyvenix.Genit.Models;
+using Dyvenix.Genit.Models.Generators;
+using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,9 +23,10 @@ namespace Dyvenix.Genit
 				Name = "Db",
 				Enabled = true,
 				ContextNamespace = "Dyvenix.App1.Data",
-				EntitiesNamespace = "Dyvenix.App1.Data.Entities"
-				//AddlUsings = new List<string> { "System", "System.Collections.Generic" }
+				EntitiesNamespace = "Dyvenix.App1.Data.Entities",
+				ServicesNamespace = "Dyvenix.App1.Server.Services"
 			};
+			dbContext.AddlUsings.Add("System.Collections.Generic");
 			doc.DbContexts.Add(dbContext);
 
 			var logLevelEnumMdl = new EnumModel {
@@ -45,6 +48,9 @@ namespace Dyvenix.Genit
 			var appUserMdl = CreateAppUserEntityModel(dbContext, accessClaimMdl);
 			dbContext.Entities.Add(appUserMdl);
 
+			var appUserServiceMdl = CreateServiceModel(appUserMdl);
+			dbContext.Services.Add(appUserServiceMdl);
+
 			var logEventsMdl = CreateLogEventsEntityModel(dbContext, appUserMdl.Id, logLevelEnumMdl);
 			dbContext.Entities.Add(logEventsMdl);
 
@@ -53,6 +59,19 @@ namespace Dyvenix.Genit
 			dbContext.InitializeOnLoad();
 
 			return doc;
+		}
+
+		private static ServiceModel CreateServiceModel(EntityModel appUserMdl)
+		{
+			var service = new ServiceModel(Guid.NewGuid(), appUserMdl);
+			service.Enabled = true;
+
+			var pkProp = appUserMdl.GetPKProperty();
+
+			var method = new SingleSvcMethodModel(Guid.NewGuid(), pkProp);
+			service.ServiceMethods.Add(method);
+
+			return service;
 		}
 
 		private static EntityModel CreateAccessClaimEntityModel(DbContextModel dbContextMdl)
@@ -424,24 +443,32 @@ namespace Dyvenix.Genit
 		{
 			var dbContextGenModel = new DbContextGenModel(Guid.NewGuid()) {
 				InclHeader = true,
-				OutputFolder = "C:\\Temp\\Genit\\Output",
+				OutputFolder = @"C:\Work\Genit\Output",
 				Enabled = true
 			};
 			dbContextMdl.DbContextGen = dbContextGenModel;
 
 			var entityGenModel = new EntityGenModel(Guid.NewGuid()) {
 				InclHeader = true,
-				OutputFolder = "C:\\Temp\\Genit\\Output",
+				OutputFolder = @"C:\Work\Genit\Output",
 				Enabled = true
 			};
 			dbContextMdl.EntityGen = entityGenModel;
 
 			var enumGenModel = new EnumGenModel(Guid.NewGuid()) {
 				InclHeader = true,
-				OutputFolder = "C:\\Temp\\Genit\\Output",
+				OutputFolder = @"C:\Work\Genit\Output",
 				Enabled = true
 			};
 			dbContextMdl.EnumGen = enumGenModel;
+
+			var svcGenModel = new ServiceGenModel(Guid.NewGuid()) {
+				InclHeader = true,
+				TemplateFilepath = @"D:\Code\buzzripper\dyvenix\design\Model\Templates\Services.tmpl",
+				OutputFolder = @"C:\Work\Genit\Output",
+				Enabled = true
+			};
+			dbContextMdl.ServiceGen = svcGenModel;
 		}
 	}
 }

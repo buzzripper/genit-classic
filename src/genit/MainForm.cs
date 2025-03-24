@@ -45,8 +45,8 @@ public partial class MainForm : Form
 		InitializeLayout(_appConfig);
 
 		// DEBUG
-		//this.CurrDocFilepath = @"C:\Work\Genit\TestA.gmdl";
-		//this.Doc = DocManager.LoadDoc(CurrDocFilepath);
+		this.CurrDocFilepath = @"D:\Code\buzzripper\dyvenix\design\Model\DyvenixModel.gmdl";
+		this.Doc = DocManager.LoadDoc(CurrDocFilepath);
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
@@ -448,6 +448,16 @@ public partial class MainForm : Form
 				var enumGenerator = new EnumGenerator();
 				outputCtl.WriteInfo("Running Entities generator...");
 				enumGenerator.Run(enumGenMdl, dbContextMdl.Enums, dbContextMdl.EnumsNamespace);
+			}
+
+			// Services
+			var svcGenMdl = dbContextMdl.ServiceGen;
+			if (svcGenMdl == null)
+				throw new ApplicationException("Service generator not found.");
+			if (svcGenMdl.Enabled) {
+				var svcGenerator = new ServiceGenerator();
+				outputCtl.WriteInfo("Running Services generator...");
+				svcGenerator.Run(svcGenMdl, dbContextMdl.Services, dbContextMdl.ServicesNamespace);
 			}
 
 			ShowSuccessDlg("Files generated.");

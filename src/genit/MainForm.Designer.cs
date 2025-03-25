@@ -136,57 +136,57 @@ partial class MainForm
 		// mnuNew
 		// 
 		mnuNew.Name = "mnuNew";
-		mnuNew.Size = new System.Drawing.Size(180, 22);
+		mnuNew.Size = new System.Drawing.Size(145, 22);
 		mnuNew.Text = "&New Model";
 		// 
 		// mnuOpen
 		// 
 		mnuOpen.Name = "mnuOpen";
-		mnuOpen.Size = new System.Drawing.Size(180, 22);
+		mnuOpen.Size = new System.Drawing.Size(145, 22);
 		mnuOpen.Text = "&Open Model";
 		mnuOpen.Click += uiOpen_Click;
 		// 
 		// mnuSave
 		// 
 		mnuSave.Name = "mnuSave";
-		mnuSave.Size = new System.Drawing.Size(180, 22);
+		mnuSave.Size = new System.Drawing.Size(145, 22);
 		mnuSave.Text = "&Save Model";
 		mnuSave.Click += uiSave_Click;
 		// 
 		// mnuSaveAs
 		// 
 		mnuSaveAs.Name = "mnuSaveAs";
-		mnuSaveAs.Size = new System.Drawing.Size(180, 22);
+		mnuSaveAs.Size = new System.Drawing.Size(145, 22);
 		mnuSaveAs.Text = "Save &As...";
 		mnuSaveAs.Click += uiSaveAs_Click;
 		// 
 		// mnuClose
 		// 
 		mnuClose.Name = "mnuClose";
-		mnuClose.Size = new System.Drawing.Size(180, 22);
+		mnuClose.Size = new System.Drawing.Size(145, 22);
 		mnuClose.Text = "&Close Model";
 		mnuClose.Click += uiClose_Click;
 		// 
 		// toolStripMenuItem2
 		// 
 		toolStripMenuItem2.Name = "toolStripMenuItem2";
-		toolStripMenuItem2.Size = new System.Drawing.Size(177, 6);
+		toolStripMenuItem2.Size = new System.Drawing.Size(142, 6);
 		// 
 		// mnuRecentFiles
 		// 
 		mnuRecentFiles.Name = "mnuRecentFiles";
-		mnuRecentFiles.Size = new System.Drawing.Size(180, 22);
+		mnuRecentFiles.Size = new System.Drawing.Size(145, 22);
 		mnuRecentFiles.Text = "Recent Files...";
 		// 
 		// toolStripSeparator1
 		// 
 		toolStripSeparator1.Name = "toolStripSeparator1";
-		toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+		toolStripSeparator1.Size = new System.Drawing.Size(142, 6);
 		// 
 		// mnuExit
 		// 
 		mnuExit.Name = "mnuExit";
-		mnuExit.Size = new System.Drawing.Size(180, 22);
+		mnuExit.Size = new System.Drawing.Size(145, 22);
 		mnuExit.Text = "E&xit";
 		mnuExit.Click += uiExit_Click;
 		// 
@@ -321,6 +321,7 @@ partial class MainForm
 		treeNav.DbContextGenSelected += treeNav_DbContextGenSelected;
 		treeNav.EntityGenSelected += treeNav_EntityGenSelected;
 		treeNav.EnumGenSelected += treeNav_EnumGenSelected;
+		treeNav.ServiceGenSelected += treeNav_ServiceGenSelected;
 		// 
 		// splContent
 		// 

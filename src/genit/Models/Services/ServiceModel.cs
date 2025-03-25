@@ -12,10 +12,10 @@ public class ServiceModel : INotifyPropertyChanged
 {
 	#region Fields
 
-	private Guid _id;
 	private EntityModel _entity;
+	private bool _inclSave;
+	private bool _inclDelete;
 	private bool _inclController;
-	private ObservableCollection<ServiceMethodModelBase> _serviceMethods = new ObservableCollection<ServiceMethodModelBase>();
 	private ObservableCollection<string> _addlUsings = new ObservableCollection<string>();
 	private bool _enabled;
 	private bool _suspendUpdates;
@@ -43,10 +43,10 @@ public class ServiceModel : INotifyPropertyChanged
 	{
 		this.Entity = entity;
 
-		foreach(var getSingleMethod in GetSingleMethods)
+		foreach(var getSingleMethod in GetMethods.Where(m => !m.IsList))
 			getSingleMethod.InitializeOnLoad(entity.Properties.FirstOrDefault(p => p.Id == getSingleMethod.PropertyId));
 
-		foreach(var getListMethod in GetListMethods)
+		foreach(var getListMethod in GetMethods.Where(m => m.IsList))
 			getListMethod.InitializeOnLoad(entity.Properties.FirstOrDefault(p => p.Id == getListMethod.PropertyId));
 
 		foreach(var queryMethod in QueryMethods)
@@ -67,6 +67,18 @@ public class ServiceModel : INotifyPropertyChanged
 		set => SetProperty(ref _enabled, value);
 	}
 
+	public bool InclSave
+	{
+		get => _inclSave;
+		set => SetProperty(ref _inclSave, value);
+	}
+
+	public bool InclDelete
+	{
+		get => _inclDelete;
+		set => SetProperty(ref _inclDelete, value);
+	}
+
 	public bool InclController
 	{
 		get => _inclController;
@@ -79,8 +91,7 @@ public class ServiceModel : INotifyPropertyChanged
 		set => SetProperty(ref _addlUsings, value);
 	}
 
-	public ObservableCollection<GetSingleSvcMethodModel> GetSingleMethods { get; set; } = new ObservableCollection<GetSingleSvcMethodModel>();
-	public ObservableCollection<GetListSvcMethodModel> GetListMethods { get; set; } = new ObservableCollection<GetListSvcMethodModel>();
+	public ObservableCollection<GetSvcMethodModel> GetMethods { get; set; } = new ObservableCollection<GetSvcMethodModel>();
 	public ObservableCollection<QuerySvcMethodModel> QueryMethods { get; set; } = new ObservableCollection<QuerySvcMethodModel>();
 
 	#endregion

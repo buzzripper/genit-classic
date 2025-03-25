@@ -18,6 +18,7 @@ public partial class TreeNav : UserControl
 	public event EventHandler<NavTreeNodeSelectedEventArgs> DbContextGenSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityGenSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumGenSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> ServiceGenSelected;
 
 	public event EventHandler<EntityDeletedEventArgs> EntityDeleted;
 	public event EventHandler<EnumDeletedEventArgs> EnumDeleted;
@@ -42,6 +43,7 @@ public partial class TreeNav : UserControl
 	private TreeNode _dbCtxGenNode;
 	private TreeNode _entityGenNode;
 	private TreeNode _enumGenNode;
+	private TreeNode _servicesGenNode;
 
 	public TreeNav()
 	{
@@ -77,8 +79,6 @@ public partial class TreeNav : UserControl
 		_enumsNode = this.BuildEnumsNode();
 
 		_generatorsNode = this.BuildGeneratorsNode();
-
-		//treeView1.SelectedNode = treeView1.Nodes[0];
 	}
 
 	public void Clear()
@@ -216,6 +216,17 @@ public partial class TreeNav : UserControl
 		_enumGenNode = enumGenNode;
 		_generatorsNode.Nodes.Add(_enumGenNode);
 
+		var servicesGenMdl = _dbContextModel.ServiceGen;
+		TreeNode svcGenNode = new TreeNode(servicesGenMdl.Name) {
+			Name = servicesGenMdl.Id.ToString(),
+			SelectedImageKey = cKey_Gen,
+			ImageKey = cKey_Gen,
+			Tag = servicesGenMdl.Id
+		};
+
+		_servicesGenNode = svcGenNode;
+		_generatorsNode.Nodes.Add(_servicesGenNode);
+
 		_generatorsNode.Expand();
 	}
 
@@ -262,6 +273,9 @@ public partial class TreeNav : UserControl
 
 		} else if (e.Node == _enumGenNode) {
 			EnumGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		} else if (e.Node == _servicesGenNode) {
+			ServiceGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 		}
 	}
 
@@ -311,7 +325,6 @@ public partial class TreeNav : UserControl
 			mnuAdd.Text = "Add Enum";
 			mnuAdd.Visible = true;
 			mnuDelete.Visible = false;
-
 
 		} else if (treeView1.SelectedNode.Parent == _enumsNode) {
 			// Single enum

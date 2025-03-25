@@ -457,7 +457,7 @@ public partial class MainForm : Form
 			if (svcGenMdl.Enabled) {
 				var svcGenerator = new ServiceGenerator();
 				outputCtl.WriteInfo("Running Services generator...");
-				svcGenerator.Run(svcGenMdl, dbContextMdl.Services, dbContextMdl.ServicesNamespace, dbContextMdl.QueriesNamespace, dbContextMdl.ControllersNamespace);
+				svcGenerator.Run(svcGenMdl, dbContextMdl.Services, dbContextMdl.ServicesNamespace, dbContextMdl.QueriesNamespace, dbContextMdl.ControllersNamespace, dbContextMdl.EntitiesNamespace);
 			}
 
 			ShowSuccessDlg("Files generated.");
@@ -551,44 +551,22 @@ public partial class MainForm : Form
 		}
 	}
 
+	private void treeNav_ServiceGenSelected(object sender, NavTreeNodeSelectedEventArgs e)
+	{
+		if (SelectTabPageById(e.Id))
+			return;
+
+		if (!multiPageCtl.Select(e.Id)) {
+			var svcGenMdl = this.Doc.DbContexts[0].ServiceGen;
+			var svcGenEditCtl = new ServiceGenEditCtl(svcGenMdl);
+			multiPageCtl.Add(svcGenMdl.Id, svcGenMdl.Name, svcGenEditCtl);
+			multiPageCtl.Select(svcGenMdl.Id);
+		}
+	}
+
 	#endregion
 
 	#region Tabs
-
-	//private void AddNewTabPage(string name, Control ctl, TabType tabType, Guid id)
-	//{
-	//	var tabPage = new TabPage(name) {
-	//		Tag = new TabData { TabType = tabType, Id = id }
-	//	};
-	//	tabPage.Controls.Add(ctl);
-	//	ctl.Dock = DockStyle.Fill;
-	//	tabsMain.TabPages.Add(tabPage);
-	//	tabsMain.SelectedTab = tabPage;
-	//	tabsMain.Visible = true;
-	//	tabsMain.Focus();
-	//}
-
-	//private bool SelectTabPageById(Guid id)
-	//{
-	//	var tabPage = GetTabPageById(id);
-	//	if (tabPage != null) {
-	//		tabsMain.SelectedTab = tabPage;
-	//		return true;
-	//	}
-	//	return false;
-	//}
-
-	//private TabPage GetTabPageById(Guid id)
-	//{
-	//	foreach (TabPage tabPage in tabsMain.TabPages) {
-	//		var tabData = tabPage.Tag as TabData;
-	//		if (tabData == null)
-	//			continue;
-	//		if (tabData.Id == id)
-	//			return tabPage;
-	//	}
-	//	return null;
-	//}
 
 	private bool SelectTabPageById(Guid id)
 	{
@@ -599,18 +577,6 @@ public partial class MainForm : Form
 	{
 		multiPageCtl.Add(id, name, ctl);
 	}
-
-	//private TabPage GetTabPageById(Guid id)
-	//{
-	//	foreach (TabPage tabPage in tabsMain.TabPages) {
-	//		var tabData = tabPage.Tag as TabData;
-	//		if (tabData == null)
-	//			continue;
-	//		if (tabData.Id == id)
-	//			return tabPage;
-	//	}
-	//	return null;
-	//}
 
 	#endregion
 

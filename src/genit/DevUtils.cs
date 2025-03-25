@@ -68,9 +68,10 @@ namespace Dyvenix.Genit
 
 			var pkProp = appUserMdl.GetPKProperty();
 
-			var method = new GetSingleSvcMethodModel(Guid.NewGuid(), pkProp);
+			var method = new GetSvcMethodModel(Guid.NewGuid(), pkProp);
 			method.Name = "GetById";
-			service.GetSingleMethods.Add(method);
+			method.IsList = false;
+			service.GetMethods.Add(method);
 
 			return service;
 		}

@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dyvenix.Genit.Models.Generators;
-using System.Collections;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -19,13 +18,21 @@ public class ServiceGenerator
 
 	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_AddlUsings = "ADDL_USINGS";
+
 	private const string cToken_ServicesNs = "SERVICES_NS";
 	private const string cToken_ServiceName = "SERVICE_NAME";
 	private const string cToken_IntfSignatures = "INTERFACE_SIGNATURES";
 	private const string cToken_SingleMethods = "SINGLE_METHODS";
 	private const string cToken_ListMethods = "LIST_METHODS";
 	private const string cToken_QueryMethods = "QUERY_METHODS";
-	private const string cToken_SortingMethod = "SORTING_METHOD";
+
+	private const string cToken_QueriesNs = "QUERIES_NS";
+	private const string cToken_QueryClassName = "QUERY_CLASS_NAME";
+	private const string cToken_FilterProps = "FILTER_PROPERTIES";
+
+	private const string cToken_ControllersNs = "CONTROLLERS_NS";
+	private const string cToken_ControllerName = "CONTROLLER_NAME";
+	private const string cToken_ServiceVarName = "SERVICE_VAR_NAME";
 
 	#endregion
 
@@ -35,7 +42,7 @@ public class ServiceGenerator
 
 	#endregion
 
-	public void Run(ServiceGenModel svcGenModel, ObservableCollection<ServiceModel> services, string servicesNamespace, string queriesNamespace, string controllersNamespace)
+	public void Run(ServiceGenModel svcGenModel, ObservableCollection<ServiceModel> services, string servicesNamespace, string queriesNamespace, string controllersNamespace, string entitiesNamespace)
 	{
 		if (!svcGenModel.Enabled)
 			return;
@@ -46,26 +53,30 @@ public class ServiceGenerator
 		Validate(templateFilepath, outputFolder);
 		var serviceTemplate = File.ReadAllText(templateFilepath);
 
-		//// Quer
-		//var queryTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.QueryTemplateFilepath);
-		//var queryOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.QueryOutputFolder);
-		//Validate(queryTemplateFilepath, queryOutputFolder);
-		//var queryTemplate = File.ReadAllText(queryTemplateFilepath);
+		// Query classes
+		var queryTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.QueryTemplateFilepath);
+		var queryOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.QueryOutputFolder);
+		Validate(queryTemplateFilepath, queryOutputFolder);
+		var queryTemplate = File.ReadAllText(queryTemplateFilepath);
 
-		//// Controllers
-		//var controllerTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ControllerTemplateFilepath);
-		//var controllersOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ControllerOutputFolder);
-		//Validate(controllerTemplateFilepath, controllersOutputFolder);
-		//var controllerTemplate = File.ReadAllText(controllerTemplateFilepath);
+		// Controllers
+		var controllerTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ControllerTemplateFilepath);
+		var controllersOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ControllerOutputFolder);
+		Validate(controllerTemplateFilepath, controllersOutputFolder);
+		var controllerTemplate = File.ReadAllText(controllerTemplateFilepath);
 
 		foreach (var service in services.Where(e => e.Enabled)) {
 			// Generate service class
-			var cleanSvcTemplate = $"{serviceTemplate}";
-			GenerateService(service, svcGenModel, $"{cleanSvcTemplate}", outputFolder, servicesNamespace);
+			GenerateService(service, svcGenModel, $"{serviceTemplate}", outputFolder, servicesNamespace, queriesNamespace);
 
-			//// Generate query class(es)
-			//var cleanQueryTemplate = $"{serviceTemplate}";
-			//GenerateQueryClasses(service, svcGenModel, $"{queryTemplate}", outputFolder, queriesNamespace);
+			// Generate query classes
+			foreach (var queryMethod in service.QueryMethods) {
+				GenerateQueryClass(service, svcGenModel, $"{queryTemplate}", queryOutputFolder, queriesNamespace);
+			}
+
+			// Generate controller
+			if (service.InclController)
+				GenerateController(service, svcGenModel, $"{controllerTemplate}", controllersOutputFolder, controllersNamespace, servicesNamespace, queriesNamespace, entitiesNamespace);
 		}
 	}
 
@@ -80,29 +91,29 @@ public class ServiceGenerator
 
 	#region Services
 
-	private void GenerateService(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder, string servicesNamespace)
+	private void GenerateService(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder, string servicesNamespace, string queriesNamespace)
 	{
 		var serviceName = $"{service.Entity.Name}Service";
 
 		// Addl usings
 		var addlUsings = BuildAddlUsings(service);
+		addlUsings.AddIfNotExists(queriesNamespace);
 
 		// Interface signatures
 		var interfaceOutput = new List<string>();
 
 		// GetSingle methods
 		var singleMethodsOutput = new List<string>();
-		foreach (GetSingleSvcMethodModel listMethod in service.GetSingleMethods)
-			this.GenerateSingleMethod(service.Entity, listMethod, singleMethodsOutput, interfaceOutput);
+		foreach (GetSvcMethodModel singleMethod in service.GetMethods.Where(m => !m.IsList))
+			this.GenerateSingleMethod(service.Entity, singleMethod, singleMethodsOutput, interfaceOutput);
 
 		// Get list methods
 		var listMethodsOutput = new List<string>();
-		foreach (GetListSvcMethodModel listMethod in service.GetListMethods)
+		foreach (GetSvcMethodModel listMethod in service.GetMethods.Where(m => m.IsList))
 			this.GenerateListMethod(service.Entity, listMethod, listMethodsOutput, interfaceOutput);
 
 		// Query methods
 		var queryMethodsOutput = new List<string>();
-		var sortingMethodOutput = new List<string>();
 		if (service.QueryMethods.Any()) {
 			queryMethodsOutput.AddLine(1, "#region Queries");
 
@@ -110,12 +121,13 @@ public class ServiceGenerator
 				this.GenerateQueryMethod(service.Entity, queryMethod, queryMethodsOutput, interfaceOutput);
 
 			// Sorting method
-			this.GenerateSortingMethod(service.Entity, sortingMethodOutput);
+			this.GenerateSortingMethod(service.Entity, queryMethodsOutput);
+			queryMethodsOutput.AddLine();
 			queryMethodsOutput.AddLine(1, "#endregion");
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, sortingMethodOutput, interfaceOutput, servicesNamespace);
+		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, servicesNamespace);
 
 		var outputFile = Path.Combine(outputFolder, $"{serviceName}.cs");
 		if (File.Exists(outputFile))
@@ -123,7 +135,7 @@ public class ServiceGenerator
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	private void GenerateSingleMethod(EntityModel entity, GetSingleSvcMethodModel method, List<string> output, List<string> interfaceOutput)
+	private void GenerateSingleMethod(EntityModel entity, GetSvcMethodModel method, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		output.AddLine();
@@ -145,7 +157,7 @@ public class ServiceGenerator
 		output.AddLine(tc, "}");
 	}
 
-	private void GenerateListMethod(EntityModel entity, GetListSvcMethodModel method, List<string> output, List<string> interfaceOutput)
+	private void GenerateListMethod(EntityModel entity, GetSvcMethodModel method, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		output.AddLine();
@@ -223,7 +235,6 @@ public class ServiceGenerator
 		output.AddLine(tc + 1, "return result;");
 
 		output.AddLine(tc, "}");
-		output.AddLine();
 	}
 
 	private void GenerateSortingMethod(EntityModel entity, List<string> output)
@@ -249,7 +260,7 @@ public class ServiceGenerator
 		output.AddLine(tc, "}");
 	}
 
-	private string ReplaceServiceTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> sortingMethodOutput, List<string> interfaceOutput, string servicesNamespace)
+	private string ReplaceServiceTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string servicesNamespace)
 	{
 		// Header
 		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
@@ -294,11 +305,6 @@ public class ServiceGenerator
 		sb = new StringBuilder();
 		queryMethodsOutput.ForEach(x => sb.AppendLine(x));
 		template = template.Replace(Utils.FmtToken(cToken_QueryMethods), sb.ToString());
-
-		// Sorting method
-		sb = new StringBuilder();
-		sortingMethodOutput.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(Utils.FmtToken(cToken_SortingMethod), sb.ToString());
 
 		return template;
 	}
@@ -307,47 +313,183 @@ public class ServiceGenerator
 
 	#region Query Classes
 
-	private void GenerateQueryClasses(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder, string queriesNamespace)
+	private void GenerateQueryClass(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder, string queriesNamespace)
 	{
+		foreach (var queryMethod in service.QueryMethods) {
+			// Addl usings
+			var addlUsings = BuildAddlUsings(service);
+			var className = $"{queryMethod.Name}Query";
+
+			var propsOutput = new List<string>();
+			foreach (var filterProp in queryMethod.FilterProperties) {
+				propsOutput.AddLine(1, $"public {filterProp.DatatypeName} {filterProp.Name} {{ get; set; }}");
+			}
+
+			// Replace tokens in template
+			var fileContents = ReplaceQueryTemplateTokens(template, className, addlUsings, queriesNamespace, propsOutput);
+
+			var outputFile = Path.Combine(outputFolder, $"{className}.cs");
+			if (File.Exists(outputFile))
+				File.Delete(outputFile);
+			File.WriteAllText(outputFile, fileContents);
+		}
+	}
+
+	private string ReplaceQueryTemplateTokens(string template, string className, List<string> addlUsings, string queriesNamespace, List<string> propsOutput)
+	{
+		// Header
+		var fileContents = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
+
+		// Addl Usings
+		var sb = new StringBuilder();
+		addlUsings.ForEach(x => {
+			if (sb.Length > 0)
+				sb.AppendLine();
+			sb.Append($"using {x};");
+		});
+		fileContents = fileContents.Replace(Utils.FmtToken(cToken_AddlUsings), sb.ToString());
+
+		// Namespace
+		fileContents = fileContents.Replace(Utils.FmtToken(cToken_QueriesNs), queriesNamespace);
+
+		// Class name
+		fileContents = fileContents.Replace(Utils.FmtToken(cToken_QueryClassName), className);
+
+		// Filter properties
+		sb = new StringBuilder();
+		propsOutput.ForEach(x => sb.AppendLine(x));
+		fileContents = fileContents.Replace(Utils.FmtToken(cToken_FilterProps), sb.ToString());
+
+		return fileContents;
+	}
+
+	#endregion
+
+	#region Controllers
+
+	private void GenerateController(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder, string controllersNamespace, string servicesNamespace, string queriesNamespace, string entitiesNamespace)
+	{
+		var controllerName = $"{service.Entity.Name}Controller";
 		var serviceName = $"{service.Entity.Name}Service";
+		var serviceVarName = Utils.ToCamelCase(serviceName);
 
 		// Addl usings
 		var addlUsings = BuildAddlUsings(service);
-
-		// Interface signatures
-		var interfaceOutput = new List<string>();
+		addlUsings.AddIfNotExists(servicesNamespace);
+		addlUsings.AddIfNotExists(queriesNamespace);
+		addlUsings.AddIfNotExists(entitiesNamespace);
 
 		// GetSingle methods
 		var singleMethodsOutput = new List<string>();
-		foreach (GetSingleSvcMethodModel listMethod in service.GetSingleMethods)
-			this.GenerateSingleMethod(service.Entity, listMethod, singleMethodsOutput, interfaceOutput);
+		foreach (GetSvcMethodModel singleMethod in service.GetMethods.Where(m => !m.IsList))
+			this.GenerateSingleControllerMethod(service.Entity, singleMethod, serviceVarName, singleMethodsOutput);
 
 		// Get list methods
 		var listMethodsOutput = new List<string>();
-		foreach (GetListSvcMethodModel listMethod in service.GetListMethods)
-			this.GenerateListMethod(service.Entity, listMethod, listMethodsOutput, interfaceOutput);
+		foreach (GetSvcMethodModel listMethod in service.GetMethods.Where(m => m.IsList))
+			this.GenerateListControllerMethod(service.Entity, listMethod, serviceVarName, listMethodsOutput);
 
+		// Query methods
 		var queryMethodsOutput = new List<string>();
 		var sortingMethodOutput = new List<string>();
+		if (service.QueryMethods.Any()) {
+			queryMethodsOutput.AddLine();
+			queryMethodsOutput.AddLine(1, "#region Queries");
+			foreach (QuerySvcMethodModel queryMethod in service.QueryMethods)
+				this.GenerateQueryControllerMethod(service.Entity, queryMethod, serviceVarName, queryMethodsOutput);
+			queryMethodsOutput.AddLine();
+			queryMethodsOutput.AddLine(1, "#endregion");
+		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceQueryTemplateTokens(template, serviceName, addlUsings, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, sortingMethodOutput, interfaceOutput, queriesNamespace);
+		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, controllersNamespace, controllerName, serviceName, serviceVarName, singleMethodsOutput, listMethodsOutput, queryMethodsOutput);
 
-		var outputFile = Path.Combine(outputFolder, $"{serviceName}.cs");
+		var outputFile = Path.Combine(outputFolder, $"{controllerName}.cs");
 		if (File.Exists(outputFile))
 			File.Delete(outputFile);
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	private string ReplaceQueryTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> sortingMethodOutput, List<string> interfaceOutput, string servicesNamespace)
+	private void GenerateSingleControllerMethod(EntityModel entity, GetSvcMethodModel method, string svcVarName, List<string> output)
+	{
+		var tc = 1;
+		output.AddLine();
+
+		// Attributes
+		if (method.Attributes.Any())
+			foreach (var attr in method.Attributes)
+				output.AddLine(tc, $"[{attr}]");
+
+		// Method
+		output.AddLine(tc, $"[HttpGet, Route(\"[action]/{{{method.ArgName}}}\")]");
+		output.AddLine(tc, $"public async Task<ActionResult<{entity.Name}>> {method.Name}({method.ArgType} {method.ArgName})");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, "try {");
+		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({method.ArgName});");
+		output.AddLine(tc + 1, "} catch (Exception ex) {");
+		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+		output.AddLine(tc + 1, "}");
+		output.AddLine(tc, "}");
+	}
+
+	private void GenerateListControllerMethod(EntityModel entity, GetSvcMethodModel method, string svcVarName, List<string> output)
+	{
+		var tc = 1;
+		output.AddLine();
+
+		// Attributes
+		if (method.Attributes.Any())
+			foreach (var attr in method.Attributes)
+				output.AddLine(tc, $"[{attr}]");
+
+		// Method
+		string varUriSegment = null;
+		string argDecl = null;
+		if (!string.IsNullOrWhiteSpace(method.ArgName)) {
+			varUriSegment = $"/{{{method.ArgName}}}";
+			argDecl = $"{method.ArgType} {method.ArgName}";
+		}
+		output.AddLine(tc, $"[HttpGet, Route(\"[action]{varUriSegment}\")]");
+		output.AddLine(tc, $"public async Task<ActionResult<List<{entity.Name}>>> {method.Name}({argDecl})");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, "try {");
+		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({method.ArgName});");
+		output.AddLine(tc + 1, "} catch (Exception ex) {");
+		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+		output.AddLine(tc + 1, "}");
+		output.AddLine(tc, "}");
+	}
+
+	private void GenerateQueryControllerMethod(EntityModel entity, QuerySvcMethodModel queryMethod, string svcVarName, List<string> output)
+	{
+		var tc = 1;
+		output.AddLine();
+		var queryClassName = $"{queryMethod.Name}Query";
+		var queryVarName = Utils.ToCamelCase(queryClassName);
+
+		// Attributes
+		if (queryMethod.Attributes.Any())
+			foreach (var attr in queryMethod.Attributes)
+				output.AddLine(tc, $"[{attr}]");
+
+		// Method
+		output.AddLine(tc, "[HttpPost, Route(\"[action]\")]");
+		output.AddLine(tc, $"public async Task<ActionResult<EntityList<{entity.Name}>>> Query([FromBody] {queryClassName} {queryVarName})");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, "try {");
+		output.AddLine(tc + 2, $"return await _{svcVarName}.{queryMethod.Name}({queryVarName});");
+		output.AddLine(tc + 1, "} catch (Exception ex) {");
+		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+		output.AddLine(tc + 1, "}");
+		output.AddLine(tc, "}");
+	}
+
+	private string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput)
 	{
 		// Header
 		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
 
-		// Namespace
-		template = template.Replace(Utils.FmtToken(cToken_ServicesNs), servicesNamespace);
-
-		// Usings
+		// Addl Usings
 		var sb = new StringBuilder();
 		addlUsings.ForEach(x => {
 			if (sb.Length > 0)
@@ -356,19 +498,11 @@ public class ServiceGenerator
 		});
 		template = template.Replace(Utils.FmtToken(cToken_AddlUsings), sb.ToString());
 
-		// Interface
-		sb = new StringBuilder();
-		interfaceOutput.ForEach(x => {
-			if (sb.Length > 0)
-				sb.AppendLine();
-			sb.Append($"\t{x};");
-		});
-		template = template.Replace(Utils.FmtToken(cToken_IntfSignatures), sb.ToString());
-
-		// Service name
+		// Various
+		template = template.Replace(Utils.FmtToken(cToken_ControllersNs), controllersNamespace);
+		template = template.Replace(Utils.FmtToken(cToken_ControllerName), controllerName);
 		template = template.Replace(Utils.FmtToken(cToken_ServiceName), serviceName);
-
-		// cToken_IntfSignatures
+		template = template.Replace(Utils.FmtToken(cToken_ServiceVarName), serviceVarName);
 
 		// Single Methods
 		sb = new StringBuilder();
@@ -384,11 +518,6 @@ public class ServiceGenerator
 		sb = new StringBuilder();
 		queryMethodsOutput.ForEach(x => sb.AppendLine(x));
 		template = template.Replace(Utils.FmtToken(cToken_QueryMethods), sb.ToString());
-
-		// Sorting method
-		sb = new StringBuilder();
-		sortingMethodOutput.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(Utils.FmtToken(cToken_SortingMethod), sb.ToString());
 
 		return template;
 	}

@@ -141,7 +141,7 @@ public class PropertyModel : INotifyPropertyChanged
 	public PrimitiveType PrimitiveType
 	{
 		get {
-			if(this.ParentEntity == null)
+			if (this.ParentEntity == null)
 				return _primitiveType;
 			else
 				return this.ParentEntity.GetPKProperty().PrimitiveType;
@@ -162,20 +162,23 @@ public class PropertyModel : INotifyPropertyChanged
 		}
 	}
 
-	//[JsonIgnore]
-	//public AssocModel Assoc
-	//{
-	//	get => _assoc;
-	//	set {
-	//		AssocId = (value != null) ? value.Id : null;
-	//		SetProperty(ref _assoc, value);
-	//	}
-	//}
-
 	[JsonIgnore]
 	public bool IsForeignKey
 	{
 		get => this.AssocId != null;
+	}
+
+	[JsonIgnore]
+	public string DatatypeName
+	{
+		get {
+			if (this.PrimitiveType != null && this.PrimitiveType != PrimitiveType.None)
+				return this.PrimitiveType.CSType;
+			else if (this.EnumType != null)
+				return this.EnumType.Name;
+			else
+				return "UNKNOWN DATATYPE";
+		}
 	}
 
 	#endregion

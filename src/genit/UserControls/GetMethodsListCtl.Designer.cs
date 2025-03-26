@@ -29,19 +29,20 @@ partial class GetMethodsListCtl
 	{
 		components = new System.ComponentModel.Container();
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GetMethodsListCtl));
-		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
 		btnAdd = new System.Windows.Forms.ToolStripButton();
 		btnDelete = new System.Windows.Forms.ToolStripButton();
+		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 		grdItems = new System.Windows.Forms.DataGridView();
-		bindingSrc = new System.Windows.Forms.BindingSource(components);
 		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colProperty = new System.Windows.Forms.DataGridViewComboBoxColumn();
 		colIsList = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 		colAttrs = new System.Windows.Forms.DataGridViewLinkColumn();
 		colDelete = new System.Windows.Forms.DataGridViewImageColumn();
+		bindingSrc = new System.Windows.Forms.BindingSource(components);
 		toolStrip1.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)grdItems).BeginInit();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).BeginInit();
@@ -51,11 +52,12 @@ partial class GetMethodsListCtl
 		// 
 		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
 		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnDelete });
+		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnDelete, toolStripLabel1 });
 		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(656, 25);
+		toolStrip1.Size = new System.Drawing.Size(656, 33);
 		toolStrip1.TabIndex = 1;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -65,7 +67,7 @@ partial class GetMethodsListCtl
 		btnAdd.Image = (System.Drawing.Image)resources.GetObject("btnAdd.Image");
 		btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnAdd.Name = "btnAdd";
-		btnAdd.Size = new System.Drawing.Size(23, 22);
+		btnAdd.Size = new System.Drawing.Size(34, 28);
 		btnAdd.Text = "toolStripButton1";
 		btnAdd.Click += btnAdd_Click;
 		// 
@@ -75,9 +77,16 @@ partial class GetMethodsListCtl
 		btnDelete.Image = (System.Drawing.Image)resources.GetObject("btnDelete.Image");
 		btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnDelete.Name = "btnDelete";
-		btnDelete.Size = new System.Drawing.Size(23, 22);
+		btnDelete.Size = new System.Drawing.Size(34, 28);
 		btnDelete.Text = "toolStripButton3";
 		btnDelete.Click += btnDelete_Click;
+		// 
+		// toolStripLabel1
+		// 
+		toolStripLabel1.Name = "toolStripLabel1";
+		toolStripLabel1.Padding = new System.Windows.Forms.Padding(300, 0, 0, 0);
+		toolStripLabel1.Size = new System.Drawing.Size(436, 28);
+		toolStripLabel1.Text = "'Get' Methods";
 		// 
 		// grdItems
 		// 
@@ -93,6 +102,7 @@ partial class GetMethodsListCtl
 		grdItems.MultiSelect = false;
 		grdItems.Name = "grdItems";
 		grdItems.RowHeadersVisible = false;
+		grdItems.RowHeadersWidth = 62;
 		grdItems.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdItems.ShowEditingIcon = false;
 		grdItems.Size = new System.Drawing.Size(548, 203);
@@ -143,9 +153,9 @@ partial class GetMethodsListCtl
 		// colAttrs
 		// 
 		colAttrs.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight;
-		dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
-		colAttrs.DefaultCellStyle = dataGridViewCellStyle1;
+		dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Transparent;
+		colAttrs.DefaultCellStyle = dataGridViewCellStyle3;
 		colAttrs.HeaderText = "";
 		colAttrs.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		colAttrs.LinkColor = System.Drawing.SystemColors.MenuHighlight;
@@ -161,10 +171,10 @@ partial class GetMethodsListCtl
 		// 
 		// colDelete
 		// 
-		dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle2.NullValue = resources.GetObject("dataGridViewCellStyle2.NullValue");
-		dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
-		colDelete.DefaultCellStyle = dataGridViewCellStyle2;
+		dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle4.NullValue = resources.GetObject("dataGridViewCellStyle4.NullValue");
+		dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.Transparent;
+		colDelete.DefaultCellStyle = dataGridViewCellStyle4;
 		colDelete.HeaderText = "";
 		colDelete.Image = (System.Drawing.Image)resources.GetObject("colDelete.Image");
 		colDelete.MinimumWidth = 75;
@@ -173,7 +183,7 @@ partial class GetMethodsListCtl
 		// 
 		// GetMethodsListCtl
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+		AutoScaleDimensions = new System.Drawing.SizeF(11F, 28F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ControlDarkDark;
 		BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -203,4 +213,5 @@ partial class GetMethodsListCtl
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsList;
 	private System.Windows.Forms.DataGridViewLinkColumn colAttrs;
 	private System.Windows.Forms.DataGridViewImageColumn colDelete;
+	private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 }

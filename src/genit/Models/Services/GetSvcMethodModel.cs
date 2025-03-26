@@ -10,7 +10,7 @@ public class GetSvcMethodModel : ServiceMethodModelBase, INotifyPropertyChanged
 {
 	#region Fields
 
-	private PropertyModel _property;
+	private PropertyModel _filterProperty;
 	private bool _isList;
 
 	#endregion
@@ -22,21 +22,16 @@ public class GetSvcMethodModel : ServiceMethodModelBase, INotifyPropertyChanged
 	{
 	}
 
-	public GetSvcMethodModel(Guid id, PropertyModel property)
+	public GetSvcMethodModel(Guid id)
 	{
-		_suspendUpdates = true;
-
 		Id = id;
-		Property = property;
-
-		_suspendUpdates = false;
 	}
 
 	public void InitializeOnLoad(PropertyModel property)
 	{
 		_suspendUpdates = true;
 
-		this.Property = property;
+		this.FilterProperty = property;
 
 		_suspendUpdates = false;
 	}
@@ -45,7 +40,7 @@ public class GetSvcMethodModel : ServiceMethodModelBase, INotifyPropertyChanged
 
 	#region Properties
 
-	public Guid PropertyId { get; set; }
+	public Guid? FilterPropertyId { get; set; }
 
 	public bool IsList
 	{
@@ -58,26 +53,26 @@ public class GetSvcMethodModel : ServiceMethodModelBase, INotifyPropertyChanged
 	#region Non-serialized Properties
 
 	[JsonIgnore]
-	public PropertyModel Property
+	public PropertyModel FilterProperty
 	{
-		get { return _property; }
+		get { return _filterProperty; }
 		set {
-			PropertyId = value?.Id ?? Guid.Empty;
-			SetProperty(ref _property, value);
+			FilterPropertyId = value?.Id ?? Guid.Empty;
+			SetProperty(ref _filterProperty, value);
 		}
 	}
 
 	[JsonIgnore]
 	public string PropName
 	{
-		get { return this.Property?.Name; }
+		get { return this.FilterProperty?.Name; }
 	}
 
 	[JsonIgnore]
 	public string ArgName
 	{
 		get {
-			return Utils.ToCamelCase(Property.Name);
+			return Utils.ToCamelCase(FilterProperty?.Name);
 		}
 	}
 
@@ -85,13 +80,13 @@ public class GetSvcMethodModel : ServiceMethodModelBase, INotifyPropertyChanged
 	public string ArgType
 	{
 		get {
-			if (Property == null)
+			if (FilterProperty == null)
 				return string.Empty;
 			
-			if (Property.PrimitiveType != null)
-				return Property.PrimitiveType.CSType;
-			else if (Property.EnumType != null)
-				return Property.EnumType.Name;
+			if (FilterProperty.PrimitiveType != null)
+				return FilterProperty.PrimitiveType.CSType;
+			else if (FilterProperty.EnumType != null)
+				return FilterProperty.EnumType.Name;
 			else
 				return string.Empty;
 		}

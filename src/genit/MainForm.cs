@@ -398,6 +398,8 @@ public partial class MainForm : Form
 
 	#endregion
 
+	#region Generate
+
 	private void uiGenerate_Click(object sender, EventArgs e)
 	{
 		try {
@@ -457,7 +459,7 @@ public partial class MainForm : Form
 			if (svcGenMdl.Enabled) {
 				var svcGenerator = new ServiceGenerator();
 				outputCtl.WriteInfo("Running Services generator...");
-				svcGenerator.Run(svcGenMdl, dbContextMdl.Services, dbContextMdl.ServicesNamespace, dbContextMdl.QueriesNamespace, dbContextMdl.ControllersNamespace, dbContextMdl.EntitiesNamespace);
+				svcGenerator.Run(svcGenMdl, dbContextMdl.Entities, dbContextMdl.ServicesNamespace, dbContextMdl.QueriesNamespace, dbContextMdl.ControllersNamespace, dbContextMdl.EntitiesNamespace);
 			}
 
 			ShowSuccessDlg("Files generated.");
@@ -467,6 +469,7 @@ public partial class MainForm : Form
 		}
 
 	}
+	#endregion
 
 	#region TreeNav
 
@@ -510,6 +513,19 @@ public partial class MainForm : Form
 			multiPageCtl.Add(enumMdl.Id, enumMdl.Name, enumEditCtl);
 			multiPageCtl.Select(enumMdl.Id);
 		}
+	}
+
+	private void treeNav_ServiceModelSelected(object sender, NavTreeNodeSelectedEventArgs e)
+	{
+		//if (SelectTabPageById(e.Id))
+		//	return;
+
+		//if (!multiPageCtl.Select(e.Id)) {
+		//	var svcMdl = this.Doc.DbContexts[0].Services.First(s => s.Id == e.Id);
+		//	var svcEditCtl = new ServiceEditCtl(svcMdl);
+		//	multiPageCtl.Add(svcMdl.Id, svcMdl.EntityName, svcEditCtl);
+		//	multiPageCtl.Select(svcMdl.Id);
+		//}
 	}
 
 	private void treeNav_DbContextGenSelected(object sender, NavTreeNodeSelectedEventArgs e)

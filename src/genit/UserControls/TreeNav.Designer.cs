@@ -49,6 +49,7 @@ partial class TreeNav
 		tvImgList.Images.SetKeyName(4, "assoc");
 		tvImgList.Images.SetKeyName(5, "gens");
 		tvImgList.Images.SetKeyName(6, "gen");
+		tvImgList.Images.SetKeyName(7, "svcs");
 		// 
 		// treeView1
 		// 
@@ -67,20 +68,20 @@ partial class TreeNav
 		// 
 		ctxMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuAdd, mnuDelete });
 		ctxMenuStrip.Name = "ctxMenuStrip";
-		ctxMenuStrip.Size = new System.Drawing.Size(181, 70);
+		ctxMenuStrip.Size = new System.Drawing.Size(117, 48);
 		ctxMenuStrip.Opening += ctxMenuStrip_Opening;
 		// 
 		// mnuAdd
 		// 
 		mnuAdd.Name = "mnuAdd";
-		mnuAdd.Size = new System.Drawing.Size(180, 22);
+		mnuAdd.Size = new System.Drawing.Size(116, 22);
 		mnuAdd.Text = "Add...";
 		mnuAdd.Click += mnuAdd_Click;
 		// 
 		// mnuDelete
 		// 
 		mnuDelete.Name = "mnuDelete";
-		mnuDelete.Size = new System.Drawing.Size(180, 22);
+		mnuDelete.Size = new System.Drawing.Size(116, 22);
 		mnuDelete.Text = "Delete...";
 		mnuDelete.Click += mnuDelete_Click;
 		// 

@@ -6,7 +6,8 @@
     <Nullable>disable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>disable</ImplicitUsings>
-	 <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+	 <!--<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>-->
+	  <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
 	 <Version>2.0.0</Version>
 	 <ApplicationIcon>Resources\genit.ico</ApplicationIcon>
 	  <NoWarn>$(NoWarn);WFO5001</NoWarn>
@@ -56,7 +57,7 @@
     <Compile Update="UserControls\EntityGenEditCtl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UserControls\SvcMethodsListCtl.cs">
+    <Compile Update="UserControls\GetMethodsListCtl.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>

@@ -1,5 +1,4 @@
 ﻿using Dyvenix.Genit.Models.Generators;
-using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +15,7 @@ public class DbContextModel
 		Entities.CollectionChanged += Entities_CollectionChanged;
 		Enums.CollectionChanged += Enums_CollectionChanged;
 		Assocs.CollectionChanged += Assocs_CollectionChanged;
-		Services.CollectionChanged += Services_CollectionChanged;
+		//Services.CollectionChanged += Services_CollectionChanged;
 	}
 
 	#endregion
@@ -36,7 +35,7 @@ public class DbContextModel
 	public ObservableCollection<EntityModel> Entities { get; set; } = new ObservableCollection<EntityModel>();
 	public ObservableCollection<EnumModel> Enums { get; set; } = new ObservableCollection<EnumModel>();
 	public ObservableCollection<AssocModel> Assocs { get; set; } = new ObservableCollection<AssocModel>();
-	public ObservableCollection<ServiceModel> Services { get; set; } = new ObservableCollection<ServiceModel>();
+	//public ObservableCollection<ServiceModel> Services { get; set; } = new ObservableCollection<ServiceModel>();
 	public DbContextGenModel DbContextGen { get; set; }
 	public EntityGenModel EntityGen { get; set; }
 	public EnumGenModel EnumGen { get; set; }
@@ -61,10 +60,7 @@ public class DbContextModel
 			entity.InitializeOnLoad(Enums, Assocs);
 			entity.NavPropertyAdded += Entity_NavPropertyAdded;
 			entity.NavPropertyRemoved += Entity_NavPropertyRemoved;
-		}
-
-		foreach (var service in Services) {
-			service.InitializeOnLoad(Entities.FirstOrDefault(e => e.Id == service.EntityId));
+			entity.Service?.InitializeOnLoad(entity);
 		}
 	}
 

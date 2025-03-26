@@ -24,7 +24,6 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 
 	public EntityMainEditCtl() : base()
 	{
-		InitializeComponent();
 	}
 
 	public EntityMainEditCtl(EntityModel entity) : base(entity)

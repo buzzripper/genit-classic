@@ -12,11 +12,13 @@ public class ServiceModel : INotifyPropertyChanged
 {
 	#region Fields
 
-	private EntityModel _entity;
 	private bool _inclSave;
 	private bool _inclDelete;
 	private bool _inclController;
-	private ObservableCollection<string> _addlUsings = new ObservableCollection<string>();
+	private ObservableCollection<string> _addlServiceUsings = new ObservableCollection<string>();
+	private ObservableCollection<string> _serviceAttributes = new ObservableCollection<string>();
+	private ObservableCollection<string> _addlControllerUsings = new ObservableCollection<string>();
+	private ObservableCollection<string> _controllerAttributes = new ObservableCollection<string>();
 	private bool _enabled;
 	private bool _suspendUpdates;
 
@@ -41,15 +43,15 @@ public class ServiceModel : INotifyPropertyChanged
 
 	public void InitializeOnLoad(EntityModel entity)
 	{
-		this.Entity = entity;
+		//this.Entity = entity;
 
-		foreach(var getSingleMethod in GetMethods.Where(m => !m.IsList))
-			getSingleMethod.InitializeOnLoad(entity.Properties.FirstOrDefault(p => p.Id == getSingleMethod.PropertyId));
+		foreach (var getSingleMethod in GetMethods.Where(m => !m.IsList))
+			getSingleMethod.InitializeOnLoad(entity.Properties.FirstOrDefault(p => p.Id == getSingleMethod.FilterPropertyId));
 
-		foreach(var getListMethod in GetMethods.Where(m => m.IsList))
-			getListMethod.InitializeOnLoad(entity.Properties.FirstOrDefault(p => p.Id == getListMethod.PropertyId));
+		foreach (var getListMethod in GetMethods.Where(m => m.IsList))
+			getListMethod.InitializeOnLoad(entity.Properties.FirstOrDefault(p => p.Id == getListMethod.FilterPropertyId));
 
-		foreach(var queryMethod in QueryMethods)
+		foreach (var queryMethod in QueryMethods)
 			queryMethod.InitializeOnLoad(entity.Properties.Where(p => queryMethod.FilterPropertyIds.Contains(p.Id)).ToList());
 	}
 
@@ -58,8 +60,6 @@ public class ServiceModel : INotifyPropertyChanged
 	#region Properties
 
 	public Guid Id { get; set; }
-
-	public Guid EntityId { get; set; }
 
 	public bool Enabled
 	{
@@ -85,10 +85,28 @@ public class ServiceModel : INotifyPropertyChanged
 		set => SetProperty(ref _inclController, value);
 	}
 
-	public ObservableCollection<string> AddlUsings
+	public ObservableCollection<string> AddlServiceUsings
 	{
-		get => _addlUsings;
-		set => SetProperty(ref _addlUsings, value);
+		get => _addlServiceUsings;
+		set => SetProperty(ref _addlServiceUsings, value);
+	}
+
+	public ObservableCollection<string> ServiceClassAttributes
+	{
+		get => _serviceAttributes;
+		set => SetProperty(ref _serviceAttributes, value);
+	}
+
+	public ObservableCollection<string> AddlControllerUsings
+	{
+		get => _addlControllerUsings;
+		set => SetProperty(ref _addlControllerUsings, value);
+	}
+
+	public ObservableCollection<string> ControllerClassAttributes
+	{
+		get => _controllerAttributes;
+		set => SetProperty(ref _controllerAttributes, value);
 	}
 
 	public ObservableCollection<GetSvcMethodModel> GetMethods { get; set; } = new ObservableCollection<GetSvcMethodModel>();
@@ -99,14 +117,10 @@ public class ServiceModel : INotifyPropertyChanged
 	#region Non-serialized Properties
 
 	[JsonIgnore]
-	public EntityModel Entity
-	{
-		get { return _entity; }
-		set {
-			EntityId = value?.Id ?? Guid.Empty;
-			SetProperty(ref _entity, value);
-		}
-	}
+	public EntityModel Entity { get; private set; }
+
+	[JsonIgnore]
+	public string EntityName => Entity?.Name;
 
 	#endregion
 

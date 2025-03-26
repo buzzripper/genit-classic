@@ -15,6 +15,7 @@ public partial class TreeNav : UserControl
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityModelSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntitiesNodeSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumModelSelected;
+	//public event EventHandler<NavTreeNodeSelectedEventArgs> ServiceModelSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> DbContextGenSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityGenSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumGenSelected;
@@ -28,17 +29,20 @@ public partial class TreeNav : UserControl
 	private const string cKey_Enum = "enum";
 	private const string cKey_Gens = "gens";
 	private const string cKey_Gen = "gen";
+	//private const string cKey_Svcs = "svcs";
 
 	private const string cNodeName_Db = "DbContext";
 	private const string cNodeName_Entities = "Entities";
 	private const string cNodeName_Enums = "Enums";
 	private const string cNodeName_Gen = "Generators";
+	//private const string cNodeName_Svcs = "Services";
 
 	private DbContextModel _dbContextModel;
 
 	private TreeNode _dbContextNode;
 	private TreeNode _entitiesNode;
 	private TreeNode _enumsNode;
+	//private TreeNode _servicesNode;
 	private TreeNode _generatorsNode;
 	private TreeNode _dbCtxGenNode;
 	private TreeNode _entityGenNode;
@@ -73,11 +77,9 @@ public partial class TreeNav : UserControl
 			return;
 
 		_dbContextNode = this.BuildDbContextNode();
-
 		_entitiesNode = this.BuildEntitiesNode();
-
 		_enumsNode = this.BuildEnumsNode();
-
+		//_servicesNode = this.BuildServicesNode();
 		_generatorsNode = this.BuildGeneratorsNode();
 	}
 
@@ -139,12 +141,27 @@ public partial class TreeNav : UserControl
 		return generatorsNode;
 	}
 
+	//private TreeNode BuildServicesNode()
+	//{
+	//	TreeNode svcsNode = new TreeNode(cNodeName_Svcs) {
+	//		SelectedImageKey = cKey_Svcs,
+	//		ImageKey = cKey_Svcs,
+	//		Tag = Guid.NewGuid()
+	//	};
+
+	//	treeView1.Nodes.Add(svcsNode);
+	//	svcsNode.Collapse();
+
+	//	return svcsNode;
+	//}
+
 	#region Populate methods
 
 	private void Populate()
 	{
 		PopulateEntities();
 		PopulateEnums();
+		//PopulateServices();
 		PopulateGenerators();
 	}
 
@@ -178,6 +195,21 @@ public partial class TreeNav : UserControl
 		}
 		_enumsNode.Expand();
 	}
+
+	//private void PopulateServices()
+	//{
+	//	_servicesNode.Nodes.Clear();
+	//	foreach (var svcMdl in _dbContextModel.Services) {
+	//		TreeNode svcNode = new TreeNode(svcMdl.EntityName) {
+	//			Name = svcMdl.Id.ToString(),
+	//			SelectedImageKey = cKey_Svcs,
+	//			ImageKey = cKey_Svcs,
+	//			Tag = svcMdl.Id
+	//		};
+	//		_servicesNode.Nodes.Add(svcNode);
+	//	}
+	//	_servicesNode.Expand();
+	//}
 
 	private void PopulateGenerators()
 	{
@@ -259,11 +291,14 @@ public partial class TreeNav : UserControl
 		} else if (e.Node.Parent == _entitiesNode) {
 			EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
-		} else if (e.Node == _enumsNode) {
-			EntitiesNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+		//} else if (e.Node == _enumsNode) {
+		//	EntitiesNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
 		} else if (e.Node.Parent == _enumsNode) {
 			EnumModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		//} else if (e.Node.Parent == _servicesNode) {
+		//	ServiceModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
 		} else if (e.Node == _dbCtxGenNode) {
 			DbContextGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
@@ -274,7 +309,7 @@ public partial class TreeNav : UserControl
 		} else if (e.Node == _enumGenNode) {
 			EnumGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
-		} else if (e.Node == _servicesGenNode) {
+		} else if (e.Node.Parent == _servicesGenNode) {
 			ServiceGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 		}
 	}

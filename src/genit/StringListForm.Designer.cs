@@ -70,6 +70,7 @@ partial class StringListForm
 		MdiChildrenMinimizedAnchorBottom = false;
 		MinimizeBox = false;
 		Name = "StringListForm";
+		StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 		Text = "StringListForm";
 		Load += StringListForm_Load;
 		ResumeLayout(false);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyvenix.Genit.Models.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -45,7 +46,6 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 
 	public void OnDeserialization(object sender)
 	{
-		Properties.CollectionChanged += Properties_CollectionChanged;
 		NavProperties.CollectionChanged += NavProperties_CollectionChanged;
 	}
 
@@ -97,9 +97,7 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 
 	public ObservableCollection<string> AddlUsings { get; set; } = new ObservableCollection<string>();
 
-	private void Properties_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-	{
-	}
+	public ServiceModel Service { get; set; } = new ServiceModel();
 
 	private void NavProperties_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 	{

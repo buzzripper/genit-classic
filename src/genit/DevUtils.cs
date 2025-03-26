@@ -49,7 +49,7 @@ namespace Dyvenix.Genit
 			dbContext.Entities.Add(appUserMdl);
 
 			var appUserServiceMdl = CreateServiceModel(appUserMdl);
-			dbContext.Services.Add(appUserServiceMdl);
+			appUserMdl.Service = appUserServiceMdl;
 
 			var logEventsMdl = CreateLogEventsEntityModel(dbContext, appUserMdl.Id, logLevelEnumMdl);
 			dbContext.Entities.Add(logEventsMdl);
@@ -68,7 +68,8 @@ namespace Dyvenix.Genit
 
 			var pkProp = appUserMdl.GetPKProperty();
 
-			var method = new GetSvcMethodModel(Guid.NewGuid(), pkProp);
+			var method = new GetSvcMethodModel(Guid.NewGuid());
+			method.FilterProperty = pkProp;
 			method.Name = "GetById";
 			method.IsList = false;
 			service.GetMethods.Add(method);

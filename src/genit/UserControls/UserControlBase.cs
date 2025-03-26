@@ -6,6 +6,10 @@ namespace Dyvenix.Genit.UserControls;
 
 public class UserControlBase : UserControl
 {
+	private StringListForm _slForm;
+
+	protected bool _suspendUpdates;
+
 	protected override void OnLoad(EventArgs e)
 	{
 		base.OnLoad(e);
@@ -14,22 +18,16 @@ public class UserControlBase : UserControl
 			this.BackColor = SystemColors.Control;
 	}
 
-	//protected static DialogResult ShowCenteredMessageBox(Control control, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
- //   {
-	//	var ctl = control;
+	#region Properties
 
-	//	while (ctl != null && !(ctl.Parent is MainForm))
-	//		ctl = ctl.Parent;
+	protected StringListForm StrListForm
+	{
+		get {
+			if (_slForm == null)
+				_slForm = new StringListForm();
+			return _slForm;
+		}
+	}
 
-	//	if (ctl == null)
-	//		throw new ApplicationException("MainForm not found.");
-
-	//	// Temporarily set the owner of the parent form
-	//	ctl.BeginInvoke(new Action(() =>
- //       {
- //           MessageBox.Show(ctl, text, caption, buttons, icon, MessageBoxDefaultButton.Button1);
- //       }));
-
- //       return DialogResult.OK;
- //   }
+	#endregion
 }

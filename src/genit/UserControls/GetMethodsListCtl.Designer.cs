@@ -1,6 +1,6 @@
 ﻿namespace Dyvenix.Genit.UserControls;
 
-partial class SvcMethodsListCtl
+partial class GetMethodsListCtl
 {
 	/// <summary> 
 	/// Required designer variable.
@@ -28,18 +28,23 @@ partial class SvcMethodsListCtl
 	private void InitializeComponent()
 	{
 		components = new System.ComponentModel.Container();
-		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SvcMethodsListCtl));
+		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GetMethodsListCtl));
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
 		btnAdd = new System.Windows.Forms.ToolStripButton();
 		btnDelete = new System.Windows.Forms.ToolStripButton();
 		grdItems = new System.Windows.Forms.DataGridView();
-		bindingSource = new System.Windows.Forms.BindingSource(components);
+		bindingSrc = new System.Windows.Forms.BindingSource(components);
 		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colProperty = new System.Windows.Forms.DataGridViewComboBoxColumn();
+		colIsList = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colAttrs = new System.Windows.Forms.DataGridViewLinkColumn();
+		colDelete = new System.Windows.Forms.DataGridViewImageColumn();
 		toolStrip1.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)grdItems).BeginInit();
-		((System.ComponentModel.ISupportInitialize)bindingSource).BeginInit();
+		((System.ComponentModel.ISupportInitialize)bindingSrc).BeginInit();
 		SuspendLayout();
 		// 
 		// toolStrip1
@@ -50,7 +55,7 @@ partial class SvcMethodsListCtl
 		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(370, 25);
+		toolStrip1.Size = new System.Drawing.Size(656, 25);
 		toolStrip1.TabIndex = 1;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -83,42 +88,90 @@ partial class SvcMethodsListCtl
 		grdItems.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		grdItems.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 		grdItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-		grdItems.ColumnHeadersVisible = false;
-		grdItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colProperty });
-		grdItems.Location = new System.Drawing.Point(16, 41);
+		grdItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colProperty, colIsList, colAttrs, colDelete });
+		grdItems.Location = new System.Drawing.Point(3, 41);
 		grdItems.MultiSelect = false;
 		grdItems.Name = "grdItems";
 		grdItems.RowHeadersVisible = false;
 		grdItems.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdItems.ShowEditingIcon = false;
-		grdItems.Size = new System.Drawing.Size(310, 98);
+		grdItems.Size = new System.Drawing.Size(548, 203);
 		grdItems.TabIndex = 2;
-		grdItems.CellEndEdit += grdItems_CellEndEdit;
-		grdItems.CellValidating += grdItems_CellValidating;
+		grdItems.CellClick += grdItems_CellClick;
+		grdItems.CellMouseEnter += grdItems_CellMouseEnter;
+		grdItems.CellMouseLeave += grdItems_CellMouseLeave;
+		grdItems.DataError += grdItems_DataError;
 		grdItems.SelectionChanged += grdItems_SelectionChanged;
+		grdItems.Click += grdItems_Click;
 		grdItems.KeyDown += grdItems_KeyDown;
 		// 
 		// colId
 		// 
 		colId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+		colId.DataPropertyName = "Id";
 		colId.HeaderText = "Id";
+		colId.MinimumWidth = 40;
 		colId.Name = "colId";
 		colId.Visible = false;
 		// 
 		// colName
 		// 
 		colName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+		colName.DataPropertyName = "Name";
 		colName.HeaderText = "Name";
 		colName.MinimumWidth = 200;
 		colName.Name = "colName";
 		// 
 		// colProperty
 		// 
+		colProperty.DataPropertyName = "FilterPropertyId";
 		colProperty.HeaderText = "Property";
+		colProperty.MinimumWidth = 150;
 		colProperty.Name = "colProperty";
-		colProperty.Width = 250;
+		colProperty.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+		colProperty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+		colProperty.Width = 150;
 		// 
-		// SvcMethodsListCtl
+		// colIsList
+		// 
+		colIsList.DataPropertyName = "IsList";
+		colIsList.HeaderText = "Is List";
+		colIsList.MinimumWidth = 75;
+		colIsList.Name = "colIsList";
+		colIsList.Width = 75;
+		// 
+		// colAttrs
+		// 
+		colAttrs.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight;
+		dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
+		colAttrs.DefaultCellStyle = dataGridViewCellStyle1;
+		colAttrs.HeaderText = "";
+		colAttrs.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+		colAttrs.LinkColor = System.Drawing.SystemColors.MenuHighlight;
+		colAttrs.MinimumWidth = 75;
+		colAttrs.Name = "colAttrs";
+		colAttrs.ReadOnly = true;
+		colAttrs.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+		colAttrs.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+		colAttrs.Text = "Attrs";
+		colAttrs.UseColumnTextForLinkValue = true;
+		colAttrs.VisitedLinkColor = System.Drawing.SystemColors.MenuHighlight;
+		colAttrs.Width = 75;
+		// 
+		// colDelete
+		// 
+		dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle2.NullValue = resources.GetObject("dataGridViewCellStyle2.NullValue");
+		dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
+		colDelete.DefaultCellStyle = dataGridViewCellStyle2;
+		colDelete.HeaderText = "";
+		colDelete.Image = (System.Drawing.Image)resources.GetObject("colDelete.Image");
+		colDelete.MinimumWidth = 75;
+		colDelete.Name = "colDelete";
+		colDelete.Width = 75;
+		// 
+		// GetMethodsListCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -127,14 +180,13 @@ partial class SvcMethodsListCtl
 		Controls.Add(grdItems);
 		Controls.Add(toolStrip1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		Name = "SvcMethodsListCtl";
-		Size = new System.Drawing.Size(370, 193);
-		Load += StringListEditor_Load;
-		Layout += StringListEditor_Layout;
+		Name = "GetMethodsListCtl";
+		Size = new System.Drawing.Size(656, 373);
+		Load += GetMethodsListCtl_Load;
 		toolStrip1.ResumeLayout(false);
 		toolStrip1.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)grdItems).EndInit();
-		((System.ComponentModel.ISupportInitialize)bindingSource).EndInit();
+		((System.ComponentModel.ISupportInitialize)bindingSrc).EndInit();
 		ResumeLayout(false);
 		PerformLayout();
 	}
@@ -144,8 +196,11 @@ partial class SvcMethodsListCtl
 	private System.Windows.Forms.ToolStripButton btnAdd;
 	private System.Windows.Forms.ToolStripButton btnDelete;
 	private System.Windows.Forms.DataGridView grdItems;
-	private System.Windows.Forms.BindingSource bindingSource;
+	private System.Windows.Forms.BindingSource bindingSrc;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
 	private System.Windows.Forms.DataGridViewComboBoxColumn colProperty;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsList;
+	private System.Windows.Forms.DataGridViewLinkColumn colAttrs;
+	private System.Windows.Forms.DataGridViewImageColumn colDelete;
 }

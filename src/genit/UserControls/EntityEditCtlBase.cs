@@ -7,11 +7,12 @@ public class EntityEditCtlBase : UserControlBase
 	protected EntityModel _entity;
 
 	public EntityEditCtlBase() : base()
-	{ 
+	{
 	}
 
 	public EntityEditCtlBase(EntityModel entity)
 	{
 		_entity = entity;
 	}
+
 }

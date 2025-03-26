@@ -33,7 +33,7 @@ namespace Dyvenix.Genit.UserControls
 			Entity.PropertyChanged += _entity_PropertyChanged;
 
 			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl(Entity)));
-			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new SvcMethodsEditCtl(Entity)));
+			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new ServiceEditCtl(Entity)));
 
 			foreach (var childEditor in _childEditors) {
 				var ctl = childEditor.Ctl;

@@ -318,6 +318,7 @@ partial class MainForm
 		treeNav.EntityModelSelected += treeNav_EntityModelSelected_1;
 		treeNav.EntitiesNodeSelected += treeNav_EntitiesNodeSelected;
 		treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
+		//treeNav.ServiceModelSelected += treeNav_ServiceModelSelected;
 		treeNav.DbContextGenSelected += treeNav_DbContextGenSelected;
 		treeNav.EntityGenSelected += treeNav_EntityGenSelected;
 		treeNav.EnumGenSelected += treeNav_EnumGenSelected;

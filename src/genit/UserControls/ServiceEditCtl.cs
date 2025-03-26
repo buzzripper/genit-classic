@@ -57,6 +57,7 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 		SetControllerAttrsLabel();
 
 		getMethodsListCtl.SetData(_service.GetMethods, _entity.Properties);
+		queryMethodsCtl.SetData(_service.QueryMethods, _entity.Properties);
 
 		_suspendUpdates = false;
 	}

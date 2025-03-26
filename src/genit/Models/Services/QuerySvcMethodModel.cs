@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 
@@ -9,7 +12,7 @@ public class QuerySvcMethodModel : ServiceMethodModelBase
 {
 	#region Fields
 
-	private List<PropertyModel> _filterProperties = new List<PropertyModel>();
+	private ObservableCollection<PropertyModel> _filterProperties = new ObservableCollection<PropertyModel>();
 
 	#endregion
 
@@ -18,27 +21,47 @@ public class QuerySvcMethodModel : ServiceMethodModelBase
 	[JsonConstructor]
 	public QuerySvcMethodModel()
 	{
+		this.FilterProperties.CollectionChanged += FilterProperties_OnCollectionChanged;
 	}
 
-	public QuerySvcMethodModel(Guid id)
+	public QuerySvcMethodModel(Guid id) : this()
 	{
 		_suspendUpdates = true;
-
 		Id = id;
-
 		_suspendUpdates = false;
 	}
 
-	public void InitializeOnLoad(List<PropertyModel> filteredProperties)
+	public void InitializeOnLoad(List<PropertyModel> filterProperties)
 	{
 		_suspendUpdates = true;
 
-		this.FilterProperties.AddRange(filteredProperties);
+		this.FilterProperties.Clear();
+		filterProperties.ForEach(fp => this.FilterProperties.Add(fp));
 
 		_suspendUpdates = false;
 	}
 
 	#endregion
+
+	private void FilterProperties_OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		if (e.Action == NotifyCollectionChangedAction.Add) {
+			FilterPropertyIds.Add(((PropertyModel)e.NewItems[0]).Id);
+
+		} else if (e.Action == NotifyCollectionChangedAction.Remove) {
+			FilterPropertyIds.Remove(((PropertyModel)e.NewItems[0]).Id);
+
+		} else if (e.Action == NotifyCollectionChangedAction.Reset) {
+			ResetPropertyIds();
+		}
+	}
+
+	private void ResetPropertyIds()
+	{
+		FilterPropertyIds.Clear();
+		foreach (var prop in FilterProperties)
+			FilterPropertyIds.Add(prop.Id);
+	}
 
 	#region Properties
 
@@ -49,14 +72,7 @@ public class QuerySvcMethodModel : ServiceMethodModelBase
 	#region Non-serialized Properties
 
 	[JsonIgnore]
-	public List<PropertyModel> FilterProperties
-	{
-		get { return _filterProperties; }
-		set {
-			FilterPropertyIds.AddRange(value?.Select(v => v.Id));
-			SetProperty(ref _filterProperties, value);
-		}
-	}
+	public ObservableCollection<PropertyModel> FilterProperties { get; private set; } = new ObservableCollection<PropertyModel>();
 
 	#endregion
 

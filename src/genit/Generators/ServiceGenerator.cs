@@ -217,12 +217,12 @@ public class ServiceGenerator
 				output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace(query.{prop.Name}))");
 				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{prop.Name}, query.{prop.Name}));");
 			} else if (prop.PrimitiveType == PrimitiveType.Int || prop.PrimitiveType == PrimitiveType.Bool || prop.PrimitiveType == PrimitiveType.Guid) {
-				var indent = tc + 1;
-				if (prop.Nullable) {
-					output.AddLine(tc + 1, $"if ({prop.Name}.HasValue)");
-					indent++;
-				}
-				output.AddLine(indent, $"dbQuery = dbQuery.Where(x => x.{prop.Name} == query.{prop.Name});");
+				//var indent = tc + 1;
+				//if (prop.Nullable) {
+					output.AddLine(tc + 1, $"if (query.{prop.Name}.HasValue)");
+					//indent++;
+				//}
+				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => x.{prop.Name} == query.{prop.Name});");
 			}
 		}
 
@@ -336,7 +336,8 @@ public class ServiceGenerator
 
 			var propsOutput = new List<string>();
 			foreach (var filterProp in queryMethod.FilterProperties) {
-				propsOutput.AddLine(1, $"public {filterProp.DatatypeName} {filterProp.Name} {{ get; set; }}");
+				var nullStr = filterProp.DatatypeName != "string" ? "?" : null;
+				propsOutput.AddLine(1, $"public {filterProp.DatatypeName}{nullStr} {filterProp.Name} {{ get; set; }}");
 			}
 
 			// Replace tokens in template

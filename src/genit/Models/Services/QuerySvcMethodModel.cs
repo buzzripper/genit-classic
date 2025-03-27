@@ -49,7 +49,7 @@ public class QuerySvcMethodModel : ServiceMethodModelBase
 			FilterPropertyIds.Add(((PropertyModel)e.NewItems[0]).Id);
 
 		} else if (e.Action == NotifyCollectionChangedAction.Remove) {
-			FilterPropertyIds.Remove(((PropertyModel)e.NewItems[0]).Id);
+			FilterPropertyIds.Remove(((PropertyModel)e.OldItems[0]).Id);
 
 		} else if (e.Action == NotifyCollectionChangedAction.Reset) {
 			ResetPropertyIds();

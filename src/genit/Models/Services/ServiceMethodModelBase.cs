@@ -14,6 +14,8 @@ public abstract class ServiceMethodModelBase : INotifyPropertyChanged
 	#region Fields
 
 	private int _displayOrder;
+	private bool _inclSorting;
+	private bool _inclPaging;
 	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
 	protected bool _suspendUpdates;
 
@@ -45,10 +47,24 @@ public abstract class ServiceMethodModelBase : INotifyPropertyChanged
 		set => SetProperty(ref _displayOrder, value);
 	}
 
+	public bool InclSorting
+	{
+		get => _inclSorting;
+		set => SetProperty(ref _inclSorting, value);
+	}
+
+	public bool InclPaging
+	{
+		get => _inclPaging;
+		set => SetProperty(ref _inclPaging, value);
+	}
+
 	#endregion
 
 	#region Non-serialized Properties
 
+	[JsonIgnore]
+	public int AttrCount => this.Attributes.Count;
 
 	#endregion
 

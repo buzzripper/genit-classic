@@ -44,11 +44,12 @@ partial class StringListEditor
 		// 
 		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
 		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnDelete });
 		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(370, 25);
+		toolStrip1.Size = new System.Drawing.Size(370, 33);
 		toolStrip1.TabIndex = 1;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -58,7 +59,7 @@ partial class StringListEditor
 		btnAdd.Image = (System.Drawing.Image)resources.GetObject("btnAdd.Image");
 		btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnAdd.Name = "btnAdd";
-		btnAdd.Size = new System.Drawing.Size(23, 22);
+		btnAdd.Size = new System.Drawing.Size(34, 28);
 		btnAdd.Text = "toolStripButton1";
 		btnAdd.Click += btnAdd_Click;
 		// 
@@ -68,7 +69,7 @@ partial class StringListEditor
 		btnDelete.Image = (System.Drawing.Image)resources.GetObject("btnDelete.Image");
 		btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnDelete.Name = "btnDelete";
-		btnDelete.Size = new System.Drawing.Size(23, 22);
+		btnDelete.Size = new System.Drawing.Size(34, 28);
 		btnDelete.Text = "toolStripButton3";
 		btnDelete.Click += btnDelete_Click;
 		// 
@@ -87,6 +88,7 @@ partial class StringListEditor
 		grdItems.MultiSelect = false;
 		grdItems.Name = "grdItems";
 		grdItems.RowHeadersVisible = false;
+		grdItems.RowHeadersWidth = 62;
 		grdItems.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdItems.ShowEditingIcon = false;
 		grdItems.Size = new System.Drawing.Size(310, 98);
@@ -100,11 +102,12 @@ partial class StringListEditor
 		// 
 		colValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
 		colValue.HeaderText = "Values";
+		colValue.MinimumWidth = 8;
 		colValue.Name = "colValue";
 		// 
 		// StringListEditor
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+		AutoScaleDimensions = new System.Drawing.SizeF(11F, 28F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ControlDarkDark;
 		BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;

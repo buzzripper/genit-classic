@@ -36,13 +36,15 @@ partial class GetMethodsListCtl
 		btnDelete = new System.Windows.Forms.ToolStripButton();
 		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 		grdItems = new System.Windows.Forms.DataGridView();
-		bindingSrc = new System.Windows.Forms.BindingSource(components);
 		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colProperty = new System.Windows.Forms.DataGridViewComboBoxColumn();
 		colIsList = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colAttrs = new System.Windows.Forms.DataGridViewImageColumn();
+		colInclSorting = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colInclPaging = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colAttrs = new System.Windows.Forms.DataGridViewLinkColumn();
 		colDelete = new System.Windows.Forms.DataGridViewImageColumn();
+		bindingSrc = new System.Windows.Forms.BindingSource(components);
 		toolStrip1.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)grdItems).BeginInit();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).BeginInit();
@@ -97,7 +99,7 @@ partial class GetMethodsListCtl
 		grdItems.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		grdItems.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 		grdItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-		grdItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colProperty, colIsList, colAttrs, colDelete });
+		grdItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colProperty, colIsList, colInclSorting, colInclPaging, colAttrs, colDelete });
 		grdItems.Location = new System.Drawing.Point(3, 41);
 		grdItems.MultiSelect = false;
 		grdItems.Name = "grdItems";
@@ -105,14 +107,13 @@ partial class GetMethodsListCtl
 		grdItems.RowHeadersWidth = 62;
 		grdItems.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdItems.ShowEditingIcon = false;
-		grdItems.Size = new System.Drawing.Size(548, 203);
+		grdItems.Size = new System.Drawing.Size(620, 269);
 		grdItems.TabIndex = 2;
 		grdItems.CellClick += grdItems_CellClick;
 		grdItems.CellMouseEnter += grdItems_CellMouseEnter;
 		grdItems.CellMouseLeave += grdItems_CellMouseLeave;
 		grdItems.DataError += grdItems_DataError;
 		grdItems.SelectionChanged += grdItems_SelectionChanged;
-		grdItems.Click += grdItems_Click;
 		grdItems.KeyDown += grdItems_KeyDown;
 		// 
 		// colId
@@ -150,19 +151,39 @@ partial class GetMethodsListCtl
 		colIsList.Name = "colIsList";
 		colIsList.Width = 75;
 		// 
+		// colInclSorting
+		// 
+		colInclSorting.DataPropertyName = "InclSorting";
+		colInclSorting.HeaderText = "Sorting";
+		colInclSorting.MinimumWidth = 85;
+		colInclSorting.Name = "colInclSorting";
+		colInclSorting.Width = 85;
+		// 
+		// colInclPaging
+		// 
+		colInclPaging.DataPropertyName = "InclPaging";
+		colInclPaging.HeaderText = "Paging";
+		colInclPaging.MinimumWidth = 85;
+		colInclPaging.Name = "colInclPaging";
+		colInclPaging.Width = 85;
+		// 
 		// colAttrs
 		// 
+		colAttrs.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight;
+		colAttrs.DataPropertyName = "AttrCount";
 		dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle1.NullValue = resources.GetObject("dataGridViewCellStyle1.NullValue");
 		dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
 		colAttrs.DefaultCellStyle = dataGridViewCellStyle1;
-		colAttrs.HeaderText = "";
-		colAttrs.Image = (System.Drawing.Image)resources.GetObject("colAttrs.Image");
+		colAttrs.HeaderText = "Attrs";
+		colAttrs.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+		colAttrs.LinkColor = System.Drawing.SystemColors.MenuHighlight;
 		colAttrs.MinimumWidth = 75;
 		colAttrs.Name = "colAttrs";
 		colAttrs.ReadOnly = true;
 		colAttrs.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 		colAttrs.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+		colAttrs.Text = "";
+		colAttrs.VisitedLinkColor = System.Drawing.SystemColors.MenuHighlight;
 		colAttrs.Width = 75;
 		// 
 		// colDelete
@@ -208,6 +229,8 @@ partial class GetMethodsListCtl
 	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
 	private System.Windows.Forms.DataGridViewComboBoxColumn colProperty;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colIsList;
-	private System.Windows.Forms.DataGridViewImageColumn colAttrs;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colInclSorting;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colInclPaging;
+	private System.Windows.Forms.DataGridViewLinkColumn colAttrs;
 	private System.Windows.Forms.DataGridViewImageColumn colDelete;
 }

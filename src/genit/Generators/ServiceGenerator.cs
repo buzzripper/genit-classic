@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dyvenix.Genit.Models.Generators;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Collections;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -29,7 +31,10 @@ public class ServiceGenerator
 
 	private const string cToken_QueriesNs = "QUERIES_NS";
 	private const string cToken_QueryClassName = "QUERY_CLASS_NAME";
+	private const string cToken_QueryIntfDecl = "QUERY_INTF_DECL";
 	private const string cToken_FilterProps = "FILTER_PROPERTIES";
+	private const string cToken_QueryInclSorting = "QRY_INCL_SORTING";
+	private const string cToken_QueryInclPaging = "QRY_INCL_PAGING";
 
 	private const string cToken_ControllersNs = "CONTROLLERS_NS";
 	private const string cToken_ControllerName = "CONTROLLER_NAME";
@@ -96,7 +101,7 @@ public class ServiceGenerator
 		var serviceName = $"{entity.Name}Service";
 
 		// Addl usings
-		var addlUsings = BuildAddlUsings(entity.Service);
+		var addlUsings = BuildAddlUsings(entity.Service.AddlServiceUsings);
 		addlUsings.AddIfNotExists(queriesNamespace);
 
 		// Interface signatures
@@ -132,7 +137,7 @@ public class ServiceGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput , singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, servicesNamespace);
+		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, servicesNamespace);
 
 		var outputFile = Path.Combine(outputFolder, $"{serviceName}.cs");
 		if (File.Exists(outputFile))
@@ -173,17 +178,45 @@ public class ServiceGenerator
 				output.AddLine(tc, $"[{attr}]");
 
 		// Interface
-		var args = !string.IsNullOrWhiteSpace(method.ArgType) ? $"{method.ArgType} {method.ArgName}" : null;
-		var signature = $"Task<List<{entity.Name}>>{method.Name}({args})";
+		var sbArgs = new StringBuilder();
+
+		// Paging
+		if (!string.IsNullOrWhiteSpace(method.ArgType))
+			sbArgs.Append($"{method.ArgType} {method.ArgName}");
+		if (method.InclPaging) {
+			if (sbArgs.Length > 0)
+				sbArgs.Append(", ");
+			sbArgs.Append("int pageSize, int rowOffset");
+		}
+		var signature = $"Task<List<{entity.Name}>>{method.Name}({sbArgs.ToString()})";
 		interfaceOutput.Add(signature);
 
 		// Method
 		output.AddLine(tc, $"public async {signature}");
 		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, "var db = _dbContextFactory.CreateDbContext();");
+		output.AddLine(tc + 1, $"var dbQuery = _dbContextFactory.CreateDbContext().{entity.Name}.AsQueryable();");
+		output.AddLine();
 
-		var whereClause = !string.IsNullOrWhiteSpace(method.ArgType) ? $".Where(x => x.{method.PropName} == {method.ArgName})" : string.Empty;
-		output.AddLine(tc + 1, $"return await db.{entity.Name}{whereClause}.AsNoTracking().ToListAsync();");
+		if (!string.IsNullOrWhiteSpace(method.ArgType)) { 
+			var indent = tc + 1;
+			if (method.FilterProperty.PrimitiveType == PrimitiveType.String) {
+				output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({method.ArgName}))");
+				indent++;
+			} else if (method.FilterProperty.Nullable) {
+				output.AddLine(tc + 1, $"if ({method.ArgName} != null)");
+				indent++;
+			}
+			output.AddLine(indent, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{method.PropName}, {method.ArgName}));");
+			output.AddLine();
+		}
+
+		if (method.InclPaging) {
+			output.AddLine(tc + 1, $"if (pageSize > 0)");
+			output.AddLine(tc + 2, $"dbQuery = dbQuery.Skip(rowOffset).Take(pageSize);");
+			output.AddLine();
+		}
+
+		output.AddLine(tc + 1, $"return await dbQuery.AsNoTracking().ToListAsync();");
 
 		output.AddLine(tc, "}");
 	}
@@ -207,7 +240,7 @@ public class ServiceGenerator
 		// Method
 		output.AddLine(tc, $"public async {signature}");
 		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"var dbQuery = _dbContextFactory.CreateDbContext().{entity.Name}.AsNoTracking().AsQueryable();");
+		output.AddLine(tc + 1, $"var dbQuery = _dbContextFactory.CreateDbContext().{entity.Name}.AsQueryable();");
 		output.AddLine(tc + 1, $"var result = new EntityList<{entity.Name}>();");
 		output.AddLine();
 
@@ -217,28 +250,33 @@ public class ServiceGenerator
 				output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace(query.{prop.Name}))");
 				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{prop.Name}, query.{prop.Name}));");
 			} else if (prop.PrimitiveType == PrimitiveType.Int || prop.PrimitiveType == PrimitiveType.Bool || prop.PrimitiveType == PrimitiveType.Guid) {
-				//var indent = tc + 1;
-				//if (prop.Nullable) {
-					output.AddLine(tc + 1, $"if (query.{prop.Name}.HasValue)");
-					//indent++;
-				//}
+				output.AddLine(tc + 1, $"if (query.{prop.Name}.HasValue)");
 				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => x.{prop.Name} == query.{prop.Name});");
 			}
 		}
 
-		output.AddLine();
-		output.AddLine(tc + 1, "// Sorting");
-		output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace(query.SortBy))");
-		output.AddLine(tc + 1, $"this.AddSorting(ref dbQuery, query);");
-		output.AddLine();
+		if (queryMethod.InclPaging) {
+			output.AddLine();
+			output.AddLine(tc + 1, "// Paging");
+			output.AddLine(tc + 1, "if (query.RecalcRowCount || query.GetRowCountOnly)");
+			output.AddLine(tc + 2, "result.TotalRowCount = dbQuery.Count();");
+			output.AddLine(tc + 1, "if (query.GetRowCountOnly)");
+			output.AddLine(tc + 2, "return result;");
+			output.AddLine(tc + 1, "if (query.PageSize > 0)");
+			output.AddLine(tc + 2, "dbQuery = dbQuery.Skip(query.RowOffset).Take(query.PageSize);");
+		}
 
-		output.AddLine(tc + 1, "// Paging");
-		output.AddLine(tc + 1, "dbQuery = dbQuery.Skip(query.RowOffset).Take(query.PageSize);");
+		if (queryMethod.InclSorting) {
+			output.AddLine();
+			output.AddLine(tc + 1, "// Sorting");
+			output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace(query.SortBy))");
+			output.AddLine(tc + 2, $"this.AddSorting(ref dbQuery, query);");
+		}
+
 		output.AddLine();
 		output.AddLine(tc + 1, "result.Data = await dbQuery.AsNoTracking().ToListAsync();");
 		output.AddLine();
 		output.AddLine(tc + 1, "return result;");
-
 		output.AddLine(tc, "}");
 	}
 
@@ -330,10 +368,32 @@ public class ServiceGenerator
 	private void GenerateQueryClass(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder, string queriesNamespace)
 	{
 		foreach (var queryMethod in service.QueryMethods) {
-			// Addl usings
-			var addlUsings = BuildAddlUsings(service);
 			var className = $"{queryMethod.Name}Query";
+			string interfaceDecl = null;
 
+			// Addl usings
+			var addlUsings = new List<string>();
+			if (queryMethod.InclSorting)
+				addlUsings.Add("Dyvenix.Core.Queries");
+
+			// Sorting
+			var sortingSb = new StringBuilder();
+			if (queryMethod.InclSorting) {
+				interfaceDecl = ": ISortingQuery";
+				sortingSb.AppendLine("\tpublic string SortBy { get; set; }");
+				sortingSb.AppendLine("\tpublic bool SortDesc { get; set; }");
+			}
+
+			// Paging
+			var pagingSb = new StringBuilder();
+			if (queryMethod.InclPaging) {
+				pagingSb.AppendLine("\tpublic int PageSize { get; set; }");
+				pagingSb.AppendLine("\tpublic int RowOffset { get; set; }");
+				pagingSb.AppendLine("\tpublic bool RecalcRowCount { get; set; }");
+				pagingSb.AppendLine("\tpublic bool GetRowCountOnly { get; set; }");
+			}
+
+			// Filter properties
 			var propsOutput = new List<string>();
 			foreach (var filterProp in queryMethod.FilterProperties) {
 				var nullStr = filterProp.DatatypeName != "string" ? "?" : null;
@@ -341,7 +401,7 @@ public class ServiceGenerator
 			}
 
 			// Replace tokens in template
-			var fileContents = ReplaceQueryTemplateTokens(template, className, addlUsings, queriesNamespace, propsOutput);
+			var fileContents = ReplaceQueryTemplateTokens(template, className, interfaceDecl, addlUsings, queriesNamespace, sortingSb.ToString(), pagingSb.ToString(), propsOutput);
 
 			var outputFile = Path.Combine(outputFolder, $"{className}.cs");
 			if (File.Exists(outputFile))
@@ -350,7 +410,7 @@ public class ServiceGenerator
 		}
 	}
 
-	private string ReplaceQueryTemplateTokens(string template, string className, List<string> addlUsings, string queriesNamespace, List<string> propsOutput)
+	private string ReplaceQueryTemplateTokens(string template, string className, string interfaceDecl, List<string> addlUsings, string queriesNamespace, string sorting, string paging, List<string> propsOutput)
 	{
 		// Header
 		var fileContents = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
@@ -369,6 +429,15 @@ public class ServiceGenerator
 
 		// Class name
 		fileContents = fileContents.Replace(Utils.FmtToken(cToken_QueryClassName), className);
+
+		// Interface
+		fileContents = fileContents.Replace(Utils.FmtToken(cToken_QueryIntfDecl), interfaceDecl);
+
+		// Sorting
+		fileContents = fileContents.Replace(Utils.FmtToken(cToken_QueryInclSorting), sorting);
+
+		// Paging
+		fileContents = fileContents.Replace(Utils.FmtToken(cToken_QueryInclPaging), paging);
 
 		// Filter properties
 		sb = new StringBuilder();
@@ -389,7 +458,7 @@ public class ServiceGenerator
 		var serviceVarName = Utils.ToCamelCase(serviceName);
 
 		// Addl usings
-		var addlUsings = BuildAddlUsings(entity.Service);
+		var addlUsings = BuildAddlUsings(entity.Service.AddlControllerUsings);
 		addlUsings.AddIfNotExists(servicesNamespace);
 		addlUsings.AddIfNotExists(queriesNamespace);
 		addlUsings.AddIfNotExists(entitiesNamespace);
@@ -464,11 +533,18 @@ public class ServiceGenerator
 			varUriSegment = $"/{{{method.ArgName}}}";
 			argDecl = $"{method.ArgType} {method.ArgName}";
 		}
-		output.AddLine(tc, $"[HttpGet, Route(\"[action]{varUriSegment}\")]");
-		output.AddLine(tc, $"public async Task<ActionResult<List<{entity.Name}>>> {method.Name}({argDecl})");
+
+		var argSep = (argDecl != null && method.InclPaging) ? ", " : null;
+
+		var pagingRoute = method.InclPaging ? $"/{{pageSize?}}/{{rowOffset?}}" : null;
+		var pagingArgs = method.InclPaging ? "int pageSize = 0, int rowOffset = 0" : null;
+		var pagingVars = method.InclPaging ? "pageSize, rowOffset" : null;
+
+		output.AddLine(tc, $"[HttpGet, Route(\"[action]{varUriSegment}{pagingRoute}\")]");
+		output.AddLine(tc, $"public async Task<ActionResult<List<{entity.Name}>>> {method.Name}({argDecl}{argSep}{pagingArgs})");
 		output.AddLine(tc, "{");
 		output.AddLine(tc + 1, "try {");
-		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({method.ArgName});");
+		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({method.ArgName}{argSep}{pagingVars});");
 		output.AddLine(tc + 1, "} catch (Exception ex) {");
 		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
 		output.AddLine(tc + 1, "}");
@@ -489,7 +565,7 @@ public class ServiceGenerator
 
 		// Method
 		output.AddLine(tc, "[HttpPost, Route(\"[action]\")]");
-		output.AddLine(tc, $"public async Task<ActionResult<EntityList<{entity.Name}>>> Query([FromBody] {queryClassName} {queryVarName})");
+		output.AddLine(tc, $"public async Task<ActionResult<EntityList<{entity.Name}>>> {queryMethod.Name}([FromBody] {queryClassName} {queryVarName})");
 		output.AddLine(tc, "{");
 		output.AddLine(tc + 1, "try {");
 		output.AddLine(tc + 2, $"return await _{svcVarName}.{queryMethod.Name}({queryVarName});");
@@ -541,12 +617,10 @@ public class ServiceGenerator
 
 	#region Utility methods
 
-	private List<string> BuildAddlUsings(ServiceModel service)
+	private List<string> BuildAddlUsings(ObservableCollection<string> attrs)
 	{
 		var usings = new List<string>();
-
-		service.AddlServiceUsings?.ToList().ForEach(u => usings.Add(u));
-
+		attrs?.ToList().ForEach(a => usings.Add(a));
 		return usings;
 	}
 

@@ -14,8 +14,10 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 	private const int cIdCol = 0;
 	private const int cNameCol = 1;
-	private const int cAttrsCol = 2;
-	private const int cDelCol = 3;
+	private const int cInclSortingCol = 2;
+	private const int cInclPagingCol = 3;
+	private const int cAttrsCol = 4;
+	private const int cDelCol = 5;
 
 	#endregion
 
@@ -154,11 +156,15 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 	private void grdItems_CellClick(object sender, DataGridViewCellEventArgs e)
 	{
-		if (e.ColumnIndex == 2) {
+		if (e.RowIndex == -1)
+			return;
+
+		if (e.ColumnIndex == cAttrsCol) {
 			var method = QueryMethodFromGridRow(e.RowIndex);
 			this.StrListForm.Run("Attributes", method.Attributes);
+			bindingSrc.ResetBindings(false);
 
-		} else if (e.ColumnIndex == 3) {
+		} else if (e.ColumnIndex == cDelCol) {
 			if (MessageBox.Show("Confirm Delete", "Delete this item?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
 				var method = QueryMethodFromGridRow(e.RowIndex);
 				bindingSrc.Remove(method);

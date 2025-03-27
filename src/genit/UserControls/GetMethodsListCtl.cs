@@ -17,12 +17,14 @@ public partial class GetMethodsListCtl : UserControlBase
 
 	#region Constants
 
-	private const string cIdCol = "colId";
-	private const string cNameCol = "colName";
-	private const string cPropCol = "colProperty";
-	private const string cIsListCol = "colIsList";
-	private const string cAttrsCol = "colAttrs";
-	private const string cDelCol = "colDelete";
+	private const int cIdCol = 0;
+	private const int cNameCol = 1;
+	private const int cPropCol = 2;
+	private const int cIsListCol = 3;
+	private const int cInclSortingCol = 4;
+	private const int cInclPagingCol = 5;
+	private const int cAttrsCol = 6;
+	private const int cDelCol = 7;
 
 	#endregion
 
@@ -74,21 +76,6 @@ public partial class GetMethodsListCtl : UserControlBase
 	#endregion
 
 	#region Properties
-
-	[Browsable(true)]
-	[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-	[DefaultValue(DockStyle.Top)]
-	public DockStyle ToolbarDockStyle
-	{
-		get { return toolStrip1.Dock; }
-		set {
-			toolStrip1.Dock = value;
-			if (value == (DockStyle.Top | DockStyle.Bottom))
-				toolStrip1.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
-			else
-				toolStrip1.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow;
-		}
-	}
 
 	#endregion
 
@@ -191,19 +178,17 @@ public partial class GetMethodsListCtl : UserControlBase
 		MessageBox.Show($"Error in column {e.ColumnIndex}: {e.Exception.Message}");
 	}
 
-	private void grdItems_Click(object sender, EventArgs e)
-	{
-
-	}
-
 	private void grdItems_CellClick(object sender, DataGridViewCellEventArgs e)
 	{
-		if (e.ColumnIndex == 4) {
+		if (e.RowIndex == -1)
+			return;
+
+		if (e.ColumnIndex == cAttrsCol) {
 			var method = GetSvcMethodModel(e.RowIndex);
 			this.StrListForm.Run("Attributes", method.Attributes);
+			bindingSrc.ResetBindings(false);
 
-
-		} else if (e.ColumnIndex == 5) {
+		} else if (e.ColumnIndex == cDelCol) {
 			if (MessageBox.Show("Confirm Delete", "Delete this item?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
 				var method = GetSvcMethodModel(e.RowIndex);
 				bindingSrc.Remove(method);

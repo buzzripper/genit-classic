@@ -47,7 +47,7 @@ partial class ServiceEditCtl
 		// ckbInclSave
 		// 
 		ckbInclSave.AutoSize = true;
-		ckbInclSave.Location = new System.Drawing.Point(732, 66);
+		ckbInclSave.Location = new System.Drawing.Point(854, 66);
 		ckbInclSave.Name = "ckbInclSave";
 		ckbInclSave.Size = new System.Drawing.Size(222, 32);
 		ckbInclSave.TabIndex = 0;
@@ -58,7 +58,7 @@ partial class ServiceEditCtl
 		// ckbInclDelete
 		// 
 		ckbInclDelete.AutoSize = true;
-		ckbInclDelete.Location = new System.Drawing.Point(732, 104);
+		ckbInclDelete.Location = new System.Drawing.Point(854, 104);
 		ckbInclDelete.Name = "ckbInclDelete";
 		ckbInclDelete.Size = new System.Drawing.Size(237, 32);
 		ckbInclDelete.TabIndex = 1;
@@ -69,7 +69,7 @@ partial class ServiceEditCtl
 		// ckbInclController
 		// 
 		ckbInclController.AutoSize = true;
-		ckbInclController.Location = new System.Drawing.Point(747, 167);
+		ckbInclController.Location = new System.Drawing.Point(869, 167);
 		ckbInclController.Name = "ckbInclController";
 		ckbInclController.Size = new System.Drawing.Size(194, 32);
 		ckbInclController.TabIndex = 2;
@@ -81,7 +81,7 @@ partial class ServiceEditCtl
 		// 
 		ckbEnabled.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(1307, 12);
+		ckbEnabled.Location = new System.Drawing.Point(1329, 14);
 		ckbEnabled.Name = "ckbEnabled";
 		ckbEnabled.Size = new System.Drawing.Size(108, 32);
 		ckbEnabled.TabIndex = 3;
@@ -96,7 +96,7 @@ partial class ServiceEditCtl
 		lkbAddlServiceUsings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		lkbAddlServiceUsings.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		lkbAddlServiceUsings.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-		lkbAddlServiceUsings.Location = new System.Drawing.Point(1010, 65);
+		lkbAddlServiceUsings.Location = new System.Drawing.Point(1132, 65);
 		lkbAddlServiceUsings.Name = "lkbAddlServiceUsings";
 		lkbAddlServiceUsings.Size = new System.Drawing.Size(234, 28);
 		lkbAddlServiceUsings.TabIndex = 19;
@@ -115,7 +115,7 @@ partial class ServiceEditCtl
 		lkbServiceClassAttributes.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		lkbServiceClassAttributes.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		lkbServiceClassAttributes.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-		lkbServiceClassAttributes.Location = new System.Drawing.Point(1010, 104);
+		lkbServiceClassAttributes.Location = new System.Drawing.Point(1132, 104);
 		lkbServiceClassAttributes.Name = "lkbServiceClassAttributes";
 		lkbServiceClassAttributes.Size = new System.Drawing.Size(214, 28);
 		lkbServiceClassAttributes.TabIndex = 20;
@@ -134,7 +134,7 @@ partial class ServiceEditCtl
 		lkbControllerClassAttributes.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		lkbControllerClassAttributes.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		lkbControllerClassAttributes.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-		lkbControllerClassAttributes.Location = new System.Drawing.Point(1010, 195);
+		lkbControllerClassAttributes.Location = new System.Drawing.Point(1132, 195);
 		lkbControllerClassAttributes.Name = "lkbControllerClassAttributes";
 		lkbControllerClassAttributes.Size = new System.Drawing.Size(240, 28);
 		lkbControllerClassAttributes.TabIndex = 22;
@@ -153,7 +153,7 @@ partial class ServiceEditCtl
 		lkbAddlControllerUsings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		lkbAddlControllerUsings.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		lkbAddlControllerUsings.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-		lkbAddlControllerUsings.Location = new System.Drawing.Point(1010, 167);
+		lkbAddlControllerUsings.Location = new System.Drawing.Point(1132, 167);
 		lkbAddlControllerUsings.Name = "lkbAddlControllerUsings";
 		lkbAddlControllerUsings.Size = new System.Drawing.Size(260, 28);
 		lkbAddlControllerUsings.TabIndex = 21;
@@ -173,7 +173,7 @@ partial class ServiceEditCtl
 		getMethodsListCtl.Location = new System.Drawing.Point(21, 27);
 		getMethodsListCtl.Margin = new System.Windows.Forms.Padding(5);
 		getMethodsListCtl.Name = "getMethodsListCtl";
-		getMethodsListCtl.Size = new System.Drawing.Size(668, 196);
+		getMethodsListCtl.Size = new System.Drawing.Size(787, 322);
 		getMethodsListCtl.TabIndex = 23;
 		// 
 		// queryMethodsCtl
@@ -184,7 +184,7 @@ partial class ServiceEditCtl
 		queryMethodsCtl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		queryMethodsCtl.Location = new System.Drawing.Point(21, 17);
 		queryMethodsCtl.Name = "queryMethodsCtl";
-		queryMethodsCtl.Size = new System.Drawing.Size(1440, 406);
+		queryMethodsCtl.Size = new System.Drawing.Size(1440, 272);
 		queryMethodsCtl.TabIndex = 24;
 		// 
 		// splMain
@@ -210,7 +210,7 @@ partial class ServiceEditCtl
 		// 
 		splMain.Panel2.Controls.Add(queryMethodsCtl);
 		splMain.Size = new System.Drawing.Size(1475, 708);
-		splMain.SplitterDistance = 242;
+		splMain.SplitterDistance = 368;
 		splMain.SplitterWidth = 8;
 		splMain.TabIndex = 25;
 		// 

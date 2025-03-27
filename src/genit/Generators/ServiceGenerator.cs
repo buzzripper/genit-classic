@@ -9,8 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Dyvenix.Genit.Models.Generators;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Collections;
+using System.Threading.Tasks;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -25,6 +24,7 @@ public class ServiceGenerator
 	private const string cToken_ServiceAttrs = "SERVICE_ATTRS";
 	private const string cToken_ServiceName = "SERVICE_NAME";
 	private const string cToken_IntfSignatures = "INTERFACE_SIGNATURES";
+	private const string cToken_CudMethods = "CUD_METHODS";
 	private const string cToken_SingleMethods = "SINGLE_METHODS";
 	private const string cToken_ListMethods = "LIST_METHODS";
 	private const string cToken_QueryMethods = "QUERY_METHODS";
@@ -39,6 +39,7 @@ public class ServiceGenerator
 	private const string cToken_ControllersNs = "CONTROLLERS_NS";
 	private const string cToken_ControllerName = "CONTROLLER_NAME";
 	private const string cToken_ServiceVarName = "SERVICE_VAR_NAME";
+	private const string cToken_CudControllerMethods = "CUD_METHODS";
 
 	#endregion
 
@@ -112,6 +113,11 @@ public class ServiceGenerator
 		foreach (var attr in entity.Service.ServiceClassAttributes)
 			attrsOutput.Add($"[{attr}]");
 
+		// Create/Update/Delete
+		var crudMethodsOutput = new List<string>();
+		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete)
+			this.GenerateCUDMethods(entity, crudMethodsOutput, interfaceOutput);
+
 		// GetSingle methods
 		var singleMethodsOutput = new List<string>();
 		foreach (GetSvcMethodModel singleMethod in entity.Service.GetMethods.Where(m => !m.IsList))
@@ -137,12 +143,71 @@ public class ServiceGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, servicesNamespace);
+		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, servicesNamespace);
 
 		var outputFile = Path.Combine(outputFolder, $"{serviceName}.cs");
 		if (File.Exists(outputFile))
 			File.Delete(outputFile);
 		File.WriteAllText(outputFile, fileContents);
+	}
+
+	private void GenerateCUDMethods(EntityModel entity, List<string> output, List<string> interfaceOutput)
+	{
+		var tc = 1;
+		var className = entity.Name;	
+		var varName = Utils.ToCamelCase(className);
+
+		output.AddLine(tc, "// Create / Update / Delete");
+
+		if (entity.Service.InclCreate) {
+			// Interface
+			var signature = $"Task Create{className}({className} {varName})";
+			interfaceOutput.Add(signature);
+
+			output.AddLine();
+			output.AddLine(tc, $"public async {signature}");
+			output.AddLine(tc, "{");
+			output.AddLine(tc+1, $"if ({varName} == null)");
+			output.AddLine(tc+2, $"throw new ArgumentNullException(nameof({varName}));");
+			output.AddLine();
+			output.AddLine(tc+1, $"using var db = _dbContextFactory.CreateDbContext();");
+			output.AddLine(tc+1, $"db.Add({varName});");
+			output.AddLine();
+			output.AddLine(tc+1, $"await db.SaveChangesAsync();");
+			output.AddLine(tc, "}");
+		}
+
+		if (entity.Service.InclUpdate) {
+			// Interface
+			var signature = $"Task Update{className}({className} {varName})";
+			interfaceOutput.Add(signature);
+
+			output.AddLine();
+			output.AddLine(tc, $"public async {signature}");
+			output.AddLine(tc, "{");
+			output.AddLine(tc+1, $"if ({varName} == null)");
+			output.AddLine(tc+2, $"throw new ArgumentNullException(nameof({varName}));");
+			output.AddLine();
+			output.AddLine(tc+1, $"using var db = _dbContextFactory.CreateDbContext();");
+			output.AddLine(tc+1, $"db.Attach({varName});");
+			output.AddLine(tc+1, $"db.Entry({varName}).State = EntityState.Modified;");
+			output.AddLine();
+			output.AddLine(tc+1, $"await db.SaveChangesAsync();");
+			output.AddLine(tc, "}");
+		}
+
+		if (entity.Service.InclDelete) {
+			// Interface
+			var signature = $"Task Delete{className}(Guid id)";
+			interfaceOutput.Add(signature);
+
+			output.AddLine();
+			output.AddLine(tc, $"public async {signature}");
+			output.AddLine(tc, "{");
+			output.AddLine(tc+1, $"using var db = _dbContextFactory.CreateDbContext();");
+			output.AddLine(tc+1, $"await db.{className}.Where(a => a.Id == id).ExecuteDeleteAsync();");
+			output.AddLine(tc, "}");
+		}
 	}
 
 	private void GenerateSingleMethod(EntityModel entity, GetSvcMethodModel method, List<string> output, List<string> interfaceOutput)
@@ -303,7 +368,7 @@ public class ServiceGenerator
 		output.AddLine(tc, "}");
 	}
 
-	private string ReplaceServiceTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> attrsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string servicesNamespace)
+	private string ReplaceServiceTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> attrsOutput, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string servicesNamespace)
 	{
 		// Header
 		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
@@ -342,6 +407,11 @@ public class ServiceGenerator
 		template = template.Replace(Utils.FmtToken(cToken_ServiceName), serviceName);
 
 		// cToken_IntfSignatures
+
+		// CRUD Methods
+		sb = new StringBuilder();
+		crudMethodsOutput.ForEach(x => sb.AppendLine(x));
+		template = template.Replace(Utils.FmtToken(cToken_CudMethods), sb.ToString());
 
 		// Single Methods
 		sb = new StringBuilder();
@@ -463,6 +533,11 @@ public class ServiceGenerator
 		addlUsings.AddIfNotExists(queriesNamespace);
 		addlUsings.AddIfNotExists(entitiesNamespace);
 
+		// Create/Update/Delete
+		var crudMethodsOutput = new List<string>();
+		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete)
+			this.GenerateCUDControllerMethods(entity, serviceVarName, crudMethodsOutput);
+
 		// GetSingle methods
 		var singleMethodsOutput = new List<string>();
 		foreach (GetSvcMethodModel singleMethod in entity.Service.GetMethods.Where(m => !m.IsList))
@@ -486,12 +561,78 @@ public class ServiceGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, controllersNamespace, controllerName, serviceName, serviceVarName, singleMethodsOutput, listMethodsOutput, queryMethodsOutput);
+		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, controllersNamespace, controllerName, serviceName, serviceVarName, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput);
 
 		var outputFile = Path.Combine(outputFolder, $"{controllerName}.cs");
 		if (File.Exists(outputFile))
 			File.Delete(outputFile);
 		File.WriteAllText(outputFile, fileContents);
+	}
+
+	private void GenerateCUDControllerMethods(EntityModel entity, string svcVarName, List<string> output)
+	{
+		var tc = 1;
+		var className = entity.Name;	
+		var varName = Utils.ToCamelCase(className);
+
+		output.AddLine(tc, "// Create / Update / Delete");
+
+		if (entity.Service.InclCreate) {
+			output.AddLine();
+			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
+			output.AddLine(tc, $"public async Task<ActionResult> Create{className}({className} {varName})");
+			output.AddLine(tc, "{");
+			output.AddLine(tc+1, "try {");
+			output.AddLine(tc+2, "var svcResponse =new ServiceResponse();");
+			output.AddLine();
+			output.AddLine(tc+2, $"await _{svcVarName}.Create{className}({varName});");
+			output.AddLine();
+			output.AddLine(tc+2, "svcResponse.Message = \"Success\";");
+			output.AddLine(tc+2, "return Ok(svcResponse);");
+			output.AddLine();
+			output.AddLine(tc+1, "} catch (Exception ex) {");
+			output.AddLine(tc+2, "return LogErrorAndReturnErrorResponse(ex);");
+			output.AddLine(tc+1, "}");
+			output.AddLine(tc, "}");
+		}
+
+		if (entity.Service.InclUpdate) {
+			output.AddLine();
+			output.AddLine(tc, $"[HttpPatch, Route(\"[action]\")]");
+			output.AddLine(tc, $"public async Task<ActionResult> Update{className}({className} {varName})");
+			output.AddLine(tc, "{");
+			output.AddLine(tc+1, "try {");
+			output.AddLine(tc+2, "var svcResponse =new ServiceResponse();");
+			output.AddLine();
+			output.AddLine(tc+2, $"await _{svcVarName}.Update{className}({varName});");
+			output.AddLine();
+			output.AddLine(tc+2, "svcResponse.Message = \"Success\";");
+			output.AddLine(tc+2, "return Ok(svcResponse);");
+			output.AddLine();
+			output.AddLine(tc+1, "} catch (Exception ex) {");
+			output.AddLine(tc+2, "return LogErrorAndReturnErrorResponse(ex);");
+			output.AddLine(tc+1, "}");
+			output.AddLine(tc, "}");
+		}
+
+		if (entity.Service.InclDelete) {
+			output.AddLine();
+			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
+			output.AddLine(tc, $"public async Task<ActionResult> Delete{className}(Guid id)");
+			output.AddLine(tc, "{");
+			output.AddLine(tc+1, "try {");
+			output.AddLine(tc+2, "var svcResponse =new ServiceResponse();");
+			output.AddLine();
+			output.AddLine(tc+2, $"await _{svcVarName}.Delete{className}(id);");
+			output.AddLine();
+			output.AddLine(tc+2, "svcResponse.Message = \"Success\";");
+			output.AddLine(tc+2, "return Ok(svcResponse);");
+			output.AddLine();
+			output.AddLine(tc+1, "} catch (Exception ex) {");
+			output.AddLine(tc+2, "return LogErrorAndReturnErrorResponse(ex);");
+			output.AddLine(tc+1, "}");
+			output.AddLine(tc, "}");
+		}
 	}
 
 	private void GenerateSingleControllerMethod(EntityModel entity, GetSvcMethodModel method, string svcVarName, List<string> output)
@@ -575,7 +716,7 @@ public class ServiceGenerator
 		output.AddLine(tc, "}");
 	}
 
-	private string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput)
+	private string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput)
 	{
 		// Header
 		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
@@ -594,6 +735,11 @@ public class ServiceGenerator
 		template = template.Replace(Utils.FmtToken(cToken_ControllerName), controllerName);
 		template = template.Replace(Utils.FmtToken(cToken_ServiceName), serviceName);
 		template = template.Replace(Utils.FmtToken(cToken_ServiceVarName), serviceVarName);
+
+		// CUD Methods
+		sb = new StringBuilder();
+		crudMethodsOutput.ForEach(x => sb.AppendLine(x));
+		template = template.Replace(Utils.FmtToken(cToken_CudControllerMethods), sb.ToString());
 
 		// Single Methods
 		sb = new StringBuilder();

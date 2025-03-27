@@ -12,7 +12,8 @@ public class ServiceModel : INotifyPropertyChanged
 {
 	#region Fields
 
-	private bool _inclSave;
+	private bool _inclCreate;
+	private bool _inclUpdate;
 	private bool _inclDelete;
 	private bool _inclController;
 	private ObservableCollection<string> _addlServiceUsings = new ObservableCollection<string>();
@@ -67,10 +68,16 @@ public class ServiceModel : INotifyPropertyChanged
 		set => SetProperty(ref _enabled, value);
 	}
 
-	public bool InclSave
+	public bool InclCreate
 	{
-		get => _inclSave;
-		set => SetProperty(ref _inclSave, value);
+		get => _inclCreate;
+		set => SetProperty(ref _inclCreate, value);
+	}
+
+	public bool InclUpdate
+	{
+		get => _inclUpdate;
+		set => SetProperty(ref _inclUpdate, value);
 	}
 
 	public bool InclDelete

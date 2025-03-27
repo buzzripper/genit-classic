@@ -38,6 +38,7 @@ partial class ServiceEditCtl
 		getMethodsListCtl = new GetMethodsListCtl();
 		queryMethodsCtl = new QueryMethodsListCtl();
 		splMain = new System.Windows.Forms.SplitContainer();
+		ckbInclUpdate = new System.Windows.Forms.CheckBox();
 		((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
 		splMain.Panel1.SuspendLayout();
 		splMain.Panel2.SuspendLayout();
@@ -49,7 +50,7 @@ partial class ServiceEditCtl
 		ckbInclSave.AutoSize = true;
 		ckbInclSave.Location = new System.Drawing.Point(854, 66);
 		ckbInclSave.Name = "ckbInclSave";
-		ckbInclSave.Size = new System.Drawing.Size(222, 32);
+		ckbInclSave.Size = new System.Drawing.Size(157, 23);
 		ckbInclSave.TabIndex = 0;
 		ckbInclSave.Text = "Include Save Method";
 		ckbInclSave.UseVisualStyleBackColor = true;
@@ -58,9 +59,9 @@ partial class ServiceEditCtl
 		// ckbInclDelete
 		// 
 		ckbInclDelete.AutoSize = true;
-		ckbInclDelete.Location = new System.Drawing.Point(854, 104);
+		ckbInclDelete.Location = new System.Drawing.Point(854, 121);
 		ckbInclDelete.Name = "ckbInclDelete";
-		ckbInclDelete.Size = new System.Drawing.Size(237, 32);
+		ckbInclDelete.Size = new System.Drawing.Size(168, 23);
 		ckbInclDelete.TabIndex = 1;
 		ckbInclDelete.Text = "Include Delete Method";
 		ckbInclDelete.UseVisualStyleBackColor = true;
@@ -71,7 +72,7 @@ partial class ServiceEditCtl
 		ckbInclController.AutoSize = true;
 		ckbInclController.Location = new System.Drawing.Point(869, 167);
 		ckbInclController.Name = "ckbInclController";
-		ckbInclController.Size = new System.Drawing.Size(194, 32);
+		ckbInclController.Size = new System.Drawing.Size(137, 23);
 		ckbInclController.TabIndex = 2;
 		ckbInclController.Text = "Include Controller";
 		ckbInclController.UseVisualStyleBackColor = true;
@@ -81,9 +82,9 @@ partial class ServiceEditCtl
 		// 
 		ckbEnabled.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(1329, 14);
+		ckbEnabled.Location = new System.Drawing.Point(1361, 14);
 		ckbEnabled.Name = "ckbEnabled";
-		ckbEnabled.Size = new System.Drawing.Size(108, 32);
+		ckbEnabled.Size = new System.Drawing.Size(76, 23);
 		ckbEnabled.TabIndex = 3;
 		ckbEnabled.Text = "Enabled";
 		ckbEnabled.UseVisualStyleBackColor = true;
@@ -98,7 +99,7 @@ partial class ServiceEditCtl
 		lkbAddlServiceUsings.LinkColor = System.Drawing.SystemColors.MenuHighlight;
 		lkbAddlServiceUsings.Location = new System.Drawing.Point(1132, 65);
 		lkbAddlServiceUsings.Name = "lkbAddlServiceUsings";
-		lkbAddlServiceUsings.Size = new System.Drawing.Size(234, 28);
+		lkbAddlServiceUsings.Size = new System.Drawing.Size(162, 19);
 		lkbAddlServiceUsings.TabIndex = 19;
 		lkbAddlServiceUsings.TabStop = true;
 		lkbAddlServiceUsings.Text = "Additional Service Usings";
@@ -117,7 +118,7 @@ partial class ServiceEditCtl
 		lkbServiceClassAttributes.LinkColor = System.Drawing.SystemColors.MenuHighlight;
 		lkbServiceClassAttributes.Location = new System.Drawing.Point(1132, 104);
 		lkbServiceClassAttributes.Name = "lkbServiceClassAttributes";
-		lkbServiceClassAttributes.Size = new System.Drawing.Size(214, 28);
+		lkbServiceClassAttributes.Size = new System.Drawing.Size(151, 19);
 		lkbServiceClassAttributes.TabIndex = 20;
 		lkbServiceClassAttributes.TabStop = true;
 		lkbServiceClassAttributes.Text = "Service Class Attributes";
@@ -136,7 +137,7 @@ partial class ServiceEditCtl
 		lkbControllerClassAttributes.LinkColor = System.Drawing.SystemColors.MenuHighlight;
 		lkbControllerClassAttributes.Location = new System.Drawing.Point(1132, 195);
 		lkbControllerClassAttributes.Name = "lkbControllerClassAttributes";
-		lkbControllerClassAttributes.Size = new System.Drawing.Size(240, 28);
+		lkbControllerClassAttributes.Size = new System.Drawing.Size(170, 19);
 		lkbControllerClassAttributes.TabIndex = 22;
 		lkbControllerClassAttributes.TabStop = true;
 		lkbControllerClassAttributes.Text = "Controller Class Attributes";
@@ -155,7 +156,7 @@ partial class ServiceEditCtl
 		lkbAddlControllerUsings.LinkColor = System.Drawing.SystemColors.MenuHighlight;
 		lkbAddlControllerUsings.Location = new System.Drawing.Point(1132, 167);
 		lkbAddlControllerUsings.Name = "lkbAddlControllerUsings";
-		lkbAddlControllerUsings.Size = new System.Drawing.Size(260, 28);
+		lkbAddlControllerUsings.Size = new System.Drawing.Size(181, 19);
 		lkbAddlControllerUsings.TabIndex = 21;
 		lkbAddlControllerUsings.TabStop = true;
 		lkbAddlControllerUsings.Text = "Additional Controller Usings";
@@ -183,8 +184,9 @@ partial class ServiceEditCtl
 		queryMethodsCtl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		queryMethodsCtl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		queryMethodsCtl.Location = new System.Drawing.Point(21, 17);
+		queryMethodsCtl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 		queryMethodsCtl.Name = "queryMethodsCtl";
-		queryMethodsCtl.Size = new System.Drawing.Size(1440, 272);
+		queryMethodsCtl.Size = new System.Drawing.Size(1440, 264);
 		queryMethodsCtl.TabIndex = 24;
 		// 
 		// splMain
@@ -196,6 +198,7 @@ partial class ServiceEditCtl
 		// 
 		// splMain.Panel1
 		// 
+		splMain.Panel1.Controls.Add(ckbInclUpdate);
 		splMain.Panel1.Controls.Add(getMethodsListCtl);
 		splMain.Panel1.Controls.Add(ckbEnabled);
 		splMain.Panel1.Controls.Add(lkbControllerClassAttributes);
@@ -213,6 +216,17 @@ partial class ServiceEditCtl
 		splMain.SplitterDistance = 368;
 		splMain.SplitterWidth = 8;
 		splMain.TabIndex = 25;
+		// 
+		// ckbInclUpdate
+		// 
+		ckbInclUpdate.AutoSize = true;
+		ckbInclUpdate.Location = new System.Drawing.Point(854, 94);
+		ckbInclUpdate.Name = "ckbInclUpdate";
+		ckbInclUpdate.Size = new System.Drawing.Size(174, 23);
+		ckbInclUpdate.TabIndex = 24;
+		ckbInclUpdate.Text = "Include Update Method";
+		ckbInclUpdate.UseVisualStyleBackColor = true;
+		ckbInclUpdate.CheckedChanged += ckbInclUpdate_CheckedChanged;
 		// 
 		// ServiceEditCtl
 		// 
@@ -244,4 +258,5 @@ partial class ServiceEditCtl
 	private GetMethodsListCtl getMethodsListCtl;
 	private QueryMethodsListCtl queryMethodsCtl;
 	private System.Windows.Forms.SplitContainer splMain;
+	private System.Windows.Forms.CheckBox ckbInclUpdate;
 }

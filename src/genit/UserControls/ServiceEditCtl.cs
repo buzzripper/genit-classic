@@ -47,7 +47,8 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 		_suspendUpdates = true;
 
 		ckbEnabled.Checked = _service.Enabled;
-		ckbInclSave.Checked = _service.InclSave;
+		ckbInclSave.Checked = _service.InclCreate;
+		ckbInclUpdate.Checked = _service.InclUpdate;
 		ckbInclDelete.Checked = _service.InclDelete;
 		ckbInclController.Checked = _service.InclController;
 
@@ -117,7 +118,7 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 	private void ckbInclSave_CheckedChanged(object sender, EventArgs e)
 	{
 		if (!_suspendUpdates)
-			_service.InclSave = ckbInclSave.Checked;
+			_service.InclCreate = ckbInclSave.Checked;
 	}
 
 	private void ckbInclDelete_CheckedChanged(object sender, EventArgs e)
@@ -130,5 +131,11 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 	{
 		if (!_suspendUpdates)
 			_service.InclController = ckbInclController.Checked;
+	}
+
+	private void ckbInclUpdate_CheckedChanged(object sender, EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_service.InclUpdate = ckbInclUpdate.Checked;
 	}
 }

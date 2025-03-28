@@ -12,10 +12,6 @@ public class DbContextModel
 
 	public DbContextModel()
 	{
-		Entities.CollectionChanged += Entities_CollectionChanged;
-		Enums.CollectionChanged += Enums_CollectionChanged;
-		Assocs.CollectionChanged += Assocs_CollectionChanged;
-		//Services.CollectionChanged += Services_CollectionChanged;
 	}
 
 	#endregion
@@ -31,11 +27,11 @@ public class DbContextModel
 	public string ServicesNamespace { get; set; }
 	public string QueriesNamespace { get; set; }
 	public string ControllersNamespace { get; set; }
+	public string ApiClientsNamespace { get; set; }
 	public ObservableCollection<string> AddlUsings { get; set; } = new ObservableCollection<string>();
 	public ObservableCollection<EntityModel> Entities { get; set; } = new ObservableCollection<EntityModel>();
 	public ObservableCollection<EnumModel> Enums { get; set; } = new ObservableCollection<EnumModel>();
 	public ObservableCollection<AssocModel> Assocs { get; set; } = new ObservableCollection<AssocModel>();
-	//public ObservableCollection<ServiceModel> Services { get; set; } = new ObservableCollection<ServiceModel>();
 	public DbContextGenModel DbContextGen { get; set; }
 	public EntityGenModel EntityGen { get; set; }
 	public EnumGenModel EnumGen { get; set; }
@@ -78,22 +74,6 @@ public class DbContextModel
 	}
 
 	#endregion
-
-	private void Enums_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-	{
-	}
-
-	private void Entities_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-	{
-	}
-
-	private void Assocs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-	{
-	}
-
-	private void Services_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-	{
-	}
 
 	private void Entity_NavPropertyAdded(object sender, NavPropertyAddedEventArgs e)
 	{

@@ -36,6 +36,8 @@ public partial class DbContextEditCtl : UserControlBase
 		txtServicesNamespace.Text = dbContextMdl.ServicesNamespace;
 		txtQueriesNamespace.Text = dbContextMdl.QueriesNamespace;
 		txtControllersNamespace.Text = dbContextMdl.ControllersNamespace;
+		txtApiClientsNamespace.Text = dbContextMdl.ApiClientsNamespace;
+
 		stringListEditor1.Items = dbContextMdl.AddlUsings;
 
 		_suspendUpdates = false;
@@ -95,5 +97,11 @@ public partial class DbContextEditCtl : UserControlBase
 	{
 		if (!_suspendUpdates)
 			_dbContextMdl.ControllersNamespace = txtControllersNamespace.Text;
+	}
+
+	private void txtApiClientsNamespace_TextChanged(object sender, System.EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_dbContextMdl.ApiClientsNamespace = txtApiClientsNamespace.Text;
 	}
 }

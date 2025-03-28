@@ -41,6 +41,8 @@ namespace Dyvenix.Genit.UserControls
 			txtQueryOutputFolder.Text = _serviceGenMdl.QueryOutputFolder;
 			txtControllerTemplateFile.Text = _serviceGenMdl.ControllerTemplateFilepath;
 			txtControllerOutputFolder.Text = _serviceGenMdl.ControllerOutputFolder;
+			txtApiClientOutputFolder.Text = _serviceGenMdl.ApiClientOutputFolder;
+			txtApiClientTemplateFile.Text = _serviceGenMdl.ApiClientTemplateFilepath;
 
 			ckbInclHeader.Checked = _serviceGenMdl.InclHeader;
 			ckbEnabled.Checked = _serviceGenMdl.Enabled;
@@ -86,6 +88,18 @@ namespace Dyvenix.Genit.UserControls
 				_serviceGenMdl.ControllerOutputFolder = txtControllerOutputFolder.Text;
 		}
 
+		private void txtApiClientTemplateFile_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.ApiClientTemplateFilepath = txtApiClientTemplateFile.Text;
+		}
+
+		private void txtApiClientOutputFolder_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.ApiClientOutputFolder = txtApiClientOutputFolder.Text;
+		}
+
 		private void btnBrowseTemplateFilepath_Click(object sender, EventArgs e)
 		{
 			fileDlg.InitialDirectory = txtTemplateFilepath.Text;
@@ -128,6 +142,20 @@ namespace Dyvenix.Genit.UserControls
 				txtControllerOutputFolder.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, folderDlg.SelectedPath);
 		}
 
+		private void btnBrowseApiClientTemplFilepath_Click(object sender, EventArgs e)
+		{
+			fileDlg.InitialDirectory = txtApiClientTemplateFile.Text;
+			if (fileDlg.ShowDialog() == DialogResult.OK)
+				txtApiClientTemplateFile.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, fileDlg.FileName);
+		}
+
+		private void btnBrowseApiClientOutFolder_Click(object sender, EventArgs e)
+		{
+			folderDlg.InitialDirectory = txtApiClientOutputFolder.Text;
+			if (folderDlg.ShowDialog() == DialogResult.OK)
+				txtApiClientOutputFolder.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, folderDlg.SelectedPath);
+		}
+
 		private void ckbEnabled_CheckedChanged(object sender, EventArgs e)
 		{
 			if (!_suspendUpdates)
@@ -139,6 +167,5 @@ namespace Dyvenix.Genit.UserControls
 			if (!_suspendUpdates)
 				_serviceGenMdl.InclHeader = ckbInclHeader.Checked;
 		}
-
 	}
 }

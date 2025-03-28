@@ -80,7 +80,7 @@ namespace Dyvenix.Genit.UserControls
 		{
 			folderDlg.InitialDirectory = txtOutputFolder.Text;
 			if (folderDlg.ShowDialog() == DialogResult.OK)
-				txtOutputFolder.Text = folderDlg.SelectedPath;
+				txtOutputFolder.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, folderDlg.SelectedPath);
 		}
 	}
 }

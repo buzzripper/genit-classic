@@ -309,7 +309,7 @@ public partial class TreeNav : UserControl
 		} else if (e.Node == _enumGenNode) {
 			EnumGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
-		} else if (e.Node.Parent == _servicesGenNode) {
+		} else if (e.Node == _servicesGenNode) {
 			ServiceGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 		}
 	}

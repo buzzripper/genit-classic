@@ -44,6 +44,8 @@ partial class DbContextEditCtl
 		label7 = new System.Windows.Forms.Label();
 		txtControllersNamespace = new System.Windows.Forms.TextBox();
 		label8 = new System.Windows.Forms.Label();
+		txtApiClientsNamespace = new System.Windows.Forms.TextBox();
+		label9 = new System.Windows.Forms.Label();
 		SuspendLayout();
 		// 
 		// label1
@@ -94,7 +96,8 @@ partial class DbContextEditCtl
 		stringListEditor1.BackColor = System.Drawing.SystemColors.Control;
 		stringListEditor1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		stringListEditor1.Font = new System.Drawing.Font("Segoe UI", 10F);
-		stringListEditor1.Location = new System.Drawing.Point(161, 285);
+		stringListEditor1.Location = new System.Drawing.Point(161, 322);
+		stringListEditor1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 		stringListEditor1.Name = "stringListEditor1";
 		stringListEditor1.Size = new System.Drawing.Size(331, 152);
 		stringListEditor1.TabIndex = 7;
@@ -104,7 +107,7 @@ partial class DbContextEditCtl
 		// 
 		label4.AutoSize = true;
 		label4.Font = new System.Drawing.Font("Segoe UI", 10F);
-		label4.Location = new System.Drawing.Point(40, 286);
+		label4.Location = new System.Drawing.Point(40, 323);
 		label4.Name = "label4";
 		label4.Size = new System.Drawing.Size(119, 19);
 		label4.TabIndex = 8;
@@ -218,11 +221,33 @@ partial class DbContextEditCtl
 		label8.Text = "Controllers Namespace:";
 		label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 		// 
+		// txtApiClientsNamespace
+		// 
+		txtApiClientsNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+		txtApiClientsNamespace.Location = new System.Drawing.Point(161, 285);
+		txtApiClientsNamespace.Name = "txtApiClientsNamespace";
+		txtApiClientsNamespace.Size = new System.Drawing.Size(331, 25);
+		txtApiClientsNamespace.TabIndex = 23;
+		txtApiClientsNamespace.TextChanged += txtApiClientsNamespace_TextChanged;
+		// 
+		// label9
+		// 
+		label9.AutoSize = true;
+		label9.Font = new System.Drawing.Font("Segoe UI", 10F);
+		label9.Location = new System.Drawing.Point(6, 287);
+		label9.Name = "label9";
+		label9.Size = new System.Drawing.Size(151, 19);
+		label9.TabIndex = 22;
+		label9.Text = "Api Clients Namespace:";
+		label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+		// 
 		// DbContextEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ActiveBorder;
+		Controls.Add(txtApiClientsNamespace);
+		Controls.Add(label9);
 		Controls.Add(txtControllersNamespace);
 		Controls.Add(label8);
 		Controls.Add(txtQueriesNamespace);
@@ -267,4 +292,6 @@ partial class DbContextEditCtl
 	private System.Windows.Forms.Label label7;
 	private System.Windows.Forms.TextBox txtControllersNamespace;
 	private System.Windows.Forms.Label label8;
+	private System.Windows.Forms.TextBox txtApiClientsNamespace;
+	private System.Windows.Forms.Label label9;
 }

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace Dyvenix.Genit.Misc
@@ -42,12 +45,19 @@ namespace Dyvenix.Genit.Misc
 			if (string.IsNullOrWhiteSpace(input))
 				return input;
 
-			if (input.Length == 1) 
+			if (input.Length == 1)
 				return input.ToLower();
 
 			var firstChar = input.Substring(0, 1).ToLower();
 			return $"{firstChar}{input.Substring(1)}";
 
+		}
+
+		public static List<string> BuildAddlUsingsList(ObservableCollection<string> attrs)
+		{
+			var usings = new List<string>();
+			attrs?.ToList().ForEach(a => usings.Add(a));
+			return usings;
 		}
 	}
 }

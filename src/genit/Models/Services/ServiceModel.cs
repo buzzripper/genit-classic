@@ -16,6 +16,7 @@ public class ServiceModel : INotifyPropertyChanged
 	private bool _inclUpdate;
 	private bool _inclDelete;
 	private bool _inclController;
+	private string _controllerVersion;
 	private ObservableCollection<string> _addlServiceUsings = new ObservableCollection<string>();
 	private ObservableCollection<string> _serviceAttributes = new ObservableCollection<string>();
 	private ObservableCollection<string> _addlControllerUsings = new ObservableCollection<string>();
@@ -92,6 +93,12 @@ public class ServiceModel : INotifyPropertyChanged
 		set => SetProperty(ref _inclController, value);
 	}
 
+	public string ControllerVersion
+	{
+		get => _controllerVersion;
+		set => SetProperty(ref _controllerVersion, value);
+	}
+	
 	public ObservableCollection<string> AddlServiceUsings
 	{
 		get => _addlServiceUsings;

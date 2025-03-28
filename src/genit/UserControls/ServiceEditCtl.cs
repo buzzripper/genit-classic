@@ -51,6 +51,7 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 		ckbInclUpdate.Checked = _service.InclUpdate;
 		ckbInclDelete.Checked = _service.InclDelete;
 		ckbInclController.Checked = _service.InclController;
+		txtControllerVersion.Text = _service.ControllerVersion;
 
 		SetSvcUsingsLabel();
 		SetSvcAttrsLabel();
@@ -137,5 +138,11 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 	{
 		if (!_suspendUpdates)
 			_service.InclUpdate = ckbInclUpdate.Checked;
+	}
+
+	private void txtControllerVersion_TextChanged(object sender, EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_service.ControllerVersion = txtControllerVersion.Text;
 	}
 }

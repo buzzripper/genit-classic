@@ -18,6 +18,7 @@ internal class ServiceControllerGenerator
 	private const string cToken_AddlUsings = "ADDL_USINGS";
 	private const string cToken_ControllersNs = "CONTROLLERS_NS";
 	private const string cToken_ControllerAttrs = "CONTROLLER_ATTRS";
+	private const string cToken_ControllerVersion = "CONTROLLER_VERSION";
 	private const string cToken_ControllerName = "CONTROLLER_NAME";
 	private const string cToken_ServiceName = "SERVICE_NAME";
 	private const string cToken_ServiceVarName = "SERVICE_VAR_NAME";
@@ -71,7 +72,7 @@ internal class ServiceControllerGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, controllersNamespace, controllerName, serviceName, serviceVarName, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput);
+		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, entity.Service.ControllerVersion, controllersNamespace, controllerName, serviceName, serviceVarName, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput);
 
 		var outputFile = Path.Combine(outputFolder, $"{controllerName}.cs");
 		if (File.Exists(outputFile))
@@ -226,7 +227,7 @@ internal class ServiceControllerGenerator
 		output.AddLine(tc, "}");
 	}
 
-	internal string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, List<string> attrsOutput, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput)
+	internal string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, List<string> attrsOutput, string controllerVersion, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput)
 	{
 		// Header
 		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
@@ -249,6 +250,8 @@ internal class ServiceControllerGenerator
 		});
 		template = template.Replace(Utils.FmtToken(cToken_ControllerAttrs), sb.ToString());
 
+		template = template.Replace(Utils.FmtToken(cToken_ControllerVersion), controllerVersion);
+		
 		// Various
 		template = template.Replace(Utils.FmtToken(cToken_ControllersNs), controllersNamespace);
 		template = template.Replace(Utils.FmtToken(cToken_ControllerName), controllerName);

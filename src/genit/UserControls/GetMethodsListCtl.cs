@@ -30,7 +30,7 @@ public partial class GetMethodsListCtl : UserControlBase
 
 	#region Fields
 
-	private ObservableCollection<GetSvcMethodModel> _methods;
+	private ObservableCollection<ServiceMethodModel> _methods;
 
 	#endregion
 
@@ -47,7 +47,7 @@ public partial class GetMethodsListCtl : UserControlBase
 		grdItems.AutoGenerateColumns = false;
 	}
 
-	public void SetData(ObservableCollection<GetSvcMethodModel> methods, ObservableCollection<PropertyModel> properties)
+	public void SetData(ObservableCollection<ServiceMethodModel> methods, ObservableCollection<PropertyModel> properties)
 	{
 		var propItems = BuildPropertyBindingList(properties);
 		var comboCol = grdItems.Columns[cPropCol] as DataGridViewComboBoxColumn;
@@ -88,10 +88,8 @@ public partial class GetMethodsListCtl : UserControlBase
 
 	private void Add()
 	{
-		var method = new GetSvcMethodModel(Guid.NewGuid()) {
-			Name = "Get",
-			FilterProperty = null,
-			IsList = false
+		var method = new ServiceMethodModel(Guid.NewGuid()) {
+			Name = "Get"
 		};
 
 		bindingSrc.Add(method);
@@ -196,7 +194,7 @@ public partial class GetMethodsListCtl : UserControlBase
 		}
 	}
 
-	private GetSvcMethodModel GetSvcMethodModel(int rowIndex)
+	private ServiceMethodModel GetSvcMethodModel(int rowIndex)
 	{
 		var idValStr = grdItems.Rows[rowIndex].Cells[cIdCol].Value?.ToString();
 		return _methods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
@@ -250,4 +248,5 @@ public class MethodDeletedEventArgs : EventArgs
 }
 
 #endregion
+
 

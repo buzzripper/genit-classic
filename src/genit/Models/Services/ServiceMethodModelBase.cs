@@ -1,91 +1,91 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Collections.ObjectModel;
+//using System.ComponentModel;
+//using System.Runtime.CompilerServices;
+//using System.Text.Json.Serialization;
 
-namespace Dyvenix.Genit.Models.Services;
+//namespace Dyvenix.Genit.Models.Services;
 
-public abstract class ServiceMethodModelBase : INotifyPropertyChanged
-{
-	public event PropertyChangedEventHandler PropertyChanged;
+//public abstract class ServiceMethodModelBase : INotifyPropertyChanged
+//{
+//	public event PropertyChangedEventHandler PropertyChanged;
 
-	#region Fields
+//	#region Fields
 
-	private int _displayOrder;
-	private bool _inclSorting;
-	private bool _inclPaging;
-	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
-	protected bool _suspendUpdates;
+//	private int _displayOrder;
+//	private bool _inclSorting;
+//	private bool _inclPaging;
+//	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
+//	protected bool _suspendUpdates;
 
-	#endregion
+//	#endregion
 
-	#region Ctors / Initialization
+//	#region Ctors / Initialization
 
-	[JsonConstructor]
-	public ServiceMethodModelBase()
-	{
-	}
+//	[JsonConstructor]
+//	public ServiceMethodModelBase()
+//	{
+//	}
 
-	#endregion
+//	#endregion
 
-	#region Properties
+//	#region Properties
 
-	public Guid Id { get; init; }
-	public string Name { get; set; }
+//	public Guid Id { get; init; }
+//	public string Name { get; set; }
 
-	public ObservableCollection<string> Attributes
-	{
-		get => _attributes;
-		set => SetProperty(ref _attributes, value);
-	}
+//	public ObservableCollection<string> Attributes
+//	{
+//		get => _attributes;
+//		set => SetProperty(ref _attributes, value);
+//	}
 
-	public int DisplayOrder
-	{
-		get => _displayOrder;
-		set => SetProperty(ref _displayOrder, value);
-	}
+//	public int DisplayOrder
+//	{
+//		get => _displayOrder;
+//		set => SetProperty(ref _displayOrder, value);
+//	}
 
-	public bool InclSorting
-	{
-		get => _inclSorting;
-		set => SetProperty(ref _inclSorting, value);
-	}
+//	public bool InclSorting
+//	{
+//		get => _inclSorting;
+//		set => SetProperty(ref _inclSorting, value);
+//	}
 
-	public bool InclPaging
-	{
-		get => _inclPaging;
-		set => SetProperty(ref _inclPaging, value);
-	}
+//	public bool InclPaging
+//	{
+//		get => _inclPaging;
+//		set => SetProperty(ref _inclPaging, value);
+//	}
 
-	#endregion
+//	#endregion
 
-	#region Non-serialized Properties
+//	#region Non-serialized Properties
 
-	[JsonIgnore]
-	public int AttrCount => this.Attributes.Count;
+//	[JsonIgnore]
+//	public int AttrCount => this.Attributes.Count;
 
-	#endregion
+//	#endregion
 
 
-	#region PropertyChanged
+//	#region PropertyChanged
 
-	protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-	{
-		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
+//	protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+//	{
+//		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+//	}
 
-	protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-	{
-		if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-		field = value;
+//	protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+//	{
+//		if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+//		field = value;
 
-		if (!_suspendUpdates)
-			OnPropertyChanged(propertyName);
+//		if (!_suspendUpdates)
+//			OnPropertyChanged(propertyName);
 
-		return true;
-	}
+//		return true;
+//	}
 
-	#endregion
-}
+//	#endregion
+//}

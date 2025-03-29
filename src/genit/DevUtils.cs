@@ -3,7 +3,6 @@ using Dyvenix.Genit.Models.Generators;
 using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Dyvenix.Genit
 {
@@ -68,11 +67,10 @@ namespace Dyvenix.Genit
 
 			var pkProp = appUserMdl.GetPKProperty();
 
-			var method = new GetSvcMethodModel(Guid.NewGuid());
-			method.FilterProperty = pkProp;
+			var method = new ServiceMethodModel(Guid.NewGuid());
+			method.FilterProperties.Add(pkProp);
 			method.Name = "GetById";
-			method.IsList = false;
-			service.GetMethods.Add(method);
+			service.Methods.Add(method);
 
 			return service;
 		}

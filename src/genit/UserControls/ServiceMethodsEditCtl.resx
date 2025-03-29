@@ -117,38 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnAdd.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAADmSURBVHhe7ZRBCsMwEAP91PysD0r+1FqgixcTaKA2FTOw
-        BKQcJB3cAAAAAAAAAABWcF3X0e9d7rCdj8qW8gwgzXY+KlvKM4A02/mobCnPANJs56OypTwDSLOdj8qW
-        8gwgzXY+KlvKM4A02/+Fgn9753m++ncYwNr0/7tzjH30EEOR1ecY+5iFWnmOsY9ZqJXnGPuYhVp5jrGP
-        HmL6ON1d1CP4BIcfBpBmOx+VLeUZQJrtfFS2lGcAabbzUdlSngGk2c5HZUt5BpBmOx+VLeUZQJrtfFS2
-        lGcAabYBAAAAAAAAAH5Iax93z1itYeXEZgAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="btnDelete.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAE1SURBVHhe7dlhCoMwDAVgj7Kj7KYexQMoeIQdZWsgD8rQ
-        VmuKJrwPgrCVNe8x9mcDEREREREREVGrdV1f8zx/5KkvmdM7xp53NJGFlmX5yvQqQe+Yet7RJA+PsV4w
-        D9/rjmaySL6Y9YJb4bOZ9Nh9ZMFeJZTCy2frsfv1KMFNeLAswV14sCjBbXi4UoL78NBSQpjwcKaEcOHh
-        SAlhw0OthPSMGx5KJWxNqPBwtISQ4aFWQujwovSDJyMFyBk9HkstPCZkCUfDY0KVUAovQWX23nNfQi08
-        zoQs4Uh4CFfCmfAQpoSW8OC+hCvhwW0JFuHBXQmW4cFNCT3Cg4sS0iLj3oJ65JJSCWme+ceIVXjYuyPN
-        W4/cK1/QOjz83/GY8CALpuW6fiVxx+PCExEREREREZEjw/AD5+a9fsITnBQAAAAASUVORK5CYII=
-</value>
-  </data>
   <metadata name="colId.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="colName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colIsList.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="colInclSorting.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -157,12 +129,16 @@
   <metadata name="colInclPaging.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="colUseQuery.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <metadata name="colAttrs.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="colDelete.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="dataGridViewCellStyle2.NullValue" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
@@ -182,7 +158,20 @@
         7mwAAAAASUVORK5CYII=
 </value>
   </data>
+  <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="btnAdd.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAADmSURBVHhe7ZRBCsMwEAP91PysD0r+1FqgixcTaKA2FTOw
+        BKQcJB3cAAAAAAAAAABWcF3X0e9d7rCdj8qW8gwgzXY+KlvKM4A02/mobCnPANJs56OypTwDSLOdj8qW
+        8gwgzXY+KlvKM4A02/+Fgn9753m++ncYwNr0/7tzjH30EEOR1ecY+5iFWnmOsY9ZqJXnGPuYhVp5jrGP
+        HmL6ON1d1CP4BIcfBpBmOx+VLeUZQJrtfFS2lGcAabbzUdlSngGk2c5HZUt5BpBmOx+VLeUZQJrtfFS2
+        lGcAabYBAAAAAAAAAH5Iax93z1itYeXEZgAAAABJRU5ErkJggg==
+</value>
+  </data>
   <metadata name="bindingSrc.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>145, 17</value>
+    <value>192, 17</value>
   </metadata>
 </root>

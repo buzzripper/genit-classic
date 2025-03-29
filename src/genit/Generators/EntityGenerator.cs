@@ -1,13 +1,13 @@
 ﻿using Dyvenix.Genit.Extensions;
 using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
+using Dyvenix.Genit.Models.Generators;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Dyvenix.Genit.Models.Generators;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -167,9 +167,9 @@ public class EntityGenerator
 		foreach (var prop in entity.Properties) {
 			if (sb.Length > 0)
 				sb.Append(Environment.NewLine);
-			sb.Append($"\t\tpublic const string {prop.Name} = nameof({entity.Name}.{prop.Name});");	
+			sb.Append($"\t\tpublic const string {prop.Name} = nameof({entity.Name}.{prop.Name});");
 		}
-			
+
 		return sb.ToString();
 	}
 

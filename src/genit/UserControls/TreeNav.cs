@@ -291,14 +291,14 @@ public partial class TreeNav : UserControl
 		} else if (e.Node.Parent == _entitiesNode) {
 			EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
-		//} else if (e.Node == _enumsNode) {
-		//	EntitiesNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+			//} else if (e.Node == _enumsNode) {
+			//	EntitiesNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
 		} else if (e.Node.Parent == _enumsNode) {
 			EnumModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
-		//} else if (e.Node.Parent == _servicesNode) {
-		//	ServiceModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+			//} else if (e.Node.Parent == _servicesNode) {
+			//	ServiceModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
 		} else if (e.Node == _dbCtxGenNode) {
 			DbContextGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
@@ -413,7 +413,7 @@ public partial class TreeNav : UserControl
 	{
 		var entityToDelete = _dbContextModel.Entities.FirstOrDefault(e => e.Id == Guid.Parse(treeView1.SelectedNode.Name));
 		_dbContextModel.Entities.Remove(entityToDelete);
-		
+
 		_entitiesNode.Nodes.Remove(treeView1.SelectedNode);
 
 		EntityDeleted?.Invoke(this, new EntityDeletedEventArgs(entityToDelete));
@@ -443,7 +443,7 @@ public partial class TreeNav : UserControl
 	{
 		var enumToDelete = _dbContextModel.Enums.FirstOrDefault(e => e.Id == Guid.Parse(treeView1.SelectedNode.Name));
 		_dbContextModel.Enums.Remove(enumToDelete);
-		
+
 		_enumsNode.Nodes.Remove(treeView1.SelectedNode);
 
 		EnumDeleted?.Invoke(this, new EnumDeletedEventArgs(enumToDelete));

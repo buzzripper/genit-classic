@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyvenix.Genit.Misc;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -180,6 +181,9 @@ public class PropertyModel : INotifyPropertyChanged
 				return "UNKNOWN DATATYPE";
 		}
 	}
+
+	[JsonIgnore]
+	public string FilterArgName => Utils.ToCamelCase(Name);
 
 	#endregion
 

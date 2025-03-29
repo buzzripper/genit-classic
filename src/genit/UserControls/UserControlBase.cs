@@ -10,6 +10,10 @@ public class UserControlBase : UserControl
 
 	protected bool _suspendUpdates;
 
+	public UserControlBase()
+	{
+	}
+
 	protected override void OnLoad(EventArgs e)
 	{
 		base.OnLoad(e);

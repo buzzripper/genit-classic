@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Dyvenix.Genit.Models;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Forms;
-using Dyvenix.Genit.Models;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls
 {
@@ -102,7 +102,7 @@ namespace Dyvenix.Genit.UserControls
 				e.NavPropertyModel.FKEntity.Properties.Remove(e.NavPropertyModel.FKProperty);
 			}
 		}
-		
+
 		private void NavPropGridRowCtl_OnNavPropertyEdit(object sender, NavPropertyEditEventArgs e)
 		{
 			NavPropertyEdit?.Invoke(this, e);

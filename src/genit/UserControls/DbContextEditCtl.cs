@@ -7,7 +7,6 @@ public partial class DbContextEditCtl : UserControlBase
 	#region Fields
 
 	private DbContextModel _dbContextMdl;
-	private bool _suspendUpdates;
 
 	#endregion
 

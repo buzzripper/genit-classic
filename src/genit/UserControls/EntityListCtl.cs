@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Dyvenix.Genit.Models;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using Dyvenix.Genit.Models;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -60,7 +60,7 @@ public partial class EntityListCtl : UserControl
 				cmbEntities.SelectedIndex = -1;
 				return;
 			} else {
-				cmbEntities.SelectedItem = value;	
+				cmbEntities.SelectedItem = value;
 			}
 			//foreach (ListItem listItem in cmbEntities.Items) {
 			//	if (listItem.Entity == value) {
@@ -91,13 +91,13 @@ public partial class EntityListCtl : UserControl
 	{
 		public string Display { get; set; }
 		public EntityModel Entity { get; set; }
-		
+
 		public ListItem(EntityModel entity)
 		{
 			Display = entity?.Name;
 			Entity = entity;
 		}
-		
+
 		public override string ToString()
 		{
 			return Display;

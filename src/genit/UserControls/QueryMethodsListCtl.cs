@@ -23,7 +23,7 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 	#region Fields
 
-	private ObservableCollection<QuerySvcMethodModel> _methods;
+	private ObservableCollection<ServiceMethodModel> _methods;
 
 	#endregion
 
@@ -40,7 +40,7 @@ public partial class QueryMethodsListCtl : UserControlBase
 		grdQueries.AutoGenerateColumns = false;
 	}
 
-	public void SetData(ObservableCollection<QuerySvcMethodModel> methods, ObservableCollection<PropertyModel> properties)
+	public void SetData(ObservableCollection<ServiceMethodModel> methods, ObservableCollection<PropertyModel> properties)
 	{
 		_methods = methods;
 		bindingSrc.DataSource = _methods;
@@ -74,7 +74,7 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 	private void Add()
 	{
-		var method = new QuerySvcMethodModel(Guid.NewGuid()) {
+		var method = new ServiceMethodModel(Guid.NewGuid()) {
 			Name = "Query"
 		};
 
@@ -119,13 +119,13 @@ public partial class QueryMethodsListCtl : UserControlBase
 		clbFilterProperties.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 	}
 
-	private void SetFilterPropertiesList(QuerySvcMethodModel query)
+	private void SetFilterPropertiesList(ServiceMethodModel method)
 	{
 		_suspendUpdates = true;
 
 		for (var i = 0; i < clbFilterProperties.Items.Count; i++) {
 			var prop = (PropertyModel)clbFilterProperties.Items[i];
-			clbFilterProperties.SetItemChecked(i, query.FilterProperties.Contains(prop));
+			clbFilterProperties.SetItemChecked(i, method.FilterProperties.Contains(prop));
 		}
 
 		_suspendUpdates = false;
@@ -172,7 +172,7 @@ public partial class QueryMethodsListCtl : UserControlBase
 		}
 	}
 
-	private QuerySvcMethodModel QueryMethodFromGridRow(int rowIndex)
+	private ServiceMethodModel QueryMethodFromGridRow(int rowIndex)
 	{
 		var idValStr = grdQueries.Rows[rowIndex].Cells[cIdCol].Value?.ToString();
 		return _methods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));

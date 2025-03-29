@@ -5,9 +5,7 @@ using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -25,7 +23,7 @@ internal class ServiceQueryGenerator
 
 	internal void GenerateQueryClass(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder, string queriesNamespace)
 	{
-		foreach (var queryMethod in service.QueryMethods) {
+		foreach (var queryMethod in service.Methods) {
 			var className = $"{queryMethod.Name}Query";
 			string interfaceDecl = null;
 

@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -41,8 +37,8 @@ public partial class MultiPageCtl : UserControl
 	private MultiPageItem SelectedItem
 	{
 		get { return _selectedItem; }
-		set { 
-			_selectedItem = value; 
+		set {
+			_selectedItem = value;
 			btnCloseItem.Enabled = value != null;
 		}
 	}

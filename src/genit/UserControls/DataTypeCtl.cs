@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Dyvenix.Genit.Models;
+using System;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using Dyvenix.Genit.Models;
-using Dyvenix.Genit.Misc;
-using System.ComponentModel;
-using System.Diagnostics.Eventing.Reader;
-using System.Configuration;
-using System.Drawing;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -15,8 +10,6 @@ public partial class DataTypeCtl : UserControlBase
 {
 	public event EventHandler<DataTypeChangedEventArgs> ValueChanged;
 
-	private PropertyModel _propertyMdl;
-	private bool _suspendUpdates;
 	private bool _readOnly;
 
 	public DataTypeCtl()

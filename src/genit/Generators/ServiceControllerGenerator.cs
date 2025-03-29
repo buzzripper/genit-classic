@@ -1,14 +1,13 @@
 ﻿using Dyvenix.Genit.Extensions;
 using Dyvenix.Genit.Misc;
+using Dyvenix.Genit.Models;
 using Dyvenix.Genit.Models.Generators;
 using Dyvenix.Genit.Models.Services;
-using Dyvenix.Genit.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -51,21 +50,21 @@ internal class ServiceControllerGenerator
 
 		// GetSingle methods
 		var singleMethodsOutput = new List<string>();
-		foreach (GetSvcMethodModel singleMethod in entity.Service.GetMethods.Where(m => !m.IsList))
+		foreach (ServiceMethodModel singleMethod in entity.Service.Methods.Where(m => !m.IsList))
 			this.GenerateSingleControllerMethod(entity, singleMethod, serviceVarName, singleMethodsOutput);
 
 		// Get list methods
 		var listMethodsOutput = new List<string>();
-		foreach (GetSvcMethodModel listMethod in entity.Service.GetMethods.Where(m => m.IsList))
+		foreach (ServiceMethodModel listMethod in entity.Service.Methods.Where(m => m.IsList))
 			this.GenerateListControllerMethod(entity, listMethod, serviceVarName, listMethodsOutput);
 
 		// Query methods
 		var queryMethodsOutput = new List<string>();
 		var sortingMethodOutput = new List<string>();
-		if (entity.Service.QueryMethods.Any()) {
+		if (entity.Service.Methods.Any(m => m.UseQuery)) {
 			queryMethodsOutput.AddLine();
 			queryMethodsOutput.AddLine(1, "#region Queries");
-			foreach (QuerySvcMethodModel queryMethod in entity.Service.QueryMethods)
+			foreach (ServiceMethodModel queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
 				this.GenerateQueryControllerMethod(entity, queryMethod, serviceVarName, queryMethodsOutput);
 			queryMethodsOutput.AddLine();
 			queryMethodsOutput.AddLine(1, "#endregion");
@@ -83,7 +82,7 @@ internal class ServiceControllerGenerator
 	internal void GenerateCUDControllerMethods(EntityModel entity, string svcVarName, List<string> output)
 	{
 		var tc = 1;
-		var className = entity.Name;	
+		var className = entity.Name;
 		var varName = Utils.ToCamelCase(className);
 
 		output.AddLine(tc, "// Create / Update / Delete");
@@ -93,17 +92,17 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Create{className}({className} {varName})");
 			output.AddLine(tc, "{");
-			output.AddLine(tc+1, "try {");
-			output.AddLine(tc+2, "var svcResponse =new ServiceResponse();");
+			output.AddLine(tc + 1, "try {");
+			output.AddLine(tc + 2, "var svcResponse =new ServiceResponse();");
 			output.AddLine();
-			output.AddLine(tc+2, $"await _{svcVarName}.Create{className}({varName});");
+			output.AddLine(tc + 2, $"await _{svcVarName}.Create{className}({varName});");
 			output.AddLine();
-			output.AddLine(tc+2, "svcResponse.Message = \"Success\";");
-			output.AddLine(tc+2, "return Ok(svcResponse);");
+			output.AddLine(tc + 2, "svcResponse.Message = \"Success\";");
+			output.AddLine(tc + 2, "return Ok(svcResponse);");
 			output.AddLine();
-			output.AddLine(tc+1, "} catch (Exception ex) {");
-			output.AddLine(tc+2, "return LogErrorAndReturnErrorResponse(ex);");
-			output.AddLine(tc+1, "}");
+			output.AddLine(tc + 1, "} catch (Exception ex) {");
+			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+			output.AddLine(tc + 1, "}");
 			output.AddLine(tc, "}");
 		}
 
@@ -112,17 +111,17 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, $"[HttpPatch, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Update{className}({className} {varName})");
 			output.AddLine(tc, "{");
-			output.AddLine(tc+1, "try {");
-			output.AddLine(tc+2, "var svcResponse =new ServiceResponse();");
+			output.AddLine(tc + 1, "try {");
+			output.AddLine(tc + 2, "var svcResponse =new ServiceResponse();");
 			output.AddLine();
-			output.AddLine(tc+2, $"await _{svcVarName}.Update{className}({varName});");
+			output.AddLine(tc + 2, $"await _{svcVarName}.Update{className}({varName});");
 			output.AddLine();
-			output.AddLine(tc+2, "svcResponse.Message = \"Success\";");
-			output.AddLine(tc+2, "return Ok(svcResponse);");
+			output.AddLine(tc + 2, "svcResponse.Message = \"Success\";");
+			output.AddLine(tc + 2, "return Ok(svcResponse);");
 			output.AddLine();
-			output.AddLine(tc+1, "} catch (Exception ex) {");
-			output.AddLine(tc+2, "return LogErrorAndReturnErrorResponse(ex);");
-			output.AddLine(tc+1, "}");
+			output.AddLine(tc + 1, "} catch (Exception ex) {");
+			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+			output.AddLine(tc + 1, "}");
 			output.AddLine(tc, "}");
 		}
 
@@ -131,22 +130,22 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Delete{className}(Guid id)");
 			output.AddLine(tc, "{");
-			output.AddLine(tc+1, "try {");
-			output.AddLine(tc+2, "var svcResponse =new ServiceResponse();");
+			output.AddLine(tc + 1, "try {");
+			output.AddLine(tc + 2, "var svcResponse =new ServiceResponse();");
 			output.AddLine();
-			output.AddLine(tc+2, $"await _{svcVarName}.Delete{className}(id);");
+			output.AddLine(tc + 2, $"await _{svcVarName}.Delete{className}(id);");
 			output.AddLine();
-			output.AddLine(tc+2, "svcResponse.Message = \"Success\";");
-			output.AddLine(tc+2, "return Ok(svcResponse);");
+			output.AddLine(tc + 2, "svcResponse.Message = \"Success\";");
+			output.AddLine(tc + 2, "return Ok(svcResponse);");
 			output.AddLine();
-			output.AddLine(tc+1, "} catch (Exception ex) {");
-			output.AddLine(tc+2, "return LogErrorAndReturnErrorResponse(ex);");
-			output.AddLine(tc+1, "}");
+			output.AddLine(tc + 1, "} catch (Exception ex) {");
+			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+			output.AddLine(tc + 1, "}");
 			output.AddLine(tc, "}");
 		}
 	}
 
-	internal void GenerateSingleControllerMethod(EntityModel entity, GetSvcMethodModel method, string svcVarName, List<string> output)
+	internal void GenerateSingleControllerMethod(EntityModel entity, ServiceMethodModel method, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		output.AddLine();
@@ -157,18 +156,18 @@ internal class ServiceControllerGenerator
 				output.AddLine(tc, $"[{attr}]");
 
 		// Method
-		output.AddLine(tc, $"[HttpGet, Route(\"[action]/{{{method.ArgName}}}\")]");
-		output.AddLine(tc, $"public async Task<ActionResult<{entity.Name}>> {method.Name}({method.ArgType} {method.ArgName})");
+		output.AddLine(tc, $"[HttpGet, Route(\"[action]/{{{method.FilterProperties[0].FilterArgName}}}\")]");
+		output.AddLine(tc, $"public async Task<ActionResult<{entity.Name}>> {method.Name}({method.FilterProperties[0].DatatypeName} {method.FilterProperties[0].FilterArgName})");
 		output.AddLine(tc, "{");
 		output.AddLine(tc + 1, "try {");
-		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({method.ArgName});");
+		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({method.FilterProperties[0].FilterArgName});");
 		output.AddLine(tc + 1, "} catch (Exception ex) {");
 		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
 		output.AddLine(tc + 1, "}");
 		output.AddLine(tc, "}");
 	}
 
-	internal void GenerateListControllerMethod(EntityModel entity, GetSvcMethodModel method, string svcVarName, List<string> output)
+	internal void GenerateListControllerMethod(EntityModel entity, ServiceMethodModel method, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		output.AddLine();
@@ -178,32 +177,48 @@ internal class ServiceControllerGenerator
 			foreach (var attr in method.Attributes)
 				output.AddLine(tc, $"[{attr}]");
 
-		// Method
-		string varUriSegment = null;
-		string argDecl = null;
-		if (!string.IsNullOrWhiteSpace(method.ArgName)) {
-			varUriSegment = $"/{{{method.ArgName}}}";
-			argDecl = $"{method.ArgType} {method.ArgName}";
+		// Route attribute
+		StringBuilder sbRoute = new StringBuilder();
+		foreach (var filterProp in method.FilterProperties)
+			sbRoute.Append($"/{{{filterProp.FilterArgName}?}}");
+		if (method.InclPaging)
+			sbRoute.Append($"/{{pageSize?}}/{{rowOffset?}}");
+
+		// Args
+		StringBuilder sbArgs = new StringBuilder();
+		foreach (var filterProp in method.FilterProperties) { 
+			if (sbArgs.Length > 0)
+				sbArgs.Append(", ");	
+			sbArgs.Append($"{filterProp.DatatypeName} {filterProp.FilterArgName}");
+		}
+		if (method.InclPaging)
+			sbArgs.Append("int pageSize = 0, int rowOffset = 0");
+
+		// Vars
+		StringBuilder sbVars = new StringBuilder();
+		foreach (var filterProp in method.FilterProperties) { 
+			if (sbVars.Length > 0)
+				sbVars.Append(", ");	
+			sbVars.Append(filterProp.FilterArgName);
+		}
+		if (method.InclPaging) { 
+			if (sbVars.Length > 0)
+				sbVars.Append(", ");	
+			sbVars.Append("pageSize, rowOffset");
 		}
 
-		var argSep = (argDecl != null && method.InclPaging) ? ", " : null;
-
-		var pagingRoute = method.InclPaging ? $"/{{pageSize?}}/{{rowOffset?}}" : null;
-		var pagingArgs = method.InclPaging ? "int pageSize = 0, int rowOffset = 0" : null;
-		var pagingVars = method.InclPaging ? "pageSize, rowOffset" : null;
-
-		output.AddLine(tc, $"[HttpGet, Route(\"[action]{varUriSegment}{pagingRoute}\")]");
-		output.AddLine(tc, $"public async Task<ActionResult<List<{entity.Name}>>> {method.Name}({argDecl}{argSep}{pagingArgs})");
+		output.AddLine(tc, $"[HttpGet, Route(\"[action]{sbRoute}\")]");
+		output.AddLine(tc, $"public async Task<ActionResult<List<{entity.Name}>>> {method.Name}({sbVars})");
 		output.AddLine(tc, "{");
 		output.AddLine(tc + 1, "try {");
-		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({method.ArgName}{argSep}{pagingVars});");
+		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({sbVars});");
 		output.AddLine(tc + 1, "} catch (Exception ex) {");
 		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
 		output.AddLine(tc + 1, "}");
 		output.AddLine(tc, "}");
 	}
 
-	internal void GenerateQueryControllerMethod(EntityModel entity, QuerySvcMethodModel queryMethod, string svcVarName, List<string> output)
+	internal void GenerateQueryControllerMethod(EntityModel entity, ServiceMethodModel queryMethod, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		output.AddLine();
@@ -251,7 +266,7 @@ internal class ServiceControllerGenerator
 		template = template.Replace(Utils.FmtToken(cToken_ControllerAttrs), sb.ToString());
 
 		template = template.Replace(Utils.FmtToken(cToken_ControllerVersion), controllerVersion);
-		
+
 		// Various
 		template = template.Replace(Utils.FmtToken(cToken_ControllersNs), controllersNamespace);
 		template = template.Replace(Utils.FmtToken(cToken_ControllerName), controllerName);

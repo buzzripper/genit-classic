@@ -48,18 +48,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="UserControls\QueryMethodsListCtl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\ServiceGenEditCtl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\EnumGenEditCtl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\EntityGenEditCtl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="UserControls\QueryMethodsListCtl.cs" />
+    <Compile Update="UserControls\ServiceGenEditCtl.cs" />
+    <Compile Update="UserControls\EnumGenEditCtl.cs" />
+    <Compile Update="UserControls\EntityGenEditCtl.cs" />
     <Compile Update="UserControls\GetMethodsListCtl.cs">
       <SubType>UserControl</SubType>
     </Compile>

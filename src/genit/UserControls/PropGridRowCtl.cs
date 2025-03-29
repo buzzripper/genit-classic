@@ -15,7 +15,6 @@ public partial class PropGridRowCtl : UserControlBase
 	public event EventHandler<RowMovedEventArgs> RowMoved;
 
 	private readonly PropertyModel _propertyMdl;
-	private bool _suspendUpdates;
 
 	#endregion
 
@@ -187,7 +186,7 @@ public partial class PropGridRowCtl : UserControlBase
 	{
 		txtName.ReadOnly = _propertyMdl.IsForeignKey;
 		if (_propertyMdl.IsForeignKey)
-			txtName.BackColor = Globals.DarkModeBackColor; 
+			txtName.BackColor = Globals.DarkModeBackColor;
 	}
 
 	private void SetState_Datatype()

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Windows.Forms;
-using Dyvenix.Genit.Models;
+﻿using Dyvenix.Genit.Models;
 using Dyvenix.Genit.Models.Services;
+using System;
+using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -47,7 +47,7 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 		_suspendUpdates = true;
 
 		ckbEnabled.Checked = _service.Enabled;
-		ckbInclSave.Checked = _service.InclCreate;
+		ckbInclCreate.Checked = _service.InclCreate;
 		ckbInclUpdate.Checked = _service.InclUpdate;
 		ckbInclDelete.Checked = _service.InclDelete;
 		ckbInclController.Checked = _service.InclController;
@@ -58,8 +58,7 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 		SetControllerUsingsLabel();
 		SetControllerAttrsLabel();
 
-		getMethodsListCtl.SetData(_service.GetMethods, _entity.Properties);
-		queryMethodsCtl.SetData(_service.QueryMethods, _entity.Properties);
+		svcMethodsEditCtl.SetData(_service.Methods, _entity.Properties, _entity.NavProperties);
 
 		_suspendUpdates = false;
 	}
@@ -119,7 +118,7 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 	private void ckbInclSave_CheckedChanged(object sender, EventArgs e)
 	{
 		if (!_suspendUpdates)
-			_service.InclCreate = ckbInclSave.Checked;
+			_service.InclCreate = ckbInclCreate.Checked;
 	}
 
 	private void ckbInclDelete_CheckedChanged(object sender, EventArgs e)

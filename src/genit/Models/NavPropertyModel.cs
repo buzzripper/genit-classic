@@ -75,9 +75,10 @@ public class NavPropertyModel : INotifyPropertyChanged
 	#region Non-serialized Properties
 
 	[JsonIgnore]
-	public AssocModel Assoc { 
+	public AssocModel Assoc
+	{
 		get { return _assoc; }
-		set{ 
+		set {
 			_assocId = value?.Id;
 			SetProperty(ref _assoc, value);
 		}
@@ -97,7 +98,7 @@ public class NavPropertyModel : INotifyPropertyChanged
 	public EntityModel FKEntity
 	{
 		get { return Assoc?.FKEntity; }
-		set { 
+		set {
 			if (Assoc != null)
 				Assoc.FKEntity = value;
 		}
@@ -107,7 +108,7 @@ public class NavPropertyModel : INotifyPropertyChanged
 	public PropertyModel FKProperty
 	{
 		get { return Assoc?.FKProperty; }
-		set { 
+		set {
 			if (Assoc != null)
 				Assoc.FKProperty = value;
 		}

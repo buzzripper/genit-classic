@@ -1,7 +1,7 @@
-﻿using System;
-using System.Windows.Forms;
-using Dyvenix.Genit.Misc;
+﻿using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models.Generators;
+using System;
+using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls
 {
@@ -10,7 +10,6 @@ namespace Dyvenix.Genit.UserControls
 		#region Fields
 
 		private ServiceGenModel _serviceGenMdl;
-		private bool _suspendUpdates;
 
 		#endregion
 

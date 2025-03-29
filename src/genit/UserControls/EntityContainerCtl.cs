@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Dyvenix.Genit.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using Dyvenix.Genit.Models;
 
 namespace Dyvenix.Genit.UserControls
 {

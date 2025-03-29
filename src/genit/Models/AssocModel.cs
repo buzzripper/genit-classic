@@ -64,7 +64,7 @@ namespace Dyvenix.Genit.Models
 
 			PrimaryEntity = primaryEntityMdl;
 			NavProperty = primaryEntityMdl.NavProperties.FirstOrDefault(np => np.Id == NavPropertyId);
-			if (NavProperty != null) 
+			if (NavProperty != null)
 				NavProperty.InitializeOnLoad(this, fkEntity);
 
 			FKEntity = fkEntity;

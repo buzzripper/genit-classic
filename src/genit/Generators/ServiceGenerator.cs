@@ -1,6 +1,7 @@
 ﻿using Dyvenix.Genit.Extensions;
 using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
+using Dyvenix.Genit.Models.Generators;
 using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Dyvenix.Genit.Models.Generators;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -41,30 +41,31 @@ public class ServiceGenerator
 		if (!svcGenModel.Enabled)
 			return;
 
-		// Services
+		// Load templates
+
 		var templateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.TemplateFilepath);
 		var outputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.OutputFolder);
 		Validate(templateFilepath, outputFolder);
 		var serviceTemplate = File.ReadAllText(templateFilepath);
 
-		// Query classes
 		var queryTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.QueryTemplateFilepath);
 		var queryOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.QueryOutputFolder);
 		Validate(queryTemplateFilepath, queryOutputFolder);
 		var queryTemplate = File.ReadAllText(queryTemplateFilepath);
 
-		// Controllers
 		var controllerTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ControllerTemplateFilepath);
 		var controllersOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ControllerOutputFolder);
 		Validate(controllerTemplateFilepath, controllersOutputFolder);
 		var controllerTemplate = File.ReadAllText(controllerTemplateFilepath);
+
+		// Generate services
 
 		foreach (var entity in entities.Where(e => e.Service.Enabled)) {
 			// Generate service class
 			GenerateService(entity, svcGenModel, $"{serviceTemplate}", outputFolder, servicesNamespace, queriesNamespace);
 
 			// Generate query classes
-			foreach (var queryMethod in entity.Service.QueryMethods)
+			foreach (var queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
 				new ServiceQueryGenerator().GenerateQueryClass(entity.Service, svcGenModel, $"{queryTemplate}", queryOutputFolder, queriesNamespace);
 
 			// Generate controller
@@ -100,31 +101,33 @@ public class ServiceGenerator
 		foreach (var attr in entity.Service.ServiceClassAttributes)
 			attrsOutput.Add($"[{attr}]");
 
+		var serviceMethodGenerator = new ServiceMethodGenerator();
+
 		// Create/Update/Delete
 		var crudMethodsOutput = new List<string>();
 		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete)
-			this.GenerateCUDMethods(entity, crudMethodsOutput, interfaceOutput);
+			serviceMethodGenerator.GenerateCUDMethods(entity, crudMethodsOutput, interfaceOutput);
 
 		// GetSingle methods
 		var singleMethodsOutput = new List<string>();
-		foreach (GetSvcMethodModel singleMethod in entity.Service.GetMethods.Where(m => !m.IsList))
-			this.GenerateSingleMethod(entity, singleMethod, singleMethodsOutput, interfaceOutput);
+		foreach (var singleMethod in entity.Service.Methods.Where(m => !m.UseQuery && !m.IsList))
+			serviceMethodGenerator.GenerateReadMethod(entity, singleMethod, singleMethodsOutput, interfaceOutput);
 
 		// Get list methods
 		var listMethodsOutput = new List<string>();
-		foreach (GetSvcMethodModel listMethod in entity.Service.GetMethods.Where(m => m.IsList))
-			this.GenerateListMethod(entity, listMethod, listMethodsOutput, interfaceOutput);
+		foreach (var listMethod in entity.Service.Methods.Where(m => !m.UseQuery && m.IsList))
+			serviceMethodGenerator.GenerateReadMethod(entity, listMethod, listMethodsOutput, interfaceOutput);
 
 		// Query methods
 		var queryMethodsOutput = new List<string>();
-		if (entity.Service.QueryMethods.Any()) {
+		if (entity.Service.Methods.Any(m => m.UseQuery)) {
 			queryMethodsOutput.AddLine(1, "#region Queries");
 
-			foreach (QuerySvcMethodModel queryMethod in entity.Service.QueryMethods)
-				this.GenerateQueryMethod(entity, queryMethod, queryMethodsOutput, interfaceOutput);
+			foreach (var queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
+				serviceMethodGenerator.GenerateQueryMethod(entity, queryMethod, queryMethodsOutput, interfaceOutput);
 
 			// Sorting method
-			this.GenerateSortingMethod(entity, queryMethodsOutput);
+			serviceMethodGenerator.GenerateSortingMethod(entity, queryMethodsOutput);
 			queryMethodsOutput.AddLine();
 			queryMethodsOutput.AddLine(1, "#endregion");
 		}
@@ -138,222 +141,82 @@ public class ServiceGenerator
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	private void GenerateCUDMethods(EntityModel entity, List<string> output, List<string> interfaceOutput)
-	{
-		var tc = 1;
-		var className = entity.Name;	
-		var varName = Utils.ToCamelCase(className);
 
-		output.AddLine(tc, "// Create / Update / Delete");
+	//private void GenerateSingleMethod(EntityModel entity, ServiceMethodModel method, List<string> output, List<string> interfaceOutput)
+	//{
+	//	var tc = 1;
+	//	output.AddLine();
 
-		if (entity.Service.InclCreate) {
-			// Interface
-			var signature = $"Task Create{className}({className} {varName})";
-			interfaceOutput.Add(signature);
+	//	// Attributes
+	//	if (method.Attributes.Any())
+	//		foreach (var attr in method.Attributes)
+	//			output.AddLine(tc, $"[{attr}]");
 
-			output.AddLine();
-			output.AddLine(tc, $"public async {signature}");
-			output.AddLine(tc, "{");
-			output.AddLine(tc+1, $"if ({varName} == null)");
-			output.AddLine(tc+2, $"throw new ArgumentNullException(nameof({varName}));");
-			output.AddLine();
-			output.AddLine(tc+1, $"using var db = _dbContextFactory.CreateDbContext();");
-			output.AddLine(tc+1, $"db.Add({varName});");
-			output.AddLine();
-			output.AddLine(tc+1, $"await db.SaveChangesAsync();");
-			output.AddLine(tc, "}");
-		}
+	//	// Interface
+	//	var signature = $"Task<{entity.Name}>{method.Name}({method.ArgType} {method.ArgName})";
+	//	interfaceOutput.Add(signature);
 
-		if (entity.Service.InclUpdate) {
-			// Interface
-			var signature = $"Task Update{className}({className} {varName})";
-			interfaceOutput.Add(signature);
+	//	// Method
+	//	output.AddLine(tc, $"public async {signature}");
+	//	output.AddLine(tc, "{");
+	//	output.AddLine(tc + 1, "var db = _dbContextFactory.CreateDbContext();");
+	//	output.AddLine(tc + 1, $"return await db.{entity.Name}.FirstOrDefaultAsync(x => x.{method.PropName} == {method.ArgName});");
+	//	output.AddLine(tc, "}");
+	//}
 
-			output.AddLine();
-			output.AddLine(tc, $"public async {signature}");
-			output.AddLine(tc, "{");
-			output.AddLine(tc+1, $"if ({varName} == null)");
-			output.AddLine(tc+2, $"throw new ArgumentNullException(nameof({varName}));");
-			output.AddLine();
-			output.AddLine(tc+1, $"using var db = _dbContextFactory.CreateDbContext();");
-			output.AddLine(tc+1, $"db.Attach({varName});");
-			output.AddLine(tc+1, $"db.Entry({varName}).State = EntityState.Modified;");
-			output.AddLine();
-			output.AddLine(tc+1, $"await db.SaveChangesAsync();");
-			output.AddLine(tc, "}");
-		}
+	//private void GenerateListMethod(EntityModel entity, ServiceMethodModel method, List<string> output, List<string> interfaceOutput)
+	//{
+	//	var tc = 1;
+	//	output.AddLine();
 
-		if (entity.Service.InclDelete) {
-			// Interface
-			var signature = $"Task Delete{className}(Guid id)";
-			interfaceOutput.Add(signature);
+	//	// Attributes
+	//	if (method.Attributes.Any())
+	//		foreach (var attr in method.Attributes)
+	//			output.AddLine(tc, $"[{attr}]");
 
-			output.AddLine();
-			output.AddLine(tc, $"public async {signature}");
-			output.AddLine(tc, "{");
-			output.AddLine(tc+1, $"using var db = _dbContextFactory.CreateDbContext();");
-			output.AddLine(tc+1, $"await db.{className}.Where(a => a.Id == id).ExecuteDeleteAsync();");
-			output.AddLine(tc, "}");
-		}
-	}
+	//	// Interface
+	//	var sbArgs = new StringBuilder();
 
-	private void GenerateSingleMethod(EntityModel entity, GetSvcMethodModel method, List<string> output, List<string> interfaceOutput)
-	{
-		var tc = 1;
-		output.AddLine();
+	//	// Paging
+	//	if (!string.IsNullOrWhiteSpace(method.ArgType))
+	//		sbArgs.Append($"{method.ArgType} {method.ArgName}");
+	//	if (method.InclPaging) {
+	//		if (sbArgs.Length > 0)
+	//			sbArgs.Append(", ");
+	//		sbArgs.Append("int pageSize, int rowOffset");
+	//	}
+	//	var signature = $"Task<List<{entity.Name}>>{method.Name}({sbArgs.ToString()})";
+	//	interfaceOutput.Add(signature);
 
-		// Attributes
-		if (method.Attributes.Any())
-			foreach (var attr in method.Attributes)
-				output.AddLine(tc, $"[{attr}]");
+	//	// Method
+	//	output.AddLine(tc, $"public async {signature}");
+	//	output.AddLine(tc, "{");
+	//	output.AddLine(tc + 1, $"var dbQuery = _dbContextFactory.CreateDbContext().{entity.Name}.AsQueryable();");
+	//	output.AddLine();
 
-		// Interface
-		var signature = $"Task<{entity.Name}>{method.Name}({method.ArgType} {method.ArgName})";
-		interfaceOutput.Add(signature);
+	//	if (!string.IsNullOrWhiteSpace(method.ArgType)) {
+	//		var indent = tc + 1;
+	//		if (method.FilterProperty.PrimitiveType == PrimitiveType.String) {
+	//			output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({method.ArgName}))");
+	//			indent++;
+	//		} else if (method.FilterProperty.Nullable) {
+	//			output.AddLine(tc + 1, $"if ({method.ArgName} != null)");
+	//			indent++;
+	//		}
+	//		output.AddLine(indent, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{method.PropName}, {method.ArgName}));");
+	//		output.AddLine();
+	//	}
 
-		// Method
-		output.AddLine(tc, $"public async {signature}");
-		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, "var db = _dbContextFactory.CreateDbContext();");
-		output.AddLine(tc + 1, $"return await db.{entity.Name}.FirstOrDefaultAsync(x => x.{method.PropName} == {method.ArgName});");
-		output.AddLine(tc, "}");
-	}
+	//	if (method.InclPaging) {
+	//		output.AddLine(tc + 1, $"if (pageSize > 0)");
+	//		output.AddLine(tc + 2, $"dbQuery = dbQuery.Skip(rowOffset).Take(pageSize);");
+	//		output.AddLine();
+	//	}
 
-	private void GenerateListMethod(EntityModel entity, GetSvcMethodModel method, List<string> output, List<string> interfaceOutput)
-	{
-		var tc = 1;
-		output.AddLine();
+	//	output.AddLine(tc + 1, $"return await dbQuery.AsNoTracking().ToListAsync();");
 
-		// Attributes
-		if (method.Attributes.Any())
-			foreach (var attr in method.Attributes)
-				output.AddLine(tc, $"[{attr}]");
-
-		// Interface
-		var sbArgs = new StringBuilder();
-
-		// Paging
-		if (!string.IsNullOrWhiteSpace(method.ArgType))
-			sbArgs.Append($"{method.ArgType} {method.ArgName}");
-		if (method.InclPaging) {
-			if (sbArgs.Length > 0)
-				sbArgs.Append(", ");
-			sbArgs.Append("int pageSize, int rowOffset");
-		}
-		var signature = $"Task<List<{entity.Name}>>{method.Name}({sbArgs.ToString()})";
-		interfaceOutput.Add(signature);
-
-		// Method
-		output.AddLine(tc, $"public async {signature}");
-		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"var dbQuery = _dbContextFactory.CreateDbContext().{entity.Name}.AsQueryable();");
-		output.AddLine();
-
-		if (!string.IsNullOrWhiteSpace(method.ArgType)) { 
-			var indent = tc + 1;
-			if (method.FilterProperty.PrimitiveType == PrimitiveType.String) {
-				output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({method.ArgName}))");
-				indent++;
-			} else if (method.FilterProperty.Nullable) {
-				output.AddLine(tc + 1, $"if ({method.ArgName} != null)");
-				indent++;
-			}
-			output.AddLine(indent, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{method.PropName}, {method.ArgName}));");
-			output.AddLine();
-		}
-
-		if (method.InclPaging) {
-			output.AddLine(tc + 1, $"if (pageSize > 0)");
-			output.AddLine(tc + 2, $"dbQuery = dbQuery.Skip(rowOffset).Take(pageSize);");
-			output.AddLine();
-		}
-
-		output.AddLine(tc + 1, $"return await dbQuery.AsNoTracking().ToListAsync();");
-
-		output.AddLine(tc, "}");
-	}
-
-	private void GenerateQueryMethod(EntityModel entity, QuerySvcMethodModel queryMethod, List<string> output, List<string> interfaceOutput)
-	{
-		var tc = 1;
-		output.AddLine();
-		var queryClassName = $"{queryMethod.Name}Query";
-		//var queryVarName = Utils.ToCamelCase(queryClassName);
-
-		// Attributes
-		if (queryMethod.Attributes.Any())
-			foreach (var attr in queryMethod.Attributes)
-				output.AddLine(tc, $"[{attr}]");
-
-		// Interface
-		var signature = $"Task<EntityList<{entity.Name}>>{queryMethod.Name}({queryClassName} query)";
-		interfaceOutput.Add(signature);
-
-		// Method
-		output.AddLine(tc, $"public async {signature}");
-		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"var dbQuery = _dbContextFactory.CreateDbContext().{entity.Name}.AsQueryable();");
-		output.AddLine(tc + 1, $"var result = new EntityList<{entity.Name}>();");
-		output.AddLine();
-
-		output.AddLine(tc + 1, $"// Filters");
-		foreach (var prop in queryMethod.FilterProperties) {
-			if (prop.PrimitiveType == PrimitiveType.String) {
-				output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace(query.{prop.Name}))");
-				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{prop.Name}, query.{prop.Name}));");
-			} else if (prop.PrimitiveType == PrimitiveType.Int || prop.PrimitiveType == PrimitiveType.Bool || prop.PrimitiveType == PrimitiveType.Guid) {
-				output.AddLine(tc + 1, $"if (query.{prop.Name}.HasValue)");
-				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => x.{prop.Name} == query.{prop.Name});");
-			}
-		}
-
-		if (queryMethod.InclPaging) {
-			output.AddLine();
-			output.AddLine(tc + 1, "// Paging");
-			output.AddLine(tc + 1, "if (query.RecalcRowCount || query.GetRowCountOnly)");
-			output.AddLine(tc + 2, "result.TotalRowCount = dbQuery.Count();");
-			output.AddLine(tc + 1, "if (query.GetRowCountOnly)");
-			output.AddLine(tc + 2, "return result;");
-			output.AddLine(tc + 1, "if (query.PageSize > 0)");
-			output.AddLine(tc + 2, "dbQuery = dbQuery.Skip(query.RowOffset).Take(query.PageSize);");
-		}
-
-		if (queryMethod.InclSorting) {
-			output.AddLine();
-			output.AddLine(tc + 1, "// Sorting");
-			output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace(query.SortBy))");
-			output.AddLine(tc + 2, $"this.AddSorting(ref dbQuery, query);");
-		}
-
-		output.AddLine();
-		output.AddLine(tc + 1, "result.Data = await dbQuery.AsNoTracking().ToListAsync();");
-		output.AddLine();
-		output.AddLine(tc + 1, "return result;");
-		output.AddLine(tc, "}");
-	}
-
-	private void GenerateSortingMethod(EntityModel entity, List<string> output)
-	{
-		var tc = 1;
-		output.AddLine();
-
-		// Method
-		output.AddLine(tc, $"private void AddSorting(ref IQueryable<{entity.Name}> dbQuery, ISortingQuery sortingQuery)");
-		output.AddLine(tc, "{");
-
-		var c = 0;
-		foreach (var prop in entity.Properties) {
-			if (c++ > 0)
-				output.AddLine();
-
-			output.AddLine(tc + 1, $"if (string.Equals(sortingQuery.SortBy, {entity.Name}.PropNames.{prop.Name}, StringComparison.OrdinalIgnoreCase))");
-			output.AddLine(tc + 2, "if (sortingQuery.SortDesc)");
-			output.AddLine(tc + 3, $"dbQuery.OrderByDescending(x => x.{prop.Name});");
-			output.AddLine(tc + 2, "else");
-			output.AddLine(tc + 3, $"dbQuery.OrderBy(x => x.{prop.Name});");
-		}
-		output.AddLine(tc, "}");
-	}
+	//	output.AddLine(tc, "}");
+	//}
 
 	private string ReplaceServiceTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> attrsOutput, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string servicesNamespace)
 	{

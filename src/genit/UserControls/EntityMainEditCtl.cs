@@ -1,8 +1,6 @@
 ﻿using Dyvenix.Genit.Models;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls;
@@ -14,7 +12,6 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 
 	#region Fields
 
-	private bool _suspendUpdates;
 	private AssocEditForm _navPropEditForm;
 	private StringListForm _slForm;
 
@@ -66,15 +63,6 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 			if (_navPropEditForm == null)
 				_navPropEditForm = new AssocEditForm();
 			return _navPropEditForm;
-		}
-	}
-
-	private StringListForm StrListForm
-	{
-		get {
-			if (_slForm == null)
-				_slForm = new StringListForm();
-			return _slForm;
 		}
 	}
 

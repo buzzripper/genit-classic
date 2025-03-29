@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Dyvenix.Genit.Models;
+using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Dyvenix.Genit.Models;
 
 namespace Dyvenix.Genit.UserControls
 {
 	public partial class EnumEditCtl : UserControlBase
 	{
 		#region Fields
-
-		private bool _suspendUpdates;
 
 		#endregion
 

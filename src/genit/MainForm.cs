@@ -459,7 +459,7 @@ public partial class MainForm : Form
 			if (svcGenMdl.Enabled) {
 				var svcGenerator = new ServiceGenerator();
 				outputCtl.WriteInfo("Running Services generator...");
-				svcGenerator.Run(svcGenMdl, dbContextMdl.Entities, dbContextMdl.ServicesNamespace, dbContextMdl.QueriesNamespace, dbContextMdl.ControllersNamespace, dbContextMdl.EntitiesNamespace);
+				svcGenerator.Run(svcGenMdl, dbContextMdl.Entities, dbContextMdl.ServicesNamespace, dbContextMdl.QueriesNamespace, dbContextMdl.ControllersNamespace, dbContextMdl.EntitiesNamespace, dbContextMdl.ApiClientsNamespace);
 			}
 
 			ShowSuccessDlg("Files generated.");

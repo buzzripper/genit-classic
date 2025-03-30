@@ -101,7 +101,7 @@ internal class ServiceMethodGenerator
 		if (method.InclPaging) {
 			if (sbSigArgs.Length > 0)
 				sbSigArgs.Append(", ");
-			sbSigArgs.Append("int pageSize, int rowOffset");
+			sbSigArgs.Append("int pageSize, int pageOffset");
 		}
 
 		var signature = $"{returnType} {method.Name}({sbSigArgs.ToString()})";
@@ -138,7 +138,7 @@ internal class ServiceMethodGenerator
 
 		if (method.InclPaging) {
 			output.AddLine(tc + 1, $"if (pageSize > 0)");
-			output.AddLine(tc + 2, $"dbQuery = dbQuery.Skip(rowOffset).Take(pageSize);");
+			output.AddLine(tc + 2, $"dbQuery = dbQuery.Skip(pageOffset * pageSize).Take(pageSize);");
 		}
 
 		output.AddLine();
@@ -156,7 +156,6 @@ internal class ServiceMethodGenerator
 		var tc = 1;
 		output.AddLine();
 		var queryClassName = $"{queryMethod.Name}Query";
-		//var queryVarName = Utils.ToCamelCase(queryClassName);
 
 		// Attributes
 		if (queryMethod.Attributes.Any())
@@ -193,7 +192,7 @@ internal class ServiceMethodGenerator
 			output.AddLine(tc + 1, "if (query.GetRowCountOnly)");
 			output.AddLine(tc + 2, "return result;");
 			output.AddLine(tc + 1, "if (query.PageSize > 0)");
-			output.AddLine(tc + 2, "dbQuery = dbQuery.Skip(query.RowOffset).Take(query.PageSize);");
+			output.AddLine(tc + 2, "dbQuery = dbQuery.Skip(query.PageOffset).Take(query.PageSize);");
 		}
 
 		if (queryMethod.InclSorting) {

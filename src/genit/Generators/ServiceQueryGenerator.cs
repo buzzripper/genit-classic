@@ -5,6 +5,7 @@ using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Dyvenix.Genit.Generators;
@@ -23,7 +24,7 @@ internal class ServiceQueryGenerator
 
 	internal void GenerateQueryClass(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder, string queriesNamespace)
 	{
-		foreach (var queryMethod in service.Methods) {
+		foreach (var queryMethod in service.Methods.Where(m => m.UseQuery)) {
 			var className = $"{queryMethod.Name}Query";
 			string interfaceDecl = null;
 
@@ -44,7 +45,7 @@ internal class ServiceQueryGenerator
 			var pagingSb = new StringBuilder();
 			if (queryMethod.InclPaging) {
 				pagingSb.AppendLine("\tpublic int PageSize { get; set; }");
-				pagingSb.AppendLine("\tpublic int RowOffset { get; set; }");
+				pagingSb.AppendLine("\tpublic int PageOffset { get; set; }");
 				pagingSb.AppendLine("\tpublic bool RecalcRowCount { get; set; }");
 				pagingSb.AppendLine("\tpublic bool GetRowCountOnly { get; set; }");
 			}

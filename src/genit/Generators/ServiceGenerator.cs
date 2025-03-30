@@ -36,7 +36,7 @@ public class ServiceGenerator
 
 	#endregion
 
-	public void Run(ServiceGenModel svcGenModel, ObservableCollection<EntityModel> entities, string servicesNamespace, string queriesNamespace, string controllersNamespace, string entitiesNamespace)
+	public void Run(ServiceGenModel svcGenModel, ObservableCollection<EntityModel> entities, string servicesNamespace, string queriesNamespace, string controllersNamespace, string entitiesNamespace, string apiClientsNamespace)
 	{
 		if (!svcGenModel.Enabled)
 			return;
@@ -58,6 +58,11 @@ public class ServiceGenerator
 		Validate(controllerTemplateFilepath, controllersOutputFolder);
 		var controllerTemplate = File.ReadAllText(controllerTemplateFilepath);
 
+		var apClientTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ApiClientTemplateFilepath);
+		var apiClientOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ApiClientOutputFolder);
+		Validate(apClientTemplateFilepath, apiClientOutputFolder);
+		var apiClientTemplate = File.ReadAllText(apClientTemplateFilepath);
+
 		// Generate services
 
 		foreach (var entity in entities.Where(e => e.Service.Enabled)) {
@@ -69,8 +74,10 @@ public class ServiceGenerator
 				new ServiceQueryGenerator().GenerateQueryClass(entity.Service, svcGenModel, $"{queryTemplate}", queryOutputFolder, queriesNamespace);
 
 			// Generate controller
-			if (entity.Service.InclController)
+			if (entity.Service.InclController) { 
 				new ServiceControllerGenerator().GenerateController(entity, svcGenModel, $"{controllerTemplate}", controllersOutputFolder, controllersNamespace, servicesNamespace, queriesNamespace, entitiesNamespace);
+				new ApiClientGenerator().GenerateApiClient(entity, svcGenModel, $"{apiClientTemplate}", apiClientOutputFolder, apiClientsNamespace, queriesNamespace, entitiesNamespace);
+			}
 		}
 	}
 
@@ -125,12 +132,15 @@ public class ServiceGenerator
 
 			foreach (var queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
 				serviceMethodGenerator.GenerateQueryMethod(entity, queryMethod, queryMethodsOutput, interfaceOutput);
+		}
 
-			// Sorting method
+		// Sorting method
+		if (entity.Service.Methods.Where(m => m.UseQuery && m.InclSorting).Any()) {
 			serviceMethodGenerator.GenerateSortingMethod(entity, queryMethodsOutput);
 			queryMethodsOutput.AddLine();
-			queryMethodsOutput.AddLine(1, "#endregion");
 		}
+
+		queryMethodsOutput.AddLine(1, "#endregion");
 
 		// Replace tokens in template
 		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, servicesNamespace);
@@ -183,7 +193,7 @@ public class ServiceGenerator
 	//	if (method.InclPaging) {
 	//		if (sbArgs.Length > 0)
 	//			sbArgs.Append(", ");
-	//		sbArgs.Append("int pageSize, int rowOffset");
+	//		sbArgs.Append("int pageSize, int pageOffset");
 	//	}
 	//	var signature = $"Task<List<{entity.Name}>>{method.Name}({sbArgs.ToString()})";
 	//	interfaceOutput.Add(signature);
@@ -209,7 +219,7 @@ public class ServiceGenerator
 
 	//	if (method.InclPaging) {
 	//		output.AddLine(tc + 1, $"if (pageSize > 0)");
-	//		output.AddLine(tc + 2, $"dbQuery = dbQuery.Skip(rowOffset).Take(pageSize);");
+	//		output.AddLine(tc + 2, $"dbQuery = dbQuery.Skip(pageOffset).Take(pageSize);");
 	//		output.AddLine();
 	//	}
 

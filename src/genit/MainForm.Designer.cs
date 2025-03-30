@@ -55,8 +55,8 @@ partial class MainForm
 		btnSave = new System.Windows.Forms.ToolStripButton();
 		toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
 		btnGenerate = new System.Windows.Forms.ToolStripButton();
-		btnTest1 = new System.Windows.Forms.ToolStripButton();
 		btnTest2 = new System.Windows.Forms.ToolStripButton();
+		btnTest1 = new System.Windows.Forms.ToolStripButton();
 		splMain = new System.Windows.Forms.SplitContainer();
 		treeNav = new Dyvenix.Genit.UserControls.TreeNav();
 		splContent = new System.Windows.Forms.SplitContainer();
@@ -91,22 +91,22 @@ partial class MainForm
 		statusStrip1.BackColor = System.Drawing.SystemColors.Control;
 		statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 		statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { statusLabel, toolLblVersion, toolLblMessage });
-		statusStrip1.Location = new System.Drawing.Point(0, 675);
+		statusStrip1.Location = new System.Drawing.Point(0, 665);
 		statusStrip1.Name = "statusStrip1";
 		statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
-		statusStrip1.Size = new System.Drawing.Size(1052, 22);
+		statusStrip1.Size = new System.Drawing.Size(1052, 32);
 		statusStrip1.TabIndex = 35;
 		// 
 		// statusLabel
 		// 
 		statusLabel.Name = "statusLabel";
-		statusLabel.Size = new System.Drawing.Size(0, 17);
+		statusLabel.Size = new System.Drawing.Size(0, 25);
 		// 
 		// toolLblVersion
 		// 
 		toolLblVersion.ForeColor = System.Drawing.SystemColors.ControlText;
 		toolLblVersion.Name = "toolLblVersion";
-		toolLblVersion.Size = new System.Drawing.Size(52, 17);
+		toolLblVersion.Size = new System.Drawing.Size(82, 25);
 		toolLblVersion.Text = "v. 1.0.0.0";
 		// 
 		// toolLblMessage
@@ -114,15 +114,16 @@ partial class MainForm
 		toolLblMessage.BackColor = System.Drawing.SystemColors.Control;
 		toolLblMessage.ForeColor = System.Drawing.SystemColors.ControlText;
 		toolLblMessage.Name = "toolLblMessage";
-		toolLblMessage.Size = new System.Drawing.Size(95, 17);
+		toolLblMessage.Size = new System.Drawing.Size(145, 25);
 		toolLblMessage.Text = "Auto refresh: Off";
 		// 
 		// menuStrip1
 		// 
+		menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 		menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripMenuItem1, editToolStripMenuItem });
 		menuStrip1.Location = new System.Drawing.Point(0, 0);
 		menuStrip1.Name = "menuStrip1";
-		menuStrip1.Size = new System.Drawing.Size(1052, 24);
+		menuStrip1.Size = new System.Drawing.Size(1052, 33);
 		menuStrip1.TabIndex = 36;
 		menuStrip1.Text = "menuStrip1";
 		// 
@@ -130,63 +131,63 @@ partial class MainForm
 		// 
 		toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuNew, mnuOpen, mnuSave, mnuSaveAs, mnuClose, toolStripMenuItem2, mnuRecentFiles, toolStripSeparator1, mnuExit });
 		toolStripMenuItem1.Name = "toolStripMenuItem1";
-		toolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
+		toolStripMenuItem1.Size = new System.Drawing.Size(54, 29);
 		toolStripMenuItem1.Text = "&File";
 		// 
 		// mnuNew
 		// 
 		mnuNew.Name = "mnuNew";
-		mnuNew.Size = new System.Drawing.Size(145, 22);
+		mnuNew.Size = new System.Drawing.Size(217, 34);
 		mnuNew.Text = "&New Model";
 		// 
 		// mnuOpen
 		// 
 		mnuOpen.Name = "mnuOpen";
-		mnuOpen.Size = new System.Drawing.Size(145, 22);
+		mnuOpen.Size = new System.Drawing.Size(217, 34);
 		mnuOpen.Text = "&Open Model";
 		mnuOpen.Click += uiOpen_Click;
 		// 
 		// mnuSave
 		// 
 		mnuSave.Name = "mnuSave";
-		mnuSave.Size = new System.Drawing.Size(145, 22);
+		mnuSave.Size = new System.Drawing.Size(217, 34);
 		mnuSave.Text = "&Save Model";
 		mnuSave.Click += uiSave_Click;
 		// 
 		// mnuSaveAs
 		// 
 		mnuSaveAs.Name = "mnuSaveAs";
-		mnuSaveAs.Size = new System.Drawing.Size(145, 22);
+		mnuSaveAs.Size = new System.Drawing.Size(217, 34);
 		mnuSaveAs.Text = "Save &As...";
 		mnuSaveAs.Click += uiSaveAs_Click;
 		// 
 		// mnuClose
 		// 
 		mnuClose.Name = "mnuClose";
-		mnuClose.Size = new System.Drawing.Size(145, 22);
+		mnuClose.Size = new System.Drawing.Size(217, 34);
 		mnuClose.Text = "&Close Model";
 		mnuClose.Click += uiClose_Click;
 		// 
 		// toolStripMenuItem2
 		// 
 		toolStripMenuItem2.Name = "toolStripMenuItem2";
-		toolStripMenuItem2.Size = new System.Drawing.Size(142, 6);
+		toolStripMenuItem2.Size = new System.Drawing.Size(214, 6);
 		// 
 		// mnuRecentFiles
 		// 
 		mnuRecentFiles.Name = "mnuRecentFiles";
-		mnuRecentFiles.Size = new System.Drawing.Size(145, 22);
+		mnuRecentFiles.Size = new System.Drawing.Size(217, 34);
 		mnuRecentFiles.Text = "Recent Files...";
 		// 
 		// toolStripSeparator1
 		// 
 		toolStripSeparator1.Name = "toolStripSeparator1";
-		toolStripSeparator1.Size = new System.Drawing.Size(142, 6);
+		toolStripSeparator1.Size = new System.Drawing.Size(214, 6);
 		// 
 		// mnuExit
 		// 
 		mnuExit.Name = "mnuExit";
-		mnuExit.Size = new System.Drawing.Size(145, 22);
+		mnuExit.Size = new System.Drawing.Size(217, 34);
 		mnuExit.Text = "E&xit";
 		mnuExit.Click += uiExit_Click;
 		// 
@@ -194,13 +195,13 @@ partial class MainForm
 		// 
 		editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { generateToolStripMenuItem });
 		editToolStripMenuItem.Name = "editToolStripMenuItem";
-		editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+		editToolStripMenuItem.Size = new System.Drawing.Size(58, 29);
 		editToolStripMenuItem.Text = "&Edit";
 		// 
 		// generateToolStripMenuItem
 		// 
 		generateToolStripMenuItem.Name = "generateToolStripMenuItem";
-		generateToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+		generateToolStripMenuItem.Size = new System.Drawing.Size(184, 34);
 		generateToolStripMenuItem.Text = "&Generate";
 		generateToolStripMenuItem.Click += uiGenerate_Click;
 		// 
@@ -216,11 +217,11 @@ partial class MainForm
 		// 
 		// toolStrip1
 		// 
-		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate, btnTest1, btnTest2 });
-		toolStrip1.Location = new System.Drawing.Point(0, 24);
+		toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate, btnTest2, btnTest1 });
+		toolStrip1.Location = new System.Drawing.Point(0, 33);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(1052, 31);
+		toolStrip1.Size = new System.Drawing.Size(1052, 57);
 		toolStrip1.TabIndex = 37;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -230,7 +231,7 @@ partial class MainForm
 		btnNew.Image = (System.Drawing.Image)resources.GetObject("btnNew.Image");
 		btnNew.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnNew.Name = "btnNew";
-		btnNew.Size = new System.Drawing.Size(28, 28);
+		btnNew.Size = new System.Drawing.Size(52, 52);
 		btnNew.Text = "&New";
 		// 
 		// btnOpen
@@ -239,7 +240,7 @@ partial class MainForm
 		btnOpen.Image = (System.Drawing.Image)resources.GetObject("btnOpen.Image");
 		btnOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnOpen.Name = "btnOpen";
-		btnOpen.Size = new System.Drawing.Size(28, 28);
+		btnOpen.Size = new System.Drawing.Size(52, 52);
 		btnOpen.Text = "&Open";
 		btnOpen.Click += uiOpen_Click;
 		// 
@@ -249,48 +250,50 @@ partial class MainForm
 		btnSave.Image = (System.Drawing.Image)resources.GetObject("btnSave.Image");
 		btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnSave.Name = "btnSave";
-		btnSave.Size = new System.Drawing.Size(28, 28);
+		btnSave.Size = new System.Drawing.Size(52, 52);
 		btnSave.Text = "&Save";
 		btnSave.Click += uiSave_Click;
 		// 
 		// toolStripSeparator
 		// 
 		toolStripSeparator.Name = "toolStripSeparator";
-		toolStripSeparator.Size = new System.Drawing.Size(6, 31);
+		toolStripSeparator.Size = new System.Drawing.Size(6, 57);
 		// 
 		// btnGenerate
 		// 
 		btnGenerate.Image = (System.Drawing.Image)resources.GetObject("btnGenerate.Image");
 		btnGenerate.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnGenerate.Name = "btnGenerate";
-		btnGenerate.Size = new System.Drawing.Size(82, 28);
+		btnGenerate.Size = new System.Drawing.Size(134, 52);
 		btnGenerate.Text = "Generate";
 		btnGenerate.Click += uiGenerate_Click;
 		// 
-		// btnTest1
-		// 
-		btnTest1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-		btnTest1.Image = (System.Drawing.Image)resources.GetObject("btnTest1.Image");
-		btnTest1.ImageTransparentColor = System.Drawing.Color.Magenta;
-		btnTest1.Name = "btnTest1";
-		btnTest1.Size = new System.Drawing.Size(37, 28);
-		btnTest1.Text = "Test1";
-		btnTest1.Click += btnTest1_Click;
-		// 
 		// btnTest2
 		// 
+		btnTest2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 		btnTest2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 		btnTest2.Image = (System.Drawing.Image)resources.GetObject("btnTest2.Image");
 		btnTest2.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnTest2.Name = "btnTest2";
-		btnTest2.Size = new System.Drawing.Size(37, 28);
+		btnTest2.Size = new System.Drawing.Size(56, 52);
 		btnTest2.Text = "Test2";
 		btnTest2.Click += btnTest2_Click;
+		// 
+		// btnTest1
+		// 
+		btnTest1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnTest1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+		btnTest1.Image = (System.Drawing.Image)resources.GetObject("btnTest1.Image");
+		btnTest1.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnTest1.Name = "btnTest1";
+		btnTest1.Size = new System.Drawing.Size(56, 52);
+		btnTest1.Text = "Test1";
+		btnTest1.Click += btnTest1_Click;
 		// 
 		// splMain
 		// 
 		splMain.Dock = System.Windows.Forms.DockStyle.Fill;
-		splMain.Location = new System.Drawing.Point(0, 55);
+		splMain.Location = new System.Drawing.Point(0, 90);
 		splMain.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 		splMain.Name = "splMain";
 		// 
@@ -301,7 +304,7 @@ partial class MainForm
 		// splMain.Panel2
 		// 
 		splMain.Panel2.Controls.Add(splContent);
-		splMain.Size = new System.Drawing.Size(1052, 620);
+		splMain.Size = new System.Drawing.Size(1052, 575);
 		splMain.SplitterDistance = 189;
 		splMain.SplitterWidth = 8;
 		splMain.TabIndex = 38;
@@ -311,14 +314,14 @@ partial class MainForm
 		treeNav.Dock = System.Windows.Forms.DockStyle.Fill;
 		treeNav.Font = new System.Drawing.Font("Verdana", 10F);
 		treeNav.Location = new System.Drawing.Point(0, 0);
+		treeNav.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
 		treeNav.Name = "treeNav";
-		treeNav.Size = new System.Drawing.Size(189, 620);
+		treeNav.Size = new System.Drawing.Size(189, 575);
 		treeNav.TabIndex = 0;
 		treeNav.DbContextModelSelected += treeNav_DbContextModelSelected;
 		treeNav.EntityModelSelected += treeNav_EntityModelSelected_1;
 		treeNav.EntitiesNodeSelected += treeNav_EntitiesNodeSelected;
 		treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
-		//treeNav.ServiceModelSelected += treeNav_ServiceModelSelected;
 		treeNav.DbContextGenSelected += treeNav_DbContextGenSelected;
 		treeNav.EntityGenSelected += treeNav_EntityGenSelected;
 		treeNav.EnumGenSelected += treeNav_EnumGenSelected;
@@ -339,8 +342,8 @@ partial class MainForm
 		// splContent.Panel2
 		// 
 		splContent.Panel2.Controls.Add(splOutput);
-		splContent.Size = new System.Drawing.Size(855, 620);
-		splContent.SplitterDistance = 472;
+		splContent.Size = new System.Drawing.Size(855, 575);
+		splContent.SplitterDistance = 436;
 		splContent.SplitterWidth = 8;
 		splContent.TabIndex = 0;
 		// 
@@ -349,8 +352,9 @@ partial class MainForm
 		multiPageCtl.BackColor = System.Drawing.SystemColors.ActiveBorder;
 		multiPageCtl.Dock = System.Windows.Forms.DockStyle.Fill;
 		multiPageCtl.Location = new System.Drawing.Point(0, 0);
+		multiPageCtl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 		multiPageCtl.Name = "multiPageCtl";
-		multiPageCtl.Size = new System.Drawing.Size(855, 472);
+		multiPageCtl.Size = new System.Drawing.Size(855, 436);
 		multiPageCtl.TabIndex = 2;
 		multiPageCtl.SelectedItemChanged += multiPageCtl_SelectedItemChanged;
 		// 
@@ -370,8 +374,8 @@ partial class MainForm
 		// splOutput.Panel2
 		// 
 		splOutput.Panel2.Controls.Add(outputCtl);
-		splOutput.Size = new System.Drawing.Size(855, 140);
-		splOutput.SplitterDistance = 29;
+		splOutput.Size = new System.Drawing.Size(855, 131);
+		splOutput.SplitterDistance = 26;
 		splOutput.SplitterWidth = 1;
 		splOutput.TabIndex = 3;
 		// 
@@ -380,17 +384,18 @@ partial class MainForm
 		tbOutput.BackColor = System.Drawing.SystemColors.ActiveCaption;
 		tbOutput.Dock = System.Windows.Forms.DockStyle.Fill;
 		tbOutput.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+		tbOutput.ImageScalingSize = new System.Drawing.Size(24, 24);
 		tbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, btnShowOutput, btnClearOuput });
 		tbOutput.Location = new System.Drawing.Point(0, 0);
 		tbOutput.Name = "tbOutput";
-		tbOutput.Size = new System.Drawing.Size(855, 29);
+		tbOutput.Size = new System.Drawing.Size(855, 26);
 		tbOutput.TabIndex = 0;
 		tbOutput.Text = "Hey";
 		// 
 		// toolStripLabel1
 		// 
 		toolStripLabel1.Name = "toolStripLabel1";
-		toolStripLabel1.Size = new System.Drawing.Size(45, 26);
+		toolStripLabel1.Size = new System.Drawing.Size(69, 21);
 		toolStripLabel1.Text = "Output";
 		// 
 		// btnShowOutput
@@ -400,7 +405,7 @@ partial class MainForm
 		btnShowOutput.Image = (System.Drawing.Image)resources.GetObject("btnShowOutput.Image");
 		btnShowOutput.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnShowOutput.Name = "btnShowOutput";
-		btnShowOutput.Size = new System.Drawing.Size(23, 26);
+		btnShowOutput.Size = new System.Drawing.Size(34, 21);
 		btnShowOutput.Text = "toolStripButton1";
 		btnShowOutput.Click += btnShowOutput_Click;
 		// 
@@ -411,7 +416,7 @@ partial class MainForm
 		btnClearOuput.Image = (System.Drawing.Image)resources.GetObject("btnClearOuput.Image");
 		btnClearOuput.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnClearOuput.Name = "btnClearOuput";
-		btnClearOuput.Size = new System.Drawing.Size(23, 26);
+		btnClearOuput.Size = new System.Drawing.Size(34, 21);
 		btnClearOuput.Text = "toolStripButton1";
 		btnClearOuput.Click += btnClearOuput_Click;
 		// 
@@ -420,8 +425,9 @@ partial class MainForm
 		outputCtl.Dock = System.Windows.Forms.DockStyle.Fill;
 		outputCtl.Font = new System.Drawing.Font("Verdana", 10F);
 		outputCtl.Location = new System.Drawing.Point(0, 0);
+		outputCtl.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
 		outputCtl.Name = "outputCtl";
-		outputCtl.Size = new System.Drawing.Size(855, 110);
+		outputCtl.Size = new System.Drawing.Size(855, 104);
 		outputCtl.TabIndex = 0;
 		// 
 		// tvImgList
@@ -442,7 +448,7 @@ partial class MainForm
 		// 
 		// MainForm
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+		AutoScaleDimensions = new System.Drawing.SizeF(11F, 28F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.Control;
 		ClientSize = new System.Drawing.Size(1052, 697);

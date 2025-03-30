@@ -55,7 +55,7 @@ internal class ServiceControllerGenerator
 
 		// Get list methods
 		var listMethodsOutput = new List<string>();
-		foreach (ServiceMethodModel listMethod in entity.Service.Methods.Where(m => m.IsList))
+		foreach (ServiceMethodModel listMethod in entity.Service.Methods.Where(m => m.IsList && !m.UseQuery))
 			this.GenerateListControllerMethod(entity, listMethod, serviceVarName, listMethodsOutput);
 
 		// Query methods
@@ -188,9 +188,9 @@ internal class ServiceControllerGenerator
 		// Route attribute
 		StringBuilder sbRoute = new StringBuilder();
 		foreach (var filterProp in method.FilterProperties)
-			sbRoute.Append($"/{{{filterProp.FilterArgName}?}}");
+			sbRoute.Append($"/{{{filterProp.FilterArgName}}}");
 		if (method.InclPaging)
-			sbRoute.Append($"/{{pageSize?}}/{{rowOffset?}}");
+			sbRoute.Append($"/{{pageSize}}/{{pageOffset}}");
 
 		// Args
 		StringBuilder sbArgs = new StringBuilder();
@@ -202,7 +202,7 @@ internal class ServiceControllerGenerator
 		if (method.InclPaging) {
 			if (sbArgs.Length > 0)
 				sbArgs.Append(", ");
-			sbArgs.Append("int pageSize = 0, int rowOffset = 0");
+			sbArgs.Append("int pageSize = 0, int pageOffset = 0");
 		}
 
 		// Vars
@@ -215,7 +215,7 @@ internal class ServiceControllerGenerator
 		if (method.InclPaging) {
 			if (sbVars.Length > 0)
 				sbVars.Append(", ");
-			sbVars.Append("pageSize, rowOffset");
+			sbVars.Append("pageSize, pageOffset");
 		}
 
 		output.AddLine(tc, $"[HttpGet, Route(\"[action]{sbRoute}\")]");

@@ -20,7 +20,7 @@ internal class ServiceMethodGenerator
 		var className = entity.Name;
 		var varName = Utils.ToCamelCase(className);
 
-		output.AddLine(tc, "// Create / Update / Delete");
+		output.AddLine(tc, "#region Create / Update / Delete");
 
 		if (entity.Service.InclCreate) {
 			// Interface
@@ -30,10 +30,10 @@ internal class ServiceMethodGenerator
 			output.AddLine();
 			output.AddLine(tc, $"public async {signature}");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"if ({varName} == null)");
-			output.AddLine(tc + 2, $"throw new ArgumentNullException(nameof({varName}));");
+			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
 			output.AddLine();
 			output.AddLine(tc + 1, $"using var db = _dbContextFactory.CreateDbContext();");
+			output.AddLine();
 			output.AddLine(tc + 1, $"db.Add({varName});");
 			output.AddLine();
 			output.AddLine(tc + 1, $"await db.SaveChangesAsync();");
@@ -48,10 +48,10 @@ internal class ServiceMethodGenerator
 			output.AddLine();
 			output.AddLine(tc, $"public async {signature}");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"if ({varName} == null)");
-			output.AddLine(tc + 2, $"throw new ArgumentNullException(nameof({varName}));");
+			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
 			output.AddLine();
 			output.AddLine(tc + 1, $"using var db = _dbContextFactory.CreateDbContext();");
+			output.AddLine();
 			output.AddLine(tc + 1, $"db.Attach({varName});");
 			output.AddLine(tc + 1, $"db.Entry({varName}).State = EntityState.Modified;");
 			output.AddLine();
@@ -68,9 +68,13 @@ internal class ServiceMethodGenerator
 			output.AddLine(tc, $"public async {signature}");
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"using var db = _dbContextFactory.CreateDbContext();");
+			output.AddLine();
 			output.AddLine(tc + 1, $"await db.{className}.Where(a => a.Id == id).ExecuteDeleteAsync();");
 			output.AddLine(tc, "}");
 		}
+
+		output.AddLine();
+		output.AddLine(tc, "#endregion");
 	}
 
 	internal void GenerateReadMethod(EntityModel entity, ServiceMethodModel method, List<string> output, List<string> interfaceOutput)
@@ -87,7 +91,7 @@ internal class ServiceMethodGenerator
 		string returnType = method.IsList ? $"Task<List<{entity.Name}>>" : $"Task<{entity.Name}>";
 
 		var sbSigArgs = new StringBuilder();
-		// Not query
+		
 		var c = 0;
 		foreach (var filterProp in method.FilterProperties) {
 			if (c++ > 0)
@@ -115,33 +119,19 @@ internal class ServiceMethodGenerator
 		foreach (var inclNavProp in method.InclNavProperties)
 			output.AddLine(tc + 1, $"dbQuery = dbQuery.Include(x => x.{inclNavProp.Name});");
 
-		foreach (var filterProp in method.FilterProperties) {
-			var indent = tc + 1;
-			if (filterProp.PrimitiveType == PrimitiveType.String) {
-				output.AddLine(indent, $"if (!string.IsNullOrWhiteSpace({filterProp.FilterArgName}))");
-				output.AddLine(indent+1, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{filterProp.Name}, {filterProp.FilterArgName}));");
-				indent++;
-			} else {
-				if (filterProp.Nullable) { 
-					output.AddLine(indent, $"if ({filterProp.FilterArgName} != null)!!!!!!!!!!");
-					indent++;
-				}
-				output.AddLine(indent, $"dbQuery = dbQuery.Where(x => x.{filterProp.Name} == {filterProp.FilterArgName});");
-			}
-			output.AddLine();
-		}
-
 		if (method.FilterProperties.Any()) {
-			output.AddLine(tc + 1, $"// Filters");
-
 			foreach (var filterProp in method.FilterProperties) {
 				if (filterProp.PrimitiveType == PrimitiveType.String) {
 					output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({filterProp.FilterArgName}))");
 					output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{filterProp.Name}, {filterProp.FilterArgName}));");
 
 				} else if (filterProp.PrimitiveType == PrimitiveType.Int || filterProp.PrimitiveType == PrimitiveType.Bool || filterProp.PrimitiveType == PrimitiveType.Guid) {
-					output.AddLine(tc + 1, $"if ({filterProp.FilterArgName}.HasValue)");
-					output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => x.{filterProp.Name} == {filterProp.FilterArgName});");
+					var indent = tc + 1;
+					if (filterProp.Nullable) {
+						output.AddLine(indent, $"if ({filterProp.FilterArgName}.HasValue)");
+						indent++;
+					}
+					output.AddLine(indent, $"dbQuery = dbQuery.Where(x => x.{filterProp.Name} == {filterProp.FilterArgName});");
 				}
 			}
 		}
@@ -149,10 +139,14 @@ internal class ServiceMethodGenerator
 		if (method.InclPaging) {
 			output.AddLine(tc + 1, $"if (pageSize > 0)");
 			output.AddLine(tc + 2, $"dbQuery = dbQuery.Skip(rowOffset).Take(pageSize);");
-			output.AddLine();
 		}
 
-		output.AddLine(tc + 1, $"return await dbQuery.AsNoTracking().ToListAsync();");
+		output.AddLine();
+		if (method.IsList) {
+			output.AddLine(tc + 1, $"return await dbQuery.AsNoTracking().ToListAsync();");
+		} else {
+			output.AddLine(tc + 1, $"return await dbQuery.AsNoTracking().FirstOrDefaultAsync();");
+		}
 
 		output.AddLine(tc, "}");
 	}

@@ -93,7 +93,6 @@ partial class ServiceMethodsEditCtl
 		grdMethods.Location = new System.Drawing.Point(0, 33);
 		grdMethods.MultiSelect = false;
 		grdMethods.Name = "grdMethods";
-		grdMethods.RowHeadersVisible = false;
 		grdMethods.RowHeadersWidth = 62;
 		grdMethods.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdMethods.ShowEditingIcon = false;

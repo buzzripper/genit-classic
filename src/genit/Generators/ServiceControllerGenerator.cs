@@ -155,12 +155,20 @@ internal class ServiceControllerGenerator
 			foreach (var attr in method.Attributes)
 				output.AddLine(tc, $"[{attr}]");
 
-		// Method
-		output.AddLine(tc, $"[HttpGet, Route(\"[action]/{{{method.FilterProperties[0].FilterArgName}}}\")]");
-		output.AddLine(tc, $"public async Task<ActionResult<{entity.Name}>> {method.Name}({method.FilterProperties[0].DatatypeName} {method.FilterProperties[0].FilterArgName})");
+		var filterArg =  string.Empty;
+		var filterRoute =  string.Empty;
+		var filterParams = string.Empty;
+		if (method.FilterProperties.Count > 0) {
+			filterArg = method.FilterProperties[0].FilterArgName;
+			filterRoute =  $"/{{{filterArg}}}";
+			filterParams = $"{method.FilterProperties[0].DatatypeName} {method.FilterProperties[0].FilterArgName}";
+		}
+
+		output.AddLine(tc, $"[HttpGet, Route(\"[action]{filterRoute}\")]");
+		output.AddLine(tc, $"public async Task<ActionResult<{entity.Name}>> {method.Name}({filterParams})");
 		output.AddLine(tc, "{");
 		output.AddLine(tc + 1, "try {");
-		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({method.FilterProperties[0].FilterArgName});");
+		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({filterArg});");
 		output.AddLine(tc + 1, "} catch (Exception ex) {");
 		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
 		output.AddLine(tc + 1, "}");
@@ -186,29 +194,32 @@ internal class ServiceControllerGenerator
 
 		// Args
 		StringBuilder sbArgs = new StringBuilder();
-		foreach (var filterProp in method.FilterProperties) { 
+		foreach (var filterProp in method.FilterProperties) {
 			if (sbArgs.Length > 0)
-				sbArgs.Append(", ");	
+				sbArgs.Append(", ");
 			sbArgs.Append($"{filterProp.DatatypeName} {filterProp.FilterArgName}");
 		}
-		if (method.InclPaging)
+		if (method.InclPaging) {
+			if (sbArgs.Length > 0)
+				sbArgs.Append(", ");
 			sbArgs.Append("int pageSize = 0, int rowOffset = 0");
+		}
 
 		// Vars
 		StringBuilder sbVars = new StringBuilder();
-		foreach (var filterProp in method.FilterProperties) { 
+		foreach (var filterProp in method.FilterProperties) {
 			if (sbVars.Length > 0)
-				sbVars.Append(", ");	
+				sbVars.Append(", ");
 			sbVars.Append(filterProp.FilterArgName);
 		}
-		if (method.InclPaging) { 
+		if (method.InclPaging) {
 			if (sbVars.Length > 0)
-				sbVars.Append(", ");	
+				sbVars.Append(", ");
 			sbVars.Append("pageSize, rowOffset");
 		}
 
 		output.AddLine(tc, $"[HttpGet, Route(\"[action]{sbRoute}\")]");
-		output.AddLine(tc, $"public async Task<ActionResult<List<{entity.Name}>>> {method.Name}({sbVars})");
+		output.AddLine(tc, $"public async Task<ActionResult<List<{entity.Name}>>> {method.Name}({sbArgs})");
 		output.AddLine(tc, "{");
 		output.AddLine(tc + 1, "try {");
 		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({sbVars});");

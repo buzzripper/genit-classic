@@ -105,7 +105,7 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	public int AttrCount => this.Attributes.Count;
 
 	[JsonIgnore]
-	public bool IsList => this.FilterProperties.Any(fp => !fp.IsPrimaryKey && !fp.IsIndexUnique);
+	public bool IsList => !this.FilterProperties.Any() || this.FilterProperties.Any(fp => !fp.IsPrimaryKey && !fp.IsIndexUnique);
 
 	#endregion
 

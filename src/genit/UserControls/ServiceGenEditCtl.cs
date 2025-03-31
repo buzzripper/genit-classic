@@ -42,6 +42,7 @@ namespace Dyvenix.Genit.UserControls
 			txtControllerOutputFolder.Text = _serviceGenMdl.ControllerOutputFolder;
 			txtApiClientOutputFolder.Text = _serviceGenMdl.ApiClientOutputFolder;
 			txtApiClientTemplateFile.Text = _serviceGenMdl.ApiClientTemplateFilepath;
+			txtApiClientServicesExtOutputFile.Text = _serviceGenMdl.ApiClientServicesExtOutputFilepath;
 
 			ckbInclHeader.Checked = _serviceGenMdl.InclHeader;
 			ckbEnabled.Checked = _serviceGenMdl.Enabled;
@@ -99,6 +100,20 @@ namespace Dyvenix.Genit.UserControls
 				_serviceGenMdl.ApiClientOutputFolder = txtApiClientOutputFolder.Text;
 		}
 
+		private void txtApiClientServicesExtTemplateFile_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.ApiClientServicesExtTemplateFilepath = txtApiClientServicesExtTemplateFile.Text;
+		}
+
+		private void txtApiClientServicesExtOutputFile_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.ApiClientServicesExtOutputFilepath = txtApiClientServicesExtOutputFile.Text;
+		}
+
+
+
 		private void btnBrowseTemplateFilepath_Click(object sender, EventArgs e)
 		{
 			fileDlg.InitialDirectory = txtTemplateFilepath.Text;
@@ -153,6 +168,20 @@ namespace Dyvenix.Genit.UserControls
 			folderDlg.InitialDirectory = txtApiClientOutputFolder.Text;
 			if (folderDlg.ShowDialog() == DialogResult.OK)
 				txtApiClientOutputFolder.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, folderDlg.SelectedPath);
+		}
+
+		private void btnBrowseApiClientServicesExtTemplateFile_Click(object sender, EventArgs e)
+		{
+			fileDlg.InitialDirectory = txtApiClientServicesExtTemplateFile.Text;
+			if (fileDlg.ShowDialog() == DialogResult.OK)
+				txtApiClientServicesExtTemplateFile.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, fileDlg.FileName);
+		}
+
+		private void btnBrowseApiClientServicesExtOutputFile_Click(object sender, EventArgs e)
+		{
+			fileDlg.InitialDirectory = txtApiClientServicesExtOutputFile.Text;
+			if (fileDlg.ShowDialog() == DialogResult.OK)
+				txtApiClientServicesExtOutputFile.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, fileDlg.FileName);
 		}
 
 		private void ckbEnabled_CheckedChanged(object sender, EventArgs e)

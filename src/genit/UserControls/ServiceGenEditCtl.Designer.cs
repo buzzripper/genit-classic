@@ -58,13 +58,23 @@ partial class ServiceGenEditCtl
 		txtApiClientOutputFolder = new System.Windows.Forms.TextBox();
 		label8 = new System.Windows.Forms.Label();
 		pictureBox1 = new System.Windows.Forms.PictureBox();
+		btnBrowseApiClientServicesExtOutputFile = new System.Windows.Forms.Button();
+		txtApiClientServicesExtOutputFile = new System.Windows.Forms.TextBox();
+		label9 = new System.Windows.Forms.Label();
+		label10 = new System.Windows.Forms.Label();
+		label11 = new System.Windows.Forms.Label();
+		label12 = new System.Windows.Forms.Label();
+		label13 = new System.Windows.Forms.Label();
+		btnBrowseApiClientServicesExtTemplateFile = new System.Windows.Forms.Button();
+		txtApiClientServicesExtTemplateFile = new System.Windows.Forms.TextBox();
+		label14 = new System.Windows.Forms.Label();
 		((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
 		SuspendLayout();
 		// 
 		// label1
 		// 
 		label1.AutoSize = true;
-		label1.Location = new System.Drawing.Point(81, 105);
+		label1.Location = new System.Drawing.Point(109, 153);
 		label1.Name = "label1";
 		label1.Size = new System.Drawing.Size(140, 28);
 		label1.TabIndex = 0;
@@ -75,7 +85,7 @@ partial class ServiceGenEditCtl
 		// 
 		txtOutputFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtOutputFolder.Location = new System.Drawing.Point(251, 103);
+		txtOutputFolder.Location = new System.Drawing.Point(252, 151);
 		txtOutputFolder.Name = "txtOutputFolder";
 		txtOutputFolder.Size = new System.Drawing.Size(827, 34);
 		txtOutputFolder.TabIndex = 1;
@@ -94,7 +104,7 @@ partial class ServiceGenEditCtl
 		// ckbEnabled
 		// 
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(433, 463);
+		ckbEnabled.Location = new System.Drawing.Point(398, 747);
 		ckbEnabled.Name = "ckbEnabled";
 		ckbEnabled.Size = new System.Drawing.Size(108, 32);
 		ckbEnabled.TabIndex = 3;
@@ -105,7 +115,7 @@ partial class ServiceGenEditCtl
 		// ckbInclHeader
 		// 
 		ckbInclHeader.AutoSize = true;
-		ckbInclHeader.Location = new System.Drawing.Point(581, 463);
+		ckbInclHeader.Location = new System.Drawing.Point(546, 747);
 		ckbInclHeader.Name = "ckbInclHeader";
 		ckbInclHeader.Size = new System.Drawing.Size(169, 32);
 		ckbInclHeader.TabIndex = 4;
@@ -116,7 +126,7 @@ partial class ServiceGenEditCtl
 		// btnBrowseFolder
 		// 
 		btnBrowseFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseFolder.Location = new System.Drawing.Point(1087, 105);
+		btnBrowseFolder.Location = new System.Drawing.Point(1088, 153);
 		btnBrowseFolder.Name = "btnBrowseFolder";
 		btnBrowseFolder.Size = new System.Drawing.Size(32, 32);
 		btnBrowseFolder.TabIndex = 6;
@@ -127,7 +137,7 @@ partial class ServiceGenEditCtl
 		// btnBrowseTemplateFilepath
 		// 
 		btnBrowseTemplateFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseTemplateFilepath.Location = new System.Drawing.Point(1087, 61);
+		btnBrowseTemplateFilepath.Location = new System.Drawing.Point(1088, 109);
 		btnBrowseTemplateFilepath.Name = "btnBrowseTemplateFilepath";
 		btnBrowseTemplateFilepath.Size = new System.Drawing.Size(32, 32);
 		btnBrowseTemplateFilepath.TabIndex = 11;
@@ -139,7 +149,7 @@ partial class ServiceGenEditCtl
 		// 
 		txtTemplateFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtTemplateFilepath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtTemplateFilepath.Location = new System.Drawing.Point(251, 59);
+		txtTemplateFilepath.Location = new System.Drawing.Point(252, 107);
 		txtTemplateFilepath.Name = "txtTemplateFilepath";
 		txtTemplateFilepath.Size = new System.Drawing.Size(827, 34);
 		txtTemplateFilepath.TabIndex = 10;
@@ -148,7 +158,7 @@ partial class ServiceGenEditCtl
 		// label3
 		// 
 		label3.AutoSize = true;
-		label3.Location = new System.Drawing.Point(89, 60);
+		label3.Location = new System.Drawing.Point(119, 108);
 		label3.Name = "label3";
 		label3.Size = new System.Drawing.Size(130, 28);
 		label3.TabIndex = 9;
@@ -157,12 +167,12 @@ partial class ServiceGenEditCtl
 		// fileDlg
 		// 
 		fileDlg.DefaultExt = "*.tmpl";
-		fileDlg.Filter = "Template file (*.tmpl)|*.tmpl| All Files (*.*)|*.*";
+		fileDlg.Filter = "All Files (*.*)|*.*";
 		// 
 		// btnBrowseQueryTemplFilepath
 		// 
 		btnBrowseQueryTemplFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseQueryTemplFilepath.Location = new System.Drawing.Point(1087, 155);
+		btnBrowseQueryTemplFilepath.Location = new System.Drawing.Point(1087, 374);
 		btnBrowseQueryTemplFilepath.Name = "btnBrowseQueryTemplFilepath";
 		btnBrowseQueryTemplFilepath.Size = new System.Drawing.Size(32, 32);
 		btnBrowseQueryTemplFilepath.TabIndex = 17;
@@ -174,7 +184,7 @@ partial class ServiceGenEditCtl
 		// 
 		txtQueryTemplateFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtQueryTemplateFilepath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtQueryTemplateFilepath.Location = new System.Drawing.Point(252, 155);
+		txtQueryTemplateFilepath.Location = new System.Drawing.Point(252, 374);
 		txtQueryTemplateFilepath.Name = "txtQueryTemplateFilepath";
 		txtQueryTemplateFilepath.Size = new System.Drawing.Size(827, 34);
 		txtQueryTemplateFilepath.TabIndex = 16;
@@ -183,16 +193,16 @@ partial class ServiceGenEditCtl
 		// label2
 		// 
 		label2.AutoSize = true;
-		label2.Location = new System.Drawing.Point(47, 157);
+		label2.Location = new System.Drawing.Point(119, 376);
 		label2.Name = "label2";
-		label2.Size = new System.Drawing.Size(188, 28);
+		label2.Size = new System.Drawing.Size(130, 28);
 		label2.TabIndex = 15;
-		label2.Text = "Query Template File:";
+		label2.Text = "Template File:";
 		// 
 		// btnBrowseQueryOutFolder
 		// 
 		btnBrowseQueryOutFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseQueryOutFolder.Location = new System.Drawing.Point(1087, 198);
+		btnBrowseQueryOutFolder.Location = new System.Drawing.Point(1087, 417);
 		btnBrowseQueryOutFolder.Name = "btnBrowseQueryOutFolder";
 		btnBrowseQueryOutFolder.Size = new System.Drawing.Size(32, 32);
 		btnBrowseQueryOutFolder.TabIndex = 14;
@@ -204,7 +214,7 @@ partial class ServiceGenEditCtl
 		// 
 		txtQueryOutputFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtQueryOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtQueryOutputFolder.Location = new System.Drawing.Point(252, 197);
+		txtQueryOutputFolder.Location = new System.Drawing.Point(252, 416);
 		txtQueryOutputFolder.Name = "txtQueryOutputFolder";
 		txtQueryOutputFolder.Size = new System.Drawing.Size(827, 34);
 		txtQueryOutputFolder.TabIndex = 13;
@@ -213,17 +223,17 @@ partial class ServiceGenEditCtl
 		// label4
 		// 
 		label4.AutoSize = true;
-		label4.Location = new System.Drawing.Point(39, 198);
+		label4.Location = new System.Drawing.Point(109, 417);
 		label4.Name = "label4";
-		label4.Size = new System.Drawing.Size(198, 28);
+		label4.Size = new System.Drawing.Size(140, 28);
 		label4.TabIndex = 12;
-		label4.Text = "Query Output Folder:";
+		label4.Text = "Output Folder:";
 		label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 		// 
 		// btnBrowseCntlrTemplFilepath
 		// 
 		btnBrowseCntlrTemplFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseCntlrTemplFilepath.Location = new System.Drawing.Point(1087, 250);
+		btnBrowseCntlrTemplFilepath.Location = new System.Drawing.Point(1088, 239);
 		btnBrowseCntlrTemplFilepath.Name = "btnBrowseCntlrTemplFilepath";
 		btnBrowseCntlrTemplFilepath.Size = new System.Drawing.Size(32, 32);
 		btnBrowseCntlrTemplFilepath.TabIndex = 23;
@@ -235,7 +245,7 @@ partial class ServiceGenEditCtl
 		// 
 		txtControllerTemplateFile.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtControllerTemplateFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtControllerTemplateFile.Location = new System.Drawing.Point(251, 250);
+		txtControllerTemplateFile.Location = new System.Drawing.Point(252, 239);
 		txtControllerTemplateFile.Name = "txtControllerTemplateFile";
 		txtControllerTemplateFile.Size = new System.Drawing.Size(827, 34);
 		txtControllerTemplateFile.TabIndex = 22;
@@ -244,16 +254,16 @@ partial class ServiceGenEditCtl
 		// label5
 		// 
 		label5.AutoSize = true;
-		label5.Location = new System.Drawing.Point(24, 252);
+		label5.Location = new System.Drawing.Point(119, 241);
 		label5.Name = "label5";
-		label5.Size = new System.Drawing.Size(223, 28);
+		label5.Size = new System.Drawing.Size(130, 28);
 		label5.TabIndex = 21;
-		label5.Text = "Controller Template File:";
+		label5.Text = "Template File:";
 		// 
 		// btnBrowseCntlrOutFolder
 		// 
 		btnBrowseCntlrOutFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseCntlrOutFolder.Location = new System.Drawing.Point(1087, 291);
+		btnBrowseCntlrOutFolder.Location = new System.Drawing.Point(1088, 280);
 		btnBrowseCntlrOutFolder.Name = "btnBrowseCntlrOutFolder";
 		btnBrowseCntlrOutFolder.Size = new System.Drawing.Size(32, 32);
 		btnBrowseCntlrOutFolder.TabIndex = 20;
@@ -265,7 +275,7 @@ partial class ServiceGenEditCtl
 		// 
 		txtControllerOutputFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtControllerOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtControllerOutputFolder.Location = new System.Drawing.Point(251, 291);
+		txtControllerOutputFolder.Location = new System.Drawing.Point(252, 280);
 		txtControllerOutputFolder.Name = "txtControllerOutputFolder";
 		txtControllerOutputFolder.Size = new System.Drawing.Size(827, 34);
 		txtControllerOutputFolder.TabIndex = 19;
@@ -274,17 +284,17 @@ partial class ServiceGenEditCtl
 		// label6
 		// 
 		label6.AutoSize = true;
-		label6.Location = new System.Drawing.Point(16, 293);
+		label6.Location = new System.Drawing.Point(109, 282);
 		label6.Name = "label6";
-		label6.Size = new System.Drawing.Size(233, 28);
+		label6.Size = new System.Drawing.Size(140, 28);
 		label6.TabIndex = 18;
-		label6.Text = "Controller Output Folder:";
+		label6.Text = "Output Folder:";
 		label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 		// 
 		// btnBrowseApiClientTemplFilepath
 		// 
 		btnBrowseApiClientTemplFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseApiClientTemplFilepath.Location = new System.Drawing.Point(1087, 344);
+		btnBrowseApiClientTemplFilepath.Location = new System.Drawing.Point(1088, 506);
 		btnBrowseApiClientTemplFilepath.Name = "btnBrowseApiClientTemplFilepath";
 		btnBrowseApiClientTemplFilepath.Size = new System.Drawing.Size(32, 32);
 		btnBrowseApiClientTemplFilepath.TabIndex = 29;
@@ -296,7 +306,7 @@ partial class ServiceGenEditCtl
 		// 
 		txtApiClientTemplateFile.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtApiClientTemplateFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtApiClientTemplateFile.Location = new System.Drawing.Point(251, 344);
+		txtApiClientTemplateFile.Location = new System.Drawing.Point(252, 506);
 		txtApiClientTemplateFile.Name = "txtApiClientTemplateFile";
 		txtApiClientTemplateFile.Size = new System.Drawing.Size(827, 34);
 		txtApiClientTemplateFile.TabIndex = 28;
@@ -305,16 +315,16 @@ partial class ServiceGenEditCtl
 		// label7
 		// 
 		label7.AutoSize = true;
-		label7.Location = new System.Drawing.Point(24, 346);
+		label7.Location = new System.Drawing.Point(119, 512);
 		label7.Name = "label7";
-		label7.Size = new System.Drawing.Size(220, 28);
+		label7.Size = new System.Drawing.Size(130, 28);
 		label7.TabIndex = 27;
-		label7.Text = "Api Client Template File:";
+		label7.Text = "Template File:";
 		// 
 		// btnBrowseApiClientOutFolder
 		// 
 		btnBrowseApiClientOutFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseApiClientOutFolder.Location = new System.Drawing.Point(1087, 388);
+		btnBrowseApiClientOutFolder.Location = new System.Drawing.Point(1088, 550);
 		btnBrowseApiClientOutFolder.Name = "btnBrowseApiClientOutFolder";
 		btnBrowseApiClientOutFolder.Size = new System.Drawing.Size(32, 32);
 		btnBrowseApiClientOutFolder.TabIndex = 26;
@@ -326,7 +336,7 @@ partial class ServiceGenEditCtl
 		// 
 		txtApiClientOutputFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtApiClientOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtApiClientOutputFolder.Location = new System.Drawing.Point(251, 388);
+		txtApiClientOutputFolder.Location = new System.Drawing.Point(252, 550);
 		txtApiClientOutputFolder.Name = "txtApiClientOutputFolder";
 		txtApiClientOutputFolder.Size = new System.Drawing.Size(827, 34);
 		txtApiClientOutputFolder.TabIndex = 25;
@@ -335,11 +345,11 @@ partial class ServiceGenEditCtl
 		// label8
 		// 
 		label8.AutoSize = true;
-		label8.Location = new System.Drawing.Point(15, 391);
+		label8.Location = new System.Drawing.Point(109, 556);
 		label8.Name = "label8";
-		label8.Size = new System.Drawing.Size(230, 28);
+		label8.Size = new System.Drawing.Size(140, 28);
 		label8.TabIndex = 24;
-		label8.Text = "Api Client Output Folder:";
+		label8.Text = "Output Folder:";
 		label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 		// 
 		// pictureBox1
@@ -351,10 +361,122 @@ partial class ServiceGenEditCtl
 		pictureBox1.TabIndex = 30;
 		pictureBox1.TabStop = false;
 		// 
+		// btnBrowseApiClientServicesExtOutputFile
+		// 
+		btnBrowseApiClientServicesExtOutputFile.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+		btnBrowseApiClientServicesExtOutputFile.Location = new System.Drawing.Point(1088, 650);
+		btnBrowseApiClientServicesExtOutputFile.Name = "btnBrowseApiClientServicesExtOutputFile";
+		btnBrowseApiClientServicesExtOutputFile.Size = new System.Drawing.Size(32, 32);
+		btnBrowseApiClientServicesExtOutputFile.TabIndex = 33;
+		btnBrowseApiClientServicesExtOutputFile.Text = "...";
+		btnBrowseApiClientServicesExtOutputFile.UseVisualStyleBackColor = true;
+		btnBrowseApiClientServicesExtOutputFile.Click += btnBrowseApiClientServicesExtOutputFile_Click;
+		// 
+		// txtApiClientServicesExtOutputFile
+		// 
+		txtApiClientServicesExtOutputFile.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+		txtApiClientServicesExtOutputFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+		txtApiClientServicesExtOutputFile.Location = new System.Drawing.Point(252, 650);
+		txtApiClientServicesExtOutputFile.Name = "txtApiClientServicesExtOutputFile";
+		txtApiClientServicesExtOutputFile.Size = new System.Drawing.Size(827, 34);
+		txtApiClientServicesExtOutputFile.TabIndex = 32;
+		txtApiClientServicesExtOutputFile.TextChanged += txtApiClientServicesExtOutputFile_TextChanged;
+		// 
+		// label9
+		// 
+		label9.AutoSize = true;
+		label9.Location = new System.Drawing.Point(29, 652);
+		label9.Name = "label9";
+		label9.Size = new System.Drawing.Size(220, 28);
+		label9.TabIndex = 31;
+		label9.Text = "Services Ext Output File:";
+		label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+		// 
+		// label10
+		// 
+		label10.AutoSize = true;
+		label10.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+		label10.Location = new System.Drawing.Point(23, 474);
+		label10.Name = "label10";
+		label10.Size = new System.Drawing.Size(105, 28);
+		label10.TabIndex = 34;
+		label10.Text = "API Client";
+		// 
+		// label11
+		// 
+		label11.AutoSize = true;
+		label11.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+		label11.Location = new System.Drawing.Point(23, 204);
+		label11.Name = "label11";
+		label11.Size = new System.Drawing.Size(107, 28);
+		label11.TabIndex = 35;
+		label11.Text = "Controller";
+		// 
+		// label12
+		// 
+		label12.AutoSize = true;
+		label12.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+		label12.Location = new System.Drawing.Point(23, 337);
+		label12.Name = "label12";
+		label12.Size = new System.Drawing.Size(123, 28);
+		label12.TabIndex = 36;
+		label12.Text = "Query Class";
+		// 
+		// label13
+		// 
+		label13.AutoSize = true;
+		label13.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+		label13.Location = new System.Drawing.Point(23, 77);
+		label13.Name = "label13";
+		label13.Size = new System.Drawing.Size(81, 28);
+		label13.TabIndex = 37;
+		label13.Text = "Service";
+		// 
+		// btnBrowseApiClientServicesExtTemplateFile
+		// 
+		btnBrowseApiClientServicesExtTemplateFile.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+		btnBrowseApiClientServicesExtTemplateFile.Location = new System.Drawing.Point(1088, 606);
+		btnBrowseApiClientServicesExtTemplateFile.Name = "btnBrowseApiClientServicesExtTemplateFile";
+		btnBrowseApiClientServicesExtTemplateFile.Size = new System.Drawing.Size(32, 32);
+		btnBrowseApiClientServicesExtTemplateFile.TabIndex = 40;
+		btnBrowseApiClientServicesExtTemplateFile.Text = "...";
+		btnBrowseApiClientServicesExtTemplateFile.UseVisualStyleBackColor = true;
+		btnBrowseApiClientServicesExtTemplateFile.Click += btnBrowseApiClientServicesExtTemplateFile_Click;
+		// 
+		// txtApiClientServicesExtTemplateFile
+		// 
+		txtApiClientServicesExtTemplateFile.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+		txtApiClientServicesExtTemplateFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+		txtApiClientServicesExtTemplateFile.Location = new System.Drawing.Point(252, 606);
+		txtApiClientServicesExtTemplateFile.Name = "txtApiClientServicesExtTemplateFile";
+		txtApiClientServicesExtTemplateFile.Size = new System.Drawing.Size(827, 34);
+		txtApiClientServicesExtTemplateFile.TabIndex = 39;
+		txtApiClientServicesExtTemplateFile.TextChanged += txtApiClientServicesExtTemplateFile_TextChanged;
+		// 
+		// label14
+		// 
+		label14.AutoSize = true;
+		label14.Location = new System.Drawing.Point(45, 608);
+		label14.Name = "label14";
+		label14.Size = new System.Drawing.Size(204, 28);
+		label14.TabIndex = 38;
+		label14.Text = "Svcs Ext Template File:";
+		label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+		// 
 		// ServiceGenEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(11F, 28F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		Controls.Add(btnBrowseApiClientServicesExtTemplateFile);
+		Controls.Add(txtApiClientServicesExtTemplateFile);
+		Controls.Add(label14);
+		Controls.Add(label13);
+		Controls.Add(label12);
+		Controls.Add(label11);
+		Controls.Add(label10);
+		Controls.Add(btnBrowseApiClientServicesExtOutputFile);
+		Controls.Add(txtApiClientServicesExtOutputFile);
+		Controls.Add(label9);
 		Controls.Add(pictureBox1);
 		Controls.Add(btnBrowseApiClientTemplFilepath);
 		Controls.Add(txtApiClientTemplateFile);
@@ -385,7 +507,7 @@ partial class ServiceGenEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F);
 		Name = "ServiceGenEditCtl";
-		Size = new System.Drawing.Size(1171, 528);
+		Size = new System.Drawing.Size(1171, 821);
 		Load += ServiceGenEditCtl_Load;
 		((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
 		ResumeLayout(false);
@@ -424,4 +546,14 @@ partial class ServiceGenEditCtl
 	private System.Windows.Forms.TextBox txtApiClientOutputFolder;
 	private System.Windows.Forms.Label label8;
 	private System.Windows.Forms.PictureBox pictureBox1;
+	private System.Windows.Forms.Button btnBrowseApiClientServicesExtOutputFile;
+	private System.Windows.Forms.TextBox txtApiClientServicesExtOutputFile;
+	private System.Windows.Forms.Label label9;
+	private System.Windows.Forms.Label label10;
+	private System.Windows.Forms.Label label11;
+	private System.Windows.Forms.Label label12;
+	private System.Windows.Forms.Label label13;
+	private System.Windows.Forms.Button btnBrowseApiClientServicesExtTemplateFile;
+	private System.Windows.Forms.TextBox txtApiClientServicesExtTemplateFile;
+	private System.Windows.Forms.Label label14;
 }

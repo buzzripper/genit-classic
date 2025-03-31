@@ -16,6 +16,8 @@ public class ServiceGenModel : GenModelBase
 	public string ControllerOutputFolder { get; set; }
 	public string ApiClientTemplateFilepath { get; set; }
 	public string ApiClientOutputFolder { get; set; }
+	public string ApiClientServicesExtTemplateFilepath { get; set; }
+	public string ApiClientServicesExtOutputFilepath { get; set; }
 
 	protected override string GetName() => "Service Generator";
 }

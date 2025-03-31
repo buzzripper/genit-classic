@@ -65,6 +65,7 @@ public class ServiceGenerator
 
 		// Generate services
 
+		var apiClientEntities = new List<EntityModel>();
 		foreach (var entity in entities.Where(e => e.Service.Enabled)) {
 			// Generate service class
 			GenerateService(entity, svcGenModel, $"{serviceTemplate}", outputFolder, servicesNamespace, queriesNamespace);
@@ -73,11 +74,17 @@ public class ServiceGenerator
 			foreach (var queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
 				new ServiceQueryGenerator().GenerateQueryClass(entity.Service, svcGenModel, $"{queryTemplate}", queryOutputFolder, queriesNamespace);
 
-			// Generate controller
+			// Generate controller / client
 			if (entity.Service.InclController) { 
 				new ServiceControllerGenerator().GenerateController(entity, svcGenModel, $"{controllerTemplate}", controllersOutputFolder, controllersNamespace, servicesNamespace, queriesNamespace, entitiesNamespace);
 				new ApiClientGenerator().GenerateApiClient(entity, svcGenModel, $"{apiClientTemplate}", apiClientOutputFolder, apiClientsNamespace, queriesNamespace, entitiesNamespace);
+				apiClientEntities.Add(entity);
 			}
+		}
+
+		// Register any ApiClient classes
+		if (apiClientEntities.Any()) {
+			new ApiClientCollExtGenerator().GenerateApiClientRegistrations(apiClientEntities, svcGenModel);
 		}
 	}
 

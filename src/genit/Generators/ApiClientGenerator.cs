@@ -31,7 +31,6 @@ internal class ApiClientGenerator
 
 		// Addl usings
 		var addlUsings = Utils.BuildAddlUsingsList(entity.Service.AddlServiceUsings);
-		addlUsings.AddIfNotExists(apiClientsNamespace);
 		addlUsings.AddIfNotExists(queriesNamespace);
 		addlUsings.AddIfNotExists(entitiesNamespace);
 
@@ -103,7 +102,7 @@ internal class ApiClientGenerator
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
 			output.AddLine();
-			output.AddLine(tc + 1, $"return await PostAsync(\"v1/{className}/Create{className}\", {varName});");
+			output.AddLine(tc + 1, $"return await PostAsync<{className}>(\"v1/{className}/Create{className}\", {varName});");
 			output.AddLine(tc, "}");
 		}
 
@@ -117,7 +116,7 @@ internal class ApiClientGenerator
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
 			output.AddLine();
-			output.AddLine(tc + 1, $"await PostAsync(\"v1/{className}/Update{className}\", {varName});");
+			output.AddLine(tc + 1, $"await PostAsync<{className}>(\"v1/{className}/Update{className}\", {varName});");
 			output.AddLine(tc, "}");
 		}
 
@@ -129,7 +128,7 @@ internal class ApiClientGenerator
 			output.AddLine();
 			output.AddLine(tc, $"public async {signature}");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"await PostAsync($\"v1/{className}/Delete{className}/{{id}}\", null);");
+			output.AddLine(tc + 1, $"await PostAsync<string>($\"v1/{className}/Delete{className}/{{id}}\", null);");
 			output.AddLine(tc, "}");
 		}
 
@@ -182,7 +181,7 @@ internal class ApiClientGenerator
 		// Method
 		output.AddLine(tc, $"public async {signature}");
 		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"return await GetAsync($\"v1/{className}/{method.Name}{sbFilterRoute}\");");
+		output.AddLine(tc + 1, $"return await GetAsync<{returnType}>($\"v1/{className}/{method.Name}{sbFilterRoute}\");");
 		output.AddLine(tc, "}");
 	}
 

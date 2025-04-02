@@ -27,14 +27,7 @@ internal class ApiClientCollExtGenerator
 
 		foreach (var entity in apiClientEntities) {
 			var className = $"{entity.Name}ApiClient";
-			var interfaceName = $"I{className}";
-
-			if (registrations.Count > 0)
-				registrations.AddLine();
-
-			registrations.AddLine(t, $"services.AddScoped<{interfaceName}, {className}>(serviceProvider =>");
-			registrations.AddLine(t + 1, "new AppUserApiClient(apiClientConfig.BaseUrl, serviceProvider.GetRequiredService<IHttpClientFactory>(), serviceProvider.GetRequiredService<IHttpContextAccessor>())");
-			registrations.AddLine(t, ");");
+			registrations.AddLine(t, $"services.AddTransient<I{className}, {className}>();");
 		}
 
 		var registrationsOutput = string.Join(Environment.NewLine, registrations);

@@ -2,7 +2,6 @@
 using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
 using Dyvenix.Genit.Models.Generators;
-using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -157,83 +156,6 @@ public class ServiceGenerator
 			File.Delete(outputFile);
 		File.WriteAllText(outputFile, fileContents);
 	}
-
-
-	//private void GenerateSingleMethod(EntityModel entity, ServiceMethodModel method, List<string> output, List<string> interfaceOutput)
-	//{
-	//	var tc = 1;
-	//	output.AddLine();
-
-	//	// Attributes
-	//	if (method.Attributes.Any())
-	//		foreach (var attr in method.Attributes)
-	//			output.AddLine(tc, $"[{attr}]");
-
-	//	// Interface
-	//	var signature = $"Task<{entity.Name}>{method.Name}({method.ArgType} {method.ArgName})";
-	//	interfaceOutput.Add(signature);
-
-	//	// Method
-	//	output.AddLine(tc, $"public async {signature}");
-	//	output.AddLine(tc, "{");
-	//	output.AddLine(tc + 1, "var db = _dbContextFactory.CreateDbContext();");
-	//	output.AddLine(tc + 1, $"return await db.{entity.Name}.FirstOrDefaultAsync(x => x.{method.PropName} == {method.ArgName});");
-	//	output.AddLine(tc, "}");
-	//}
-
-	//private void GenerateListMethod(EntityModel entity, ServiceMethodModel method, List<string> output, List<string> interfaceOutput)
-	//{
-	//	var tc = 1;
-	//	output.AddLine();
-
-	//	// Attributes
-	//	if (method.Attributes.Any())
-	//		foreach (var attr in method.Attributes)
-	//			output.AddLine(tc, $"[{attr}]");
-
-	//	// Interface
-	//	var sbArgs = new StringBuilder();
-
-	//	// Paging
-	//	if (!string.IsNullOrWhiteSpace(method.ArgType))
-	//		sbArgs.Append($"{method.ArgType} {method.ArgName}");
-	//	if (method.InclPaging) {
-	//		if (sbArgs.Length > 0)
-	//			sbArgs.Append(", ");
-	//		sbArgs.Append("int pageSize, int pageOffset");
-	//	}
-	//	var signature = $"Task<List<{entity.Name}>>{method.Name}({sbArgs.ToString()})";
-	//	interfaceOutput.Add(signature);
-
-	//	// Method
-	//	output.AddLine(tc, $"public async {signature}");
-	//	output.AddLine(tc, "{");
-	//	output.AddLine(tc + 1, $"var dbQuery = _dbContextFactory.CreateDbContext().{entity.Name}.AsQueryable();");
-	//	output.AddLine();
-
-	//	if (!string.IsNullOrWhiteSpace(method.ArgType)) {
-	//		var indent = tc + 1;
-	//		if (method.FilterProperty.PrimitiveType == PrimitiveType.String) {
-	//			output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({method.ArgName}))");
-	//			indent++;
-	//		} else if (method.FilterProperty.Nullable) {
-	//			output.AddLine(tc + 1, $"if ({method.ArgName} != null)");
-	//			indent++;
-	//		}
-	//		output.AddLine(indent, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{method.PropName}, {method.ArgName}));");
-	//		output.AddLine();
-	//	}
-
-	//	if (method.InclPaging) {
-	//		output.AddLine(tc + 1, $"if (pageSize > 0)");
-	//		output.AddLine(tc + 2, $"dbQuery = dbQuery.Skip(pageOffset).Take(pageSize);");
-	//		output.AddLine();
-	//	}
-
-	//	output.AddLine(tc + 1, $"return await dbQuery.AsNoTracking().ToListAsync();");
-
-	//	output.AddLine(tc, "}");
-	//}
 
 	private string ReplaceServiceTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> attrsOutput, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string servicesNamespace)
 	{

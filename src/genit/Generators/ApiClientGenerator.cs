@@ -40,7 +40,7 @@ internal class ApiClientGenerator
 		// Create/Update/Delete
 		var crudMethodsOutput = new List<string>();
 		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete) {
-			crudMethodsOutput.AddLine(1, "#region Create/Update/Delete");
+			crudMethodsOutput.AddLine(1, "#region Create / Update / Delete");
 			this.GenerateCUDMethods(entity, crudMethodsOutput, interfaceOutput);
 			crudMethodsOutput.AddLine();
 			crudMethodsOutput.AddLine(1, "#endregion");
@@ -90,8 +90,6 @@ internal class ApiClientGenerator
 		var className = entity.Name;
 		var varName = Utils.ToCamelCase(className);
 
-		output.AddLine(tc, "#region Create / Update / Delete");
-
 		if (entity.Service.InclCreate) {
 			// Interface
 			var signature = $"Task<{className}> Create{className}({className} {varName})";
@@ -102,7 +100,7 @@ internal class ApiClientGenerator
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
 			output.AddLine();
-			output.AddLine(tc + 1, $"return await PostAsync<{className}>(\"v1/{className}/Create{className}\", {varName});");
+			output.AddLine(tc + 1, $"return await PostAsync<{className}>(\"api/v1/{className}/Create{className}\", {varName});");
 			output.AddLine(tc, "}");
 		}
 
@@ -116,7 +114,7 @@ internal class ApiClientGenerator
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
 			output.AddLine();
-			output.AddLine(tc + 1, $"await PostAsync<{className}>(\"v1/{className}/Update{className}\", {varName});");
+			output.AddLine(tc + 1, $"await PostAsync<{className}>(\"api/v1/{className}/Update{className}\", {varName});");
 			output.AddLine(tc, "}");
 		}
 
@@ -128,12 +126,9 @@ internal class ApiClientGenerator
 			output.AddLine();
 			output.AddLine(tc, $"public async {signature}");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"await PostAsync<string>($\"v1/{className}/Delete{className}/{{id}}\", null);");
+			output.AddLine(tc + 1, $"await PostAsync<string>($\"api/v1/{className}/Delete{className}/{{id}}\", null);");
 			output.AddLine(tc, "}");
 		}
-
-		output.AddLine();
-		output.AddLine(tc, "#endregion");
 	}
 
 	private void GenerateReadMethod(EntityModel entity, ServiceMethodModel method, List<string> output, List<string> interfaceOutput)
@@ -170,7 +165,7 @@ internal class ApiClientGenerator
 				sbFilterRoute.Append(", ");
 			}
 			sbSigParams.Append("int pageSize, int pageOffset");
-			sbFilterRoute.Append("/{{pageSize}}/{{pageOffset}}");
+			sbFilterRoute.Append("/{pageSize}/{pageOffset}");
 		}
 
 		var signature = $"Task<{returnType}> {method.Name}({sbSigParams})";
@@ -181,7 +176,7 @@ internal class ApiClientGenerator
 		// Method
 		output.AddLine(tc, $"public async {signature}");
 		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"return await GetAsync<{returnType}>($\"v1/{className}/{method.Name}{sbFilterRoute}\");");
+		output.AddLine(tc + 1, $"return await GetAsync<{returnType}>($\"api/v1/{className}/{method.Name}{sbFilterRoute}\");");
 		output.AddLine(tc, "}");
 	}
 
@@ -207,7 +202,7 @@ internal class ApiClientGenerator
 		output.AddLine(tc, "{");
 		output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull(query);");
 		output.AddLine();
-		output.AddLine(tc + 1, $"return await PostAsync<EntityList<{className}>>(\"v1/{className}/{queryMethod.Name}\", query);");
+		output.AddLine(tc + 1, $"return await PostAsync<EntityList<{className}>>(\"api/v1/{className}/{queryMethod.Name}\", query);");
 		output.AddLine(tc, "}");
 	}
 

@@ -154,7 +154,6 @@ internal class ApiClientGenerator
 		foreach (var filterProp in method.FilterProperties) {
 			if (c++ > 0) {
 				sbSigParams.Append(", ");
-				sbFilterRoute.Append(", ");
 			}
 			sbSigParams.Append($"{filterProp.DatatypeName} {filterProp.FilterArgName}");
 			sbFilterRoute.Append($"/{{{filterProp.FilterArgName}}}");
@@ -162,7 +161,6 @@ internal class ApiClientGenerator
 		if (method.InclPaging) {
 			if (sbSigParams.Length > 0) {
 				sbSigParams.Append(", ");
-				sbFilterRoute.Append(", ");
 			}
 			sbSigParams.Append("int pageSize, int pageOffset");
 			sbFilterRoute.Append("/{pageSize}/{pageOffset}");

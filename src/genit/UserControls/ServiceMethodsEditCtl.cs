@@ -272,13 +272,6 @@ namespace Dyvenix.Genit.UserControls
 			//}
 		}
 
-		private void lbxFilterProperties_SelectedValueChanged(object sender, EventArgs e)
-		{
-			if (_suspendUpdates)
-				return;
-
-			Console.WriteLine(":::");
-		}
 
 		private void lbxNavProperties_SelectedIndexChanged(object sender, EventArgs e)
 		{

@@ -38,6 +38,8 @@ partial class DbCtxGenEditCtl
 		txtTemplateFilepath = new System.Windows.Forms.TextBox();
 		label3 = new System.Windows.Forms.Label();
 		fileDlg = new System.Windows.Forms.OpenFileDialog();
+		txtContextNamespace = new System.Windows.Forms.TextBox();
+		label4 = new System.Windows.Forms.Label();
 		SuspendLayout();
 		// 
 		// label1
@@ -71,8 +73,9 @@ partial class DbCtxGenEditCtl
 		// 
 		// ckbInclHeader
 		// 
+		ckbInclHeader.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbInclHeader.AutoSize = true;
-		ckbInclHeader.Location = new System.Drawing.Point(334, 150);
+		ckbInclHeader.Location = new System.Drawing.Point(451, 8);
 		ckbInclHeader.Name = "ckbInclHeader";
 		ckbInclHeader.Size = new System.Drawing.Size(120, 23);
 		ckbInclHeader.TabIndex = 3;
@@ -82,8 +85,9 @@ partial class DbCtxGenEditCtl
 		// 
 		// ckbEnabled
 		// 
+		ckbEnabled.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(173, 150);
+		ckbEnabled.Location = new System.Drawing.Point(592, 8);
 		ckbEnabled.Name = "ckbEnabled";
 		ckbEnabled.Size = new System.Drawing.Size(76, 23);
 		ckbEnabled.TabIndex = 4;
@@ -137,10 +141,33 @@ partial class DbCtxGenEditCtl
 		fileDlg.DefaultExt = "*.tmpl";
 		fileDlg.Filter = "Template file (*.tmpl)|*.tmpl| All Files (*.*)|*.*";
 		// 
+		// txtContextNamespace
+		// 
+		txtContextNamespace.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+		txtContextNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+		txtContextNamespace.Location = new System.Drawing.Point(160, 144);
+		txtContextNamespace.Name = "txtContextNamespace";
+		txtContextNamespace.Size = new System.Drawing.Size(478, 25);
+		txtContextNamespace.TabIndex = 14;
+		txtContextNamespace.TextChanged += txtContextNamespace_TextChanged;
+		// 
+		// label4
+		// 
+		label4.AutoSize = true;
+		label4.Font = new System.Drawing.Font("Segoe UI", 10F);
+		label4.Location = new System.Drawing.Point(24, 146);
+		label4.Name = "label4";
+		label4.Size = new System.Drawing.Size(134, 19);
+		label4.TabIndex = 13;
+		label4.Text = "Context Namespace:";
+		label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+		// 
 		// DbCtxGenEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		Controls.Add(txtContextNamespace);
+		Controls.Add(label4);
 		Controls.Add(btnBrowseTempleFilepath);
 		Controls.Add(txtTemplateFilepath);
 		Controls.Add(label3);
@@ -152,7 +179,7 @@ partial class DbCtxGenEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "DbCtxGenEditCtl";
-		Size = new System.Drawing.Size(726, 452);
+		Size = new System.Drawing.Size(726, 282);
 		Load += DbCtxGenEditCtl_Load;
 		ResumeLayout(false);
 		PerformLayout();
@@ -171,4 +198,6 @@ partial class DbCtxGenEditCtl
 	private System.Windows.Forms.TextBox txtTemplateFilepath;
 	private System.Windows.Forms.Label label3;
 	private System.Windows.Forms.OpenFileDialog fileDlg;
+	private System.Windows.Forms.TextBox txtContextNamespace;
+	private System.Windows.Forms.Label label4;
 }

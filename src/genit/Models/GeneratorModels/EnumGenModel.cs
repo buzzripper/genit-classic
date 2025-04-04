@@ -10,6 +10,7 @@ public class EnumGenModel : GenModelBase
 	}
 
 	public string OutputFolder { get; set; }
+	public string EnumsNamespace { get; set; }
 
 	protected override string GetName() => "Enum Generator";
 }

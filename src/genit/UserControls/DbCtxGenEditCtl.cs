@@ -36,6 +36,7 @@ namespace Dyvenix.Genit.UserControls
 
 			txtTemplateFilepath.Text = _dbCtxGenMdl.TemplateFilepath;
 			txtOutputFolder.Text = _dbCtxGenMdl.OutputFolder;
+			txtContextNamespace.Text = _dbCtxGenMdl.ContextNamespace;
 			ckbInclHeader.Checked = _dbCtxGenMdl.InclHeader;
 			ckbEnabled.Checked = _dbCtxGenMdl.Enabled;
 
@@ -54,6 +55,12 @@ namespace Dyvenix.Genit.UserControls
 		{
 			if (!_suspendUpdates)
 				_dbCtxGenMdl.TemplateFilepath = txtTemplateFilepath.Text;
+		}
+
+		private void txtContextNamespace_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_dbCtxGenMdl.ContextNamespace = txtContextNamespace.Text;
 		}
 
 		private void ckbInclHeader_CheckedChanged(object sender, EventArgs e)

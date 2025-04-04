@@ -36,6 +36,7 @@ namespace Dyvenix.Genit.UserControls
 
 			txtTemplateFilepath.Text = _enumGenMdl.TemplateFilepath;
 			txtOutputFolder.Text = _enumGenMdl.OutputFolder;
+			txtEnumsNamespace.Text = _enumGenMdl.EnumsNamespace;
 			ckbInclHeader.Checked = _enumGenMdl.InclHeader;
 			ckbEnabled.Checked = _enumGenMdl.Enabled;
 
@@ -54,6 +55,12 @@ namespace Dyvenix.Genit.UserControls
 		{
 			if (!_suspendUpdates)
 				_enumGenMdl.TemplateFilepath = txtTemplateFilepath.Text;
+		}
+
+		private void txtEnumsNamespace_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_enumGenMdl.EnumsNamespace = txtEnumsNamespace.Text;
 		}
 
 		private void ckbEnabled_CheckedChanged(object sender, EventArgs e)
@@ -81,5 +88,6 @@ namespace Dyvenix.Genit.UserControls
 			if (folderDlg.ShowDialog() == DialogResult.OK)
 				txtOutputFolder.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, folderDlg.SelectedPath);
 		}
+
 	}
 }

@@ -10,6 +10,7 @@ public class DbContextGenModel : GenModelBase
 	}
 
 	public string OutputFolder { get; set; }
+	public string ContextNamespace { get; set; }
 
 	protected override string GetName() => "DbContext Generator";
 }

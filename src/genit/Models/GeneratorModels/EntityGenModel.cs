@@ -10,6 +10,7 @@ public class EntityGenModel : GenModelBase
 	}
 
 	public string OutputFolder { get; set; }
+	public string EntitiesNamespace { get; set; }
 
 	protected override string GetName() => "Entity Generator";
 }

@@ -43,7 +43,11 @@ namespace Dyvenix.Genit.UserControls
 			txtApiClientOutputFolder.Text = _serviceGenMdl.ApiClientOutputFolder;
 			txtApiClientTemplateFile.Text = _serviceGenMdl.ApiClientTemplateFilepath;
 			txtApiClientServicesExtOutputFile.Text = _serviceGenMdl.ApiClientServicesExtOutputFilepath;
-
+			txtApiClientServicesExtTemplateFile.Text = _serviceGenMdl.ApiClientServicesExtTemplateFilepath;
+			txtServicesNamespace.Text = _serviceGenMdl.ServicesNamespace;
+			txtQueriesNamespace.Text = _serviceGenMdl.QueriesNamespace;
+			txtControllersNamespace.Text = _serviceGenMdl.ControllersNamespace;
+			txtApiClientsNamespace.Text = _serviceGenMdl.ApiClientsNamespace;
 			ckbInclHeader.Checked = _serviceGenMdl.InclHeader;
 			ckbEnabled.Checked = _serviceGenMdl.Enabled;
 
@@ -112,7 +116,29 @@ namespace Dyvenix.Genit.UserControls
 				_serviceGenMdl.ApiClientServicesExtOutputFilepath = txtApiClientServicesExtOutputFile.Text;
 		}
 
+		private void txtServicesNamespace_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.ServicesNamespace = txtServicesNamespace.Text;
+		}
 
+		private void txtQueriesNamespace_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.QueriesNamespace = txtQueriesNamespace.Text;
+		}
+
+		private void txtControllersNamespace_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.ControllersNamespace = txtControllersNamespace.Text;
+		}
+
+		private void txtApiClientsNamespace_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.ApiClientsNamespace = txtApiClientsNamespace.Text;
+		}
 
 		private void btnBrowseTemplateFilepath_Click(object sender, EventArgs e)
 		{
@@ -195,5 +221,6 @@ namespace Dyvenix.Genit.UserControls
 			if (!_suspendUpdates)
 				_serviceGenMdl.InclHeader = ckbInclHeader.Checked;
 		}
+
 	}
 }

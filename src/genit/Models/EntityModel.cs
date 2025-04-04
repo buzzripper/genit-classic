@@ -13,9 +13,32 @@ namespace Dyvenix.Genit.Models;
 
 public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 {
+	public static EntityModel CreateNew()
+	{
+		var idProperty = new PropertyModel(Guid.NewGuid()) {
+			Name = "Id",
+			PrimitiveType = PrimitiveType.Guid,
+			IsPrimaryKey = true,
+			IsIndexed = true,
+			IsIndexUnique = true
+		};
+
+		var entityModel = new EntityModel(Guid.NewGuid()) {
+			Enabled = true
+		};
+
+		entityModel.Properties.Add(idProperty);
+
+		return entityModel;
+	}
+	
+	#region Events
+
 	public event PropertyChangedEventHandler PropertyChanged;
 	public event EventHandler<NavPropertyAddedEventArgs> NavPropertyAdded;
 	public event EventHandler<NavPropertyRemovedEventArgs> NavPropertyRemoved;
+
+	#endregion
 
 	#region Fields
 
@@ -31,17 +54,13 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 	#region Ctors / Initialization
 
 	[JsonConstructor]
+	public EntityModel()
+	{
+	}
+
 	public EntityModel(Guid id)
 	{
 		Id = id;
-	}
-
-	public void InitializeOnLoad(ObservableCollection<EnumModel> enums, ObservableCollection<AssocModel> assocs)
-	{
-		foreach (var property in Properties) {
-			var assoc = assocs.FirstOrDefault(a => a.FKPropertyId == property.Id);
-			property.InitializeOnLoad(enums, assoc);
-		}
 	}
 
 	public void OnDeserialization(object sender)
@@ -99,7 +118,7 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 
 	public ServiceModel Service { get; set; } = new ServiceModel();
 
-	private void NavProperties_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	private void NavProperties_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{
 		if (e.Action == NotifyCollectionChangedAction.Add) {
 			var navProp = e.NewItems?[0] as NavPropertyModel;
@@ -119,7 +138,7 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 
 	public PropertyModel AddForeignKey(string fkPropName, EntityModel pkEntity, AssocModel assoc)
 	{
-		var property = new PropertyModel(Guid.NewGuid(), fkPropName, assoc.Id, pkEntity);
+		var property = new PropertyModel(Guid.NewGuid(), fkPropName, assoc, pkEntity);
 		property.PrimitiveType = pkEntity.GetPKProperty().PrimitiveType;
 		property.IsIndexed = true;
 		property.DisplayOrder = Properties.Count;
@@ -175,7 +194,6 @@ public class NavPropertyAddedEventArgs : EventArgs
 		NavPropertyModel = navPropertyMdl;
 	}
 }
-
 
 public class NavPropertyRemovedEventArgs : EventArgs
 {

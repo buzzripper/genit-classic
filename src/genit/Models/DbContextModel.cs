@@ -8,6 +8,23 @@ namespace Dyvenix.Genit.Models;
 
 public class DbContextModel
 {
+	#region Static
+
+	public static DbContextModel CreateNew()
+	{
+		var dbContext = new DbContextModel();
+		dbContext.Name = "DbContext";
+		dbContext.Enabled = true;
+		dbContext.DbContextGen = new DbContextGenModel(Guid.NewGuid());
+		dbContext.EntityGen = new EntityGenModel(Guid.NewGuid());
+		dbContext.EnumGen = new EnumGenModel(Guid.NewGuid());
+		dbContext.ServiceGen = new ServiceGenModel(Guid.NewGuid());
+
+		return dbContext;
+	}
+
+	#endregion
+
 	#region Ctors / Init
 
 	public DbContextModel()
@@ -40,25 +57,6 @@ public class DbContextModel
 	#endregion
 
 	#region Methods
-
-	public void InitializeOnLoad()
-	{
-		if (AddlUsings == null)
-			AddlUsings = new ObservableCollection<string>();
-
-		foreach (var assoc in Assocs) {
-			var priEntity = Entities.FirstOrDefault(e => e.Id == assoc.PrimaryEntityId);
-			var fkEntity = Entities.FirstOrDefault(e => e.Id == assoc.FKEntityId);
-			assoc.InitializeOnLoad(priEntity, fkEntity);
-		}
-
-		foreach (var entity in Entities) {
-			entity.InitializeOnLoad(Enums, Assocs);
-			entity.NavPropertyAdded += Entity_NavPropertyAdded;
-			entity.NavPropertyRemoved += Entity_NavPropertyRemoved;
-			entity.Service?.InitializeOnLoad(entity);
-		}
-	}
 
 	public void Validate(List<string> errorList)
 	{

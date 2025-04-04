@@ -144,4 +144,10 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 		if (!_suspendUpdates)
 			_service.ControllerVersion = txtControllerVersion.Text;
 	}
+
+	private void ckbEnabled_CheckedChanged(object sender, EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_service.Enabled = ckbEnabled.Checked;
+	}
 }

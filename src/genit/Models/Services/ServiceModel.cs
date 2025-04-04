@@ -43,12 +43,6 @@ public class ServiceModel : INotifyPropertyChanged
 		_suspendUpdates = false;
 	}
 
-	public void InitializeOnLoad(EntityModel entity)
-	{
-		foreach (var method in Methods)
-			method.InitializeOnLoad(entity);
-	}
-
 	#endregion
 
 	#region Properties

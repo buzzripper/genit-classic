@@ -15,7 +15,6 @@ public class PropertyModel : INotifyPropertyChanged
 
 	private bool _isPrimaryKey;
 	private bool _isIdentity;
-	private Guid? _assocId;
 	private bool _nullable;
 	private int _maxLength;
 	private bool _isIndexed;
@@ -45,14 +44,14 @@ public class PropertyModel : INotifyPropertyChanged
 		Id = id;
 	}
 
-	public PropertyModel(Guid id, string name, Guid assocId, EntityModel pkEntity)
+	public PropertyModel(Guid id, string name, AssocModel assoc, EntityModel pkEntity)
 	{
 		_suspendUpdates = true;
 
 		Id = id;
 		Name = name;
 		ParentEntity = pkEntity;
-		AssocId = assocId;
+		Assoc = assoc;
 
 		_suspendUpdates = false;
 	}
@@ -64,12 +63,6 @@ public class PropertyModel : INotifyPropertyChanged
 	public Guid Id { get; init; }
 
 	public string Name { get; set; }
-
-	public int PrimitiveTypeId { get; set; }
-
-	public Guid? EnumTypeId { get; set; }
-
-	public Guid? AssocId { get; set; }
 
 	public bool IsPrimaryKey
 	{
@@ -138,7 +131,6 @@ public class PropertyModel : INotifyPropertyChanged
 	[JsonIgnore]
 	public EntityModel ParentEntity { get; set; }
 
-	[JsonIgnore]
 	public PrimitiveType PrimitiveType
 	{
 		get {
@@ -148,25 +140,30 @@ public class PropertyModel : INotifyPropertyChanged
 				return this.ParentEntity.GetPKProperty().PrimitiveType;
 		}
 		set {
-			PrimitiveTypeId = value?.Id ?? -1;
 			SetProperty(ref _primitiveType, value);
 		}
 	}
 
-	[JsonIgnore]
 	public EnumModel EnumType
 	{
 		get => _enumType;
 		set {
-			EnumTypeId = value?.Id;
 			SetProperty(ref _enumType, value);
+		}
+	}
+
+	public AssocModel Assoc
+	{
+		get => _assoc;
+		set {
+			SetProperty(ref _assoc, value);
 		}
 	}
 
 	[JsonIgnore]
 	public bool IsForeignKey
 	{
-		get => this.AssocId != null;
+		get => this.Assoc != null;
 	}
 
 	[JsonIgnore]
@@ -188,16 +185,6 @@ public class PropertyModel : INotifyPropertyChanged
 	#endregion
 
 	#region Methods
-
-	public void InitializeOnLoad(ObservableCollection<EnumModel> enums, AssocModel assoc)
-	{
-		if (this.PrimitiveTypeId > 0) {
-			this.PrimitiveType = PrimitiveType.GetAll().First(p => p.Id == this.PrimitiveTypeId);
-
-		} else if (this.EnumTypeId != null) {
-			this.EnumType = enums.FirstOrDefault(e => e.Id == this.EnumTypeId);
-		}
-	}
 
 	public bool Validate(string entityName, List<string> errorList)
 	{

@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Dyvenix.Genit.Models
 {
 	public static class DocManager
 	{
-		private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions { WriteIndented = true };
+		private static readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions { WriteIndented = true, ReferenceHandler = ReferenceHandler.Preserve };
 
 		public static Doc LoadDoc(string filepath)
 		{
-			if (filepath == "TEST")
-				return DevUtils.GenerateTestDoc();
+			//if (filepath == "TEST")
+			//	return DevUtils.GenerateTestDoc();
 
 			if (!File.Exists(filepath))
 				throw new FileNotFoundException($"File not found: {filepath}");
 
-			var doc = JsonSerializer.Deserialize<Doc>(File.ReadAllText(filepath));
+			var doc = JsonSerializer.Deserialize<Doc>(File.ReadAllText(filepath), _serializerOptions);
 			doc.ModelFilepath = filepath;
-
-			doc.InitializeOnLoad();
 
 			return doc;
 		}

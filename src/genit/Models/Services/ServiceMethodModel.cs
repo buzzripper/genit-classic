@@ -20,6 +20,8 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	private bool _inclPaging;
 	private bool _useQuery;
 	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
+	private ObservableCollection<PropertyModel> _filterProperties = new ObservableCollection<PropertyModel>();
+	private ObservableCollection<NavPropertyModel> _inclNavProperties = new ObservableCollection<NavPropertyModel>();
 	
 	protected bool _suspendUpdates;
 
@@ -30,26 +32,11 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	[JsonConstructor]
 	public ServiceMethodModel()
 	{
-		this.FilterProperties.CollectionChanged += FilterProperties_OnCollectionChanged;
-		this.InclNavProperties.CollectionChanged += InclNavProperties_OnCollectionChanged;
 	}
 
 	public ServiceMethodModel(Guid id) : this()
 	{
 		this.Id = id;
-	}
-
-	public void InitializeOnLoad(EntityModel entity)
-	{
-		_suspendUpdates = true;
-
-		foreach (var prop in entity.Properties.Where(p => this.FilterPropertyIds.Contains(p.Id)))
-			this.FilterProperties.Add(prop);
-
-		foreach (var navProp in entity.NavProperties.Where(p => this.InclNavPropertyIds.Contains(p.Id)))
-			this.InclNavProperties.Add(navProp);
-
-		_suspendUpdates = false;
 	}
 
 	#endregion
@@ -58,8 +45,6 @@ public class ServiceMethodModel : INotifyPropertyChanged
 
 	public Guid Id { get; init; }
 	public string Name { get; set; }
-	public List<Guid> FilterPropertyIds { get; set; } = new List<Guid>();
-	public List<Guid> InclNavPropertyIds { get; set; } = new List<Guid>();
 
 	public ObservableCollection<string> Attributes
 	{
@@ -91,15 +76,21 @@ public class ServiceMethodModel : INotifyPropertyChanged
 		set => SetProperty(ref _useQuery, value);
 	}
 
+	public ObservableCollection<PropertyModel> FilterProperties
+	{
+		get => _filterProperties;
+		set => SetProperty(ref _filterProperties, value);
+	}
+
+	public ObservableCollection<NavPropertyModel> InclNavProperties
+	{
+		get => _inclNavProperties;
+		set => SetProperty(ref _inclNavProperties, value);
+	}
+
 	#endregion
 
 	#region Non-serialized Properties
-
-	[JsonIgnore]
-	public ObservableCollection<PropertyModel> FilterProperties { get; private set; } = new ObservableCollection<PropertyModel>();
-
-	[JsonIgnore]
-	public ObservableCollection<NavPropertyModel> InclNavProperties { get; private set; } = new ObservableCollection<NavPropertyModel>();
 
 	[JsonIgnore]
 	public int AttrCount => this.Attributes.Count;
@@ -127,46 +118,6 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	#endregion
 
 	#region PropertyChanged
-
-	private void FilterProperties_OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-	{
-		if (e.Action == NotifyCollectionChangedAction.Add) {
-			FilterPropertyIds.Add(((PropertyModel)e.NewItems[0]).Id);
-
-		} else if (e.Action == NotifyCollectionChangedAction.Remove) {
-			FilterPropertyIds.Remove(((PropertyModel)e.OldItems[0]).Id);
-
-		} else if (e.Action == NotifyCollectionChangedAction.Reset) {
-			ResetPropertyIds();
-		}
-	}
-
-	private void ResetPropertyIds()
-	{
-		FilterPropertyIds.Clear();
-		foreach (var prop in FilterProperties)
-			FilterPropertyIds.Add(prop.Id);
-	}
-
-	private void InclNavProperties_OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-	{
-		if (e.Action == NotifyCollectionChangedAction.Add) {
-			InclNavPropertyIds.Add(((NavPropertyModel)e.NewItems[0]).Id);
-
-		} else if (e.Action == NotifyCollectionChangedAction.Remove) {
-			InclNavPropertyIds.Remove(((NavPropertyModel)e.OldItems[0]).Id);
-
-		} else if (e.Action == NotifyCollectionChangedAction.Reset) {
-			ResetNavPropertyIds();
-		}
-	}
-
-	private void ResetNavPropertyIds()
-	{
-		InclNavPropertyIds.Clear();
-		foreach (var navProp in InclNavProperties)
-			InclNavPropertyIds.Add(navProp.Id);
-	}
 
 	protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
 	{

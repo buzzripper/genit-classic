@@ -234,11 +234,12 @@ partial class ServiceMethodsEditCtl
 		// 
 		// lbxFilterProperties
 		// 
+		lbxFilterProperties.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		lbxFilterProperties.FormattingEnabled = true;
 		lbxFilterProperties.Location = new System.Drawing.Point(3, 41);
 		lbxFilterProperties.Name = "lbxFilterProperties";
 		lbxFilterProperties.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-		lbxFilterProperties.Size = new System.Drawing.Size(255, 254);
+		lbxFilterProperties.Size = new System.Drawing.Size(255, 252);
 		lbxFilterProperties.TabIndex = 5;
 		lbxFilterProperties.SelectedIndexChanged += lbxFilterProperties_SelectedIndexChanged;
 		// 
@@ -254,11 +255,12 @@ partial class ServiceMethodsEditCtl
 		// 
 		// lbxNavProperties
 		// 
+		lbxNavProperties.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		lbxNavProperties.FormattingEnabled = true;
 		lbxNavProperties.Location = new System.Drawing.Point(3, 41);
 		lbxNavProperties.Name = "lbxNavProperties";
 		lbxNavProperties.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-		lbxNavProperties.Size = new System.Drawing.Size(255, 254);
+		lbxNavProperties.Size = new System.Drawing.Size(218, 252);
 		lbxNavProperties.TabIndex = 6;
 		// 
 		// lblInclNavProps

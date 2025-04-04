@@ -82,9 +82,8 @@ public class ServiceGenerator
 		}
 
 		// Register any ApiClient classes
-		if (apiClientEntities.Any()) {
+		if (apiClientEntities.Any())
 			new ApiClientCollExtGenerator().GenerateApiClientRegistrations(apiClientEntities, svcGenModel);
-		}
 	}
 
 	private void Validate(string templateFilepath, string outputFolder)
@@ -135,9 +134,9 @@ public class ServiceGenerator
 		var queryMethodsOutput = new List<string>();
 		if (entity.Service.Methods.Any(m => m.UseQuery)) {
 			queryMethodsOutput.AddLine(1, "#region Queries");
-
 			foreach (var queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
 				serviceMethodGenerator.GenerateQueryMethod(entity, queryMethod, queryMethodsOutput, interfaceOutput);
+			queryMethodsOutput.AddLine(1, "#endregion");
 		}
 
 		// Sorting method
@@ -145,8 +144,6 @@ public class ServiceGenerator
 			serviceMethodGenerator.GenerateSortingMethod(entity, queryMethodsOutput);
 			queryMethodsOutput.AddLine();
 		}
-
-		queryMethodsOutput.AddLine(1, "#endregion");
 
 		// Replace tokens in template
 		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, servicesNamespace);

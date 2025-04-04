@@ -137,57 +137,58 @@ partial class MainForm
 		// mnuNew
 		// 
 		mnuNew.Name = "mnuNew";
-		mnuNew.Size = new System.Drawing.Size(217, 34);
+		mnuNew.Size = new System.Drawing.Size(270, 34);
 		mnuNew.Text = "&New Model";
+		mnuNew.Click += uiNew_Click;
 		// 
 		// mnuOpen
 		// 
 		mnuOpen.Name = "mnuOpen";
-		mnuOpen.Size = new System.Drawing.Size(217, 34);
+		mnuOpen.Size = new System.Drawing.Size(270, 34);
 		mnuOpen.Text = "&Open Model";
 		mnuOpen.Click += uiOpen_Click;
 		// 
 		// mnuSave
 		// 
 		mnuSave.Name = "mnuSave";
-		mnuSave.Size = new System.Drawing.Size(217, 34);
+		mnuSave.Size = new System.Drawing.Size(270, 34);
 		mnuSave.Text = "&Save Model";
 		mnuSave.Click += uiSave_Click;
 		// 
 		// mnuSaveAs
 		// 
 		mnuSaveAs.Name = "mnuSaveAs";
-		mnuSaveAs.Size = new System.Drawing.Size(217, 34);
+		mnuSaveAs.Size = new System.Drawing.Size(270, 34);
 		mnuSaveAs.Text = "Save &As...";
 		mnuSaveAs.Click += uiSaveAs_Click;
 		// 
 		// mnuClose
 		// 
 		mnuClose.Name = "mnuClose";
-		mnuClose.Size = new System.Drawing.Size(217, 34);
+		mnuClose.Size = new System.Drawing.Size(270, 34);
 		mnuClose.Text = "&Close Model";
 		mnuClose.Click += uiClose_Click;
 		// 
 		// toolStripMenuItem2
 		// 
 		toolStripMenuItem2.Name = "toolStripMenuItem2";
-		toolStripMenuItem2.Size = new System.Drawing.Size(214, 6);
+		toolStripMenuItem2.Size = new System.Drawing.Size(267, 6);
 		// 
 		// mnuRecentFiles
 		// 
 		mnuRecentFiles.Name = "mnuRecentFiles";
-		mnuRecentFiles.Size = new System.Drawing.Size(217, 34);
+		mnuRecentFiles.Size = new System.Drawing.Size(270, 34);
 		mnuRecentFiles.Text = "Recent Files...";
 		// 
 		// toolStripSeparator1
 		// 
 		toolStripSeparator1.Name = "toolStripSeparator1";
-		toolStripSeparator1.Size = new System.Drawing.Size(214, 6);
+		toolStripSeparator1.Size = new System.Drawing.Size(267, 6);
 		// 
 		// mnuExit
 		// 
 		mnuExit.Name = "mnuExit";
-		mnuExit.Size = new System.Drawing.Size(217, 34);
+		mnuExit.Size = new System.Drawing.Size(270, 34);
 		mnuExit.Text = "E&xit";
 		mnuExit.Click += uiExit_Click;
 		// 
@@ -221,7 +222,7 @@ partial class MainForm
 		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnNew, btnOpen, btnSave, toolStripSeparator, btnGenerate, btnTest2, btnTest1 });
 		toolStrip1.Location = new System.Drawing.Point(0, 33);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(1052, 57);
+		toolStrip1.Size = new System.Drawing.Size(1052, 41);
 		toolStrip1.TabIndex = 37;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -231,8 +232,9 @@ partial class MainForm
 		btnNew.Image = (System.Drawing.Image)resources.GetObject("btnNew.Image");
 		btnNew.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnNew.Name = "btnNew";
-		btnNew.Size = new System.Drawing.Size(52, 52);
+		btnNew.Size = new System.Drawing.Size(36, 36);
 		btnNew.Text = "&New";
+		btnNew.Click += uiNew_Click;
 		// 
 		// btnOpen
 		// 
@@ -240,7 +242,7 @@ partial class MainForm
 		btnOpen.Image = (System.Drawing.Image)resources.GetObject("btnOpen.Image");
 		btnOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnOpen.Name = "btnOpen";
-		btnOpen.Size = new System.Drawing.Size(52, 52);
+		btnOpen.Size = new System.Drawing.Size(36, 36);
 		btnOpen.Text = "&Open";
 		btnOpen.Click += uiOpen_Click;
 		// 
@@ -250,21 +252,21 @@ partial class MainForm
 		btnSave.Image = (System.Drawing.Image)resources.GetObject("btnSave.Image");
 		btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnSave.Name = "btnSave";
-		btnSave.Size = new System.Drawing.Size(52, 52);
+		btnSave.Size = new System.Drawing.Size(36, 36);
 		btnSave.Text = "&Save";
 		btnSave.Click += uiSave_Click;
 		// 
 		// toolStripSeparator
 		// 
 		toolStripSeparator.Name = "toolStripSeparator";
-		toolStripSeparator.Size = new System.Drawing.Size(6, 57);
+		toolStripSeparator.Size = new System.Drawing.Size(6, 41);
 		// 
 		// btnGenerate
 		// 
 		btnGenerate.Image = (System.Drawing.Image)resources.GetObject("btnGenerate.Image");
 		btnGenerate.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnGenerate.Name = "btnGenerate";
-		btnGenerate.Size = new System.Drawing.Size(134, 52);
+		btnGenerate.Size = new System.Drawing.Size(118, 36);
 		btnGenerate.Text = "Generate";
 		btnGenerate.Click += uiGenerate_Click;
 		// 
@@ -275,7 +277,7 @@ partial class MainForm
 		btnTest2.Image = (System.Drawing.Image)resources.GetObject("btnTest2.Image");
 		btnTest2.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnTest2.Name = "btnTest2";
-		btnTest2.Size = new System.Drawing.Size(56, 52);
+		btnTest2.Size = new System.Drawing.Size(56, 36);
 		btnTest2.Text = "Test2";
 		btnTest2.Click += btnTest2_Click;
 		// 
@@ -286,14 +288,14 @@ partial class MainForm
 		btnTest1.Image = (System.Drawing.Image)resources.GetObject("btnTest1.Image");
 		btnTest1.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnTest1.Name = "btnTest1";
-		btnTest1.Size = new System.Drawing.Size(56, 52);
+		btnTest1.Size = new System.Drawing.Size(56, 36);
 		btnTest1.Text = "Test1";
 		btnTest1.Click += btnTest1_Click;
 		// 
 		// splMain
 		// 
 		splMain.Dock = System.Windows.Forms.DockStyle.Fill;
-		splMain.Location = new System.Drawing.Point(0, 90);
+		splMain.Location = new System.Drawing.Point(0, 74);
 		splMain.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 		splMain.Name = "splMain";
 		// 
@@ -304,7 +306,7 @@ partial class MainForm
 		// splMain.Panel2
 		// 
 		splMain.Panel2.Controls.Add(splContent);
-		splMain.Size = new System.Drawing.Size(1052, 575);
+		splMain.Size = new System.Drawing.Size(1052, 591);
 		splMain.SplitterDistance = 189;
 		splMain.SplitterWidth = 8;
 		splMain.TabIndex = 38;
@@ -316,7 +318,7 @@ partial class MainForm
 		treeNav.Location = new System.Drawing.Point(0, 0);
 		treeNav.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
 		treeNav.Name = "treeNav";
-		treeNav.Size = new System.Drawing.Size(189, 575);
+		treeNav.Size = new System.Drawing.Size(189, 591);
 		treeNav.TabIndex = 0;
 		treeNav.DbContextModelSelected += treeNav_DbContextModelSelected;
 		treeNav.EntityModelSelected += treeNav_EntityModelSelected_1;
@@ -342,8 +344,8 @@ partial class MainForm
 		// splContent.Panel2
 		// 
 		splContent.Panel2.Controls.Add(splOutput);
-		splContent.Size = new System.Drawing.Size(855, 575);
-		splContent.SplitterDistance = 436;
+		splContent.Size = new System.Drawing.Size(855, 591);
+		splContent.SplitterDistance = 448;
 		splContent.SplitterWidth = 8;
 		splContent.TabIndex = 0;
 		// 
@@ -354,7 +356,7 @@ partial class MainForm
 		multiPageCtl.Location = new System.Drawing.Point(0, 0);
 		multiPageCtl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 		multiPageCtl.Name = "multiPageCtl";
-		multiPageCtl.Size = new System.Drawing.Size(855, 436);
+		multiPageCtl.Size = new System.Drawing.Size(855, 448);
 		multiPageCtl.TabIndex = 2;
 		multiPageCtl.SelectedItemChanged += multiPageCtl_SelectedItemChanged;
 		// 
@@ -374,7 +376,7 @@ partial class MainForm
 		// splOutput.Panel2
 		// 
 		splOutput.Panel2.Controls.Add(outputCtl);
-		splOutput.Size = new System.Drawing.Size(855, 131);
+		splOutput.Size = new System.Drawing.Size(855, 135);
 		splOutput.SplitterDistance = 26;
 		splOutput.SplitterWidth = 1;
 		splOutput.TabIndex = 3;
@@ -427,7 +429,7 @@ partial class MainForm
 		outputCtl.Location = new System.Drawing.Point(0, 0);
 		outputCtl.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
 		outputCtl.Name = "outputCtl";
-		outputCtl.Size = new System.Drawing.Size(855, 104);
+		outputCtl.Size = new System.Drawing.Size(855, 108);
 		outputCtl.TabIndex = 0;
 		// 
 		// tvImgList

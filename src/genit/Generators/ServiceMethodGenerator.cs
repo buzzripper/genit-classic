@@ -121,11 +121,11 @@ internal class ServiceMethodGenerator
 
 		if (method.FilterProperties.Any()) {
 			foreach (var filterProp in method.FilterProperties) {
-				if (filterProp.PrimitiveType == PrimitiveType.String) {
+				if (filterProp.PrimitiveType?.Id == PrimitiveType.String.Id) {
 					output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({filterProp.FilterArgName}))");
 					output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{filterProp.Name}, {filterProp.FilterArgName}));");
 
-				} else if (filterProp.PrimitiveType == PrimitiveType.Int || filterProp.PrimitiveType == PrimitiveType.Bool || filterProp.PrimitiveType == PrimitiveType.Guid) {
+				} else if (filterProp.PrimitiveType?.Id == PrimitiveType.Int.Id || filterProp.PrimitiveType?.Id == PrimitiveType.Bool.Id || filterProp.PrimitiveType?.Id == PrimitiveType.Guid.Id) {
 					var indent = tc + 1;
 					if (filterProp.Nullable) {
 						output.AddLine(indent, $"if ({filterProp.FilterArgName}.HasValue)");

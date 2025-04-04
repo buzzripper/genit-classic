@@ -44,16 +44,16 @@ partial class EnumEditCtl
 		label1.AutoSize = true;
 		label1.Location = new System.Drawing.Point(46, 52);
 		label1.Name = "label1";
-		label1.Size = new System.Drawing.Size(46, 17);
+		label1.Size = new System.Drawing.Size(68, 28);
 		label1.TabIndex = 0;
 		label1.Text = "Name:";
 		// 
 		// txtName
 		// 
 		txtName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtName.Location = new System.Drawing.Point(115, 52);
+		txtName.Location = new System.Drawing.Point(159, 52);
 		txtName.Name = "txtName";
-		txtName.Size = new System.Drawing.Size(256, 25);
+		txtName.Size = new System.Drawing.Size(298, 33);
 		txtName.TabIndex = 3;
 		txtName.TextChanged += txtName_TextChanged;
 		// 
@@ -63,7 +63,7 @@ partial class EnumEditCtl
 		lblName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		lblName.Location = new System.Drawing.Point(0, 1);
 		lblName.Name = "lblName";
-		lblName.Size = new System.Drawing.Size(52, 21);
+		lblName.Size = new System.Drawing.Size(78, 32);
 		lblName.TabIndex = 4;
 		lblName.Text = "label2";
 		// 
@@ -72,7 +72,7 @@ partial class EnumEditCtl
 		label2.AutoSize = true;
 		label2.Location = new System.Drawing.Point(37, 96);
 		label2.Name = "label2";
-		label2.Size = new System.Drawing.Size(67, 17);
+		label2.Size = new System.Drawing.Size(98, 28);
 		label2.TabIndex = 5;
 		label2.Text = "Members:";
 		// 
@@ -81,17 +81,17 @@ partial class EnumEditCtl
 		slMembers.BackColor = System.Drawing.SystemColors.ControlDarkDark;
 		slMembers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		slMembers.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		slMembers.Location = new System.Drawing.Point(115, 96);
+		slMembers.Location = new System.Drawing.Point(159, 96);
 		slMembers.Name = "slMembers";
-		slMembers.Size = new System.Drawing.Size(256, 203);
+		slMembers.Size = new System.Drawing.Size(298, 203);
 		slMembers.TabIndex = 6;
 		// 
 		// txtNamespace
 		// 
 		txtNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtNamespace.Location = new System.Drawing.Point(115, 327);
+		txtNamespace.Location = new System.Drawing.Point(159, 327);
 		txtNamespace.Name = "txtNamespace";
-		txtNamespace.Size = new System.Drawing.Size(256, 25);
+		txtNamespace.Size = new System.Drawing.Size(298, 33);
 		txtNamespace.TabIndex = 8;
 		txtNamespace.TextChanged += txtNamespace_TextChanged;
 		// 
@@ -100,16 +100,16 @@ partial class EnumEditCtl
 		label3.AutoSize = true;
 		label3.Location = new System.Drawing.Point(29, 327);
 		label3.Name = "label3";
-		label3.Size = new System.Drawing.Size(80, 17);
+		label3.Size = new System.Drawing.Size(117, 28);
 		label3.TabIndex = 7;
 		label3.Text = "Namespace:";
 		// 
 		// ckbIsFlags
 		// 
 		ckbIsFlags.AutoSize = true;
-		ckbIsFlags.Location = new System.Drawing.Point(115, 381);
+		ckbIsFlags.Location = new System.Drawing.Point(116, 381);
 		ckbIsFlags.Name = "ckbIsFlags";
-		ckbIsFlags.Size = new System.Drawing.Size(57, 21);
+		ckbIsFlags.Size = new System.Drawing.Size(83, 32);
 		ckbIsFlags.TabIndex = 9;
 		ckbIsFlags.Text = "Flags";
 		ckbIsFlags.UseVisualStyleBackColor = true;
@@ -118,9 +118,9 @@ partial class EnumEditCtl
 		// ckbIsExternal
 		// 
 		ckbIsExternal.AutoSize = true;
-		ckbIsExternal.Location = new System.Drawing.Point(205, 381);
+		ckbIsExternal.Location = new System.Drawing.Point(250, 381);
 		ckbIsExternal.Name = "ckbIsExternal";
-		ckbIsExternal.Size = new System.Drawing.Size(73, 21);
+		ckbIsExternal.Size = new System.Drawing.Size(107, 32);
 		ckbIsExternal.TabIndex = 10;
 		ckbIsExternal.Text = "External";
 		ckbIsExternal.UseVisualStyleBackColor = true;
@@ -129,17 +129,17 @@ partial class EnumEditCtl
 		// ckbEnabled
 		// 
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(298, 381);
+		ckbEnabled.Location = new System.Drawing.Point(407, 381);
 		ckbEnabled.Name = "ckbEnabled";
-		ckbEnabled.Size = new System.Drawing.Size(73, 21);
+		ckbEnabled.Size = new System.Drawing.Size(108, 32);
 		ckbEnabled.TabIndex = 11;
-		ckbEnabled.Text = "External";
+		ckbEnabled.Text = "Enabled";
 		ckbEnabled.UseVisualStyleBackColor = true;
 		ckbEnabled.CheckedChanged += ckbEnabled_CheckedChanged;
 		// 
 		// EnumEditCtl
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+		AutoScaleDimensions = new System.Drawing.SizeF(11F, 28F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		Controls.Add(ckbEnabled);
 		Controls.Add(ckbIsExternal);
@@ -153,7 +153,7 @@ partial class EnumEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "EnumEditCtl";
-		Size = new System.Drawing.Size(468, 493);
+		Size = new System.Drawing.Size(664, 493);
 		ResumeLayout(false);
 		PerformLayout();
 	}

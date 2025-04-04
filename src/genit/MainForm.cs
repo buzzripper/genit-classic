@@ -11,6 +11,8 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
+
 
 namespace Dyvenix.Genit;
 
@@ -26,7 +28,6 @@ public partial class MainForm : Form
 
 	#region Fields
 
-	private bool _suspendUpdates;
 	private AppConfig _appConfig;
 	private int _outputHeight;
 
@@ -45,7 +46,7 @@ public partial class MainForm : Form
 		InitializeLayout(_appConfig);
 
 		// DEBUG
-		this.CurrDocFilepath = @"D:\Code\buzzripper\dyvenix\design\Model\DyvenixModel.gmdl";
+		this.CurrDocFilepath = @"D:\Code\buzzripper\dyvenix\design\Model\Dyv2.gmdl";
 		this.Doc = DocManager.LoadDoc(CurrDocFilepath);
 	}
 
@@ -72,40 +73,27 @@ public partial class MainForm : Form
 
 	private void InitializeLayout(AppConfig appConfig)
 	{
-		_suspendUpdates = true;
+		SetFormSizeAndPosition(appConfig.WindowSize, appConfig.WindowPosition);
+		this.SetState(GenitAppState.NoDoc);
+		_outputHeight = splContent.Height - splContent.SplitterDistance;
 
-		try {
-			SetFormSizeAndPosition(appConfig.WindowSize, appConfig.WindowPosition);
-			this.SetState(GenitAppState.NoDoc);
-			_outputHeight = splContent.Height - splContent.SplitterDistance;
+		// Clear any tabs
+		multiPageCtl.Clear();
 
-			// Clear any tabs
-			multiPageCtl.Clear();
-
-			UpdateMruFilesMenu(appConfig.MruFilepaths);
-
-		} finally {
-			_suspendUpdates = false;
-		}
+		UpdateMruFilesMenu(appConfig.MruFilepaths);
 	}
 
 	private void PopulateForm(Doc doc)
 	{
-		_suspendUpdates = true;
-		try {
-			if (doc == null) {
-				treeNav.Clear();
-				multiPageCtl.Clear();
-				return;
-			}
-
-			treeNav.DataSource = doc.DbContexts[0];
-			treeNav.EntityDeleted += TreeNav_OnEntityDeleted;
-			treeNav.EnumDeleted += TreeNav_OnEnumDeleted;
-
-		} finally {
-			_suspendUpdates = false;
+		if (doc == null) {
+			treeNav.Clear();
+			multiPageCtl.Clear();
+			return;
 		}
+
+		treeNav.DataSource = doc.DbContexts[0];
+		treeNav.EntityDeleted += TreeNav_OnEntityDeleted;
+		treeNav.EnumDeleted += TreeNav_OnEnumDeleted;
 	}
 
 	private void TreeNav_OnEntityDeleted(object sender, EntityDeletedEventArgs e)
@@ -214,18 +202,13 @@ public partial class MainForm : Form
 
 	private void SetState(GenitAppState state)
 	{
-		_suspendUpdates = true;
-		try {
-			switch (state) {
-				case GenitAppState.NoDoc:
-					SetStateNoDoc();
-					break;
-				default:
-					SetStateDocLoaded();
-					break;
-			}
-		} finally {
-			_suspendUpdates = false;
+		switch (state) {
+			case GenitAppState.NoDoc:
+				SetStateNoDoc();
+				break;
+			default:
+				SetStateDocLoaded();
+				break;
 		}
 	}
 
@@ -681,6 +664,11 @@ public partial class MainForm : Form
 	{
 		if (e.Control && e.KeyCode == Keys.S)
 			this.Save();
+	}
+
+	private void uiNew_Click(object sender, EventArgs e)
+	{
+		this.Doc = Doc.CreateNew();
 	}
 }
 

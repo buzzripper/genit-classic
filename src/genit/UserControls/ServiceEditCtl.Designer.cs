@@ -84,6 +84,7 @@ partial class ServiceEditCtl
 		ckbEnabled.TabIndex = 3;
 		ckbEnabled.Text = "Enabled";
 		ckbEnabled.UseVisualStyleBackColor = true;
+		ckbEnabled.CheckedChanged += ckbEnabled_CheckedChanged;
 		// 
 		// lkbAddlServiceUsings
 		// 

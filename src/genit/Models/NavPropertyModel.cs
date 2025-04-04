@@ -14,7 +14,6 @@ public class NavPropertyModel : INotifyPropertyChanged
 	#region Fields
 
 	private string _name;
-	private Guid? _assocId;
 	private int _displayOrder;
 	private AssocModel _assoc;
 
@@ -33,12 +32,6 @@ public class NavPropertyModel : INotifyPropertyChanged
 		this.Assoc = assoc;
 	}
 
-	public void InitializeOnLoad(AssocModel assocModel, EntityModel fkEntity)
-	{
-		this.Assoc = assocModel;
-		this.FKEntity = fkEntity;
-	}
-
 	#endregion
 
 	#region Properties
@@ -49,12 +42,6 @@ public class NavPropertyModel : INotifyPropertyChanged
 	{
 		get => _name;
 		set => SetProperty(ref _name, value);
-	}
-
-	public Guid? AssocId
-	{
-		get => _assocId;
-		set => SetProperty(ref _assocId, value);
 	}
 
 	public int DisplayOrder
@@ -70,19 +57,26 @@ public class NavPropertyModel : INotifyPropertyChanged
 		set => SetProperty(ref _attributes, value);
 	}
 
-	#endregion
-
-	#region Non-serialized Properties
-
-	[JsonIgnore]
 	public AssocModel Assoc
 	{
 		get { return _assoc; }
 		set {
-			_assocId = value?.Id;
 			SetProperty(ref _assoc, value);
 		}
 	}
+
+	public EntityModel FKEntity
+	{
+		get { return Assoc?.FKEntity; }
+		set {
+			if (Assoc != null)
+				Assoc.FKEntity = value;
+		}
+	}
+
+	#endregion
+
+	#region Non-serialized Properties
 
 	[JsonIgnore]
 	public Cardinality Cardinality
@@ -91,16 +85,6 @@ public class NavPropertyModel : INotifyPropertyChanged
 		set {
 			if (Assoc != null)
 				Assoc.Cardinality = value;
-		}
-	}
-
-	[JsonIgnore]
-	public EntityModel FKEntity
-	{
-		get { return Assoc?.FKEntity; }
-		set {
-			if (Assoc != null)
-				Assoc.FKEntity = value;
 		}
 	}
 

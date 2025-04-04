@@ -42,37 +42,6 @@ namespace Dyvenix.Genit.Models
 		{
 		}
 
-		//public AssocModel(Guid id, EntityModel primaryEntityMdl, string name, EntityModel relatedEntityMdl, string relatedPropertyName, CardinalityModel cardinality)
-		//{
-		// _suspendUpdates = true;
-		//	Id = id;
-		//	PrimaryEntity = primaryEntityMdl;
-		//	PrimaryEntityId = primaryEntityMdl.Id;
-		//	PrimaryPropertyName = name;
-		//	RelatedEntity = relatedEntityMdl;
-		//	RelatedEntityId = relatedEntityMdl.Id;
-		//	RelatedPropertyName = relatedPropertyName;
-		//	Cardinality = cardinality;
-
-		//	PrimaryPKType = primaryEntityMdl.Properties.FirstOrDefault(p => p.IsPrimaryKey)?.PrimitiveType;
-		// _suspendUpdates = false;
-		//}
-
-		public void InitializeOnLoad(EntityModel primaryEntityMdl, EntityModel fkEntity)
-		{
-			_suspendUpdates = true;
-
-			PrimaryEntity = primaryEntityMdl;
-			NavProperty = primaryEntityMdl.NavProperties.FirstOrDefault(np => np.Id == NavPropertyId);
-			if (NavProperty != null)
-				NavProperty.InitializeOnLoad(this, fkEntity);
-
-			FKEntity = fkEntity;
-			FKProperty = fkEntity.Properties.FirstOrDefault(p => p.Id == FKPropertyId);
-
-			_suspendUpdates = false;
-		}
-
 		#endregion
 
 		#region Properties 

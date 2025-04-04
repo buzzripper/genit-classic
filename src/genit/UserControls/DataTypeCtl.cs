@@ -89,8 +89,16 @@ public partial class DataTypeCtl : UserControlBase
 		if (!ReadOnly) {
 			if (primitiveType == null)
 				cmbItems.SelectedIndex = -1;
-			else
-				cmbItems.SelectedItem = cmbItems.Items.Cast<DataTypeItem>().FirstOrDefault(i => i.PrimitiveType == primitiveType);
+			else {
+				foreach(DataTypeItem item in cmbItems.Items) {
+					if (item.PrimitiveType == null)
+						continue;
+					if (item.PrimitiveType.Id == primitiveType.Id) {
+						cmbItems.SelectedItem = item;
+						break;
+					}
+				}
+			}
 		} else {
 			txtDatatypeName.Text = primitiveType?.CSType;
 		}

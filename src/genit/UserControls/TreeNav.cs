@@ -196,21 +196,6 @@ public partial class TreeNav : UserControl
 		_enumsNode.Expand();
 	}
 
-	//private void PopulateServices()
-	//{
-	//	_servicesNode.Nodes.Clear();
-	//	foreach (var svcMdl in _dbContextModel.Services) {
-	//		TreeNode svcNode = new TreeNode(svcMdl.EntityName) {
-	//			Name = svcMdl.Id.ToString(),
-	//			SelectedImageKey = cKey_Svcs,
-	//			ImageKey = cKey_Svcs,
-	//			Tag = svcMdl.Id
-	//		};
-	//		_servicesNode.Nodes.Add(svcNode);
-	//	}
-	//	_servicesNode.Expand();
-	//}
-
 	private void PopulateGenerators()
 	{
 		_generatorsNode.Nodes.Clear();
@@ -395,9 +380,9 @@ public partial class TreeNav : UserControl
 	private void AddNewEntity()
 	{
 		var newEntityName = GetUniqueName("NewEntity");
-		var newEntityMdl = new EntityModel(Guid.NewGuid()) {
-			Name = newEntityName
-		};
+		var newEntityMdl = EntityModel.CreateNew();
+		newEntityMdl.Name = newEntityName;
+
 		_dbContextModel.Entities.Add(newEntityMdl);
 
 		PopulateEntities();

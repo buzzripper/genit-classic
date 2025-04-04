@@ -18,7 +18,6 @@ public partial class PropGridRowCtl : UserControlBase
 
 	#endregion
 
-
 	#region Ctors / Init
 
 	public PropGridRowCtl()
@@ -55,8 +54,6 @@ public partial class PropGridRowCtl : UserControlBase
 		ckbIsIndexed.Checked = _propertyMdl.IsIndexed;
 		ckbIsIndexUnique.Checked = _propertyMdl.IsIndexUnique;
 		ckbIsIndexClustered.Checked = _propertyMdl.IsIndexClustered;
-
-		//_propertyMdl.PropertyChanged += PropMdl_PropertyChanged;
 
 		_suspendUpdates = false;
 		this.ResumeLayout();
@@ -184,7 +181,7 @@ public partial class PropGridRowCtl : UserControlBase
 
 	private void SetState_Name()
 	{
-		txtName.ReadOnly = _propertyMdl.IsForeignKey;
+		//txtName.ReadOnly = _propertyMdl.IsForeignKey;
 		if (_propertyMdl.IsForeignKey)
 			txtName.BackColor = Globals.DarkModeBackColor;
 	}

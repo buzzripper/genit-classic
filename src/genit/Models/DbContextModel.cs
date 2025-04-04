@@ -38,13 +38,6 @@ public class DbContextModel
 	public Guid Id { get; set; }
 	public string Name { get; set; }
 	public bool Enabled { get; set; }
-	public string ContextNamespace { get; set; }
-	public string EntitiesNamespace { get; set; }
-	public string EnumsNamespace { get; set; }
-	public string ServicesNamespace { get; set; }
-	public string QueriesNamespace { get; set; }
-	public string ControllersNamespace { get; set; }
-	public string ApiClientsNamespace { get; set; }
 	public ObservableCollection<string> AddlUsings { get; set; } = new ObservableCollection<string>();
 	public ObservableCollection<EntityModel> Entities { get; set; } = new ObservableCollection<EntityModel>();
 	public ObservableCollection<EnumModel> Enums { get; set; } = new ObservableCollection<EnumModel>();

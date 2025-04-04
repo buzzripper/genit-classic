@@ -22,7 +22,7 @@ internal class ServiceQueryGenerator
 	private const string cToken_QueryInclSorting = "QRY_INCL_SORTING";
 	private const string cToken_QueryInclPaging = "QRY_INCL_PAGING";
 
-	internal void GenerateQueryClass(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder, string queriesNamespace)
+	internal void GenerateQueryClass(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder)
 	{
 		foreach (var queryMethod in service.Methods.Where(m => m.UseQuery)) {
 			var className = $"{queryMethod.Name}Query";
@@ -58,7 +58,7 @@ internal class ServiceQueryGenerator
 			}
 
 			// Replace tokens in template
-			var fileContents = ReplaceQueryTemplateTokens(template, className, interfaceDecl, addlUsings, queriesNamespace, sortingSb.ToString(), pagingSb.ToString(), propsOutput);
+			var fileContents = ReplaceQueryTemplateTokens(template, className, interfaceDecl, addlUsings, serviceGen.QueriesNamespace, sortingSb.ToString(), pagingSb.ToString(), propsOutput);
 
 			var outputFile = Path.Combine(outputFolder, $"{className}.cs");
 			if (File.Exists(outputFile))

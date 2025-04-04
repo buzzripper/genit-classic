@@ -75,7 +75,7 @@ partial class EnumGenEditCtl
 		// ckbEnabled
 		// 
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(693, 13);
+		ckbEnabled.Location = new System.Drawing.Point(727, 12);
 		ckbEnabled.Name = "ckbEnabled";
 		ckbEnabled.Size = new System.Drawing.Size(76, 23);
 		ckbEnabled.TabIndex = 3;
@@ -87,7 +87,7 @@ partial class EnumGenEditCtl
 		// 
 		ckbInclHeader.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbInclHeader.AutoSize = true;
-		ckbInclHeader.Location = new System.Drawing.Point(553, 13);
+		ckbInclHeader.Location = new System.Drawing.Point(587, 12);
 		ckbInclHeader.Name = "ckbInclHeader";
 		ckbInclHeader.Size = new System.Drawing.Size(120, 23);
 		ckbInclHeader.TabIndex = 4;

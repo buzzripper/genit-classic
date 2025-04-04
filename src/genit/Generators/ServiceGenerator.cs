@@ -35,7 +35,7 @@ public class ServiceGenerator
 
 	#endregion
 
-	public void Run(ServiceGenModel svcGenModel, ObservableCollection<EntityModel> entities, string servicesNamespace, string queriesNamespace, string controllersNamespace, string entitiesNamespace, string apiClientsNamespace)
+	public void Run(ServiceGenModel svcGenModel, ObservableCollection<EntityModel> entities, string entitiesNamespace)
 	{
 		if (!svcGenModel.Enabled)
 			return;
@@ -67,16 +67,16 @@ public class ServiceGenerator
 		var apiClientEntities = new List<EntityModel>();
 		foreach (var entity in entities.Where(e => e.Service.Enabled)) {
 			// Generate service class
-			GenerateService(entity, svcGenModel, $"{serviceTemplate}", outputFolder, servicesNamespace, queriesNamespace);
+			GenerateService(entity, svcGenModel, $"{serviceTemplate}", outputFolder);
 
 			// Generate query classes
 			foreach (var queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
-				new ServiceQueryGenerator().GenerateQueryClass(entity.Service, svcGenModel, $"{queryTemplate}", queryOutputFolder, queriesNamespace);
+				new ServiceQueryGenerator().GenerateQueryClass(entity.Service, svcGenModel, $"{queryTemplate}", queryOutputFolder);
 
 			// Generate controller / client
 			if (entity.Service.InclController) { 
-				new ServiceControllerGenerator().GenerateController(entity, svcGenModel, $"{controllerTemplate}", controllersOutputFolder, controllersNamespace, servicesNamespace, queriesNamespace, entitiesNamespace);
-				new ApiClientGenerator().GenerateApiClient(entity, svcGenModel, $"{apiClientTemplate}", apiClientOutputFolder, apiClientsNamespace, queriesNamespace, entitiesNamespace);
+				new ServiceControllerGenerator().GenerateController(entity, svcGenModel, $"{controllerTemplate}", controllersOutputFolder, entitiesNamespace);
+				new ApiClientGenerator().GenerateApiClient(entity, svcGenModel, $"{apiClientTemplate}", apiClientOutputFolder, entitiesNamespace);
 				apiClientEntities.Add(entity);
 			}
 		}
@@ -97,13 +97,13 @@ public class ServiceGenerator
 
 	#region Services
 
-	private void GenerateService(EntityModel entity, ServiceGenModel serviceGen, string template, string outputFolder, string servicesNamespace, string queriesNamespace)
+	private void GenerateService(EntityModel entity, ServiceGenModel serviceGen, string template, string outputFolder)
 	{
 		var serviceName = $"{entity.Name}Service";
 
 		// Addl usings
 		var addlUsings = Utils.BuildAddlUsingsList(entity.Service.AddlServiceUsings);
-		addlUsings.AddIfNotExists(queriesNamespace);
+		addlUsings.AddIfNotExists(serviceGen.QueriesNamespace);
 
 		// Interface signatures
 		var interfaceOutput = new List<string>();
@@ -146,7 +146,7 @@ public class ServiceGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, servicesNamespace);
+		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ServicesNamespace);
 
 		var outputFile = Path.Combine(outputFolder, $"{serviceName}.cs");
 		if (File.Exists(outputFile))

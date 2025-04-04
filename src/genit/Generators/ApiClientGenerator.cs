@@ -25,13 +25,13 @@ internal class ApiClientGenerator
 	private const string cToken_ListMethods = "LIST_METHODS";
 	private const string cToken_QueryMethods = "QUERY_METHODS";
 
-	internal void GenerateApiClient(EntityModel entity, ServiceGenModel serviceGen, string template, string outputFolder, string apiClientsNamespace, string queriesNamespace, string entitiesNamespace)
+	internal void GenerateApiClient(EntityModel entity, ServiceGenModel serviceGen, string template, string outputFolder, string entitiesNamespace)
 	{
 		var apiClientName = $"{entity.Name}ApiClient";
 
 		// Addl usings
 		var addlUsings = Utils.BuildAddlUsingsList(entity.Service.AddlServiceUsings);
-		addlUsings.AddIfNotExists(queriesNamespace);
+		addlUsings.AddIfNotExists(serviceGen.QueriesNamespace);
 		addlUsings.AddIfNotExists(entitiesNamespace);
 
 		// Interface signatures
@@ -76,7 +76,7 @@ internal class ApiClientGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceServiceTemplateTokens(template, apiClientName, entity.Name, addlUsings, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, apiClientsNamespace);
+		var fileContents = ReplaceServiceTemplateTokens(template, apiClientName, entity.Name, addlUsings, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ApiClientsNamespace);
 
 		var outputFile = Path.Combine(outputFolder, $"{apiClientName}.cs");
 		if (File.Exists(outputFile))

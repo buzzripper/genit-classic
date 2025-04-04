@@ -30,7 +30,7 @@ public class DbContextGenerator
 
 	#endregion
 
-	public void Run(DbContextGenModel genModel, DbContextModel dbContextModel)
+	public void Run(DbContextGenModel genModel, DbContextModel dbContextModel, string entitiesNamespace)
 	{
 		if (!genModel.Enabled)
 			return;
@@ -39,10 +39,10 @@ public class DbContextGenerator
 		var templateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.TemplateFilepath);
 		var outputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.OutputFolder);
 
-		Validate(outputFolder, templateFilepath, dbContextModel);
+		Validate(outputFolder, templateFilepath, genModel, dbContextModel, entitiesNamespace);
 
 		// Addl usings
-		var usings = BuildAddlUsings(dbContextModel);
+		var usings = BuildAddlUsings(dbContextModel, entitiesNamespace);
 
 		// Properties
 		var propsList = GenerateProperties(dbContextModel.Entities);
@@ -51,7 +51,7 @@ public class DbContextGenerator
 		var onModelCreatingList = GenerateOnModelCreating(dbContextModel.Entities);
 
 		// Replace tokens in template
-		var fileContents = ReplaceTemplateTokens(templateFilepath, dbContextModel, usings, propsList, onModelCreatingList);
+		var fileContents = ReplaceTemplateTokens(templateFilepath, dbContextModel, genModel, usings, propsList, onModelCreatingList);
 
 		// Write to file
 		var outputFilepath = Path.Combine(outputFolder, $"{dbContextModel.Name}.cs");
@@ -60,7 +60,7 @@ public class DbContextGenerator
 		File.WriteAllText(outputFilepath, fileContents);
 	}
 
-	private void Validate(string outputFolder, string templateFilepath, DbContextModel dbContextModel)
+	private void Validate(string outputFolder, string templateFilepath, DbContextGenModel genModel, DbContextModel dbContextModel, string entitiesNamespace)
 	{
 		if (!File.Exists(templateFilepath))
 			throw new ApplicationException($"Template file does not exist: {templateFilepath}");
@@ -68,22 +68,22 @@ public class DbContextGenerator
 		if (!Directory.Exists(outputFolder))
 			throw new ApplicationException($"OutputRootFolder does not exist: {outputFolder}");
 
-		if (string.IsNullOrWhiteSpace(dbContextModel.ContextNamespace))
+		if (string.IsNullOrWhiteSpace(genModel.ContextNamespace))
 			throw new ApplicationException($"ContextNamespace not set on db context");
 
-		if (string.IsNullOrWhiteSpace(dbContextModel.EntitiesNamespace))
+		if (string.IsNullOrWhiteSpace(entitiesNamespace))
 			throw new ApplicationException($"EntitiesNamespace not set on db context");
 
 		if (!dbContextModel.Entities.Any())
 			throw new ApplicationException($"No entities found in DbContext.");
 	}
 
-	private List<string> BuildAddlUsings(DbContextModel dbContextMdl)
+	private List<string> BuildAddlUsings(DbContextModel dbContextMdl, string entitiesNamespace)
 	{
 		var usings = new List<string>();
 
 		dbContextMdl.AddlUsings?.ToList().ForEach(u => usings.Add(u));
-		usings.Add(dbContextMdl.EntitiesNamespace);
+		usings.Add(entitiesNamespace);
 
 		return usings;
 	}
@@ -193,7 +193,7 @@ public class DbContextGenerator
 		outList.AddLine();
 	}
 
-	private string ReplaceTemplateTokens(string templateFilepath, DbContextModel dbContextModel, List<string> usings, List<string> propsList, List<string> onModelCreatingList)
+	private string ReplaceTemplateTokens(string templateFilepath, DbContextModel dbContextModel, DbContextGenModel genModel, List<string> usings, List<string> propsList, List<string> onModelCreatingList)
 	{
 		var template = File.ReadAllText(templateFilepath);
 
@@ -209,7 +209,7 @@ public class DbContextGenerator
 		usings.ForEach(x => sb.AppendLine($"using {x};"));
 		template = template.Replace(Utils.FmtToken(cToken_AddlUsings), sb.ToString());
 
-		template = template.Replace(Utils.FmtToken(cToken_ContextNs), dbContextModel.ContextNamespace);
+		template = template.Replace(Utils.FmtToken(cToken_ContextNs), genModel.ContextNamespace);
 		template = template.Replace(Utils.FmtToken(cToken_DbContextName), dbContextModel.Name);
 
 

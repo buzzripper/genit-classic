@@ -179,7 +179,7 @@ partial class DbCtxGenEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "DbCtxGenEditCtl";
-		Size = new System.Drawing.Size(726, 282);
+		Size = new System.Drawing.Size(726, 218);
 		Load += DbCtxGenEditCtl_Load;
 		ResumeLayout(false);
 		PerformLayout();

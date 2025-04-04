@@ -29,13 +29,6 @@ public partial class DbContextEditCtl : UserControlBase
 		_dbContextMdl = dbContextMdl;
 
 		txtName.Text = dbContextMdl.Name;
-		txtContextNamespace.Text = dbContextMdl.ContextNamespace;
-		txtEntitiesNamespace.Text = dbContextMdl.EntitiesNamespace;
-		txtEnumsNamespace.Text = dbContextMdl.EnumsNamespace;
-		txtServicesNamespace.Text = dbContextMdl.ServicesNamespace;
-		txtQueriesNamespace.Text = dbContextMdl.QueriesNamespace;
-		txtControllersNamespace.Text = dbContextMdl.ControllersNamespace;
-		txtApiClientsNamespace.Text = dbContextMdl.ApiClientsNamespace;
 
 		stringListEditor1.Items = dbContextMdl.AddlUsings;
 
@@ -60,47 +53,5 @@ public partial class DbContextEditCtl : UserControlBase
 	{
 		if (!_suspendUpdates)
 			_dbContextMdl.Name = txtName.Text;
-	}
-
-	private void txtContextNamespace_TextChanged(object sender, System.EventArgs e)
-	{
-		if (!_suspendUpdates)
-			_dbContextMdl.ContextNamespace = txtContextNamespace.Text;
-	}
-
-	private void txtEntitiesNamespace_TextChanged(object sender, System.EventArgs e)
-	{
-		if (!_suspendUpdates)
-			_dbContextMdl.EntitiesNamespace = txtEntitiesNamespace.Text;
-	}
-
-	private void txtEnumsNamespace_TextChanged(object sender, System.EventArgs e)
-	{
-		if (!_suspendUpdates)
-			_dbContextMdl.EnumsNamespace = txtEnumsNamespace.Text;
-	}
-
-	private void txtServicesNamespace_TextChanged(object sender, System.EventArgs e)
-	{
-		if (!_suspendUpdates)
-			_dbContextMdl.ServicesNamespace = txtServicesNamespace.Text;
-	}
-
-	private void txtQueriesNamespace_TextChanged(object sender, System.EventArgs e)
-	{
-		if (!_suspendUpdates)
-			_dbContextMdl.QueriesNamespace = txtQueriesNamespace.Text;
-	}
-
-	private void txtControllersNamespace_TextChanged(object sender, System.EventArgs e)
-	{
-		if (!_suspendUpdates)
-			_dbContextMdl.ControllersNamespace = txtControllersNamespace.Text;
-	}
-
-	private void txtApiClientsNamespace_TextChanged(object sender, System.EventArgs e)
-	{
-		if (!_suspendUpdates)
-			_dbContextMdl.ApiClientsNamespace = txtApiClientsNamespace.Text;
 	}
 }

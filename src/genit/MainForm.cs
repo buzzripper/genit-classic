@@ -412,7 +412,7 @@ public partial class MainForm : Form
 				throw new ApplicationException("DbContext generator not found.");
 			if (dbContextGenMdl.Enabled) {
 				outputCtl.WriteInfo("Running DbContext generator...");
-				new DbContextGenerator().Run(dbContextGenMdl, dbContextMdl);
+				new DbContextGenerator().Run(dbContextGenMdl, dbContextMdl, dbContextMdl.EntityGen.EntitiesNamespace);
 			}
 
 			// Entities
@@ -422,7 +422,7 @@ public partial class MainForm : Form
 			if (entityGenMdl.Enabled) {
 				var entityGenerator = new EntityGenerator();
 				outputCtl.WriteInfo("Running Entities generator...");
-				entityGenerator.Run(entityGenMdl, dbContextMdl.Entities, dbContextMdl.EntitiesNamespace);
+				entityGenerator.Run(entityGenMdl, dbContextMdl.Entities, entityGenMdl.EntitiesNamespace);
 			}
 
 			// Enums
@@ -432,7 +432,7 @@ public partial class MainForm : Form
 			if (enumGenMdl.Enabled) {
 				var enumGenerator = new EnumGenerator();
 				outputCtl.WriteInfo("Running Entities generator...");
-				enumGenerator.Run(enumGenMdl, dbContextMdl.Enums, dbContextMdl.EnumsNamespace);
+				enumGenerator.Run(enumGenMdl, dbContextMdl.Enums, enumGenMdl.EnumsNamespace);
 			}
 
 			// Services
@@ -442,7 +442,7 @@ public partial class MainForm : Form
 			if (svcGenMdl.Enabled) {
 				var svcGenerator = new ServiceGenerator();
 				outputCtl.WriteInfo("Running Services generator...");
-				svcGenerator.Run(svcGenMdl, dbContextMdl.Entities, dbContextMdl.ServicesNamespace, dbContextMdl.QueriesNamespace, dbContextMdl.ControllersNamespace, dbContextMdl.EntitiesNamespace, dbContextMdl.ApiClientsNamespace);
+				svcGenerator.Run(svcGenMdl, dbContextMdl.Entities, entityGenMdl.EntitiesNamespace);
 			}
 
 			ShowSuccessDlg("Files generated.");

@@ -26,7 +26,7 @@ internal class ServiceControllerGenerator
 	private const string cToken_ListMethods = "LIST_METHODS";
 	private const string cToken_QueryMethods = "QUERY_METHODS";
 
-	internal void GenerateController(EntityModel entity, ServiceGenModel serviceGen, string template, string outputFolder, string controllersNamespace, string servicesNamespace, string queriesNamespace, string entitiesNamespace)
+	internal void GenerateController(EntityModel entity, ServiceGenModel serviceGen, string template, string outputFolder, string entitiesNamespace)
 	{
 		var controllerName = $"{entity.Name}Controller";
 		var serviceName = $"{entity.Name}Service";
@@ -34,8 +34,8 @@ internal class ServiceControllerGenerator
 
 		// Addl usings
 		var addlUsings = Utils.BuildAddlUsingsList(entity.Service.AddlControllerUsings);
-		addlUsings.AddIfNotExists(servicesNamespace);
-		addlUsings.AddIfNotExists(queriesNamespace);
+		addlUsings.AddIfNotExists(serviceGen.ServicesNamespace);
+		addlUsings.AddIfNotExists(serviceGen.QueriesNamespace);
 		addlUsings.AddIfNotExists(entitiesNamespace);
 
 		// Attributes
@@ -71,7 +71,7 @@ internal class ServiceControllerGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, entity.Service.ControllerVersion, controllersNamespace, controllerName, serviceName, serviceVarName, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput);
+		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, entity.Service.ControllerVersion, serviceGen.ControllersNamespace, controllerName, serviceName, serviceVarName, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput);
 
 		var outputFile = Path.Combine(outputFolder, $"{controllerName}.cs");
 		if (File.Exists(outputFile))

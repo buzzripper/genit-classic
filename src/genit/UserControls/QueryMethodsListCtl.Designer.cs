@@ -45,14 +45,11 @@ partial class QueryMethodsListCtl
 		bindingSrc = new System.Windows.Forms.BindingSource(components);
 		splMain = new System.Windows.Forms.SplitContainer();
 		splProperties = new System.Windows.Forms.SplitContainer();
-		pnlFilterPropsHeader = new System.Windows.Forms.Panel();
-		label1 = new System.Windows.Forms.Label();
-		clbFilterProperties = new System.Windows.Forms.CheckedListBox();
-		splDtoProps = new System.Windows.Forms.SplitContainer();
 		clbDtoProperties = new System.Windows.Forms.CheckedListBox();
 		pnlDtoPropsHeader = new System.Windows.Forms.Panel();
 		ckbAllDtoProperties = new System.Windows.Forms.CheckBox();
 		label2 = new System.Windows.Forms.Label();
+		filterPropsEditCtl1 = new FilterPropsEditCtl();
 		toolStrip1.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)grdQueries).BeginInit();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).BeginInit();
@@ -64,10 +61,6 @@ partial class QueryMethodsListCtl
 		splProperties.Panel1.SuspendLayout();
 		splProperties.Panel2.SuspendLayout();
 		splProperties.SuspendLayout();
-		pnlFilterPropsHeader.SuspendLayout();
-		((System.ComponentModel.ISupportInitialize)splDtoProps).BeginInit();
-		splDtoProps.Panel1.SuspendLayout();
-		splDtoProps.SuspendLayout();
 		pnlDtoPropsHeader.SuspendLayout();
 		SuspendLayout();
 		// 
@@ -229,60 +222,16 @@ partial class QueryMethodsListCtl
 		// 
 		// splProperties.Panel1
 		// 
-		splProperties.Panel1.Controls.Add(pnlFilterPropsHeader);
-		splProperties.Panel1.Controls.Add(clbFilterProperties);
+		splProperties.Panel1.Controls.Add(filterPropsEditCtl1);
 		// 
 		// splProperties.Panel2
 		// 
-		splProperties.Panel2.Controls.Add(splDtoProps);
+		splProperties.Panel2.Controls.Add(clbDtoProperties);
 		splProperties.Panel2.Controls.Add(pnlDtoPropsHeader);
 		splProperties.Size = new System.Drawing.Size(838, 571);
-		splProperties.SplitterDistance = 297;
+		splProperties.SplitterDistance = 476;
 		splProperties.SplitterWidth = 8;
 		splProperties.TabIndex = 3;
-		// 
-		// pnlFilterPropsHeader
-		// 
-		pnlFilterPropsHeader.Controls.Add(label1);
-		pnlFilterPropsHeader.Dock = System.Windows.Forms.DockStyle.Top;
-		pnlFilterPropsHeader.Location = new System.Drawing.Point(0, 0);
-		pnlFilterPropsHeader.Name = "pnlFilterPropsHeader";
-		pnlFilterPropsHeader.Size = new System.Drawing.Size(297, 42);
-		pnlFilterPropsHeader.TabIndex = 1;
-		// 
-		// label1
-		// 
-		label1.AutoSize = true;
-		label1.Location = new System.Drawing.Point(5, 1);
-		label1.Name = "label1";
-		label1.Size = new System.Drawing.Size(150, 28);
-		label1.TabIndex = 0;
-		label1.Text = "Filter Properties";
-		// 
-		// clbFilterProperties
-		// 
-		clbFilterProperties.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		clbFilterProperties.FormattingEnabled = true;
-		clbFilterProperties.IntegralHeight = false;
-		clbFilterProperties.Location = new System.Drawing.Point(-2, 42);
-		clbFilterProperties.Name = "clbFilterProperties";
-		clbFilterProperties.Size = new System.Drawing.Size(291, 405);
-		clbFilterProperties.TabIndex = 0;
-		clbFilterProperties.ItemCheck += clbFilterProperties_ItemCheck;
-		// 
-		// splDtoProps
-		// 
-		splDtoProps.Dock = System.Windows.Forms.DockStyle.Fill;
-		splDtoProps.Location = new System.Drawing.Point(0, 42);
-		splDtoProps.Name = "splDtoProps";
-		// 
-		// splDtoProps.Panel1
-		// 
-		splDtoProps.Panel1.Controls.Add(clbDtoProperties);
-		splDtoProps.Size = new System.Drawing.Size(533, 529);
-		splDtoProps.SplitterDistance = 280;
-		splDtoProps.SplitterWidth = 8;
-		splDtoProps.TabIndex = 4;
 		// 
 		// clbDtoProperties
 		// 
@@ -290,9 +239,9 @@ partial class QueryMethodsListCtl
 		clbDtoProperties.Dock = System.Windows.Forms.DockStyle.Fill;
 		clbDtoProperties.FormattingEnabled = true;
 		clbDtoProperties.IntegralHeight = false;
-		clbDtoProperties.Location = new System.Drawing.Point(0, 0);
+		clbDtoProperties.Location = new System.Drawing.Point(0, 42);
 		clbDtoProperties.Name = "clbDtoProperties";
-		clbDtoProperties.Size = new System.Drawing.Size(280, 529);
+		clbDtoProperties.Size = new System.Drawing.Size(354, 529);
 		clbDtoProperties.TabIndex = 2;
 		// 
 		// pnlDtoPropsHeader
@@ -302,7 +251,7 @@ partial class QueryMethodsListCtl
 		pnlDtoPropsHeader.Dock = System.Windows.Forms.DockStyle.Top;
 		pnlDtoPropsHeader.Location = new System.Drawing.Point(0, 0);
 		pnlDtoPropsHeader.Name = "pnlDtoPropsHeader";
-		pnlDtoPropsHeader.Size = new System.Drawing.Size(533, 42);
+		pnlDtoPropsHeader.Size = new System.Drawing.Size(354, 42);
 		pnlDtoPropsHeader.TabIndex = 3;
 		// 
 		// ckbAllDtoProperties
@@ -323,6 +272,15 @@ partial class QueryMethodsListCtl
 		label2.Size = new System.Drawing.Size(143, 28);
 		label2.TabIndex = 0;
 		label2.Text = "DTO Properties";
+		// 
+		// filterPropsEditCtl1
+		// 
+		filterPropsEditCtl1.Dock = System.Windows.Forms.DockStyle.Fill;
+		filterPropsEditCtl1.Location = new System.Drawing.Point(0, 0);
+		filterPropsEditCtl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+		filterPropsEditCtl1.Name = "filterPropsEditCtl1";
+		filterPropsEditCtl1.Size = new System.Drawing.Size(476, 571);
+		filterPropsEditCtl1.TabIndex = 0;
 		// 
 		// QueryMethodsListCtl
 		// 
@@ -348,11 +306,6 @@ partial class QueryMethodsListCtl
 		splProperties.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splProperties).EndInit();
 		splProperties.ResumeLayout(false);
-		pnlFilterPropsHeader.ResumeLayout(false);
-		pnlFilterPropsHeader.PerformLayout();
-		splDtoProps.Panel1.ResumeLayout(false);
-		((System.ComponentModel.ISupportInitialize)splDtoProps).EndInit();
-		splDtoProps.ResumeLayout(false);
 		pnlDtoPropsHeader.ResumeLayout(false);
 		pnlDtoPropsHeader.PerformLayout();
 		ResumeLayout(false);
@@ -366,7 +319,6 @@ partial class QueryMethodsListCtl
 	private System.Windows.Forms.BindingSource bindingSrc;
 	private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 	private System.Windows.Forms.SplitContainer splMain;
-	private System.Windows.Forms.CheckedListBox clbFilterProperties;
 	private System.Windows.Forms.ToolStrip toolStrip2;
 	private System.Windows.Forms.ToolStripLabel toolStripLabel2;
 	private System.Windows.Forms.ToolStripSplitButton toolStripSplitButton1;
@@ -374,17 +326,15 @@ partial class QueryMethodsListCtl
 	private System.Windows.Forms.ToolStripMenuItem selectDTOToolStripMenuItem;
 	private System.Windows.Forms.SplitContainer splitContainer1;
 	private System.Windows.Forms.SplitContainer splProperties;
-	private System.Windows.Forms.Panel pnlFilterPropsHeader;
-	private System.Windows.Forms.Label label1;
 	private System.Windows.Forms.Panel pnlDtoPropsHeader;
 	private System.Windows.Forms.CheckBox ckbAllDtoProperties;
 	private System.Windows.Forms.Label label2;
 	private System.Windows.Forms.CheckedListBox clbDtoProperties;
-	private System.Windows.Forms.SplitContainer splDtoProps;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colInclSorting;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colInclPaging;
 	private System.Windows.Forms.DataGridViewLinkColumn colAttrs;
 	private System.Windows.Forms.DataGridViewImageColumn colDelete;
+	private FilterPropsEditCtl filterPropsEditCtl1;
 }

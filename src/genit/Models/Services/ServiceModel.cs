@@ -10,6 +10,23 @@ namespace Dyvenix.Genit.Models.Services;
 
 public class ServiceModel : INotifyPropertyChanged
 {
+	#region Static
+
+	public static ServiceModel CreateNew(Guid id, EntityModel entity)
+	{
+		return new ServiceModel() {
+			Id = id,
+			Entity = entity,
+			InclCreate = true,
+			InclUpdate = true,
+			InclDelete = true,
+			ControllerVersion = "1.0",
+			Enabled = true
+		};
+	}
+
+	#endregion
+
 	#region Fields
 
 	private bool _inclCreate;
@@ -27,21 +44,6 @@ public class ServiceModel : INotifyPropertyChanged
 	#endregion
 
 	#region Ctors / Initialization
-
-	[JsonConstructor]
-	public ServiceModel()
-	{
-	}
-
-	public ServiceModel(Guid id, EntityModel entity)
-	{
-		_suspendUpdates = true;
-
-		Id = id;
-		this.Entity = entity;
-
-		_suspendUpdates = false;
-	}
 
 	#endregion
 

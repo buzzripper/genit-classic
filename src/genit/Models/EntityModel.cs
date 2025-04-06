@@ -20,7 +20,7 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 			PrimitiveType = PrimitiveType.Guid,
 			IsPrimaryKey = true,
 			IsIndexed = true,
-			IsIndexUnique = true
+			IsIndexUnique = true,
 		};
 
 		var entityModel = new EntityModel(Guid.NewGuid()) {
@@ -28,6 +28,7 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 		};
 
 		entityModel.Properties.Add(idProperty);
+		entityModel.Service = ServiceModel.CreateNew(Guid.NewGuid(), entityModel);
 
 		return entityModel;
 	}
@@ -116,7 +117,7 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 
 	public ObservableCollection<string> AddlUsings { get; set; } = new ObservableCollection<string>();
 
-	public ServiceModel Service { get; set; } = new ServiceModel();
+	public ServiceModel Service { get; set; }
 
 	private void NavProperties_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{

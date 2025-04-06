@@ -159,9 +159,9 @@ internal class ServiceControllerGenerator
 		var filterRoute =  string.Empty;
 		var filterParams = string.Empty;
 		if (method.FilterProperties.Count > 0) {
-			filterArg = method.FilterProperties[0].FilterArgName;
+			filterArg = method.FilterProperties[0].Property.FilterArgName;
 			filterRoute =  $"/{{{filterArg}}}";
-			filterParams = $"{method.FilterProperties[0].DatatypeName} {method.FilterProperties[0].FilterArgName}";
+			filterParams = $"{method.FilterProperties[0].Property.DatatypeName} {method.FilterProperties[0].Property.FilterArgName}";
 		}
 
 		output.AddLine(tc, $"[HttpGet, Route(\"[action]{filterRoute}\")]");
@@ -188,7 +188,7 @@ internal class ServiceControllerGenerator
 		// Route attribute
 		StringBuilder sbRoute = new StringBuilder();
 		foreach (var filterProp in method.FilterProperties)
-			sbRoute.Append($"/{{{filterProp.FilterArgName}}}");
+			sbRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
 		if (method.InclPaging)
 			sbRoute.Append($"/{{pageSize}}/{{pageOffset}}");
 
@@ -197,7 +197,7 @@ internal class ServiceControllerGenerator
 		foreach (var filterProp in method.FilterProperties) {
 			if (sbArgs.Length > 0)
 				sbArgs.Append(", ");
-			sbArgs.Append($"{filterProp.DatatypeName} {filterProp.FilterArgName}");
+			sbArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
 		}
 		if (method.InclPaging) {
 			if (sbArgs.Length > 0)
@@ -210,7 +210,7 @@ internal class ServiceControllerGenerator
 		foreach (var filterProp in method.FilterProperties) {
 			if (sbVars.Length > 0)
 				sbVars.Append(", ");
-			sbVars.Append(filterProp.FilterArgName);
+			sbVars.Append(filterProp.Property.FilterArgName);
 		}
 		if (method.InclPaging) {
 			if (sbVars.Length > 0)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,6 +10,17 @@ namespace Dyvenix.Genit.Models.Services;
 
 public class ServiceMethodModel : INotifyPropertyChanged
 {
+	public static ServiceMethodModel CreateNew(Guid id, string name)
+	{
+		return new ServiceMethodModel() {
+			Id = id,
+			Name = name,
+			InclSorting = false,
+			InclPaging = false,
+			UseQuery = false
+		};
+	}
+	
 	public event PropertyChangedEventHandler PropertyChanged;
 
 	#region Fields
@@ -20,7 +30,7 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	private bool _inclPaging;
 	private bool _useQuery;
 	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
-	private ObservableCollection<PropertyModel> _filterProperties = new ObservableCollection<PropertyModel>();
+	private ObservableCollection<FilterPropertyModel> _filterProperties = new ObservableCollection<FilterPropertyModel>();
 	private ObservableCollection<NavPropertyModel> _inclNavProperties = new ObservableCollection<NavPropertyModel>();
 	
 	protected bool _suspendUpdates;
@@ -32,11 +42,6 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	[JsonConstructor]
 	public ServiceMethodModel()
 	{
-	}
-
-	public ServiceMethodModel(Guid id) : this()
-	{
-		this.Id = id;
 	}
 
 	#endregion
@@ -76,7 +81,7 @@ public class ServiceMethodModel : INotifyPropertyChanged
 		set => SetProperty(ref _useQuery, value);
 	}
 
-	public ObservableCollection<PropertyModel> FilterProperties
+	public ObservableCollection<FilterPropertyModel> FilterProperties
 	{
 		get => _filterProperties;
 		set => SetProperty(ref _filterProperties, value);
@@ -96,7 +101,7 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	public int AttrCount => this.Attributes.Count;
 
 	[JsonIgnore]
-	public bool IsList => !this.FilterProperties.Any() || this.FilterProperties.Any(fp => !fp.IsPrimaryKey && !fp.IsIndexUnique);
+	public bool IsList => !this.FilterProperties.Any() || this.FilterProperties.Any(fp => !fp.Property.IsPrimaryKey && !fp.Property.IsIndexUnique);
 
 	#endregion
 

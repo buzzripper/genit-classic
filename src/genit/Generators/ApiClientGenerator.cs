@@ -155,8 +155,8 @@ internal class ApiClientGenerator
 			if (c++ > 0) {
 				sbSigParams.Append(", ");
 			}
-			sbSigParams.Append($"{filterProp.DatatypeName} {filterProp.FilterArgName}");
-			sbFilterRoute.Append($"/{{{filterProp.FilterArgName}}}");
+			sbSigParams.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
+			sbFilterRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
 		}
 		if (method.InclPaging) {
 			if (sbSigParams.Length > 0) {

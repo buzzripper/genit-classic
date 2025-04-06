@@ -5,9 +5,27 @@ namespace Dyvenix.Genit.Models.Generators;
 
 public class ServiceGenModel : GenModelBase
 {
+	#region Static
+
+	public static ServiceGenModel CreateNew()
+	{
+		return new ServiceGenModel(Guid.NewGuid()) {
+			Enabled = true,
+			InclHeader = true
+		};
+	}
+
+	#endregion
+
+	#region Ctors / Init
+
 	public ServiceGenModel(Guid id) : base(id, GeneratorType.Service)
 	{
 	}
+
+	#endregion
+
+	#region Properties
 
 	public string OutputFolder { get; set; }
 	public string QueryTemplateFilepath { get; set; }
@@ -24,4 +42,6 @@ public class ServiceGenModel : GenModelBase
 	public string ApiClientsNamespace { get; set; }
 
 	protected override string GetName() => "Service Generator";
+
+	#endregion
 }

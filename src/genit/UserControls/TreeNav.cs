@@ -15,7 +15,7 @@ public partial class TreeNav : UserControl
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityModelSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntitiesNodeSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumModelSelected;
-	//public event EventHandler<NavTreeNodeSelectedEventArgs> ServiceModelSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> GeneratorsModelSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> DbContextGenSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityGenSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumGenSelected;
@@ -132,7 +132,7 @@ public partial class TreeNav : UserControl
 		TreeNode generatorsNode = new TreeNode(cNodeName_Gen) {
 			SelectedImageKey = cKey_Gens,
 			ImageKey = cKey_Gens,
-			Tag = Guid.NewGuid()
+			Tag = _dbContextModel.Generators.Id
 		};
 
 		treeView1.Nodes.Add(generatorsNode);
@@ -141,27 +141,12 @@ public partial class TreeNav : UserControl
 		return generatorsNode;
 	}
 
-	//private TreeNode BuildServicesNode()
-	//{
-	//	TreeNode svcsNode = new TreeNode(cNodeName_Svcs) {
-	//		SelectedImageKey = cKey_Svcs,
-	//		ImageKey = cKey_Svcs,
-	//		Tag = Guid.NewGuid()
-	//	};
-
-	//	treeView1.Nodes.Add(svcsNode);
-	//	svcsNode.Collapse();
-
-	//	return svcsNode;
-	//}
-
 	#region Populate methods
 
 	private void Populate()
 	{
 		PopulateEntities();
 		PopulateEnums();
-		//PopulateServices();
 		PopulateGenerators();
 	}
 
@@ -200,7 +185,7 @@ public partial class TreeNav : UserControl
 	{
 		_generatorsNode.Nodes.Clear();
 
-		var dbGenMdl = _dbContextModel.DbContextGen;
+		var dbGenMdl = _dbContextModel.Generators.DbContextGen;
 		TreeNode genNode = new TreeNode(dbGenMdl.Name) {
 			Name = dbGenMdl.Id.ToString(),
 			SelectedImageKey = cKey_Gen,
@@ -211,7 +196,7 @@ public partial class TreeNav : UserControl
 		_dbCtxGenNode = genNode;
 		_generatorsNode.Nodes.Add(_dbCtxGenNode);
 
-		var entityGenMdl = _dbContextModel.EntityGen;
+		var entityGenMdl = _dbContextModel.Generators.EntityGen;
 		TreeNode entityGenNode = new TreeNode(entityGenMdl.Name) {
 			Name = entityGenMdl.Id.ToString(),
 			SelectedImageKey = cKey_Gen,
@@ -222,7 +207,7 @@ public partial class TreeNav : UserControl
 		_entityGenNode = entityGenNode;
 		_generatorsNode.Nodes.Add(_entityGenNode);
 
-		var enumGenMdl = _dbContextModel.EnumGen;
+		var enumGenMdl = _dbContextModel.Generators.EnumGen;
 		TreeNode enumGenNode = new TreeNode(enumGenMdl.Name) {
 			Name = enumGenMdl.Id.ToString(),
 			SelectedImageKey = cKey_Gen,
@@ -233,7 +218,7 @@ public partial class TreeNav : UserControl
 		_enumGenNode = enumGenNode;
 		_generatorsNode.Nodes.Add(_enumGenNode);
 
-		var servicesGenMdl = _dbContextModel.ServiceGen;
+		var servicesGenMdl = _dbContextModel.Generators.ServiceGen;
 		TreeNode svcGenNode = new TreeNode(servicesGenMdl.Name) {
 			Name = servicesGenMdl.Id.ToString(),
 			SelectedImageKey = cKey_Gen,
@@ -282,8 +267,8 @@ public partial class TreeNav : UserControl
 		} else if (e.Node.Parent == _enumsNode) {
 			EnumModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
-			//} else if (e.Node.Parent == _servicesNode) {
-			//	ServiceModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+		} else if (e.Node == _generatorsNode) {
+			GeneratorsModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
 		} else if (e.Node == _dbCtxGenNode) {
 			DbContextGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));

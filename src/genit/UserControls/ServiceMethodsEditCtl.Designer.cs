@@ -28,8 +28,8 @@ partial class ServiceMethodsEditCtl
 	private void InitializeComponent()
 	{
 		components = new System.ComponentModel.Container();
-		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ServiceMethodsEditCtl));
 		splMain = new System.Windows.Forms.SplitContainer();
 		grdMethods = new System.Windows.Forms.DataGridView();
@@ -44,8 +44,7 @@ partial class ServiceMethodsEditCtl
 		btnAdd = new System.Windows.Forms.ToolStripButton();
 		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 		splLists = new System.Windows.Forms.SplitContainer();
-		lbxFilterProperties = new System.Windows.Forms.ListBox();
-		lblFilterProperties = new System.Windows.Forms.Label();
+		filterPropsCtl = new FilterPropsEditCtl();
 		lbxNavProperties = new System.Windows.Forms.ListBox();
 		lblInclNavProps = new System.Windows.Forms.Label();
 		bindingSrc = new System.Windows.Forms.BindingSource(components);
@@ -78,8 +77,8 @@ partial class ServiceMethodsEditCtl
 		// 
 		splMain.Panel2.Controls.Add(splLists);
 		splMain.Size = new System.Drawing.Size(1421, 612);
-		splMain.SplitterDistance = 862;
-		splMain.SplitterWidth = 8;
+		splMain.SplitterDistance = 861;
+		splMain.SplitterWidth = 9;
 		splMain.TabIndex = 0;
 		// 
 		// grdMethods
@@ -98,7 +97,7 @@ partial class ServiceMethodsEditCtl
 		grdMethods.RowHeadersWidth = 62;
 		grdMethods.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdMethods.ShowEditingIcon = false;
-		grdMethods.Size = new System.Drawing.Size(862, 579);
+		grdMethods.Size = new System.Drawing.Size(861, 579);
 		grdMethods.TabIndex = 3;
 		grdMethods.CellClick += grdMethods_CellClick;
 		grdMethods.CellContentClick += grdMethods_CellContentClick;
@@ -155,10 +154,10 @@ partial class ServiceMethodsEditCtl
 		// 
 		colAttrs.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight;
 		colAttrs.DataPropertyName = "AttrCount";
-		dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
-		dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
-		colAttrs.DefaultCellStyle = dataGridViewCellStyle1;
+		dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
+		dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Transparent;
+		colAttrs.DefaultCellStyle = dataGridViewCellStyle3;
 		colAttrs.HeaderText = "Attrs";
 		colAttrs.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		colAttrs.LinkColor = System.Drawing.SystemColors.MenuHighlight;
@@ -172,10 +171,10 @@ partial class ServiceMethodsEditCtl
 		// 
 		// colDelete
 		// 
-		dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle2.NullValue = resources.GetObject("dataGridViewCellStyle2.NullValue");
-		dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
-		colDelete.DefaultCellStyle = dataGridViewCellStyle2;
+		dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle4.NullValue = resources.GetObject("dataGridViewCellStyle4.NullValue");
+		dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.Transparent;
+		colDelete.DefaultCellStyle = dataGridViewCellStyle4;
 		colDelete.HeaderText = "";
 		colDelete.Image = (System.Drawing.Image)resources.GetObject("colDelete.Image");
 		colDelete.MinimumWidth = 75;
@@ -192,7 +191,8 @@ partial class ServiceMethodsEditCtl
 		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Size = new System.Drawing.Size(862, 33);
+		toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+		toolStrip1.Size = new System.Drawing.Size(861, 33);
 		toolStrip1.TabIndex = 2;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -215,52 +215,41 @@ partial class ServiceMethodsEditCtl
 		// 
 		// splLists
 		// 
-		splLists.Location = new System.Drawing.Point(16, 16);
+		splLists.Dock = System.Windows.Forms.DockStyle.Fill;
+		splLists.Location = new System.Drawing.Point(0, 0);
 		splLists.Name = "splLists";
+		splLists.Orientation = System.Windows.Forms.Orientation.Horizontal;
 		// 
 		// splLists.Panel1
 		// 
-		splLists.Panel1.Controls.Add(lbxFilterProperties);
-		splLists.Panel1.Controls.Add(lblFilterProperties);
+		splLists.Panel1.Controls.Add(filterPropsCtl);
 		// 
 		// splLists.Panel2
 		// 
 		splLists.Panel2.Controls.Add(lbxNavProperties);
 		splLists.Panel2.Controls.Add(lblInclNavProps);
-		splLists.Size = new System.Drawing.Size(568, 593);
-		splLists.SplitterDistance = 280;
-		splLists.SplitterWidth = 8;
+		splLists.Size = new System.Drawing.Size(551, 612);
+		splLists.SplitterDistance = 358;
+		splLists.SplitterWidth = 10;
 		splLists.TabIndex = 5;
 		// 
-		// lbxFilterProperties
+		// filterPropsCtl
 		// 
-		lbxFilterProperties.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		lbxFilterProperties.FormattingEnabled = true;
-		lbxFilterProperties.Location = new System.Drawing.Point(3, 41);
-		lbxFilterProperties.Name = "lbxFilterProperties";
-		lbxFilterProperties.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-		lbxFilterProperties.Size = new System.Drawing.Size(255, 252);
-		lbxFilterProperties.TabIndex = 5;
-		lbxFilterProperties.SelectedIndexChanged += lbxFilterProperties_SelectedIndexChanged;
-		// 
-		// lblFilterProperties
-		// 
-		lblFilterProperties.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-		lblFilterProperties.Dock = System.Windows.Forms.DockStyle.Top;
-		lblFilterProperties.Location = new System.Drawing.Point(0, 0);
-		lblFilterProperties.Name = "lblFilterProperties";
-		lblFilterProperties.Size = new System.Drawing.Size(280, 29);
-		lblFilterProperties.TabIndex = 4;
-		lblFilterProperties.Text = "Filter Properties";
+		filterPropsCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+		filterPropsCtl.Location = new System.Drawing.Point(0, 0);
+		filterPropsCtl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+		filterPropsCtl.Name = "filterPropsCtl";
+		filterPropsCtl.Size = new System.Drawing.Size(551, 358);
+		filterPropsCtl.TabIndex = 0;
 		// 
 		// lbxNavProperties
 		// 
 		lbxNavProperties.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		lbxNavProperties.FormattingEnabled = true;
-		lbxNavProperties.Location = new System.Drawing.Point(3, 41);
+		lbxNavProperties.Location = new System.Drawing.Point(32, 45);
 		lbxNavProperties.Name = "lbxNavProperties";
 		lbxNavProperties.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-		lbxNavProperties.Size = new System.Drawing.Size(218, 252);
+		lbxNavProperties.Size = new System.Drawing.Size(362, 177);
 		lbxNavProperties.TabIndex = 6;
 		// 
 		// lblInclNavProps
@@ -269,7 +258,7 @@ partial class ServiceMethodsEditCtl
 		lblInclNavProps.Dock = System.Windows.Forms.DockStyle.Top;
 		lblInclNavProps.Location = new System.Drawing.Point(0, 0);
 		lblInclNavProps.Name = "lblInclNavProps";
-		lblInclNavProps.Size = new System.Drawing.Size(280, 29);
+		lblInclNavProps.Size = new System.Drawing.Size(551, 28);
 		lblInclNavProps.TabIndex = 5;
 		lblInclNavProps.Text = "Include Navigation Properties";
 		// 
@@ -279,7 +268,7 @@ partial class ServiceMethodsEditCtl
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		Controls.Add(splMain);
 		Name = "ServiceMethodsEditCtl";
-		Size = new System.Drawing.Size(1615, 658);
+		Size = new System.Drawing.Size(1614, 658);
 		Load += ServiceMethodsEditCtl_Load;
 		splMain.Panel1.ResumeLayout(false);
 		splMain.Panel1.PerformLayout();
@@ -305,7 +294,6 @@ partial class ServiceMethodsEditCtl
 	private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 	private System.Windows.Forms.DataGridView grdMethods;
 	private System.Windows.Forms.BindingSource bindingSrc;
-	private System.Windows.Forms.Label lblFilterProperties;
 	private System.Windows.Forms.SplitContainer splLists;
 	private System.Windows.Forms.Label lblInclNavProps;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
@@ -315,6 +303,6 @@ partial class ServiceMethodsEditCtl
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colUseQuery;
 	private System.Windows.Forms.DataGridViewLinkColumn colAttrs;
 	private System.Windows.Forms.DataGridViewImageColumn colDelete;
-	private System.Windows.Forms.ListBox lbxFilterProperties;
 	private System.Windows.Forms.ListBox lbxNavProperties;
+	private FilterPropsEditCtl filterPropsCtl;
 }

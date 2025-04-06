@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace Dyvenix.Genit.Models;
 
@@ -15,10 +14,7 @@ public class DbContextModel
 		var dbContext = new DbContextModel();
 		dbContext.Name = "DbContext";
 		dbContext.Enabled = true;
-		dbContext.DbContextGen = new DbContextGenModel(Guid.NewGuid());
-		dbContext.EntityGen = new EntityGenModel(Guid.NewGuid());
-		dbContext.EnumGen = new EnumGenModel(Guid.NewGuid());
-		dbContext.ServiceGen = new ServiceGenModel(Guid.NewGuid());
+		dbContext.Generators = GeneratorsModel.CreateNew();
 
 		return dbContext;
 	}
@@ -42,10 +38,13 @@ public class DbContextModel
 	public ObservableCollection<EntityModel> Entities { get; set; } = new ObservableCollection<EntityModel>();
 	public ObservableCollection<EnumModel> Enums { get; set; } = new ObservableCollection<EnumModel>();
 	public ObservableCollection<AssocModel> Assocs { get; set; } = new ObservableCollection<AssocModel>();
+	public GeneratorsModel Generators { get; set; } = new GeneratorsModel();
+
 	public DbContextGenModel DbContextGen { get; set; }
 	public EntityGenModel EntityGen { get; set; }
 	public EnumGenModel EnumGen { get; set; }
 	public ServiceGenModel ServiceGen { get; set; }
+
 
 	#endregion
 

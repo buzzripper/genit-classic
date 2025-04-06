@@ -48,16 +48,16 @@ partial class DbCtxGenEditCtl
 		label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		label1.Location = new System.Drawing.Point(3, 2);
 		label1.Name = "label1";
-		label1.Size = new System.Drawing.Size(161, 21);
+		label1.Size = new System.Drawing.Size(248, 32);
 		label1.TabIndex = 0;
 		label1.Text = "Db Context Generator";
 		// 
 		// label2
 		// 
 		label2.AutoSize = true;
-		label2.Location = new System.Drawing.Point(55, 104);
+		label2.Location = new System.Drawing.Point(74, 104);
 		label2.Name = "label2";
-		label2.Size = new System.Drawing.Size(99, 19);
+		label2.Size = new System.Drawing.Size(140, 28);
 		label2.TabIndex = 1;
 		label2.Text = "Output Folder:";
 		// 
@@ -65,9 +65,9 @@ partial class DbCtxGenEditCtl
 		// 
 		txtOutputFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtOutputFolder.Location = new System.Drawing.Point(160, 102);
+		txtOutputFolder.Location = new System.Drawing.Point(232, 102);
 		txtOutputFolder.Name = "txtOutputFolder";
-		txtOutputFolder.Size = new System.Drawing.Size(478, 25);
+		txtOutputFolder.Size = new System.Drawing.Size(852, 34);
 		txtOutputFolder.TabIndex = 2;
 		txtOutputFolder.TextChanged += txtOutputFolder_TextChanged;
 		// 
@@ -75,9 +75,9 @@ partial class DbCtxGenEditCtl
 		// 
 		ckbInclHeader.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbInclHeader.AutoSize = true;
-		ckbInclHeader.Location = new System.Drawing.Point(451, 8);
+		ckbInclHeader.Location = new System.Drawing.Point(848, 8);
 		ckbInclHeader.Name = "ckbInclHeader";
-		ckbInclHeader.Size = new System.Drawing.Size(120, 23);
+		ckbInclHeader.Size = new System.Drawing.Size(169, 32);
 		ckbInclHeader.TabIndex = 3;
 		ckbInclHeader.Text = "Include Header";
 		ckbInclHeader.UseVisualStyleBackColor = true;
@@ -87,9 +87,9 @@ partial class DbCtxGenEditCtl
 		// 
 		ckbEnabled.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(592, 8);
+		ckbEnabled.Location = new System.Drawing.Point(1006, 8);
 		ckbEnabled.Name = "ckbEnabled";
-		ckbEnabled.Size = new System.Drawing.Size(76, 23);
+		ckbEnabled.Size = new System.Drawing.Size(108, 32);
 		ckbEnabled.TabIndex = 4;
 		ckbEnabled.Text = "Enabled";
 		ckbEnabled.UseVisualStyleBackColor = true;
@@ -98,7 +98,7 @@ partial class DbCtxGenEditCtl
 		// btnBrowseFolder
 		// 
 		btnBrowseFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseFolder.Location = new System.Drawing.Point(644, 102);
+		btnBrowseFolder.Location = new System.Drawing.Point(1090, 102);
 		btnBrowseFolder.Name = "btnBrowseFolder";
 		btnBrowseFolder.Size = new System.Drawing.Size(24, 22);
 		btnBrowseFolder.TabIndex = 5;
@@ -109,7 +109,7 @@ partial class DbCtxGenEditCtl
 		// btnBrowseTempleFilepath
 		// 
 		btnBrowseTempleFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseTempleFilepath.Location = new System.Drawing.Point(646, 61);
+		btnBrowseTempleFilepath.Location = new System.Drawing.Point(1092, 61);
 		btnBrowseTempleFilepath.Name = "btnBrowseTempleFilepath";
 		btnBrowseTempleFilepath.Size = new System.Drawing.Size(24, 22);
 		btnBrowseTempleFilepath.TabIndex = 8;
@@ -121,18 +121,18 @@ partial class DbCtxGenEditCtl
 		// 
 		txtTemplateFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtTemplateFilepath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtTemplateFilepath.Location = new System.Drawing.Point(162, 61);
+		txtTemplateFilepath.Location = new System.Drawing.Point(234, 61);
 		txtTemplateFilepath.Name = "txtTemplateFilepath";
-		txtTemplateFilepath.Size = new System.Drawing.Size(478, 25);
+		txtTemplateFilepath.Size = new System.Drawing.Size(852, 34);
 		txtTemplateFilepath.TabIndex = 7;
 		txtTemplateFilepath.TextChanged += txtTemplateFilepath_TextChanged;
 		// 
 		// label3
 		// 
 		label3.AutoSize = true;
-		label3.Location = new System.Drawing.Point(63, 62);
+		label3.Location = new System.Drawing.Point(84, 62);
 		label3.Name = "label3";
-		label3.Size = new System.Drawing.Size(91, 19);
+		label3.Size = new System.Drawing.Size(130, 28);
 		label3.TabIndex = 6;
 		label3.Text = "Template File:";
 		// 
@@ -145,9 +145,9 @@ partial class DbCtxGenEditCtl
 		// 
 		txtContextNamespace.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtContextNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtContextNamespace.Location = new System.Drawing.Point(160, 144);
+		txtContextNamespace.Location = new System.Drawing.Point(232, 144);
 		txtContextNamespace.Name = "txtContextNamespace";
-		txtContextNamespace.Size = new System.Drawing.Size(478, 25);
+		txtContextNamespace.Size = new System.Drawing.Size(852, 34);
 		txtContextNamespace.TabIndex = 14;
 		txtContextNamespace.TextChanged += txtContextNamespace_TextChanged;
 		// 
@@ -157,14 +157,14 @@ partial class DbCtxGenEditCtl
 		label4.Font = new System.Drawing.Font("Segoe UI", 10F);
 		label4.Location = new System.Drawing.Point(24, 146);
 		label4.Name = "label4";
-		label4.Size = new System.Drawing.Size(134, 19);
+		label4.Size = new System.Drawing.Size(190, 28);
 		label4.TabIndex = 13;
 		label4.Text = "Context Namespace:";
 		label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 		// 
 		// DbCtxGenEditCtl
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+		AutoScaleDimensions = new System.Drawing.SizeF(11F, 28F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		Controls.Add(txtContextNamespace);
 		Controls.Add(label4);
@@ -179,7 +179,7 @@ partial class DbCtxGenEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "DbCtxGenEditCtl";
-		Size = new System.Drawing.Size(726, 218);
+		Size = new System.Drawing.Size(1172, 315);
 		Load += DbCtxGenEditCtl_Load;
 		ResumeLayout(false);
 		PerformLayout();

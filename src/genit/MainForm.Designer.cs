@@ -137,58 +137,58 @@ partial class MainForm
 		// mnuNew
 		// 
 		mnuNew.Name = "mnuNew";
-		mnuNew.Size = new System.Drawing.Size(270, 34);
+		mnuNew.Size = new System.Drawing.Size(217, 34);
 		mnuNew.Text = "&New Model";
 		mnuNew.Click += uiNew_Click;
 		// 
 		// mnuOpen
 		// 
 		mnuOpen.Name = "mnuOpen";
-		mnuOpen.Size = new System.Drawing.Size(270, 34);
+		mnuOpen.Size = new System.Drawing.Size(217, 34);
 		mnuOpen.Text = "&Open Model";
 		mnuOpen.Click += uiOpen_Click;
 		// 
 		// mnuSave
 		// 
 		mnuSave.Name = "mnuSave";
-		mnuSave.Size = new System.Drawing.Size(270, 34);
+		mnuSave.Size = new System.Drawing.Size(217, 34);
 		mnuSave.Text = "&Save Model";
 		mnuSave.Click += uiSave_Click;
 		// 
 		// mnuSaveAs
 		// 
 		mnuSaveAs.Name = "mnuSaveAs";
-		mnuSaveAs.Size = new System.Drawing.Size(270, 34);
+		mnuSaveAs.Size = new System.Drawing.Size(217, 34);
 		mnuSaveAs.Text = "Save &As...";
 		mnuSaveAs.Click += uiSaveAs_Click;
 		// 
 		// mnuClose
 		// 
 		mnuClose.Name = "mnuClose";
-		mnuClose.Size = new System.Drawing.Size(270, 34);
+		mnuClose.Size = new System.Drawing.Size(217, 34);
 		mnuClose.Text = "&Close Model";
 		mnuClose.Click += uiClose_Click;
 		// 
 		// toolStripMenuItem2
 		// 
 		toolStripMenuItem2.Name = "toolStripMenuItem2";
-		toolStripMenuItem2.Size = new System.Drawing.Size(267, 6);
+		toolStripMenuItem2.Size = new System.Drawing.Size(214, 6);
 		// 
 		// mnuRecentFiles
 		// 
 		mnuRecentFiles.Name = "mnuRecentFiles";
-		mnuRecentFiles.Size = new System.Drawing.Size(270, 34);
+		mnuRecentFiles.Size = new System.Drawing.Size(217, 34);
 		mnuRecentFiles.Text = "Recent Files...";
 		// 
 		// toolStripSeparator1
 		// 
 		toolStripSeparator1.Name = "toolStripSeparator1";
-		toolStripSeparator1.Size = new System.Drawing.Size(267, 6);
+		toolStripSeparator1.Size = new System.Drawing.Size(214, 6);
 		// 
 		// mnuExit
 		// 
 		mnuExit.Name = "mnuExit";
-		mnuExit.Size = new System.Drawing.Size(270, 34);
+		mnuExit.Size = new System.Drawing.Size(217, 34);
 		mnuExit.Text = "E&xit";
 		mnuExit.Click += uiExit_Click;
 		// 
@@ -324,6 +324,7 @@ partial class MainForm
 		treeNav.EntityModelSelected += treeNav_EntityModelSelected_1;
 		treeNav.EntitiesNodeSelected += treeNav_EntitiesNodeSelected;
 		treeNav.EnumModelSelected += TreeNav_EnumModelSelected;
+		treeNav.GeneratorsModelSelected += treeNav_GeneratorsModelSelected;
 		treeNav.DbContextGenSelected += treeNav_DbContextGenSelected;
 		treeNav.EntityGenSelected += treeNav_EntityGenSelected;
 		treeNav.EnumGenSelected += treeNav_EnumGenSelected;
@@ -512,7 +513,6 @@ partial class MainForm
 	private System.Windows.Forms.ToolStripMenuItem mnuExit;
 	private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 	private System.Windows.Forms.ToolStripMenuItem generateToolStripMenuItem;
-	private System.Windows.Forms.ToolStripButton helpToolStripButton;
 	private System.Windows.Forms.ToolStripMenuItem mnuNew;
 	private System.Windows.Forms.OpenFileDialog openFileDlg;
 	private System.Windows.Forms.SaveFileDialog saveFileDlg;

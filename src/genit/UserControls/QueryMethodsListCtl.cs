@@ -2,7 +2,6 @@
 using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -36,7 +35,6 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 	private void GetMethodsListCtl_Load(object sender, EventArgs e)
 	{
-		PositionControls();
 		grdQueries.AutoGenerateColumns = false;
 	}
 
@@ -48,14 +46,7 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 		for (var i = 0; i < grdQueries.Rows.Count; i++) {
 			var method = QueryMethodFromGridRow(i);
-			//grdQueries.Rows[i].Cells[cAttrsCol].Value = $"[]  ({method.Attributes.Count})";
-			//grdQueries.Rows[i].Cells[cAttrsCol].Value = "FOO";
 		}
-
-		clbFilterProperties.Items.Clear();
-		clbFilterProperties.Items.AddRange(properties.Where(p => !p.IsPrimaryKey && !p.IsIndexUnique).ToArray());
-		clbDtoProperties.Items.Clear();
-		clbDtoProperties.Items.AddRange(properties.ToArray());
 	}
 
 	#endregion
@@ -74,10 +65,7 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 	private void Add()
 	{
-		var method = new ServiceMethodModel(Guid.NewGuid()) {
-			Name = "Query"
-		};
-
+		var method = ServiceMethodModel.CreateNew(Guid.NewGuid(), "Query");
 		bindingSrc.Add(method);
 	}
 
@@ -106,36 +94,6 @@ public partial class QueryMethodsListCtl : UserControlBase
 	#endregion
 
 	#region Methods
-
-	private void PositionControls()
-	{
-		pnlFilterPropsHeader.Height = toolStrip1.Height;
-		pnlDtoPropsHeader.Height = toolStrip1.Height;
-
-		clbFilterProperties.Top = pnlFilterPropsHeader.Height + 1;
-		clbFilterProperties.Left = 0;
-		clbFilterProperties.Width = splProperties.Panel1.Width;
-		clbFilterProperties.Height = splProperties.Panel1.Height - pnlFilterPropsHeader.Height - 2;
-		clbFilterProperties.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-	}
-
-	private void SetFilterPropertiesList(ServiceMethodModel method)
-	{
-		_suspendUpdates = true;
-
-		for (var i = 0; i < clbFilterProperties.Items.Count; i++) {
-			var prop = (PropertyModel)clbFilterProperties.Items[i];
-			clbFilterProperties.SetItemChecked(i, method.FilterProperties.Contains(prop));
-		}
-
-		_suspendUpdates = false;
-	}
-
-	private void SetDtoPropsAll(bool value)
-	{
-		clbDtoProperties.Enabled = value;
-
-	}
 
 	private void grdItems_KeyDown(object sender, KeyEventArgs e)
 	{
@@ -190,16 +148,16 @@ public partial class QueryMethodsListCtl : UserControlBase
 		_suspendUpdates = true;
 		if (grdQueries.SelectedCells.Count == 1) {
 			var method = QueryMethodFromGridRow(grdQueries.CurrentCell.RowIndex);
-			SetFilterPropertiesList(method);
+			//SetFilterPropertiesList(method);
 			btnDelete.Enabled = true;
-			clbFilterProperties.Enabled = true;
+			//clbFilterProperties.Enabled = true;
 			clbDtoProperties.Enabled = true;
 
 		} else {
-			clbFilterProperties.ClearSelected();
+			//clbFilterProperties.ClearSelected();
 			clbDtoProperties.ClearSelected();
 			btnDelete.Enabled = false;
-			clbFilterProperties.Enabled = false;
+			//clbFilterProperties.Enabled = false;
 			clbDtoProperties.Enabled = false;
 		}
 		_suspendUpdates = false;
@@ -215,13 +173,13 @@ public partial class QueryMethodsListCtl : UserControlBase
 		if (_suspendUpdates)
 			return;
 
-		PropertyModel prop = clbFilterProperties.Items[e.Index] as PropertyModel;
-		if (e.NewValue == CheckState.Checked) {
-			var method = QueryMethodFromGridRow(grdQueries.CurrentCell.RowIndex);
-			method.FilterProperties.Add(prop);
-		} else {
-			var method = QueryMethodFromGridRow(grdQueries.CurrentCell.RowIndex);
-			method.FilterProperties.Remove(prop);
-		}
+		//PropertyModel prop = clbFilterProperties.Items[e.Index] as PropertyModel;
+		//if (e.NewValue == CheckState.Checked) {
+		//	var method = QueryMethodFromGridRow(grdQueries.CurrentCell.RowIndex);
+		//	method.FilterProperties.Add(prop);
+		//} else {
+		//	var method = QueryMethodFromGridRow(grdQueries.CurrentCell.RowIndex);
+		//	method.FilterProperties.Remove(prop);
+		//}
 	}
 }

@@ -43,11 +43,11 @@ namespace Dyvenix.Genit.UserControls
 		public void SetData(ObservableCollection<ServiceMethodModel> methods, ObservableCollection<PropertyModel> properties, ObservableCollection<NavPropertyModel> navProperties)
 		{
 			_methods = methods;
+
 			bindingSrc.DataSource = _methods;
 			grdMethods.DataSource = bindingSrc;
 
-			lbxFilterProperties.Items.Clear();
-			lbxFilterProperties.Items.AddRange(properties.ToArray());
+			filterPropsCtl.SetProperties(properties);
 
 			lbxNavProperties.Items.Clear();
 			lbxNavProperties.Items.AddRange(navProperties.ToArray());
@@ -64,10 +64,7 @@ namespace Dyvenix.Genit.UserControls
 
 		private void Add()
 		{
-			var method = new ServiceMethodModel(Guid.NewGuid()) {
-				Name = "Query"
-			};
-
+			var method = ServiceMethodModel.CreateNew(Guid.NewGuid(), "Query");
 			bindingSrc.Add(method);
 		}
 
@@ -102,12 +99,7 @@ namespace Dyvenix.Genit.UserControls
 			splMain.Dock = DockStyle.Fill;
 			splLists.Dock = DockStyle.Fill;
 
-			lblFilterProperties.Height = toolStrip1.Height;
-			lbxFilterProperties.Left = 0;
-			lbxFilterProperties.Top = lblFilterProperties.Height + 1;
-			lbxFilterProperties.Width = splLists.Panel1.Width;
-			lbxFilterProperties.Height = splLists.Panel1.Height - toolStrip1.Height;
-			lbxFilterProperties.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+			//lblFilterProperties.Height = toolStrip1.Height;
 
 			lblInclNavProps.Height = toolStrip1.Height;
 			lbxNavProperties.Left = 0;
@@ -117,19 +109,7 @@ namespace Dyvenix.Genit.UserControls
 			lbxNavProperties.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 		}
 
-		private void SetFilterPropertiesList(ServiceMethodModel method)
-		{
-			_suspendUpdates = true;
-
-			lbxFilterProperties.SelectedItems.Clear();
-			for (var i = 0; i < lbxFilterProperties.Items.Count; i++) {
-				var prop = (PropertyModel)lbxFilterProperties.Items[i];
-				if (method.FilterProperties.Contains(prop))
-					lbxFilterProperties.SelectedItems.Add(prop);
-			}
-
-			_suspendUpdates = false;
-		}
+		
 
 		private void SetInclNavPropertiesList(ServiceMethodModel method)
 		{
@@ -200,78 +180,22 @@ namespace Dyvenix.Genit.UserControls
 			_suspendUpdates = true;
 			if (grdMethods.SelectedCells.Count == 1) {
 				var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
-				SetFilterPropertiesList(method);
-				lbxFilterProperties.Enabled = true;
+				filterPropsCtl.SetFilterProperties(method.FilterProperties);
 				SetInclNavPropertiesList(method);
 				lbxNavProperties.Enabled = true;
 
 			} else {
-				lbxFilterProperties.ClearSelected();
-				lbxFilterProperties.Enabled = false;
+				filterPropsCtl.SetFilterProperties(null);
 			}
+
 			_suspendUpdates = false;
 		}
 
+		
 		private void grdMethods_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
 		{
 			this.grdMethods.Cursor = Cursors.Default;
 		}
-
-		private void lbxFilterProperties_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (_suspendUpdates)
-				return;
-
-			lbxFilterProperties.SuspendLayout();
-
-			var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
-			PropertyModel propToAdd = null;
-			PropertyModel propToRemove = null;
-
-			for (var i = 0; i < lbxFilterProperties.Items.Count; i++) {
-				PropertyModel lbxProp = lbxFilterProperties.Items[i] as PropertyModel;
-
-				var isSelected = lbxFilterProperties.SelectedItems.Contains(lbxProp);
-				var isFilterProp = method.FilterProperties.Contains(lbxProp);
-
-				if (isSelected && !isFilterProp)
-					propToAdd = lbxProp;
-				else if (!isSelected && isFilterProp)
-					propToRemove = lbxProp;
-
-				if (propToAdd != null && propToRemove != null)
-					break;
-			}
-
-			if (propToRemove != null)
-				method.FilterProperties.Remove(propToRemove);
-			if (propToAdd != null)
-				method.FilterProperties.Add(propToAdd);
-
-			lbxFilterProperties.ResumeLayout();
-
-			//for (var i=0; i++; i < lbxFilterProperties.Items.Count) {
-			//	PropertyModel prop = item as PropertyModel;
-			//	var isSelected = lbxFilterProperties.SelectedItems.Contains(prop);
-			//	var isFilterProp = method.FilterProperties.Contains(prop);
-
-			//	if (isSelected) {
-			//		if (!isFilterProp) {
-			//			propToAdd = prop;
-			//			//method.FilterProperties.Add(prop);
-			//			break;
-			//		}
-			//	} else {
-			//		// not selected
-			//		if (isFilterProp) {
-			//			propToRemove = prop;
-			//			//method.FilterProperties.Remove(prop);
-			//			break;
-			//		}
-			//	}
-			//}
-		}
-
 
 		private void lbxNavProperties_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -299,35 +223,6 @@ namespace Dyvenix.Genit.UserControls
 				}
 			}
 		}
-
-		//private void lbxFilterProperties_ItemCheck(object sender, ItemCheckEventArgs e)
-		//{
-		//	if (_suspendUpdates)
-		//		return;
-
-		//	PropertyModel prop = lbxFilterProperties.Items[e.Index] as PropertyModel;
-		//	if (e.NewValue == CheckState.Checked) {
-		//		var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
-		//		method.FilterProperties.Add(prop);
-		//	} else {
-		//		var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
-		//		method.FilterProperties.Remove(prop);
-		//	}
-		//}
-
-		//private void lbxNavProperties_ItemCheck(object sender, ItemCheckEventArgs e)
-		//{
-		//	if (_suspendUpdates)
-		//		return;
-
-		//	NavPropertyModel navProp = lbxNavProperties.Items[e.Index] as NavPropertyModel;
-		//	var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
-
-		//	if (e.NewValue == CheckState.Checked)
-		//		method.InclNavProperties.Add(navProp);
-		//	else
-		//		method.InclNavProperties.Remove(navProp);
-		//}
 
 		private void grdMethods_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{

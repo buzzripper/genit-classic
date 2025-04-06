@@ -96,7 +96,7 @@ internal class ServiceMethodGenerator
 		foreach (var filterProp in method.FilterProperties) {
 			if (c++ > 0)
 				sbSigArgs.Append(", ");
-			sbSigArgs.Append($"{filterProp.DatatypeName} {filterProp.FilterArgName}");
+			sbSigArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
 		}
 		if (method.InclPaging) {
 			if (sbSigArgs.Length > 0)
@@ -121,17 +121,17 @@ internal class ServiceMethodGenerator
 
 		if (method.FilterProperties.Any()) {
 			foreach (var filterProp in method.FilterProperties) {
-				if (filterProp.PrimitiveType?.Id == PrimitiveType.String.Id) {
-					output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({filterProp.FilterArgName}))");
-					output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{filterProp.Name}, {filterProp.FilterArgName}));");
+				if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.String.Id) {
+					output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({filterProp.Property.FilterArgName}))");
+					output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{filterProp.Property.Name}, {filterProp.Property.FilterArgName}));");
 
-				} else if (filterProp.PrimitiveType?.Id == PrimitiveType.Int.Id || filterProp.PrimitiveType?.Id == PrimitiveType.Bool.Id || filterProp.PrimitiveType?.Id == PrimitiveType.Guid.Id) {
+				} else if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.Int.Id || filterProp.Property.PrimitiveType?.Id == PrimitiveType.Bool.Id || filterProp.Property.PrimitiveType?.Id == PrimitiveType.Guid.Id) {
 					var indent = tc + 1;
-					if (filterProp.Nullable) {
-						output.AddLine(indent, $"if ({filterProp.FilterArgName}.HasValue)");
+					if (filterProp.Property.Nullable) {
+						output.AddLine(indent, $"if ({filterProp.Property.FilterArgName}.HasValue)");
 						indent++;
 					}
-					output.AddLine(indent, $"dbQuery = dbQuery.Where(x => x.{filterProp.Name} == {filterProp.FilterArgName});");
+					output.AddLine(indent, $"dbQuery = dbQuery.Where(x => x.{filterProp.Property.Name} == {filterProp.Property.FilterArgName});");
 				}
 			}
 		}
@@ -174,13 +174,13 @@ internal class ServiceMethodGenerator
 		output.AddLine();
 
 		output.AddLine(tc + 1, $"// Filters");
-		foreach (var prop in queryMethod.FilterProperties) {
-			if (prop.PrimitiveType == PrimitiveType.String) {
-				output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace(query.{prop.Name}))");
-				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{prop.Name}, query.{prop.Name}));");
-			} else if (prop.PrimitiveType == PrimitiveType.Int || prop.PrimitiveType == PrimitiveType.Bool || prop.PrimitiveType == PrimitiveType.Guid) {
-				output.AddLine(tc + 1, $"if (query.{prop.Name}.HasValue)");
-				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => x.{prop.Name} == query.{prop.Name});");
+		foreach (var filterProp in queryMethod.FilterProperties) {
+			if (filterProp.Property.PrimitiveType == PrimitiveType.String) {
+				output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace(query.{filterProp.Property.Name}))");
+				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{filterProp.Property.Name}, query.{filterProp.Property.Name}));");
+			} else if (filterProp.Property.PrimitiveType == PrimitiveType.Int || filterProp.Property.PrimitiveType == PrimitiveType.Bool || filterProp.Property.PrimitiveType == PrimitiveType.Guid) {
+				output.AddLine(tc + 1, $"if (query.{filterProp.Property.Name}.HasValue)");
+				output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => x.{filterProp.Property.Name} == query.{filterProp.Property.Name});");
 			}
 		}
 

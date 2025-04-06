@@ -53,8 +53,8 @@ internal class ServiceQueryGenerator
 			// Filter properties
 			var propsOutput = new List<string>();
 			foreach (var filterProp in queryMethod.FilterProperties) {
-				var nullStr = filterProp.DatatypeName != "string" ? "?" : null;
-				propsOutput.AddLine(1, $"public {filterProp.DatatypeName}{nullStr} {filterProp.Name} {{ get; set; }}");
+				var nullStr = filterProp.Property.DatatypeName != "string" ? "?" : null;
+				propsOutput.AddLine(1, $"public {filterProp.Property.DatatypeName}{nullStr} {filterProp.Property.Name} {{ get; set; }}");
 			}
 
 			// Replace tokens in template

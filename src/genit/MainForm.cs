@@ -2,6 +2,7 @@
 using Dyvenix.Genit.Generators;
 using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
+using Dyvenix.Genit.Models.Generators;
 using Dyvenix.Genit.UserControls;
 using Dyvenix.Genit.Views;
 using System;
@@ -46,8 +47,19 @@ public partial class MainForm : Form
 		InitializeLayout(_appConfig);
 
 		// DEBUG
-		this.CurrDocFilepath = @"D:\Code\buzzripper\dyvenix\design\Model\Dyv2.gmdl";
-		this.Doc = DocManager.LoadDoc(CurrDocFilepath);
+		this.CurrDocFilepath = @"D:\Code\buzzripper\dyvenix\design\Model\Dyv4.gmdl";
+		var doc = DocManager.LoadDoc(CurrDocFilepath);
+
+		//var dbCtx = doc.DbContexts[0];
+		//var gens = GeneratorsModel.CreateNew();
+		//gens.DbContextGen = dbCtx.DbContextGen;
+		//gens.EntityGen = dbCtx.EntityGen;
+		//gens.EnumGen = dbCtx.EnumGen;
+		//gens.ServiceGen = dbCtx.ServiceGen;
+
+		//dbCtx.Generators = gens;
+
+		this.Doc = doc;
 	}
 
 	private void Form1_Shown(object sender, EventArgs e)
@@ -407,16 +419,16 @@ public partial class MainForm : Form
 				return;
 
 			// DbContext
-			var dbContextGenMdl = dbContextMdl.DbContextGen;
+			var dbContextGenMdl = dbContextMdl.Generators.DbContextGen;
 			if (dbContextGenMdl == null)
 				throw new ApplicationException("DbContext generator not found.");
 			if (dbContextGenMdl.Enabled) {
 				outputCtl.WriteInfo("Running DbContext generator...");
-				new DbContextGenerator().Run(dbContextGenMdl, dbContextMdl, dbContextMdl.EntityGen.EntitiesNamespace);
+				new DbContextGenerator().Run(dbContextGenMdl, dbContextMdl, dbContextMdl.Generators.EntityGen.EntitiesNamespace);
 			}
 
 			// Entities
-			var entityGenMdl = dbContextMdl.EntityGen;
+			var entityGenMdl = dbContextMdl.Generators.EntityGen;
 			if (entityGenMdl == null)
 				throw new ApplicationException("Entity generator not found.");
 			if (entityGenMdl.Enabled) {
@@ -426,7 +438,7 @@ public partial class MainForm : Form
 			}
 
 			// Enums
-			var enumGenMdl = dbContextMdl.EnumGen;
+			var enumGenMdl = dbContextMdl.Generators.EnumGen;
 			if (enumGenMdl == null)
 				throw new ApplicationException("Enum generator not found.");
 			if (enumGenMdl.Enabled) {
@@ -436,7 +448,7 @@ public partial class MainForm : Form
 			}
 
 			// Services
-			var svcGenMdl = dbContextMdl.ServiceGen;
+			var svcGenMdl = dbContextMdl.Generators.ServiceGen;
 			if (svcGenMdl == null)
 				throw new ApplicationException("Service generator not found.");
 			if (svcGenMdl.Enabled) {
@@ -511,13 +523,26 @@ public partial class MainForm : Form
 		//}
 	}
 
+	private void treeNav_GeneratorsModelSelected(object sender, NavTreeNodeSelectedEventArgs e)
+	{
+		if (SelectTabPageById(e.Id))
+			return;
+
+		if (!multiPageCtl.Select(e.Id)) {
+			var gensMdl = this.Doc.DbContexts[0].Generators;
+			var generatorsEditCtl = new GeneratorsEditCtl(gensMdl);
+			multiPageCtl.Add(gensMdl.Id, gensMdl.Name, generatorsEditCtl);
+			multiPageCtl.Select(gensMdl.Id);
+		}
+	}
+
 	private void treeNav_DbContextGenSelected(object sender, NavTreeNodeSelectedEventArgs e)
 	{
 		if (SelectTabPageById(e.Id))
 			return;
 
 		if (!multiPageCtl.Select(e.Id)) {
-			var dbGenMdl = this.Doc.DbContexts[0].DbContextGen;
+			var dbGenMdl = this.Doc.DbContexts[0].Generators.DbContextGen;
 			var dbCtxGenEditCtl = new DbCtxGenEditCtl(dbGenMdl);
 			multiPageCtl.Add(dbGenMdl.Id, dbGenMdl.Name, dbCtxGenEditCtl);
 			multiPageCtl.Select(dbGenMdl.Id);
@@ -530,7 +555,7 @@ public partial class MainForm : Form
 			return;
 
 		if (!multiPageCtl.Select(e.Id)) {
-			var entityGenMdl = this.Doc.DbContexts[0].EntityGen;
+			var entityGenMdl = this.Doc.DbContexts[0].Generators.EntityGen;
 			var entityGenEditCtl = new EntityGenEditCtl(entityGenMdl);
 			multiPageCtl.Add(entityGenMdl.Id, entityGenMdl.Name, entityGenEditCtl);
 			multiPageCtl.Select(entityGenMdl.Id);
@@ -543,7 +568,7 @@ public partial class MainForm : Form
 			return;
 
 		if (!multiPageCtl.Select(e.Id)) {
-			var enumGenMdl = this.Doc.DbContexts[0].EnumGen;
+			var enumGenMdl = this.Doc.DbContexts[0].Generators.EnumGen;
 			var enumGenEditCtl = new EnumGenEditCtl(enumGenMdl);
 			multiPageCtl.Add(enumGenMdl.Id, enumGenMdl.Name, enumGenEditCtl);
 			multiPageCtl.Select(enumGenMdl.Id);
@@ -556,7 +581,7 @@ public partial class MainForm : Form
 			return;
 
 		if (!multiPageCtl.Select(e.Id)) {
-			var svcGenMdl = this.Doc.DbContexts[0].ServiceGen;
+			var svcGenMdl = this.Doc.DbContexts[0].Generators.ServiceGen;
 			var svcGenEditCtl = new ServiceGenEditCtl(svcGenMdl);
 			multiPageCtl.Add(svcGenMdl.Id, svcGenMdl.Name, svcGenEditCtl);
 			multiPageCtl.Select(svcGenMdl.Id);
@@ -631,23 +656,6 @@ public partial class MainForm : Form
 
 	private void btnTest2_Click(object sender, EventArgs e)
 	{
-		//var doc = new Doc();
-		//doc.DbContexts.Add(new DbContextModel {
-		//	Name = "TestDbContext",
-		//	ContextNamespace = "TestNamespace",
-		//	EntitiesNamespace = "TestNamespace.Entities"
-		//});
-
-		////doc.DbContexts[0].Entities.Add(new EntityModel {
-		////	Name = "TestEntity",
-		////	TableName = "TestTable"
-		////});
-
-
-		//this.Doc = doc;
-
-		//Save();
-
 	}
 
 	private void multiPageCtl_SelectedItemChanged(object sender, SelectedItemChangedEventArgs e)

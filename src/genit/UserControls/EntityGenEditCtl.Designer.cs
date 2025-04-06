@@ -47,7 +47,7 @@ partial class EntityGenEditCtl
 		label1.AutoSize = true;
 		label1.Location = new System.Drawing.Point(54, 100);
 		label1.Name = "label1";
-		label1.Size = new System.Drawing.Size(99, 19);
+		label1.Size = new System.Drawing.Size(140, 28);
 		label1.TabIndex = 0;
 		label1.Text = "Output Folder:";
 		label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -56,9 +56,9 @@ partial class EntityGenEditCtl
 		// 
 		txtOutputFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtOutputFolder.Location = new System.Drawing.Point(157, 98);
+		txtOutputFolder.Location = new System.Drawing.Point(214, 98);
 		txtOutputFolder.Name = "txtOutputFolder";
-		txtOutputFolder.Size = new System.Drawing.Size(479, 25);
+		txtOutputFolder.Size = new System.Drawing.Size(947, 34);
 		txtOutputFolder.TabIndex = 1;
 		txtOutputFolder.TextChanged += txtOutputFolder_TextChanged;
 		// 
@@ -68,7 +68,7 @@ partial class EntityGenEditCtl
 		lblName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		lblName.Location = new System.Drawing.Point(1, 2);
 		lblName.Name = "lblName";
-		lblName.Size = new System.Drawing.Size(123, 21);
+		lblName.Size = new System.Drawing.Size(187, 32);
 		lblName.TabIndex = 2;
 		lblName.Text = "Entity Generator";
 		// 
@@ -76,9 +76,9 @@ partial class EntityGenEditCtl
 		// 
 		ckbEnabled.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(589, 13);
+		ckbEnabled.Location = new System.Drawing.Point(1082, 13);
 		ckbEnabled.Name = "ckbEnabled";
-		ckbEnabled.Size = new System.Drawing.Size(76, 23);
+		ckbEnabled.Size = new System.Drawing.Size(108, 32);
 		ckbEnabled.TabIndex = 3;
 		ckbEnabled.Text = "Enabled";
 		ckbEnabled.UseVisualStyleBackColor = true;
@@ -88,9 +88,9 @@ partial class EntityGenEditCtl
 		// 
 		ckbInclHeader.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbInclHeader.AutoSize = true;
-		ckbInclHeader.Location = new System.Drawing.Point(450, 13);
+		ckbInclHeader.Location = new System.Drawing.Point(883, 13);
 		ckbInclHeader.Name = "ckbInclHeader";
-		ckbInclHeader.Size = new System.Drawing.Size(120, 23);
+		ckbInclHeader.Size = new System.Drawing.Size(169, 32);
 		ckbInclHeader.TabIndex = 4;
 		ckbInclHeader.Text = "Include Header";
 		ckbInclHeader.UseVisualStyleBackColor = true;
@@ -99,7 +99,7 @@ partial class EntityGenEditCtl
 		// btnBrowseFolder
 		// 
 		btnBrowseFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseFolder.Location = new System.Drawing.Point(641, 98);
+		btnBrowseFolder.Location = new System.Drawing.Point(1166, 98);
 		btnBrowseFolder.Name = "btnBrowseFolder";
 		btnBrowseFolder.Size = new System.Drawing.Size(24, 22);
 		btnBrowseFolder.TabIndex = 6;
@@ -110,7 +110,7 @@ partial class EntityGenEditCtl
 		// btnBrowseTempleFilepath
 		// 
 		btnBrowseTempleFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseTempleFilepath.Location = new System.Drawing.Point(641, 59);
+		btnBrowseTempleFilepath.Location = new System.Drawing.Point(1166, 59);
 		btnBrowseTempleFilepath.Name = "btnBrowseTempleFilepath";
 		btnBrowseTempleFilepath.Size = new System.Drawing.Size(24, 22);
 		btnBrowseTempleFilepath.TabIndex = 11;
@@ -122,9 +122,9 @@ partial class EntityGenEditCtl
 		// 
 		txtTemplateFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtTemplateFilepath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtTemplateFilepath.Location = new System.Drawing.Point(157, 59);
+		txtTemplateFilepath.Location = new System.Drawing.Point(214, 59);
 		txtTemplateFilepath.Name = "txtTemplateFilepath";
-		txtTemplateFilepath.Size = new System.Drawing.Size(478, 25);
+		txtTemplateFilepath.Size = new System.Drawing.Size(946, 34);
 		txtTemplateFilepath.TabIndex = 10;
 		txtTemplateFilepath.TextChanged += txtTemplateFilepath_TextChanged;
 		// 
@@ -133,7 +133,7 @@ partial class EntityGenEditCtl
 		label3.AutoSize = true;
 		label3.Location = new System.Drawing.Point(62, 60);
 		label3.Name = "label3";
-		label3.Size = new System.Drawing.Size(91, 19);
+		label3.Size = new System.Drawing.Size(130, 28);
 		label3.TabIndex = 9;
 		label3.Text = "Template File:";
 		// 
@@ -146,9 +146,9 @@ partial class EntityGenEditCtl
 		// 
 		txtEntitiesNamespace.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtEntitiesNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtEntitiesNamespace.Location = new System.Drawing.Point(157, 137);
+		txtEntitiesNamespace.Location = new System.Drawing.Point(214, 137);
 		txtEntitiesNamespace.Name = "txtEntitiesNamespace";
-		txtEntitiesNamespace.Size = new System.Drawing.Size(478, 25);
+		txtEntitiesNamespace.Size = new System.Drawing.Size(946, 34);
 		txtEntitiesNamespace.TabIndex = 15;
 		txtEntitiesNamespace.TextChanged += txtEntitiesNamespace_TextChanged;
 		// 
@@ -158,14 +158,14 @@ partial class EntityGenEditCtl
 		label2.Font = new System.Drawing.Font("Segoe UI", 10F);
 		label2.Location = new System.Drawing.Point(23, 138);
 		label2.Name = "label2";
-		label2.Size = new System.Drawing.Size(130, 19);
+		label2.Size = new System.Drawing.Size(185, 28);
 		label2.TabIndex = 14;
 		label2.Text = "Entities Namespace:";
 		label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 		// 
 		// EntityGenEditCtl
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
+		AutoScaleDimensions = new System.Drawing.SizeF(11F, 28F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		Controls.Add(txtEntitiesNamespace);
 		Controls.Add(label2);
@@ -180,7 +180,7 @@ partial class EntityGenEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F);
 		Name = "EntityGenEditCtl";
-		Size = new System.Drawing.Size(719, 210);
+		Size = new System.Drawing.Size(1244, 316);
 		Load += EntityGenEditCtl_Load;
 		ResumeLayout(false);
 		PerformLayout();

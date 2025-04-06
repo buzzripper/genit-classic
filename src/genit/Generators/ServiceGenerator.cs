@@ -15,9 +15,14 @@ public class ServiceGenerator
 {
 	#region Constants
 
+	private const string cSvcTemplateFilename = "Services.tmpl";
+	private const string cSvcCollTemplateFilename = "ServiceCollExt.tmpl";
+	private const string cQueryTemplateFilename = "Query.tmpl";
+	private const string cControllersTemplateFilename = "Controllers.tmpl";
+	private const string cApiClientsTemplateFilename = "ApiClients.tmpl";
+
 	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_AddlUsings = "ADDL_USINGS";
-
 	private const string cToken_ServicesNs = "SERVICES_NS";
 	private const string cToken_ServiceAttrs = "SERVICE_ATTRS";
 	private const string cToken_ServiceName = "SERVICE_NAME";
@@ -35,39 +40,41 @@ public class ServiceGenerator
 
 	#endregion
 
-	public void Run(ServiceGenModel svcGenModel, ObservableCollection<EntityModel> entities, string entitiesNamespace)
+	public void Run(ServiceGenModel svcGenModel, ObservableCollection<EntityModel> entities, string entitiesNamespace, string templatesFolderpath)
 	{
 		if (!svcGenModel.Enabled)
 			return;
 
 		// Load templates
-
-		var templateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.TemplateFilepath);
+		
+		var templateFilepath = Path.Combine(templatesFolderpath, cSvcTemplateFilename);
 		var outputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.OutputFolder);
 		Validate(templateFilepath, outputFolder);
 		var serviceTemplate = File.ReadAllText(templateFilepath);
 
-		var queryTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.QueryTemplateFilepath);
+		var queryTemplateFilepath = Path.Combine(templatesFolderpath, cQueryTemplateFilename);
 		var queryOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.QueryOutputFolder);
 		Validate(queryTemplateFilepath, queryOutputFolder);
 		var queryTemplate = File.ReadAllText(queryTemplateFilepath);
 
-		var controllerTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ControllerTemplateFilepath);
+		var controllerTemplateFilepath = Path.Combine(templatesFolderpath, cControllersTemplateFilename);
 		var controllersOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ControllerOutputFolder);
 		Validate(controllerTemplateFilepath, controllersOutputFolder);
 		var controllerTemplate = File.ReadAllText(controllerTemplateFilepath);
 
-		var apClientTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ApiClientTemplateFilepath);
+		var apClientTemplateFilepath = Path.Combine(templatesFolderpath, cApiClientsTemplateFilename);
 		var apiClientOutputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, svcGenModel.ApiClientOutputFolder);
 		Validate(apClientTemplateFilepath, apiClientOutputFolder);
 		var apiClientTemplate = File.ReadAllText(apClientTemplateFilepath);
 
 		// Generate services
 
+		var serviceEntities = new List<EntityModel>();
 		var apiClientEntities = new List<EntityModel>();
 		foreach (var entity in entities.Where(e => e.Service.Enabled)) {
 			// Generate service class
 			GenerateService(entity, svcGenModel, $"{serviceTemplate}", outputFolder);
+			serviceEntities.Add(entity);
 
 			// Generate query classes
 			foreach (var queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
@@ -81,9 +88,13 @@ public class ServiceGenerator
 			}
 		}
 
+		// Register any Services
+		if (serviceEntities.Any())
+			new ServiceCollExtGenerator().GenerateServiceRegistrations(apiClientEntities, svcGenModel, templatesFolderpath);
+
 		// Register any ApiClient classes
 		if (apiClientEntities.Any())
-			new ApiClientCollExtGenerator().GenerateApiClientRegistrations(apiClientEntities, svcGenModel);
+			new ApiClientCollExtGenerator().GenerateApiClientRegistrations(apiClientEntities, svcGenModel, templatesFolderpath);
 	}
 
 	private void Validate(string templateFilepath, string outputFolder)

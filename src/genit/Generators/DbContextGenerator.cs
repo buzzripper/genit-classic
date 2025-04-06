@@ -15,6 +15,8 @@ public class DbContextGenerator
 {
 	#region Constants
 
+	private const string cTemplateFilename = "DbContext.tmpl";
+
 	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_AddlUsings = "ADDL_USINGS";
 	private const string cToken_ContextNs = "CONTEXT_NS";
@@ -30,13 +32,13 @@ public class DbContextGenerator
 
 	#endregion
 
-	public void Run(DbContextGenModel genModel, DbContextModel dbContextModel, string entitiesNamespace)
+	public void Run(DbContextGenModel genModel, DbContextModel dbContextModel, string entitiesNamespace, string templatesFolderpath)
 	{
 		if (!genModel.Enabled)
 			return;
 
 		// Get absolute paths
-		var templateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.TemplateFilepath);
+		var templateFilepath = Path.Combine(templatesFolderpath, cTemplateFilename);
 		var outputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.OutputFolder);
 
 		Validate(outputFolder, templateFilepath, genModel, dbContextModel, entitiesNamespace);

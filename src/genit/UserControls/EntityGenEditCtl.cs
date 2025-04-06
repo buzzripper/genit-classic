@@ -34,7 +34,6 @@ namespace Dyvenix.Genit.UserControls
 		{
 			_suspendUpdates = true;
 
-			txtTemplateFilepath.Text = _entityGenMdl.TemplateFilepath;
 			txtOutputFolder.Text = _entityGenMdl.OutputFolder;
 			txtEntitiesNamespace.Text = _entityGenMdl.EntitiesNamespace;
 			ckbInclHeader.Checked = _entityGenMdl.InclHeader;
@@ -49,12 +48,6 @@ namespace Dyvenix.Genit.UserControls
 		{
 			if (!_suspendUpdates)
 				_entityGenMdl.OutputFolder = txtOutputFolder.Text;
-		}
-
-		private void txtTemplateFilepath_TextChanged(object sender, EventArgs e)
-		{
-			if (!_suspendUpdates)
-				_entityGenMdl.TemplateFilepath = txtTemplateFilepath.Text;
 		}
 
 		private void txtEntitiesNamespace_TextChanged(object sender, EventArgs e)
@@ -73,13 +66,6 @@ namespace Dyvenix.Genit.UserControls
 		{
 			if (!_suspendUpdates)
 				_entityGenMdl.InclHeader = ckbInclHeader.Checked;
-		}
-
-		private void btnBrowseTemplateFilepath_Click(object sender, EventArgs e)
-		{
-			fileDlg.InitialDirectory = txtTemplateFilepath.Text;
-			if (fileDlg.ShowDialog() == DialogResult.OK)
-				txtTemplateFilepath.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, fileDlg.FileName);
 		}
 
 		private void btnBrowseFolder_Click(object sender, EventArgs e)

@@ -15,6 +15,8 @@ public class EnumGenerator
 {
 	#region Constants
 
+	private const string cTemplateFilename = "Enums.tmpl";
+
 	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_EnumsNs = "ENUMS_NS";
 	private const string cToken_EnumName = "ENUM_NAME";
@@ -28,13 +30,13 @@ public class EnumGenerator
 
 	#endregion
 
-	public void Run(EnumGenModel genModel, ObservableCollection<EnumModel> enumMdls, string enumsNamespace)
+	public void Run(EnumGenModel genModel, ObservableCollection<EnumModel> enumMdls, string enumsNamespace, string templatesFolderpath)
 	{
 		if (!genModel.Enabled)
 			return;
 
 		// Get absolute paths
-		var templateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.TemplateFilepath);
+		var templateFilepath = Path.Combine(templatesFolderpath, cTemplateFilename);
 		var outputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, genModel.OutputFolder);
 
 		Validate(outputFolder, templateFilepath);

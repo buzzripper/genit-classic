@@ -40,12 +40,6 @@ public class DbContextModel
 	public ObservableCollection<AssocModel> Assocs { get; set; } = new ObservableCollection<AssocModel>();
 	public GeneratorsModel Generators { get; set; } = new GeneratorsModel();
 
-	public DbContextGenModel DbContextGen { get; set; }
-	public EntityGenModel EntityGen { get; set; }
-	public EnumGenModel EnumGen { get; set; }
-	public ServiceGenModel ServiceGen { get; set; }
-
-
 	#endregion
 
 	#region Methods

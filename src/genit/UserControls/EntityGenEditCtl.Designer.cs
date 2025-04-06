@@ -29,23 +29,22 @@ partial class EntityGenEditCtl
 	{
 		label1 = new System.Windows.Forms.Label();
 		txtOutputFolder = new System.Windows.Forms.TextBox();
-		lblName = new System.Windows.Forms.Label();
 		ckbEnabled = new System.Windows.Forms.CheckBox();
 		ckbInclHeader = new System.Windows.Forms.CheckBox();
 		btnBrowseFolder = new System.Windows.Forms.Button();
 		folderDlg = new System.Windows.Forms.FolderBrowserDialog();
-		btnBrowseTempleFilepath = new System.Windows.Forms.Button();
-		txtTemplateFilepath = new System.Windows.Forms.TextBox();
-		label3 = new System.Windows.Forms.Label();
 		fileDlg = new System.Windows.Forms.OpenFileDialog();
 		txtEntitiesNamespace = new System.Windows.Forms.TextBox();
 		label2 = new System.Windows.Forms.Label();
+		toolStrip1 = new System.Windows.Forms.ToolStrip();
+		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+		toolStrip1.SuspendLayout();
 		SuspendLayout();
 		// 
 		// label1
 		// 
 		label1.AutoSize = true;
-		label1.Location = new System.Drawing.Point(54, 100);
+		label1.Location = new System.Drawing.Point(64, 100);
 		label1.Name = "label1";
 		label1.Size = new System.Drawing.Size(140, 28);
 		label1.TabIndex = 0;
@@ -62,21 +61,11 @@ partial class EntityGenEditCtl
 		txtOutputFolder.TabIndex = 1;
 		txtOutputFolder.TextChanged += txtOutputFolder_TextChanged;
 		// 
-		// lblName
-		// 
-		lblName.AutoSize = true;
-		lblName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		lblName.Location = new System.Drawing.Point(1, 2);
-		lblName.Name = "lblName";
-		lblName.Size = new System.Drawing.Size(187, 32);
-		lblName.TabIndex = 2;
-		lblName.Text = "Entity Generator";
-		// 
 		// ckbEnabled
 		// 
 		ckbEnabled.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbEnabled.AutoSize = true;
-		ckbEnabled.Location = new System.Drawing.Point(1082, 13);
+		ckbEnabled.Location = new System.Drawing.Point(1108, 3);
 		ckbEnabled.Name = "ckbEnabled";
 		ckbEnabled.Size = new System.Drawing.Size(108, 32);
 		ckbEnabled.TabIndex = 3;
@@ -88,7 +77,7 @@ partial class EntityGenEditCtl
 		// 
 		ckbInclHeader.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		ckbInclHeader.AutoSize = true;
-		ckbInclHeader.Location = new System.Drawing.Point(883, 13);
+		ckbInclHeader.Location = new System.Drawing.Point(912, 3);
 		ckbInclHeader.Name = "ckbInclHeader";
 		ckbInclHeader.Size = new System.Drawing.Size(169, 32);
 		ckbInclHeader.TabIndex = 4;
@@ -101,41 +90,11 @@ partial class EntityGenEditCtl
 		btnBrowseFolder.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
 		btnBrowseFolder.Location = new System.Drawing.Point(1166, 98);
 		btnBrowseFolder.Name = "btnBrowseFolder";
-		btnBrowseFolder.Size = new System.Drawing.Size(24, 22);
+		btnBrowseFolder.Size = new System.Drawing.Size(32, 32);
 		btnBrowseFolder.TabIndex = 6;
 		btnBrowseFolder.Text = "...";
 		btnBrowseFolder.UseVisualStyleBackColor = true;
 		btnBrowseFolder.Click += btnBrowseFolder_Click;
-		// 
-		// btnBrowseTempleFilepath
-		// 
-		btnBrowseTempleFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-		btnBrowseTempleFilepath.Location = new System.Drawing.Point(1166, 59);
-		btnBrowseTempleFilepath.Name = "btnBrowseTempleFilepath";
-		btnBrowseTempleFilepath.Size = new System.Drawing.Size(24, 22);
-		btnBrowseTempleFilepath.TabIndex = 11;
-		btnBrowseTempleFilepath.Text = "...";
-		btnBrowseTempleFilepath.UseVisualStyleBackColor = true;
-		btnBrowseTempleFilepath.Click += btnBrowseTemplateFilepath_Click;
-		// 
-		// txtTemplateFilepath
-		// 
-		txtTemplateFilepath.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-		txtTemplateFilepath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtTemplateFilepath.Location = new System.Drawing.Point(214, 59);
-		txtTemplateFilepath.Name = "txtTemplateFilepath";
-		txtTemplateFilepath.Size = new System.Drawing.Size(946, 34);
-		txtTemplateFilepath.TabIndex = 10;
-		txtTemplateFilepath.TextChanged += txtTemplateFilepath_TextChanged;
-		// 
-		// label3
-		// 
-		label3.AutoSize = true;
-		label3.Location = new System.Drawing.Point(62, 60);
-		label3.Name = "label3";
-		label3.Size = new System.Drawing.Size(130, 28);
-		label3.TabIndex = 9;
-		label3.Text = "Template File:";
 		// 
 		// fileDlg
 		// 
@@ -146,7 +105,7 @@ partial class EntityGenEditCtl
 		// 
 		txtEntitiesNamespace.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 		txtEntitiesNamespace.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		txtEntitiesNamespace.Location = new System.Drawing.Point(214, 137);
+		txtEntitiesNamespace.Location = new System.Drawing.Point(214, 146);
 		txtEntitiesNamespace.Name = "txtEntitiesNamespace";
 		txtEntitiesNamespace.Size = new System.Drawing.Size(946, 34);
 		txtEntitiesNamespace.TabIndex = 15;
@@ -156,32 +115,48 @@ partial class EntityGenEditCtl
 		// 
 		label2.AutoSize = true;
 		label2.Font = new System.Drawing.Font("Segoe UI", 10F);
-		label2.Location = new System.Drawing.Point(23, 138);
+		label2.Location = new System.Drawing.Point(19, 147);
 		label2.Name = "label2";
 		label2.Size = new System.Drawing.Size(185, 28);
 		label2.TabIndex = 14;
 		label2.Text = "Entities Namespace:";
 		label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 		// 
+		// toolStrip1
+		// 
+		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1 });
+		toolStrip1.Location = new System.Drawing.Point(0, 0);
+		toolStrip1.Name = "toolStrip1";
+		toolStrip1.Size = new System.Drawing.Size(1244, 37);
+		toolStrip1.TabIndex = 16;
+		toolStrip1.Text = "toolStrip1";
+		// 
+		// toolStripLabel1
+		// 
+		toolStripLabel1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+		toolStripLabel1.Name = "toolStripLabel1";
+		toolStripLabel1.Size = new System.Drawing.Size(187, 32);
+		toolStripLabel1.Text = "Entity Generator";
+		// 
 		// EntityGenEditCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(11F, 28F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-		Controls.Add(txtEntitiesNamespace);
-		Controls.Add(label2);
-		Controls.Add(btnBrowseTempleFilepath);
-		Controls.Add(txtTemplateFilepath);
-		Controls.Add(label3);
-		Controls.Add(btnBrowseFolder);
 		Controls.Add(ckbInclHeader);
 		Controls.Add(ckbEnabled);
-		Controls.Add(lblName);
+		Controls.Add(toolStrip1);
+		Controls.Add(txtEntitiesNamespace);
+		Controls.Add(label2);
+		Controls.Add(btnBrowseFolder);
 		Controls.Add(txtOutputFolder);
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F);
 		Name = "EntityGenEditCtl";
 		Size = new System.Drawing.Size(1244, 316);
 		Load += EntityGenEditCtl_Load;
+		toolStrip1.ResumeLayout(false);
+		toolStrip1.PerformLayout();
 		ResumeLayout(false);
 		PerformLayout();
 	}
@@ -190,15 +165,13 @@ partial class EntityGenEditCtl
 
 	private System.Windows.Forms.Label label1;
 	private System.Windows.Forms.TextBox txtOutputFolder;
-	private System.Windows.Forms.Label lblName;
 	private System.Windows.Forms.CheckBox ckbEnabled;
 	private System.Windows.Forms.CheckBox ckbInclHeader;
 	private System.Windows.Forms.Button btnBrowseFolder;
 	private System.Windows.Forms.FolderBrowserDialog folderDlg;
-	private System.Windows.Forms.Button btnBrowseTempleFilepath;
-	private System.Windows.Forms.TextBox txtTemplateFilepath;
-	private System.Windows.Forms.Label label3;
 	private System.Windows.Forms.OpenFileDialog fileDlg;
 	private System.Windows.Forms.TextBox txtEntitiesNamespace;
 	private System.Windows.Forms.Label label2;
+	private System.Windows.Forms.ToolStrip toolStrip1;
+	private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 }

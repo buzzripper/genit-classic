@@ -418,13 +418,15 @@ public partial class MainForm : Form
 			if (MessageBox.Show("Generate files?", "Generate", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
 				return;
 
+			var templatesFolderpath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, dbContextMdl.Generators.TemplatesFolder);
+
 			// DbContext
 			var dbContextGenMdl = dbContextMdl.Generators.DbContextGen;
 			if (dbContextGenMdl == null)
 				throw new ApplicationException("DbContext generator not found.");
 			if (dbContextGenMdl.Enabled) {
 				outputCtl.WriteInfo("Running DbContext generator...");
-				new DbContextGenerator().Run(dbContextGenMdl, dbContextMdl, dbContextMdl.Generators.EntityGen.EntitiesNamespace);
+				new DbContextGenerator().Run(dbContextGenMdl, dbContextMdl, dbContextMdl.Generators.EntityGen.EntitiesNamespace, templatesFolderpath);
 			}
 
 			// Entities
@@ -434,7 +436,7 @@ public partial class MainForm : Form
 			if (entityGenMdl.Enabled) {
 				var entityGenerator = new EntityGenerator();
 				outputCtl.WriteInfo("Running Entities generator...");
-				entityGenerator.Run(entityGenMdl, dbContextMdl.Entities, entityGenMdl.EntitiesNamespace);
+				entityGenerator.Run(entityGenMdl, dbContextMdl.Entities, entityGenMdl.EntitiesNamespace, templatesFolderpath);
 			}
 
 			// Enums
@@ -444,7 +446,7 @@ public partial class MainForm : Form
 			if (enumGenMdl.Enabled) {
 				var enumGenerator = new EnumGenerator();
 				outputCtl.WriteInfo("Running Entities generator...");
-				enumGenerator.Run(enumGenMdl, dbContextMdl.Enums, enumGenMdl.EnumsNamespace);
+				enumGenerator.Run(enumGenMdl, dbContextMdl.Enums, enumGenMdl.EnumsNamespace, templatesFolderpath);
 			}
 
 			// Services
@@ -454,7 +456,7 @@ public partial class MainForm : Form
 			if (svcGenMdl.Enabled) {
 				var svcGenerator = new ServiceGenerator();
 				outputCtl.WriteInfo("Running Services generator...");
-				svcGenerator.Run(svcGenMdl, dbContextMdl.Entities, entityGenMdl.EntitiesNamespace);
+				svcGenerator.Run(svcGenMdl, dbContextMdl.Entities, entityGenMdl.EntitiesNamespace, templatesFolderpath);
 			}
 
 			ShowSuccessDlg("Files generated.");

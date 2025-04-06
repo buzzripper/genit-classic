@@ -34,7 +34,6 @@ namespace Dyvenix.Genit.UserControls
 		{
 			_suspendUpdates = true;
 
-			txtTemplateFilepath.Text = _enumGenMdl.TemplateFilepath;
 			txtOutputFolder.Text = _enumGenMdl.OutputFolder;
 			txtEnumsNamespace.Text = _enumGenMdl.EnumsNamespace;
 			ckbInclHeader.Checked = _enumGenMdl.InclHeader;
@@ -51,11 +50,6 @@ namespace Dyvenix.Genit.UserControls
 				_enumGenMdl.OutputFolder = txtOutputFolder.Text;
 		}
 
-		private void txtTemplateFilepath_TextChanged(object sender, EventArgs e)
-		{
-			if (!_suspendUpdates)
-				_enumGenMdl.TemplateFilepath = txtTemplateFilepath.Text;
-		}
 
 		private void txtEnumsNamespace_TextChanged(object sender, EventArgs e)
 		{
@@ -75,19 +69,11 @@ namespace Dyvenix.Genit.UserControls
 				_enumGenMdl.InclHeader = ckbInclHeader.Checked;
 		}
 
-		private void btnBrowseTempleFilepath_Click(object sender, EventArgs e)
-		{
-			fileDlg.InitialDirectory = txtTemplateFilepath.Text;
-			if (fileDlg.ShowDialog() == DialogResult.OK)
-				txtTemplateFilepath.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, fileDlg.FileName);
-		}
-
 		private void btnBrowseFolder_Click(object sender, EventArgs e)
 		{
 			folderDlg.InitialDirectory = txtOutputFolder.Text;
 			if (folderDlg.ShowDialog() == DialogResult.OK)
 				txtOutputFolder.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, folderDlg.SelectedPath);
 		}
-
 	}
 }

@@ -10,14 +10,20 @@ namespace Dyvenix.Genit.Generators;
 
 internal class ApiClientCollExtGenerator
 {
+	#region Constants
+
+	private const string cTemplateFilename = "ApiClientCollExt.tmpl";
 	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_ApiClientRegistrations = "API_CLIENT_REGISTRATIONS";
 
-	internal void GenerateApiClientRegistrations(List<EntityModel> apiClientEntities, ServiceGenModel serviceGen)
+	#endregion
+
+	internal void GenerateApiClientRegistrations(List<EntityModel> apiClientEntities, ServiceGenModel serviceGen, string templatesFolderpath)
 	{
 		// Template / Output files
-		var apClientCollExtTemplateFilepath = Utils.ResolveRelativePath(Globals.CurrDocFilepath, serviceGen.ApiClientServicesExtTemplateFilepath);
-		var apiClientCollExtOutputFile = Utils.ResolveRelativePath(Globals.CurrDocFilepath, serviceGen.ApiClientServicesExtOutputFilepath);
+
+		var apClientCollExtTemplateFilepath = Path.Combine(templatesFolderpath, cTemplateFilename);
+		var apiClientCollExtOutputFile = Utils.ResolveRelativePath(Globals.CurrDocFilepath, serviceGen.ApiClientExtOutputFilepath);
 		Validate(apClientCollExtTemplateFilepath, Path.GetDirectoryName(apiClientCollExtOutputFile));
 		var apiClientCollExtTemplate = File.ReadAllText(apClientCollExtTemplateFilepath);
 

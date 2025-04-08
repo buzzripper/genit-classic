@@ -162,10 +162,10 @@ public class DbContextGenerator
 			else
 				sb.Append($".IsRequired(true)");
 
-			if (prop.PrimitiveType == PrimitiveType.String && prop.MaxLength > 0) {
+			if (prop.PrimitiveType?.Id == PrimitiveType.String.Id && prop.MaxLength > 0) {
 				sb.Append($".HasMaxLength({prop.MaxLength})");
 
-			} else if (prop.PrimitiveType == PrimitiveType.DateTime) {
+			} else if (prop.PrimitiveType?.Id == PrimitiveType.DateTime.Id) {
 				sb.Append($".HasColumnType(\"{PrimitiveType.DateTime.SqlType}\")");
 			}
 

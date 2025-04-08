@@ -169,7 +169,7 @@ public partial class DataTypeCtl : UserControlBase
 		if (selectedDataTypeItem == null)
 			return;
 
-		if (selectedDataTypeItem.PrimitiveType == this.PrimitiveType && selectedDataTypeItem.EnumType == this.EnumType)
+		if (selectedDataTypeItem.PrimitiveType?.Id == this.PrimitiveType?.Id && selectedDataTypeItem.EnumType?.Id == this.EnumType?.Id)
 			return;
 
 		if (selectedDataTypeItem.PrimitiveType != null) {

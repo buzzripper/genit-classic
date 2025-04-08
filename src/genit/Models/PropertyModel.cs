@@ -190,7 +190,7 @@ public class PropertyModel : INotifyPropertyChanged
 	{
 		var errs = new List<string>();
 
-		if (this.PrimitiveType == null || this.PrimitiveType == PrimitiveType.None) {
+		if (this.PrimitiveType == null || this.PrimitiveType.Id == PrimitiveType.None.Id) {
 			if (this.EnumType == null) {
 				errs.Add($"Property {entityName}.{this.Name}: No data type defined.");
 			} else {
@@ -198,11 +198,11 @@ public class PropertyModel : INotifyPropertyChanged
 			}
 		} else {
 			// It's a primitive
-			if (this.PrimitiveType == PrimitiveType.String) {
+			if (this.PrimitiveType.Id == PrimitiveType.String.Id) {
 				if (this.MaxLength < 0)
 					errs.Add($"Property {entityName}.{this.Name}: String values must have a MaxLength >= 0 (0 == NVARCHAR(MAX))");
 
-			} else if (this.PrimitiveType == PrimitiveType.ByteArray) {
+			} else if (this.PrimitiveType.Id == PrimitiveType.ByteArray.Id) {
 				if (this.MaxLength <= 0)
 					errs.Add($"Property {entityName}.{this.Name}: Byte array type must have a MaxLength > 0");
 			}

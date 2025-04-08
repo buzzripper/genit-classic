@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using System.Drawing;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -147,26 +148,62 @@ internal class ApiClientGenerator
 		// Build signature
 		string returnType = method.IsList ? $"List<{entity.Name}>" : entity.Name;
 
-		var sbSigParams = new StringBuilder();
-		var sbFilterRoute = new StringBuilder();
-
+		var sbSigArgs = new StringBuilder();
+		var sbRoute = new StringBuilder();
+		var sbQry = new StringBuilder();
 		var c = 0;
-		foreach (var filterProp in method.FilterProperties) {
-			if (c++ > 0) {
-				sbSigParams.Append(", ");
-			}
-			sbSigParams.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
-			sbFilterRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
-		}
-		if (method.InclPaging) {
-			if (sbSigParams.Length > 0) {
-				sbSigParams.Append(", ");
-			}
-			sbSigParams.Append("int pageSize, int pageOffset");
-			sbFilterRoute.Append("/{pageSize}/{pageOffset}");
+
+		//foreach (var filterProp in method.FilterProperties) {
+		//	if (c++ > 0) {
+		//		sbSigArgs.Append(", ");
+		//	}
+		//	sbSigArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
+		//	sbFilterRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
+		//}
+		//if (method.InclPaging) {
+		//	if (sbSigArgs.Length > 0) {
+		//		sbSigArgs.Append(", ");
+		//	}
+		//	sbSigArgs.Append("int pageSize, int pageOffset");
+		//	sbFilterRoute.Append("/{pageSize}/{pageOffset}");
+		//}
+
+		// Required properties first
+		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsInternal && !fp.IsOptional)) {
+			if (c++ > 0)
+				sbSigArgs.Append(", ");
+			sbSigArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
+
+			sbRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
 		}
 
-		var signature = $"Task<{returnType}> {method.Name}({sbSigParams})";
+		// Optional properties next
+		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsInternal && fp.IsOptional)) {
+			if (c++ > 0)
+				sbSigArgs.Append(", ");
+			sbSigArgs.Append($"{filterProp.Property.DatatypeName}? {filterProp.Property.FilterArgName} = null");
+
+			if (sbQry.Length == 0)
+				sbQry.Append("?");
+			else
+				sbQry.Append("&");
+			sbQry.Append($"{filterProp.Property.FilterArgName}={{{filterProp.Property.FilterArgName}}}");
+		}
+
+		// Finally paging
+		if (method.InclPaging) {
+			if (sbSigArgs.Length > 0)
+				sbSigArgs.Append(", ");
+			sbSigArgs.Append("int pgSize = 0, int pgOffset = 0");
+
+			if (sbQry.Length == 0)
+				sbQry.Append("?");
+			else
+				sbQry.Append("&");
+			sbQry.Append($"pgSize={{pgSize}}&pgOffset={{pgOffset}}");
+		}
+
+		var signature = $"Task<{returnType}> {method.Name}({sbSigArgs})";
 
 		// Interface
 		interfaceOutput.Add(signature);
@@ -174,7 +211,7 @@ internal class ApiClientGenerator
 		// Method
 		output.AddLine(tc, $"public async {signature}");
 		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"return await GetAsync<{returnType}>($\"api/v1/{className}/{method.Name}{sbFilterRoute}\");");
+		output.AddLine(tc + 1, $"return await GetAsync<{returnType}>($\"api/v1/{className}/{method.Name}{sbRoute}{sbQry}\");");
 		output.AddLine(tc, "}");
 	}
 

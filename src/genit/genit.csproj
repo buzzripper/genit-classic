@@ -49,6 +49,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Update="UserControls\QueryMethodsListCtl.cs" />
+    <Compile Update="UserControls\IntTestsGenEditCtl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="UserControls\ServiceGenEditCtl.cs" />
     <Compile Update="UserControls\EnumGenEditCtl.cs" />
     <Compile Update="UserControls\EntityGenEditCtl.cs" />

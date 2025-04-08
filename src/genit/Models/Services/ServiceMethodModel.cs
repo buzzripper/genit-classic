@@ -20,7 +20,7 @@ public class ServiceMethodModel : INotifyPropertyChanged
 			UseQuery = false
 		};
 	}
-	
+
 	public event PropertyChangedEventHandler PropertyChanged;
 
 	#region Fields
@@ -32,7 +32,7 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
 	private ObservableCollection<FilterPropertyModel> _filterProperties = new ObservableCollection<FilterPropertyModel>();
 	private ObservableCollection<NavPropertyModel> _inclNavProperties = new ObservableCollection<NavPropertyModel>();
-	
+
 	protected bool _suspendUpdates;
 
 	#endregion
@@ -101,7 +101,14 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	public int AttrCount => this.Attributes.Count;
 
 	[JsonIgnore]
-	public bool IsList => !this.FilterProperties.Any() || this.FilterProperties.Any(fp => !fp.Property.IsPrimaryKey && !fp.Property.IsIndexUnique);
+	public bool IsList
+	{
+		get { 
+			if (this.FilterProperties.Count == 1 && !this.FilterProperties[0].IsOptional && (this.FilterProperties[0].Property.IsPrimaryKey || this.FilterProperties[0].Property.IsIndexUnique))
+				return false;
+			return true;
+		}
+	}
 
 	#endregion
 

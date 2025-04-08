@@ -56,7 +56,7 @@ public partial class MainForm : Form
 		//gens.EntityGen = dbCtx.EntityGen;
 		//gens.EnumGen = dbCtx.EnumGen;
 		//gens.ServiceGen = dbCtx.ServiceGen;
-
+		//dbCtx.Generators.IntTestsGen = IntTestsGenModel.CreateNew();
 		//dbCtx.Generators = gens;
 
 		this.Doc = doc;
@@ -459,12 +459,21 @@ public partial class MainForm : Form
 				svcGenerator.Run(svcGenMdl, dbContextMdl.Entities, entityGenMdl.EntitiesNamespace, templatesFolderpath);
 			}
 
+			// Integration Tests
+			var intTestsGenMdl = dbContextMdl.Generators.IntTestsGen;
+			if (intTestsGenMdl == null)
+				throw new ApplicationException("Integration test generator not found.");
+			if (intTestsGenMdl.Enabled) {
+				var intTestsGenerator = new IntTestGenerator();
+				outputCtl.WriteInfo("Running Integration Tests generator...");
+				intTestsGenerator.Run(intTestsGenMdl, dbContextMdl.Entities, templatesFolderpath);
+			}
+
 			ShowSuccessDlg("Files generated.");
 
 		} catch (Exception ex) {
 			this.ShowErrorDlg(ex);
 		}
-
 	}
 	#endregion
 
@@ -587,6 +596,19 @@ public partial class MainForm : Form
 			var svcGenEditCtl = new ServiceGenEditCtl(svcGenMdl);
 			multiPageCtl.Add(svcGenMdl.Id, svcGenMdl.Name, svcGenEditCtl);
 			multiPageCtl.Select(svcGenMdl.Id);
+		}
+	}
+
+	private void treeNav_IntTestsGenSelected(object sender, NavTreeNodeSelectedEventArgs e)
+	{
+		if (SelectTabPageById(e.Id))
+			return;
+
+		if (!multiPageCtl.Select(e.Id)) {
+			var intTestsGenMdl = this.Doc.DbContexts[0].Generators.IntTestsGen;
+			var svcGenEditCtl = new IntTestsGenEditCtl(intTestsGenMdl);
+			multiPageCtl.Add(intTestsGenMdl.Id, intTestsGenMdl.Name, svcGenEditCtl);
+			multiPageCtl.Select(intTestsGenMdl.Id);
 		}
 	}
 

@@ -20,6 +20,7 @@ public partial class TreeNav : UserControl
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EntityGenSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> EnumGenSelected;
 	public event EventHandler<NavTreeNodeSelectedEventArgs> ServiceGenSelected;
+	public event EventHandler<NavTreeNodeSelectedEventArgs> IntTestsGenSelected;
 
 	public event EventHandler<EntityDeletedEventArgs> EntityDeleted;
 	public event EventHandler<EnumDeletedEventArgs> EnumDeleted;
@@ -29,25 +30,23 @@ public partial class TreeNav : UserControl
 	private const string cKey_Enum = "enum";
 	private const string cKey_Gens = "gens";
 	private const string cKey_Gen = "gen";
-	//private const string cKey_Svcs = "svcs";
 
 	private const string cNodeName_Db = "DbContext";
 	private const string cNodeName_Entities = "Entities";
 	private const string cNodeName_Enums = "Enums";
 	private const string cNodeName_Gen = "Generators";
-	//private const string cNodeName_Svcs = "Services";
 
 	private DbContextModel _dbContextModel;
 
 	private TreeNode _dbContextNode;
 	private TreeNode _entitiesNode;
 	private TreeNode _enumsNode;
-	//private TreeNode _servicesNode;
 	private TreeNode _generatorsNode;
 	private TreeNode _dbCtxGenNode;
 	private TreeNode _entityGenNode;
 	private TreeNode _enumGenNode;
 	private TreeNode _servicesGenNode;
+	private TreeNode _intTestsGenNode;
 
 	public TreeNav()
 	{
@@ -79,7 +78,6 @@ public partial class TreeNav : UserControl
 		_dbContextNode = this.BuildDbContextNode();
 		_entitiesNode = this.BuildEntitiesNode();
 		_enumsNode = this.BuildEnumsNode();
-		//_servicesNode = this.BuildServicesNode();
 		_generatorsNode = this.BuildGeneratorsNode();
 	}
 
@@ -186,48 +184,49 @@ public partial class TreeNav : UserControl
 		_generatorsNode.Nodes.Clear();
 
 		var dbGenMdl = _dbContextModel.Generators.DbContextGen;
-		TreeNode genNode = new TreeNode(dbGenMdl.Name) {
+		_dbCtxGenNode = new TreeNode(dbGenMdl.Name) {
 			Name = dbGenMdl.Id.ToString(),
 			SelectedImageKey = cKey_Gen,
 			ImageKey = cKey_Gen,
 			Tag = dbGenMdl.Id
 		};
-
-		_dbCtxGenNode = genNode;
 		_generatorsNode.Nodes.Add(_dbCtxGenNode);
 
 		var entityGenMdl = _dbContextModel.Generators.EntityGen;
-		TreeNode entityGenNode = new TreeNode(entityGenMdl.Name) {
+		_entityGenNode = new TreeNode(entityGenMdl.Name) {
 			Name = entityGenMdl.Id.ToString(),
 			SelectedImageKey = cKey_Gen,
 			ImageKey = cKey_Gen,
 			Tag = entityGenMdl.Id
 		};
-
-		_entityGenNode = entityGenNode;
 		_generatorsNode.Nodes.Add(_entityGenNode);
 
 		var enumGenMdl = _dbContextModel.Generators.EnumGen;
-		TreeNode enumGenNode = new TreeNode(enumGenMdl.Name) {
+		_enumGenNode = new TreeNode(enumGenMdl.Name) {
 			Name = enumGenMdl.Id.ToString(),
 			SelectedImageKey = cKey_Gen,
 			ImageKey = cKey_Gen,
 			Tag = enumGenMdl.Id
 		};
-
-		_enumGenNode = enumGenNode;
 		_generatorsNode.Nodes.Add(_enumGenNode);
 
 		var servicesGenMdl = _dbContextModel.Generators.ServiceGen;
-		TreeNode svcGenNode = new TreeNode(servicesGenMdl.Name) {
+		_servicesGenNode = new TreeNode(servicesGenMdl.Name) {
 			Name = servicesGenMdl.Id.ToString(),
 			SelectedImageKey = cKey_Gen,
 			ImageKey = cKey_Gen,
 			Tag = servicesGenMdl.Id
 		};
-
-		_servicesGenNode = svcGenNode;
 		_generatorsNode.Nodes.Add(_servicesGenNode);
+
+		var intTestsGenMdl = _dbContextModel.Generators.IntTestsGen;
+		_intTestsGenNode = new TreeNode(intTestsGenMdl.Name) {
+			Name = intTestsGenMdl.Id.ToString(),
+			SelectedImageKey = cKey_Gen,
+			ImageKey = cKey_Gen,
+			Tag = intTestsGenMdl.Id
+		};
+		_generatorsNode.Nodes.Add(_intTestsGenNode);
 
 		_generatorsNode.Expand();
 	}
@@ -261,9 +260,6 @@ public partial class TreeNav : UserControl
 		} else if (e.Node.Parent == _entitiesNode) {
 			EntityModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
-			//} else if (e.Node == _enumsNode) {
-			//	EntitiesNodeSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
-
 		} else if (e.Node.Parent == _enumsNode) {
 			EnumModelSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 
@@ -281,6 +277,9 @@ public partial class TreeNav : UserControl
 
 		} else if (e.Node == _servicesGenNode) {
 			ServiceGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
+
+		} else if (e.Node == _intTestsGenNode) {
+			IntTestsGenSelected?.Invoke(this, new NavTreeNodeSelectedEventArgs(id));
 		}
 	}
 

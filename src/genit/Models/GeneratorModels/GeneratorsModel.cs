@@ -14,7 +14,8 @@ public class GeneratorsModel
 			DbContextGen = DbContextGenModel.CreateNew(),
 			EntityGen = EntityGenModel.CreateNew(),
 			EnumGen = EnumGenModel.CreateNew(),
-			ServiceGen = ServiceGenModel.CreateNew()
+			ServiceGen = ServiceGenModel.CreateNew(),
+			IntTestsGen = IntTestsGenModel.CreateNew()
 		};
 	}
 
@@ -25,6 +26,7 @@ public class GeneratorsModel
 	public EntityGenModel EntityGen { get; set; }
 	public EnumGenModel EnumGen { get; set; }
 	public ServiceGenModel ServiceGen { get; set; }
+	public IntTestsGenModel IntTestsGen { get; set; }
 
 	[JsonIgnore]
 	public string Name => "Generators";

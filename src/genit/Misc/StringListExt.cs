@@ -26,9 +26,18 @@ namespace Dyvenix.Genit.Extensions
 			list.Add(string.Empty);
 		}
 
+		public static string AsString(this List<string> list)
+		{
+			var sb = new StringBuilder();
+			list.ForEach(x => sb.AppendLine(x));
+			return sb.ToString();
+		}
+
 		private static string Tabs(int count)
 		{
 			return new string('\t', count);
 		}
+
+
 	}
 }

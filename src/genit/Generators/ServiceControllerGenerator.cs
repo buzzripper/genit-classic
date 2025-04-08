@@ -155,12 +155,12 @@ internal class ServiceControllerGenerator
 			foreach (var attr in method.Attributes)
 				output.AddLine(tc, $"[{attr}]");
 
-		var filterArg =  string.Empty;
-		var filterRoute =  string.Empty;
+		var filterArg = string.Empty;
+		var filterRoute = string.Empty;
 		var filterParams = string.Empty;
 		if (method.FilterProperties.Count > 0) {
 			filterArg = method.FilterProperties[0].Property.FilterArgName;
-			filterRoute =  $"/{{{filterArg}}}";
+			filterRoute = $"/{{{filterArg}}}";
 			filterParams = $"{method.FilterProperties[0].Property.DatatypeName} {method.FilterProperties[0].Property.FilterArgName}";
 		}
 
@@ -185,29 +185,44 @@ internal class ServiceControllerGenerator
 			foreach (var attr in method.Attributes)
 				output.AddLine(tc, $"[{attr}]");
 
-		// Route attribute
 		StringBuilder sbRoute = new StringBuilder();
-		foreach (var filterProp in method.FilterProperties)
-			sbRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
-		if (method.InclPaging)
-			sbRoute.Append($"/{{pageSize}}/{{pageOffset}}");
-
-		// Args
 		StringBuilder sbArgs = new StringBuilder();
-		foreach (var filterProp in method.FilterProperties) {
+
+		var reqFilterProps = method.FilterProperties.Where(fp => !fp.IsOptional && !fp.IsInternal);
+		var optFilterProps = method.FilterProperties.Where(fp => fp.IsOptional && !fp.IsInternal);
+
+		// Required
+		foreach (var filterProp in reqFilterProps) {
+			// Required arguments go in the route
+			sbRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
 			if (sbArgs.Length > 0)
 				sbArgs.Append(", ");
-			sbArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
+			sbArgs.Append($"[FromRoute] {filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
 		}
+
+		// Optional
+		foreach (var filterProp in optFilterProps) {
+			if (sbArgs.Length > 0)
+				sbArgs.Append(", ");
+			var nullableChar = filterProp.Property.PrimitiveType?.Id != PrimitiveType.String.Id ? "?" : string.Empty;
+			sbArgs.Append($"[FromQuery] {filterProp.Property.DatatypeName}{nullableChar} {filterProp.Property.FilterArgName}");
+		}
+
+		// Paging is always optional
 		if (method.InclPaging) {
 			if (sbArgs.Length > 0)
 				sbArgs.Append(", ");
-			sbArgs.Append("int pageSize = 0, int pageOffset = 0");
+			sbArgs.Append("[FromQuery] int pgSize = 0, [FromQuery] int pgOffset = 0");
 		}
 
 		// Vars
 		StringBuilder sbVars = new StringBuilder();
-		foreach (var filterProp in method.FilterProperties) {
+		foreach (var filterProp in reqFilterProps) {
+			if (sbVars.Length > 0)
+				sbVars.Append(", ");
+			sbVars.Append(filterProp.Property.FilterArgName);
+		}
+		foreach (var filterProp in optFilterProps) {
 			if (sbVars.Length > 0)
 				sbVars.Append(", ");
 			sbVars.Append(filterProp.Property.FilterArgName);
@@ -215,7 +230,7 @@ internal class ServiceControllerGenerator
 		if (method.InclPaging) {
 			if (sbVars.Length > 0)
 				sbVars.Append(", ");
-			sbVars.Append("pageSize, pageOffset");
+			sbVars.Append("pgSize, pgOffset");
 		}
 
 		output.AddLine(tc, $"[HttpGet, Route(\"[action]{sbRoute}\")]");

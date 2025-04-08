@@ -7,6 +7,7 @@ namespace Dyvenix.Genit.Generators
 		Entity,
 		Enum,
 		Assoc,
-		Service
+		Service,
+		IntegrationTest
 	}
 }

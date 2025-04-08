@@ -20,35 +20,74 @@ internal enum ArgType
 {
 	Required,
 	Optional,
-	PgSize,
-	PgOffset
+	Paging
+}
+
+internal enum ValType
+{
+	Good,
+	NotSupplied,
+	NotFound
 }
 
 internal class ArgDef
 {
-	internal ArgDef(string propName, string varName, ArgType argItemType)
+	internal ArgDef(FilterPropertyModel filterProp, ArgType argItemType)
 	{
-		PropName = propName;
-		VarName = varName;
+		FilterProperty = filterProp;
 		ArgItemType = argItemType;
 	}
 	public ArgType ArgItemType { get; set; }
-	public string PropName { get; set; }
-	public string VarName { get; set; }
-	public List<string> Values { get; set; } = new List<string>();
+	public FilterPropertyModel FilterProperty { get; set; }
+	public List<ArgVal> Values { get; set; } = new List<ArgVal>();
+}
+
+internal class ArgVal
+{
+	public ArgVal(ValType valType, string value)
+	{
+		ValType = valType;
+		Value = value;
+	}
+	public ValType ValType { get; set; }
+	public string Value { get; set; }
+
+	public override string ToString()
+	{
+		return ValType.ToString();
+	}
 }
 
 internal class ArgSet
 {
 	public List<ArgItem> ArgItems { get; set; } = new List<ArgItem>();
+
+	public override string ToString()
+	{
+		var sb = new StringBuilder();
+		foreach (var argItem in ArgItems) {
+			if (sb.Length > 0)
+				sb.Append(", ");
+			sb.Append($"{argItem.PropName}:{argItem.ArgVal.ValType}");
+		}
+		return sb.ToString();
+	}
 }
 
 internal class ArgItem
 {
-	public ArgType ArgItemType { get; set; }
-	public string PropName { get; set; }
-	public string VarName { get; set; }
-	public string Value { get; set; }
+	public FilterPropertyModel FilterProperty { get; set; }
+	public ArgType ArgType { get; set; }
+	public ArgVal ArgVal { get; set; }
+
+	public string PropName => FilterProperty?.Property.Name;
+	public string VarName => FilterProperty?.Property.FilterArgName;
+	public bool Nullable => FilterProperty?.Property?.Nullable ?? false;
+
+	public override string ToString()
+	{
+		return PropName;
+	}
 }
 
 internal class ApiClientIntTestsGenerator
@@ -148,30 +187,26 @@ internal class ApiClientIntTestsGenerator
 
 		// Required
 		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsOptional && !fp.IsInternal)) {
-			var argDef = new ArgDef(filterProp.Property.Name, filterProp.Property.FilterArgName, ArgType.Required);
-			argDef.Values.Add($"ds{entity.Name}.{filterProp.Property.Name}");
-			argDef.Values.Add(NotExistsArg(filterProp));
+			var argDef = new ArgDef(filterProp, ArgType.Required);
+			argDef.Values.Add(new ArgVal(ValType.Good, $"ds{entity.Name}.{filterProp.Property.Name}"));
+			argDef.Values.Add(new ArgVal(ValType.NotFound, NotExistsArg(filterProp)));
 			argDefs.Add(argDef);
 		}
 		// Optional
 		foreach (var filterProp in method.FilterProperties.Where(fp => fp.IsOptional && !fp.IsInternal)) {
-			var argDef = new ArgDef(filterProp.Property.Name, filterProp.Property.FilterArgName, ArgType.Optional);
-			argDef.Values.Add($"ds{entity.Name}.{filterProp.Property.Name}");
-			argDef.Values.Add(NotExistsArg(filterProp));
-			argDef.Values.Add("null");
+			var argDef = new ArgDef(filterProp, ArgType.Optional);
+			argDef.Values.Add(new ArgVal(ValType.Good, $"ds{entity.Name}.{filterProp.Property.Name}"));
+			argDef.Values.Add(new ArgVal(ValType.NotFound, NotExistsArg(filterProp)));
+			argDef.Values.Add(new ArgVal(ValType.NotSupplied, "null"));
 			argDefs.Add(argDef);
 		}
 		// Paging
 		foreach (var filterProp in method.FilterProperties.Where(fp => fp.IsOptional && !fp.IsInternal)) {
-			var argDef = new ArgDef(null, "pgSize", ArgType.PgSize);
-			argDef.Values.Add("3");
-			argDef.Values.Add("0");
+			var argDef = new ArgDef(null, ArgType.Paging);
+			argDef.Values.Add(new ArgVal(ValType.Good, "Paging"));
+			argDef.Values.Add(new ArgVal(ValType.NotSupplied, "No Paging"));
 			argDefs.Add(argDef);
 		}
-
-		var sbComment = new StringBuilder();
-		sbComment.Append("// ");
-		sbComment.Append(method.Name);
 
 		// No filter properties, treat as special case to make things easier
 		if (!method.FilterProperties.Any()) {
@@ -189,34 +224,79 @@ internal class ApiClientIntTestsGenerator
 		var c = 0;
 
 		foreach (var argSet in argSets) {
+			// Build the comment line
+			var sbComment = new StringBuilder();
+			foreach (var argItem in argSet.ArgItems) {
+				if (sbComment.Length > 0)
+					sbComment.Append(", ");
+				if (argItem.ArgType != ArgType.Paging) {
+					sbComment.Append($"{argItem.PropName}:{argItem.ArgVal.ValType}");
+				} else {
+					sbComment.Append($"Paging:{argItem.ArgVal.ValType}");
+				}
+			}
+
+			// Build the linq to get the sample entity, used to build the data query for the asserts
+			var sbSampleLinq = new StringBuilder();
+			
+			foreach (var argItem in argSet.ArgItems.Where(a => a.Nullable)) {
+				var prefix = sbSampleLinq.Length == 0 ? "x =>" : " &&";
+				if (argItem.FilterProperty.Property.PrimitiveType?.Id == PrimitiveType.String.Id)
+					sbSampleLinq.Append($"{prefix} x.{argItem.PropName} != null");
+				else
+					sbSampleLinq.Append($"{prefix} x.{argItem.PropName}.HasValue");
+			}
+
 			// Build the linq args to call the dataset, for the asserts
 			var sbLinq = new StringBuilder();
 			foreach (var argItem in argSet.ArgItems) {
-				if (argItem.ArgItemType != ArgType.PgSize) {
+				if (argItem.ArgType != ArgType.Paging) {
 					if (sbLinq.Length > 0)
-						sbLinq.Append("&& ");
-					sbLinq.Append($"x.{argItem.PropName} == {dsSingleVarName}.{argItem.PropName}");
-				} else {
-
+						sbLinq.Append(" && ");
+					sbLinq.Append($"x.{argItem.PropName} == {argItem.ArgVal.Value}");
 				}
 			}
+
 			// Build the args to call the api client
 			var sbApiArgs = new StringBuilder();
 			foreach (var argItem in argSet.ArgItems) {
 				if (sbApiArgs.Length > 0)
 					sbApiArgs.Append(", ");
-				sbApiArgs.Append($"{argItem.VarName}: {argItem.Value}");
+				sbApiArgs.Append($"{argItem.VarName}: {argItem.ArgVal}");
+				if (argItem.Nullable && argItem.FilterProperty.Property.PrimitiveType?.Id == PrimitiveType.String.Id)
+					sbApiArgs.Append(".Value");
 			}
+
+			var hasPaging = argSet.ArgItems.Any(a => a.ArgType == ArgType.Paging);
+
 			// Success
 			output.AddLine();
-			output.AddLine(tc, $"{sbComment} - {sbApiArgs}");
+			output.AddLine(tc, $"// {method.Name}() - {sbComment}");
 			output.AddLine(tc, "[Fact]");
 			output.AddLine(tc, $"public async Task {method.Name}_{++c}()");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"var {dsSingleVarName} = _ds.{entCollName}.First();");
-			output.AddLine(tc + 1, $"var {dsListVarName} = _ds.{entCollName}.Where(x => {sbLinq});");
-			output.AddLine(tc + 1, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
-			output.AddLine(tc + 1, $"Assert.Equal({listVarName}.Count, _ds.{entCollName}.Count);");
+			output.AddLine(tc + 1, "// Arrange");
+			output.AddLine(tc + 1, $"var {dsSingleVarName} = _ds.{entCollName}.First({sbSampleLinq});");
+			output.AddLine(tc + 1, $"var {dsListVarName} = _ds.{entCollName}.Where(x => {sbLinq}).ToList();");
+
+			if (!hasPaging) {
+				output.AddLine();
+				output.AddLine(tc + 1, "// Act");
+				output.AddLine(tc + 1, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
+				output.AddLine();
+				output.AddLine(tc + 1, "// Assert");
+				output.AddLine(tc + 1, $"Assert.Equal({listVarName}.Count, _ds.{entCollName}.Count);");
+
+			} else {
+				// Paging
+				output.AddLine(tc + 1, $"var pgr = new Pager({dsListVarName}.Count);");
+				output.AddLine();
+				output.AddLine(tc + 1, "// Act / Assert");
+				output.AddLine(tc + 1, $"for (var i = 0; i < pgr.TotalPages; i++) {{");
+				output.AddLine(tc + 2, $"var appUsers = await _apiClient.GetAllWithPaging(pgr.PageSize, i);");
+				output.AddLine(tc + 2, $"Assert.Equal(appUsers.Count, pgr.Expected[i]);");
+				output.AddLine(tc + 1, "}");
+			}
 			output.AddLine(tc, "}");
 		}
 	}
@@ -239,10 +319,9 @@ internal class ApiClientIntTestsGenerator
 				var value = def.Values[indices[i]];
 
 				argSet.ArgItems.Add(new ArgItem {
-					PropName = def.PropName,
-					VarName = def.VarName,
-					ArgItemType = def.ArgItemType,
-					Value = value
+					FilterProperty = def.FilterProperty,
+					ArgType = def.ArgItemType,
+					ArgVal = value
 				});
 			}
 
@@ -302,7 +381,7 @@ internal class ApiClientIntTestsGenerator
 			var guidStr = Guid.NewGuid().ToString();
 			if (guidStr.Length > filterProp.Property.MaxLength)
 				guidStr = guidStr.Substring(filterProp.Property.MaxLength);
-			return guidStr;
+			return $"\"{guidStr}\"";
 
 		} else if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.Int.Id)
 			return "int.MaxValue";

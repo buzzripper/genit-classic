@@ -204,8 +204,8 @@ internal class ServiceControllerGenerator
 		foreach (var filterProp in optFilterProps) {
 			if (sbArgs.Length > 0)
 				sbArgs.Append(", ");
-			var nullableChar = filterProp.Property.PrimitiveType?.Id != PrimitiveType.String.Id ? "?" : string.Empty;
-			sbArgs.Append($"[FromQuery] {filterProp.Property.DatatypeName}{nullableChar} {filterProp.Property.FilterArgName}");
+			var nullChar = filterProp.Property.PrimitiveType?.Id != PrimitiveType.String.Id ? "?" : string.Empty;
+			sbArgs.Append($"[FromQuery] {filterProp.Property.DatatypeName}{nullChar} {filterProp.Property.FilterArgName} = null");
 		}
 
 		// Paging is always optional

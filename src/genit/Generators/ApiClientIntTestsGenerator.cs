@@ -16,8 +16,7 @@ internal enum ArgType
 {
 	Required,
 	Optional,
-	PgSize,
-	PgOffset
+	Paging
 }
 
 internal enum ValType
@@ -207,7 +206,7 @@ internal class ApiClientIntTestsGenerator
 		}
 		// Paging
 		if (method.InclPaging) {
-			var argDef = new ArgDef(null, ArgType.PgSize);
+			var argDef = new ArgDef(null, ArgType.Paging);
 			argDef.Values.Add(new ArgVal(ValType.Good, null));
 			argDef.Values.Add(new ArgVal(ValType.NotSupplied, null));
 			argDefs.Add(argDef);
@@ -220,7 +219,7 @@ internal class ApiClientIntTestsGenerator
 			output.AddLine(tc, $"public async Task {method.Name}()");
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"var {varName} = await _apiClient.{method.Name}();");
-			output.AddLine(tc + 1, $"Assert.Equal({varName}.Count, _ds.{entCollName}.Count);");
+			output.AddLine(tc + 1, $"Assert.Equal(_ds.{entCollName}.Count, {varName}.Count);");
 			output.AddLine(tc, "}");
 			return;
 		}
@@ -236,7 +235,7 @@ internal class ApiClientIntTestsGenerator
 			foreach (var argItem in argSet.ArgItems) {
 				if (sbComment.Length > 0)
 					sbComment.Append(", ");
-				if (argItem.ArgType != ArgType.PgSize) {
+				if (argItem.ArgType != ArgType.Paging) {
 					sbComment.Append($"{argItem.PropName}:{argItem.ArgVal.ValType}");
 				} else {
 					sbComment.Append($"Paging:{argItem.ArgVal.ValType}");
@@ -257,14 +256,22 @@ internal class ApiClientIntTestsGenerator
 			var sbLinq = new StringBuilder();
 			foreach (var argItem in argSet.ArgItems) {
 				if (argItem.ArgVal.ValType != ValType.NotSupplied) {
-					if (argItem.ArgType != ArgType.PgSize) {
+					if (argItem.ArgType != ArgType.Paging) {
 						var prefix = sbLinq.Length == 0 ? ".Where(x =>" : " &&";
 						sbLinq.Append($"{prefix} x.{argItem.PropName} == {argItem.ArgVal.Value}");
 					}
 				}
 			}
+			// Add in any internal filters
+			foreach (var filterProp in method.FilterProperties.Where(fp => fp.IsInternal)) {
+				var prefix = sbLinq.Length == 0 ? ".Where(x =>" : " &&";
+				sbLinq.Append($"{prefix} {BuildInternalFilter(filterProp)}");
+			}
 			if (sbLinq.Length > 0)
 				sbLinq.Append(")");
+
+			var hasPaging = argSet.ArgItems.Any(a => a.ArgType == ArgType.Paging);
+			var hasNotExists = argSet.ArgItems.Any(a => a.ArgVal.ValType == ValType.NotExist);
 
 			// Build the args to call the api client
 			var sbApiArgs = new StringBuilder();
@@ -272,20 +279,23 @@ internal class ApiClientIntTestsGenerator
 				if (argItem.ArgVal.ValType != ValType.NotSupplied) {
 					if (sbApiArgs.Length > 0)
 						sbApiArgs.Append(", ");
-					sbApiArgs.Append($"{argItem.VarName}: {argItem.ArgVal.Value}");
+					if (!(argItem.ArgType == ArgType.Paging && hasNotExists))
+						sbApiArgs.Append($"{argItem.VarName}: {argItem.ArgVal.Value}");
+					else if (argItem.VarName == "pgSize")
+						sbApiArgs.Append($"{argItem.VarName}: 10"); // pgSize dummy value - result s/b 0 because it's a NotExists test
+					else
+						sbApiArgs.Append($"{argItem.VarName}: 0"); // pgOffset dummy value - result s/b 0 because it's a NotExists test
 				}
 			}
-
-			var hasPaging = argSet.ArgItems.Any(a => a.ArgType == ArgType.PgSize);
 
 			// Success
 			output.AddLine();
 			output.AddLine(tc, $"// {method.Name}() - {sbComment}");
 			output.AddLine(tc, "[Fact]");
-			output.AddLine(tc, $"public async Task {method.Name}_{++c}()");
+			output.AddLine(tc, $"public async Task {method.Name}_{++c:D2}()");
 			output.AddLine(tc, "{");
 
-			if (!hasPaging) {
+			if (!hasPaging || hasNotExists) {
 				output.AddLine(tc + 1, "// Arrange");
 				output.AddLine(tc + 1, $"var {dsSingleVarName} = _ds.{entCollName}.First({sbSampleLinq});");
 				output.AddLine(tc + 1, $"var {dsListVarName} = _ds.{entCollName}{sbLinq}.ToList();");
@@ -294,21 +304,28 @@ internal class ApiClientIntTestsGenerator
 				output.AddLine(tc + 1, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
 				output.AddLine();
 				output.AddLine(tc + 1, "// Assert");
-				output.AddLine(tc + 1, $"Assert.Equal({listVarName}.Count, {dsListVarName}.Count);");
+				output.AddLine(tc + 1, $"Assert.Equal({dsListVarName}.Count, {listVarName}.Count);");
 
 			} else {
 				// Paging
 				output.AddLine(tc + 1, "// Arrange");
 				output.AddLine(tc + 1, $"var {dsSingleVarName} = _ds.{entCollName}.First({sbSampleLinq});");
 				output.AddLine(tc + 1, $"var {dsListVarName} = _ds.{entCollName}{sbLinq}.ToList();");
-				output.AddLine(tc + 1, $"var pgr = new Pager({dsListVarName}.Count);");
-				output.AddLine();
-				output.AddLine(tc + 1, "// Act / Assert");
-				output.AddLine(tc + 1, $"for (var i = 0; i < pgr.TotalPages; i++) {{");
-				output.AddLine(tc + 2, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
-				output.AddLine(tc + 2, $"Assert.Equal({listVarName}.Count, pgr.Expected[i]);");
-				output.AddLine(tc + 1, "}");
+				if (!hasNotExists) {
+					output.AddLine(tc + 1, $"var pgr = new Pager({dsListVarName}.Count);");
+					output.AddLine();
+					output.AddLine(tc + 1, "// Act / Assert");
+					output.AddLine(tc + 1, $"for (var i = 0; i < pgr.TotalPages; i++) {{");
+					output.AddLine(tc + 2, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
+					output.AddLine(tc + 2, $"Assert.Equal(pgr.Expected[i], {listVarName}.Count);");
+					output.AddLine(tc + 1, "}");
+				} else {
+					output.AddLine();
+					output.AddLine(tc + 1, "// Act");
+					output.AddLine(tc + 1, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
+				}
 			}
+
 			output.AddLine(tc, "}");
 		}
 	}
@@ -316,6 +333,20 @@ internal class ApiClientIntTestsGenerator
 	private bool IsString(PropertyModel property)
 	{
 		return property.PrimitiveType?.Id == PrimitiveType.String.Id;
+	}
+
+	private string BuildInternalFilter(FilterPropertyModel filterProp)
+	{
+		if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.String.Id) {
+			return "EF.Functions.Like(x.{filterProp.Property.Name}, \"{filterProp.InternalValue}\"";
+		} else {
+			if (filterProp.IsOptional)
+				return $"x.{filterProp.Property.FilterArgName}.HasValue)";
+			else if (filterProp.Property.EnumType != null)
+				return $"x.{filterProp.Property.Name} == {filterProp.Property.EnumType.Name}.{filterProp.InternalValue}";
+			else
+				return $"x.{filterProp.Property.Name} == {filterProp.InternalValue}";
+		}
 	}
 
 	public static List<ArgSet> GetAllCombinations(List<ArgDef> argDefs)
@@ -336,7 +367,7 @@ internal class ApiClientIntTestsGenerator
 				var argVal = argDef.Values[indices[i]];
 
 				ArgItem argItem = null;
-				if (argDef.ArgItemType != ArgType.PgSize) {
+				if (argDef.ArgItemType != ArgType.Paging) {
 					argItem = new ArgItem {
 						FilterProperty = argDef.FilterProperty,
 						ArgType = argDef.ArgItemType,

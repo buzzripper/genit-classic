@@ -104,7 +104,8 @@ internal class ServiceMethodGenerator
 		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsInternal && fp.IsOptional)) {
 			if (c++ > 0)
 				sbSigArgs.Append(", ");
-			sbSigArgs.Append($"{filterProp.Property.DatatypeName}? {filterProp.Property.FilterArgName} = null");
+			var nullChar = filterProp.Property.PrimitiveType?.Id != PrimitiveType.String.Id ? "?" : string.Empty;
+			sbSigArgs.Append($"{filterProp.Property.DatatypeName}{nullChar} {filterProp.Property.FilterArgName} = null");
 		}
 
 		// Finally paging

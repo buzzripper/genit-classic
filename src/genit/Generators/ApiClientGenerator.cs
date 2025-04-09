@@ -153,21 +153,6 @@ internal class ApiClientGenerator
 		var sbQry = new StringBuilder();
 		var c = 0;
 
-		//foreach (var filterProp in method.FilterProperties) {
-		//	if (c++ > 0) {
-		//		sbSigArgs.Append(", ");
-		//	}
-		//	sbSigArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
-		//	sbFilterRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
-		//}
-		//if (method.InclPaging) {
-		//	if (sbSigArgs.Length > 0) {
-		//		sbSigArgs.Append(", ");
-		//	}
-		//	sbSigArgs.Append("int pageSize, int pageOffset");
-		//	sbFilterRoute.Append("/{pageSize}/{pageOffset}");
-		//}
-
 		// Required properties first
 		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsInternal && !fp.IsOptional)) {
 			if (c++ > 0)
@@ -181,7 +166,8 @@ internal class ApiClientGenerator
 		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsInternal && fp.IsOptional)) {
 			if (c++ > 0)
 				sbSigArgs.Append(", ");
-			sbSigArgs.Append($"{filterProp.Property.DatatypeName}? {filterProp.Property.FilterArgName} = null");
+			var nullChar = filterProp.Property.PrimitiveType?.Id != PrimitiveType.String.Id ? "?" : string.Empty;
+			sbSigArgs.Append($"{filterProp.Property.DatatypeName}{nullChar} {filterProp.Property.FilterArgName} = null");
 
 			if (sbQry.Length == 0)
 				sbQry.Append("?");

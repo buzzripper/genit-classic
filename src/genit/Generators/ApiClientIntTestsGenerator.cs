@@ -8,11 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Collections;
 using System.Data;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using System.DirectoryServices.ActiveDirectory;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -20,14 +16,15 @@ internal enum ArgType
 {
 	Required,
 	Optional,
-	Paging
+	PgSize,
+	PgOffset
 }
 
 internal enum ValType
 {
 	Good,
 	NotSupplied,
-	NotFound
+	NotExist
 }
 
 internal class ArgDef
@@ -80,9 +77,9 @@ internal class ArgItem
 	public ArgType ArgType { get; set; }
 	public ArgVal ArgVal { get; set; }
 
-	public string PropName => FilterProperty?.Property.Name;
-	public string VarName => FilterProperty?.Property.FilterArgName;
-	public bool Nullable => FilterProperty?.Property?.Nullable ?? false;
+	public string PropName { get; set; }
+	public string VarName { get; set; }
+	public bool Nullable { get; set; }
 
 	public override string ToString()
 	{
@@ -183,28 +180,36 @@ internal class ApiClientIntTestsGenerator
 		var varName = Utils.ToCamelCase(entity.Name);
 		var listVarName = $"{Utils.ToCamelCase(entity.Name)}s";
 
+		// Build all the combinations
+
 		var argDefs = new List<ArgDef>();
 
 		// Required
 		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsOptional && !fp.IsInternal)) {
 			var argDef = new ArgDef(filterProp, ArgType.Required);
-			argDef.Values.Add(new ArgVal(ValType.Good, $"ds{entity.Name}.{filterProp.Property.Name}"));
-			argDef.Values.Add(new ArgVal(ValType.NotFound, NotExistsArg(filterProp)));
+			var nulStr = (filterProp.Property.Nullable && !IsString(filterProp.Property)) ? ".Value" : string.Empty;
+			argDef.Values.Add(new ArgVal(ValType.Good, $"ds{entity.Name}.{filterProp.Property.Name}{nulStr}"));
+			// Skip 'NotExists' for a non-null enum
+			if (!(filterProp.Property.EnumType != null && !filterProp.Property.Nullable))
+				argDef.Values.Add(new ArgVal(ValType.NotExist, NotExistsArg(filterProp)));
 			argDefs.Add(argDef);
 		}
 		// Optional
 		foreach (var filterProp in method.FilterProperties.Where(fp => fp.IsOptional && !fp.IsInternal)) {
 			var argDef = new ArgDef(filterProp, ArgType.Optional);
-			argDef.Values.Add(new ArgVal(ValType.Good, $"ds{entity.Name}.{filterProp.Property.Name}"));
-			argDef.Values.Add(new ArgVal(ValType.NotFound, NotExistsArg(filterProp)));
+			var nulStr = (filterProp.Property.Nullable && !IsString(filterProp.Property)) ? ".Value" : string.Empty;
+			argDef.Values.Add(new ArgVal(ValType.Good, $"ds{entity.Name}.{filterProp.Property.Name}{nulStr}"));
+			// Skip 'NotExists' for a non-null enum
+			if (!(filterProp.Property.EnumType != null && !filterProp.Property.Nullable))
+				argDef.Values.Add(new ArgVal(ValType.NotExist, NotExistsArg(filterProp)));
 			argDef.Values.Add(new ArgVal(ValType.NotSupplied, "null"));
 			argDefs.Add(argDef);
 		}
 		// Paging
-		foreach (var filterProp in method.FilterProperties.Where(fp => fp.IsOptional && !fp.IsInternal)) {
-			var argDef = new ArgDef(null, ArgType.Paging);
-			argDef.Values.Add(new ArgVal(ValType.Good, "Paging"));
-			argDef.Values.Add(new ArgVal(ValType.NotSupplied, "No Paging"));
+		if (method.InclPaging) {
+			var argDef = new ArgDef(null, ArgType.PgSize);
+			argDef.Values.Add(new ArgVal(ValType.Good, null));
+			argDef.Values.Add(new ArgVal(ValType.NotSupplied, null));
 			argDefs.Add(argDef);
 		}
 
@@ -223,22 +228,23 @@ internal class ApiClientIntTestsGenerator
 		var argSets = GetAllCombinations(argDefs);
 		var c = 0;
 
+		// Create the tests from the combinations
+
 		foreach (var argSet in argSets) {
 			// Build the comment line
 			var sbComment = new StringBuilder();
 			foreach (var argItem in argSet.ArgItems) {
 				if (sbComment.Length > 0)
 					sbComment.Append(", ");
-				if (argItem.ArgType != ArgType.Paging) {
+				if (argItem.ArgType != ArgType.PgSize) {
 					sbComment.Append($"{argItem.PropName}:{argItem.ArgVal.ValType}");
 				} else {
 					sbComment.Append($"Paging:{argItem.ArgVal.ValType}");
 				}
 			}
 
-			// Build the linq to get the sample entity, used to build the data query for the asserts
+			// Build the linq to get the sample entity, used to build the linq for the dataset query for the asserts
 			var sbSampleLinq = new StringBuilder();
-			
 			foreach (var argItem in argSet.ArgItems.Where(a => a.Nullable)) {
 				var prefix = sbSampleLinq.Length == 0 ? "x =>" : " &&";
 				if (argItem.FilterProperty.Property.PrimitiveType?.Id == PrimitiveType.String.Id)
@@ -250,24 +256,27 @@ internal class ApiClientIntTestsGenerator
 			// Build the linq args to call the dataset, for the asserts
 			var sbLinq = new StringBuilder();
 			foreach (var argItem in argSet.ArgItems) {
-				if (argItem.ArgType != ArgType.Paging) {
-					if (sbLinq.Length > 0)
-						sbLinq.Append(" && ");
-					sbLinq.Append($"x.{argItem.PropName} == {argItem.ArgVal.Value}");
+				if (argItem.ArgVal.ValType != ValType.NotSupplied) {
+					if (argItem.ArgType != ArgType.PgSize) {
+						var prefix = sbLinq.Length == 0 ? ".Where(x =>" : " &&";
+						sbLinq.Append($"{prefix} x.{argItem.PropName} == {argItem.ArgVal.Value}");
+					}
 				}
 			}
+			if (sbLinq.Length > 0)
+				sbLinq.Append(")");
 
 			// Build the args to call the api client
 			var sbApiArgs = new StringBuilder();
 			foreach (var argItem in argSet.ArgItems) {
-				if (sbApiArgs.Length > 0)
-					sbApiArgs.Append(", ");
-				sbApiArgs.Append($"{argItem.VarName}: {argItem.ArgVal}");
-				if (argItem.Nullable && argItem.FilterProperty.Property.PrimitiveType?.Id == PrimitiveType.String.Id)
-					sbApiArgs.Append(".Value");
+				if (argItem.ArgVal.ValType != ValType.NotSupplied) {
+					if (sbApiArgs.Length > 0)
+						sbApiArgs.Append(", ");
+					sbApiArgs.Append($"{argItem.VarName}: {argItem.ArgVal.Value}");
+				}
 			}
 
-			var hasPaging = argSet.ArgItems.Any(a => a.ArgType == ArgType.Paging);
+			var hasPaging = argSet.ArgItems.Any(a => a.ArgType == ArgType.PgSize);
 
 			// Success
 			output.AddLine();
@@ -275,11 +284,11 @@ internal class ApiClientIntTestsGenerator
 			output.AddLine(tc, "[Fact]");
 			output.AddLine(tc, $"public async Task {method.Name}_{++c}()");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, "// Arrange");
-			output.AddLine(tc + 1, $"var {dsSingleVarName} = _ds.{entCollName}.First({sbSampleLinq});");
-			output.AddLine(tc + 1, $"var {dsListVarName} = _ds.{entCollName}.Where(x => {sbLinq}).ToList();");
 
 			if (!hasPaging) {
+				output.AddLine(tc + 1, "// Arrange");
+				output.AddLine(tc + 1, $"var {dsSingleVarName} = _ds.{entCollName}.First({sbSampleLinq});");
+				output.AddLine(tc + 1, $"var {dsListVarName} = _ds.{entCollName}{sbLinq}.ToList();");
 				output.AddLine();
 				output.AddLine(tc + 1, "// Act");
 				output.AddLine(tc + 1, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
@@ -289,16 +298,24 @@ internal class ApiClientIntTestsGenerator
 
 			} else {
 				// Paging
+				output.AddLine(tc + 1, "// Arrange");
+				output.AddLine(tc + 1, $"var {dsSingleVarName} = _ds.{entCollName}.First({sbSampleLinq});");
+				output.AddLine(tc + 1, $"var {dsListVarName} = _ds.{entCollName}{sbLinq}.ToList();");
 				output.AddLine(tc + 1, $"var pgr = new Pager({dsListVarName}.Count);");
 				output.AddLine();
 				output.AddLine(tc + 1, "// Act / Assert");
 				output.AddLine(tc + 1, $"for (var i = 0; i < pgr.TotalPages; i++) {{");
-				output.AddLine(tc + 2, $"var appUsers = await _apiClient.GetAllWithPaging(pgr.PageSize, i);");
-				output.AddLine(tc + 2, $"Assert.Equal(appUsers.Count, pgr.Expected[i]);");
+				output.AddLine(tc + 2, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
+				output.AddLine(tc + 2, $"Assert.Equal({listVarName}.Count, pgr.Expected[i]);");
 				output.AddLine(tc + 1, "}");
 			}
 			output.AddLine(tc, "}");
 		}
+	}
+
+	private bool IsString(PropertyModel property)
+	{
+		return property.PrimitiveType?.Id == PrimitiveType.String.Id;
 	}
 
 	public static List<ArgSet> GetAllCombinations(List<ArgDef> argDefs)
@@ -315,14 +332,41 @@ internal class ApiClientIntTestsGenerator
 			var argSet = new ArgSet();
 
 			for (int i = 0; i < argDefs.Count; i++) {
-				var def = argDefs[i];
-				var value = def.Values[indices[i]];
+				var argDef = argDefs[i];
+				var argVal = argDef.Values[indices[i]];
 
-				argSet.ArgItems.Add(new ArgItem {
-					FilterProperty = def.FilterProperty,
-					ArgType = def.ArgItemType,
-					ArgVal = value
-				});
+				ArgItem argItem = null;
+				if (argDef.ArgItemType != ArgType.PgSize) {
+					argItem = new ArgItem {
+						FilterProperty = argDef.FilterProperty,
+						ArgType = argDef.ArgItemType,
+						ArgVal = argVal,
+						VarName = argDef.FilterProperty.Property.FilterArgName,
+						PropName = argDef.FilterProperty.Property.Name,
+						Nullable = argDef.FilterProperty.Property.Nullable
+					};
+					argSet.ArgItems.Add(argItem);
+
+				} else {
+					argItem = new ArgItem {
+						FilterProperty = argDef.FilterProperty,
+						ArgType = argDef.ArgItemType,
+						ArgVal = new ArgVal(argVal.ValType, "pgr.PageSize"),
+						VarName = "pgSize",
+						PropName = "",
+						Nullable = false
+					};
+					argSet.ArgItems.Add(argItem);
+					argItem = new ArgItem {
+						FilterProperty = argDef.FilterProperty,
+						ArgType = argDef.ArgItemType,
+						ArgVal = new ArgVal(argVal.ValType, "i"),
+						VarName = "pgOffset",
+						PropName = "",
+						Nullable = false
+					};
+					argSet.ArgItems.Add(argItem);
+				}
 			}
 
 			result.Add(argSet);
@@ -378,10 +422,10 @@ internal class ApiClientIntTestsGenerator
 			return "Guid.Empty";
 
 		else if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.String.Id) {
-			var guidStr = Guid.NewGuid().ToString();
-			if (guidStr.Length > filterProp.Property.MaxLength)
-				guidStr = guidStr.Substring(filterProp.Property.MaxLength);
-			return $"\"{guidStr}\"";
+			if (0 < filterProp.Property.MaxLength && filterProp.Property.MaxLength < 36)
+				return $"Guid.NewGuid().ToString()[{filterProp.Property.MaxLength}..]";
+			else
+				return "Guid.NewGuid().ToString()";
 
 		} else if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.Int.Id)
 			return "int.MaxValue";

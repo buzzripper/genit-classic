@@ -294,7 +294,7 @@ internal class ApiClientIntTestsGenerator
 				output.AddLine(tc + 1, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
 				output.AddLine();
 				output.AddLine(tc + 1, "// Assert");
-				output.AddLine(tc + 1, $"Assert.Equal({listVarName}.Count, _ds.{entCollName}.Count);");
+				output.AddLine(tc + 1, $"Assert.Equal({listVarName}.Count, {dsListVarName}.Count);");
 
 			} else {
 				// Paging

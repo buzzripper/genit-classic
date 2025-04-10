@@ -2,6 +2,7 @@
 using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -49,8 +50,8 @@ namespace Dyvenix.Genit.UserControls
 
 			filterPropsCtl.SetProperties(properties);
 
-			lbxNavProperties.Items.Clear();
-			lbxNavProperties.Items.AddRange(navProperties.ToArray());
+			clbNavProperties.Items.Clear();
+			clbNavProperties.Items.AddRange(navProperties.ToArray());
 		}
 
 		#endregion
@@ -98,28 +99,19 @@ namespace Dyvenix.Genit.UserControls
 		{
 			splMain.Dock = DockStyle.Fill;
 			splLists.Dock = DockStyle.Fill;
-
-			//lblFilterProperties.Height = toolStrip1.Height;
-
-			lblInclNavProps.Height = toolStrip1.Height;
-			lbxNavProperties.Left = 0;
-			lbxNavProperties.Top = lblInclNavProps.Height + 1;
-			lbxNavProperties.Width = splLists.Panel2.Width;
-			lbxNavProperties.Height = splLists.Panel2.Height - toolStrip1.Height;
-			lbxNavProperties.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 		}
-
-		
 
 		private void SetInclNavPropertiesList(ServiceMethodModel method)
 		{
 			_suspendUpdates = true;
 
-			lbxNavProperties.SelectedItems.Clear();
-			for (var i = 0; i < lbxNavProperties.Items.Count; i++) {
-				var navProp = (NavPropertyModel)lbxNavProperties.Items[i];
-				if (method.InclNavProperties.Contains(navProp))
-					lbxNavProperties.SelectedItems.Add(navProp);
+			for (var i = 0; i < clbNavProperties.Items.Count; i++) {
+				if (method == null) {
+					clbNavProperties.SetItemChecked(i, false);
+					continue;
+				}
+				var navProp = clbNavProperties.Items[i] as NavPropertyModel;
+				clbNavProperties.SetItemChecked(i, method.InclNavProperties.Contains(navProp));
 			}
 
 			_suspendUpdates = false;
@@ -182,45 +174,39 @@ namespace Dyvenix.Genit.UserControls
 				var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
 				filterPropsCtl.SetFilterProperties(method.FilterProperties);
 				SetInclNavPropertiesList(method);
-				lbxNavProperties.Enabled = true;
-
+				clbNavProperties.Enabled = true;
 			} else {
 				filterPropsCtl.SetFilterProperties(null);
+				SetInclNavPropertiesList(null);
 			}
-
 			_suspendUpdates = false;
 		}
 
-		
 		private void grdMethods_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
 		{
 			this.grdMethods.Cursor = Cursors.Default;
 		}
 
-		private void lbxNavProperties_SelectedIndexChanged(object sender, EventArgs e)
+		private void clbNavProperties_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
-			if (_suspendUpdates)
+			if (_suspendUpdates == true)
+				return;
+
+			if (e.NewValue == CheckState.Indeterminate)
+				return;	
+
+			var navProp = clbNavProperties.Items[e.Index] as NavPropertyModel;
+			if (navProp == null)
 				return;
 
 			var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
 
-			foreach (var item in lbxNavProperties.Items) {
-				NavPropertyModel navProp = item as NavPropertyModel;
-				var isSelected = lbxNavProperties.SelectedItems.Contains(navProp);
-				var isFilterProp = method.InclNavProperties.Contains(navProp);
-
-				if (isSelected) {
-					if (!isFilterProp) {
-						method.InclNavProperties.Add(navProp);
-						break;
-					}
-				} else {
-					// not selected
-					if (isFilterProp) {
-						method.InclNavProperties.Remove(navProp);
-						break;
-					}
-				}
+			if (e.NewValue == CheckState.Checked) {
+				if (!method.InclNavProperties.Contains(navProp))
+					method.InclNavProperties.Add(navProp);
+			} else {
+				if (method.InclNavProperties.Contains(navProp))
+					method.InclNavProperties.Remove(navProp);
 			}
 		}
 

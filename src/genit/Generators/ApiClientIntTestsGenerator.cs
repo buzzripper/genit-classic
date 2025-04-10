@@ -299,12 +299,21 @@ internal class ApiClientIntTestsGenerator
 				output.AddLine(tc + 1, "// Arrange");
 				output.AddLine(tc + 1, $"var {dsSingleVarName} = _ds.{entCollName}.First({sbSampleLinq});");
 				output.AddLine(tc + 1, $"var {dsListVarName} = _ds.{entCollName}{sbLinq}.ToList();");
+
+				foreach (var navProp in method.InclNavProperties)
+					output.AddLine(tc + 1, $"var ds{navProp.Name}Count = {dsListVarName}.Sum(x => x.{navProp.Name}?.Count);");
+
 				output.AddLine();
 				output.AddLine(tc + 1, "// Act");
 				output.AddLine(tc + 1, $"var {listVarName} = await _apiClient.{method.Name}({sbApiArgs});");
+				foreach (var navProp in method.InclNavProperties)
+					output.AddLine(tc + 1, $"var {Utils.ToCamelCase(navProp.Name)}Count = {listVarName}.Sum(x => x.{navProp.Name}?.Count);");
+
 				output.AddLine();
 				output.AddLine(tc + 1, "// Assert");
 				output.AddLine(tc + 1, $"Assert.Equal({dsListVarName}.Count, {listVarName}.Count);");
+				foreach (var navProp in method.InclNavProperties)
+					output.AddLine(tc + 1, $"Assert.Equal(ds{navProp.Name}Count, {Utils.ToCamelCase(navProp.Name)}Count);");
 
 			} else {
 				// Paging

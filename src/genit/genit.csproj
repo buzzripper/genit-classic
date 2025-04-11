@@ -1,81 +1,83 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <Nullable>disable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>disable</ImplicitUsings>
-	 <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
-	  <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
-	 <Version>2.0.0</Version>
-	 <ApplicationIcon>Resources\genit.ico</ApplicationIcon>
-	  <NoWarn>$(NoWarn);WFO5001</NoWarn>
-	  <AssemblyName>Dyvenix.Genit</AssemblyName>
-	  <RootNamespace>Dyvenix.Genit</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<Nullable>disable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
+		<Version>2.0.0</Version>
+		<ApplicationIcon>Resources\genit.ico</ApplicationIcon>
+		<NoWarn>$(NoWarn);WFO5001</NoWarn>
+		<AssemblyName>Dyvenix.Genit</AssemblyName>
+		<RootNamespace>Dyvenix.Genit</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Resources\arrow_north_18.png" />
-    <None Remove="Resources\arrow_north_24.png" />
-    <None Remove="Resources\arrow_south_18.png" />
-    <None Remove="Resources\arrow_south_24.png" />
-    <None Remove="Resources\refresh.png" />
-    <None Remove="Resources\Spinner.gif" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Resources\arrow_north_18.png" />
+		<None Remove="Resources\arrow_north_24.png" />
+		<None Remove="Resources\arrow_south_18.png" />
+		<None Remove="Resources\arrow_south_24.png" />
+		<None Remove="Resources\refresh.png" />
+		<None Remove="Resources\Spinner.gif" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Resources\genit.ico" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="Resources\genit.ico" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\arrow_north_18.png" />
-    <EmbeddedResource Include="Resources\arrow_north_24.png" />
-    <EmbeddedResource Include="Resources\arrow_south_18.png" />
-    <EmbeddedResource Include="Resources\arrow_south_24.png" />
-    <EmbeddedResource Include="Resources\refresh.png" />
-    <EmbeddedResource Include="Resources\Spinner.gif" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\arrow_north_18.png" />
+		<EmbeddedResource Include="Resources\arrow_north_24.png" />
+		<EmbeddedResource Include="Resources\arrow_south_18.png" />
+		<EmbeddedResource Include="Resources\arrow_south_24.png" />
+		<EmbeddedResource Include="Resources\refresh.png" />
+		<EmbeddedResource Include="Resources\Spinner.gif" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Update="UserControls\QueryMethodsListCtl.cs" />
-    <Compile Update="UserControls\IntTestsGenEditCtl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UserControls\ServiceGenEditCtl.cs" />
-    <Compile Update="UserControls\EnumGenEditCtl.cs" />
-    <Compile Update="UserControls\EntityGenEditCtl.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+		<Compile Update="UserControls\QueryMethodsListCtl.cs" />
+		<Compile Update="UserControls\IntTestsGenEditCtl.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\UpdateMethodsEditCtl.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="UserControls\ServiceGenEditCtl.cs" />
+		<Compile Update="UserControls\EnumGenEditCtl.cs" />
+		<Compile Update="UserControls\EntityGenEditCtl.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Generators\Templates\DbContext.cs.tmpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="Generators\Templates\DbContext.cs.tmpl">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if /i &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xD;&#xA;    rmdir /S /Q &quot;C:\Programs\LogViewer\&quot;&#xD;&#xA;    mkdir &quot;C:\Programs\LogViewer\&quot;&#xD;&#xA;    xcopy /Y /E &quot;$(TargetDir)*&quot; &quot;C:\Programs\LogViewer\&quot;&#xD;&#xA;)" />
-  </Target>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="if /i &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xD;&#xA;    rmdir /S /Q &quot;C:\Programs\LogViewer\&quot;&#xD;&#xA;    mkdir &quot;C:\Programs\LogViewer\&quot;&#xD;&#xA;    xcopy /Y /E &quot;$(TargetDir)*&quot; &quot;C:\Programs\LogViewer\&quot;&#xD;&#xA;)" />
+	</Target>
 
 </Project>

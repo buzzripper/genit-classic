@@ -77,7 +77,7 @@ public class ServiceGenerator
 			serviceEntities.Add(entity);
 
 			// Generate query classes
-			foreach (var queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
+			foreach (var queryMethod in entity.Service.ReadMethods.Where(m => m.UseQuery))
 				new ServiceQueryGenerator().GenerateQueryClass(entity.Service, svcGenModel, $"{queryTemplate}", queryOutputFolder);
 
 			// Generate controller / client
@@ -129,11 +129,11 @@ public class ServiceGenerator
 		// Create/Update/Delete
 		var crudMethodsOutput = new List<string>();
 		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete)
-			serviceMethodGenerator.GenerateCUDMethods(entity, crudMethodsOutput, interfaceOutput);
+			serviceMethodGenerator.GenerateUpdateMethods(entity, crudMethodsOutput, interfaceOutput);
 
 		// GetSingle methods
 		var singleMethodsOutput = new List<string>();
-		foreach (var singleMethod in entity.Service.Methods.Where(m => !m.UseQuery && !m.IsList)) {
+		foreach (var singleMethod in entity.Service.ReadMethods.Where(m => !m.UseQuery && !m.IsList)) {
 			if (singleMethodsOutput.Count == 0) {
 				singleMethodsOutput.AddLine(1, "#region Single Methods");
 			}
@@ -144,7 +144,7 @@ public class ServiceGenerator
 
 		// Get list methods
 		var listMethodsOutput = new List<string>();
-		foreach (var listMethod in entity.Service.Methods.Where(m => !m.UseQuery && m.IsList)) {
+		foreach (var listMethod in entity.Service.ReadMethods.Where(m => !m.UseQuery && m.IsList)) {
 			if (listMethodsOutput.Count == 0) {
 				listMethodsOutput.AddLine(1, "#region List Methods");
 			}
@@ -157,18 +157,18 @@ public class ServiceGenerator
 
 		// Query methods
 		var queryMethodsOutput = new List<string>();
-		if (entity.Service.Methods.Any(m => m.UseQuery)) {
+		if (entity.Service.ReadMethods.Any(m => m.UseQuery)) {
 			if (queryMethodsOutput.Count == 0) {
 				queryMethodsOutput.AddLine(1, "#region Query Methods");
 			}
-			foreach (var queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
+			foreach (var queryMethod in entity.Service.ReadMethods.Where(m => m.UseQuery))
 				serviceMethodGenerator.GenerateQueryMethod(entity, queryMethod, queryMethodsOutput, interfaceOutput);
 		}
 		if (queryMethodsOutput.Count > 0)
 			queryMethodsOutput.AddLine(1, "#endregion");
 
 		// Sorting method
-		if (entity.Service.Methods.Where(m => m.UseQuery && m.InclSorting).Any()) {
+		if (entity.Service.ReadMethods.Where(m => m.UseQuery && m.InclSorting).Any()) {
 			serviceMethodGenerator.GenerateSortingMethod(entity, queryMethodsOutput);
 			queryMethodsOutput.AddLine();
 		}

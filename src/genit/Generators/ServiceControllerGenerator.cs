@@ -46,25 +46,25 @@ internal class ServiceControllerGenerator
 		// Create/Update/Delete
 		var crudMethodsOutput = new List<string>();
 		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete)
-			this.GenerateCUDControllerMethods(entity, serviceVarName, crudMethodsOutput);
+			this.GenerateUpdateControllerMethods(entity, serviceVarName, crudMethodsOutput);
 
 		// GetSingle methods
 		var singleMethodsOutput = new List<string>();
-		foreach (ServiceMethodModel singleMethod in entity.Service.Methods.Where(m => !m.IsList))
+		foreach (ReadMethodModel singleMethod in entity.Service.ReadMethods.Where(m => !m.IsList))
 			this.GenerateSingleControllerMethod(entity, singleMethod, serviceVarName, singleMethodsOutput);
 
 		// Get list methods
 		var listMethodsOutput = new List<string>();
-		foreach (ServiceMethodModel listMethod in entity.Service.Methods.Where(m => m.IsList && !m.UseQuery))
+		foreach (ReadMethodModel listMethod in entity.Service.ReadMethods.Where(m => m.IsList && !m.UseQuery))
 			this.GenerateListControllerMethod(entity, listMethod, serviceVarName, listMethodsOutput);
 
 		// Query methods
 		var queryMethodsOutput = new List<string>();
 		var sortingMethodOutput = new List<string>();
-		if (entity.Service.Methods.Any(m => m.UseQuery)) {
+		if (entity.Service.ReadMethods.Any(m => m.UseQuery)) {
 			queryMethodsOutput.AddLine();
 			queryMethodsOutput.AddLine(1, "#region Queries");
-			foreach (ServiceMethodModel queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
+			foreach (ReadMethodModel queryMethod in entity.Service.ReadMethods.Where(m => m.UseQuery))
 				this.GenerateQueryControllerMethod(entity, queryMethod, serviceVarName, queryMethodsOutput);
 			queryMethodsOutput.AddLine();
 			queryMethodsOutput.AddLine(1, "#endregion");
@@ -79,13 +79,13 @@ internal class ServiceControllerGenerator
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	internal void GenerateCUDControllerMethods(EntityModel entity, string svcVarName, List<string> output)
+	internal void GenerateUpdateControllerMethods(EntityModel entity, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		var className = entity.Name;
 		var varName = Utils.ToCamelCase(className);
 
-		output.AddLine(tc, "// Create / Update / Delete");
+		output.AddLine(tc, "// Update methods");
 
 		if (entity.Service.InclCreate) {
 			output.AddLine();
@@ -145,7 +145,7 @@ internal class ServiceControllerGenerator
 		}
 	}
 
-	internal void GenerateSingleControllerMethod(EntityModel entity, ServiceMethodModel method, string svcVarName, List<string> output)
+	internal void GenerateSingleControllerMethod(EntityModel entity, ReadMethodModel method, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		output.AddLine();
@@ -175,7 +175,7 @@ internal class ServiceControllerGenerator
 		output.AddLine(tc, "}");
 	}
 
-	internal void GenerateListControllerMethod(EntityModel entity, ServiceMethodModel method, string svcVarName, List<string> output)
+	internal void GenerateListControllerMethod(EntityModel entity, ReadMethodModel method, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		output.AddLine();
@@ -244,7 +244,7 @@ internal class ServiceControllerGenerator
 		output.AddLine(tc, "}");
 	}
 
-	internal void GenerateQueryControllerMethod(EntityModel entity, ServiceMethodModel queryMethod, string svcVarName, List<string> output)
+	internal void GenerateQueryControllerMethod(EntityModel entity, ReadMethodModel queryMethod, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		output.AddLine();

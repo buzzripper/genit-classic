@@ -22,7 +22,7 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 	#region Fields
 
-	private ObservableCollection<ServiceMethodModel> _methods;
+	private ObservableCollection<ReadMethodModel> _readMethods;
 
 	#endregion
 
@@ -38,10 +38,10 @@ public partial class QueryMethodsListCtl : UserControlBase
 		grdQueries.AutoGenerateColumns = false;
 	}
 
-	public void SetData(ObservableCollection<ServiceMethodModel> methods, ObservableCollection<PropertyModel> properties)
+	public void SetData(ObservableCollection<ReadMethodModel> methods, ObservableCollection<PropertyModel> properties)
 	{
-		_methods = methods;
-		bindingSrc.DataSource = _methods;
+		_readMethods = methods;
+		bindingSrc.DataSource = _readMethods;
 		grdQueries.DataSource = bindingSrc;
 
 		for (var i = 0; i < grdQueries.Rows.Count; i++) {
@@ -65,7 +65,7 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 	private void Add()
 	{
-		var method = ServiceMethodModel.CreateNew(Guid.NewGuid(), "Query");
+		var method = ReadMethodModel.CreateNew(Guid.NewGuid(), "Query");
 		bindingSrc.Add(method);
 	}
 
@@ -83,7 +83,7 @@ public partial class QueryMethodsListCtl : UserControlBase
 		if (grdQueries.SelectedCells.Count == 1) {
 			var rowIdx = grdQueries.SelectedCells[0].OwningRow.Index;
 			var idValStr = grdQueries.Rows[rowIdx].Cells[cIdCol].Value?.ToString();
-			var method = _methods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
+			var method = _readMethods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
 
 			if (method != null) {
 				bindingSrc.Remove(method);
@@ -130,10 +130,10 @@ public partial class QueryMethodsListCtl : UserControlBase
 		}
 	}
 
-	private ServiceMethodModel QueryMethodFromGridRow(int rowIndex)
+	private ReadMethodModel QueryMethodFromGridRow(int rowIndex)
 	{
 		var idValStr = grdQueries.Rows[rowIndex].Cells[cIdCol].Value?.ToString();
-		return _methods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
+		return _readMethods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
 	}
 
 	private void grdItems_CellMouseEnter(object sender, DataGridViewCellEventArgs e)

@@ -12,80 +12,6 @@ using System.Data;
 
 namespace Dyvenix.Genit.Generators;
 
-internal enum ArgType
-{
-	Required,
-	Optional,
-	Paging
-}
-
-internal enum ValType
-{
-	Good,
-	NotSupplied,
-	NotExist
-}
-
-internal class ArgDef
-{
-	internal ArgDef(FilterPropertyModel filterProp, ArgType argItemType)
-	{
-		FilterProperty = filterProp;
-		ArgItemType = argItemType;
-	}
-	public ArgType ArgItemType { get; set; }
-	public FilterPropertyModel FilterProperty { get; set; }
-	public List<ArgVal> Values { get; set; } = new List<ArgVal>();
-}
-
-internal class ArgVal
-{
-	public ArgVal(ValType valType, string value)
-	{
-		ValType = valType;
-		Value = value;
-	}
-	public ValType ValType { get; set; }
-	public string Value { get; set; }
-
-	public override string ToString()
-	{
-		return ValType.ToString();
-	}
-}
-
-internal class ArgSet
-{
-	public List<ArgItem> ArgItems { get; set; } = new List<ArgItem>();
-
-	public override string ToString()
-	{
-		var sb = new StringBuilder();
-		foreach (var argItem in ArgItems) {
-			if (sb.Length > 0)
-				sb.Append(", ");
-			sb.Append($"{argItem.PropName}:{argItem.ArgVal.ValType}");
-		}
-		return sb.ToString();
-	}
-}
-
-internal class ArgItem
-{
-	public FilterPropertyModel FilterProperty { get; set; }
-	public ArgType ArgType { get; set; }
-	public ArgVal ArgVal { get; set; }
-
-	public string PropName { get; set; }
-	public string VarName { get; set; }
-	public bool Nullable { get; set; }
-
-	public override string ToString()
-	{
-		return PropName;
-	}
-}
-
 internal class ApiClientIntTestsGenerator
 {
 	private const string cTemplateFilename = "IntTests_ApiClients_Read.tmpl";
@@ -104,7 +30,7 @@ internal class ApiClientIntTestsGenerator
 		var output = new List<string>();
 
 		// Read Methods - Single
-		var singleMethods = entity.Service.Methods.Where(m => !m.IsList).ToList();
+		var singleMethods = entity.Service.ReadMethods.Where(m => !m.IsList).ToList();
 		if (singleMethods.Any()) {
 			output.AddLine();
 			output.AddLine(1, "#region Single Methods");
@@ -115,7 +41,7 @@ internal class ApiClientIntTestsGenerator
 		}
 
 		// Read Methods - List
-		var listMethods = entity.Service.Methods.Where(m => m.IsList).ToList();
+		var listMethods = entity.Service.ReadMethods.Where(m => m.IsList).ToList();
 		if (listMethods.Any()) {
 			output.AddLine();
 			output.AddLine(1, "#region List Methods");
@@ -137,7 +63,7 @@ internal class ApiClientIntTestsGenerator
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	private void GenerateReadTestsSingle(EntityModel entity, IntTestsGenModel intTestsGenModel, ServiceMethodModel method, List<string> output)
+	private void GenerateReadTestsSingle(EntityModel entity, IntTestsGenModel intTestsGenModel, ReadMethodModel method, List<string> output)
 	{
 		var tc = 1;
 		var dsVarName = $"ds{entity.Name}";
@@ -170,7 +96,7 @@ internal class ApiClientIntTestsGenerator
 		output.AddLine(tc, "}");
 	}
 
-	private void GenerateReadTestsList(EntityModel entity, IntTestsGenModel intTestsGenModel, ServiceMethodModel method, List<string> output)
+	private void GenerateReadTestsList(EntityModel entity, IntTestsGenModel intTestsGenModel, ReadMethodModel method, List<string> output)
 	{
 		var tc = 1;
 		var dsSingleVarName = $"ds{entity.Name}";
@@ -186,7 +112,7 @@ internal class ApiClientIntTestsGenerator
 		// Required
 		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsOptional && !fp.IsInternal)) {
 			var argDef = new ArgDef(filterProp, ArgType.Required);
-			var nulStr = (filterProp.Property.Nullable && !IsString(filterProp.Property)) ? ".Value" : string.Empty;
+			var nulStr = (filterProp.Property.Nullable && !filterProp.Property.IsString()) ? ".Value" : string.Empty;
 			argDef.Values.Add(new ArgVal(ValType.Good, $"ds{entity.Name}.{filterProp.Property.Name}{nulStr}"));
 			// Skip 'NotExists' for a non-null enum
 			if (!(filterProp.Property.EnumType != null && !filterProp.Property.Nullable))
@@ -196,7 +122,7 @@ internal class ApiClientIntTestsGenerator
 		// Optional
 		foreach (var filterProp in method.FilterProperties.Where(fp => fp.IsOptional && !fp.IsInternal)) {
 			var argDef = new ArgDef(filterProp, ArgType.Optional);
-			var nulStr = (filterProp.Property.Nullable && !IsString(filterProp.Property)) ? ".Value" : string.Empty;
+			var nulStr = (filterProp.Property.Nullable && !filterProp.Property.IsString()) ? ".Value" : string.Empty;
 			argDef.Values.Add(new ArgVal(ValType.Good, $"ds{entity.Name}.{filterProp.Property.Name}{nulStr}"));
 			// Skip 'NotExists' for a non-null enum
 			if (!(filterProp.Property.EnumType != null && !filterProp.Property.Nullable))
@@ -339,11 +265,6 @@ internal class ApiClientIntTestsGenerator
 		}
 	}
 
-	private bool IsString(PropertyModel property)
-	{
-		return property.PrimitiveType?.Id == PrimitiveType.String.Id;
-	}
-
 	private string BuildInternalFilter(FilterPropertyModel filterProp)
 	{
 		if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.String.Id) {
@@ -483,3 +404,81 @@ internal class ApiClientIntTestsGenerator
 			return "null";
 	}
 }
+
+#region Helper Classes
+
+internal enum ArgType
+{
+	Required,
+	Optional,
+	Paging
+}
+
+internal enum ValType
+{
+	Good,
+	NotSupplied,
+	NotExist
+}
+
+internal class ArgDef
+{
+	internal ArgDef(FilterPropertyModel filterProp, ArgType argItemType)
+	{
+		FilterProperty = filterProp;
+		ArgItemType = argItemType;
+	}
+	public ArgType ArgItemType { get; set; }
+	public FilterPropertyModel FilterProperty { get; set; }
+	public List<ArgVal> Values { get; set; } = new List<ArgVal>();
+}
+
+internal class ArgVal
+{
+	public ArgVal(ValType valType, string value)
+	{
+		ValType = valType;
+		Value = value;
+	}
+	public ValType ValType { get; set; }
+	public string Value { get; set; }
+
+	public override string ToString()
+	{
+		return ValType.ToString();
+	}
+}
+
+internal class ArgSet
+{
+	public List<ArgItem> ArgItems { get; set; } = new List<ArgItem>();
+
+	public override string ToString()
+	{
+		var sb = new StringBuilder();
+		foreach (var argItem in ArgItems) {
+			if (sb.Length > 0)
+				sb.Append(", ");
+			sb.Append($"{argItem.PropName}:{argItem.ArgVal.ValType}");
+		}
+		return sb.ToString();
+	}
+}
+
+internal class ArgItem
+{
+	public FilterPropertyModel FilterProperty { get; set; }
+	public ArgType ArgType { get; set; }
+	public ArgVal ArgVal { get; set; }
+
+	public string PropName { get; set; }
+	public string VarName { get; set; }
+	public bool Nullable { get; set; }
+
+	public override string ToString()
+	{
+		return PropName;
+	}
+}
+
+#endregion

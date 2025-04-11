@@ -153,7 +153,7 @@ partial class EntityMainEditCtl
 		propGridCtl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		propGridCtl.Location = new System.Drawing.Point(2, 25);
 		propGridCtl.Name = "propGridCtl";
-		propGridCtl.Size = new System.Drawing.Size(632, 219);
+		propGridCtl.Size = new System.Drawing.Size(634, 220);
 		propGridCtl.TabIndex = 13;
 		// 
 		// label7
@@ -174,7 +174,7 @@ partial class EntityMainEditCtl
 		lkbAddNewProp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		lkbAddNewProp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		lkbAddNewProp.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-		lkbAddNewProp.Location = new System.Drawing.Point(568, 3);
+		lkbAddNewProp.Location = new System.Drawing.Point(570, 3);
 		lkbAddNewProp.Name = "lkbAddNewProp";
 		lkbAddNewProp.Size = new System.Drawing.Size(65, 19);
 		lkbAddNewProp.TabIndex = 15;
@@ -203,8 +203,8 @@ partial class EntityMainEditCtl
 		splitContainer1.Panel2.Controls.Add(navPropGridCtl);
 		splitContainer1.Panel2.Controls.Add(lkbAddNewNavProp);
 		splitContainer1.Panel2.Controls.Add(label8);
-		splitContainer1.Size = new System.Drawing.Size(636, 444);
-		splitContainer1.SplitterDistance = 245;
+		splitContainer1.Size = new System.Drawing.Size(638, 446);
+		splitContainer1.SplitterDistance = 246;
 		splitContainer1.TabIndex = 16;
 		// 
 		// navPropGridCtl
@@ -214,7 +214,7 @@ partial class EntityMainEditCtl
 		navPropGridCtl.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		navPropGridCtl.Location = new System.Drawing.Point(3, 35);
 		navPropGridCtl.Name = "navPropGridCtl";
-		navPropGridCtl.Size = new System.Drawing.Size(631, 157);
+		navPropGridCtl.Size = new System.Drawing.Size(633, 158);
 		navPropGridCtl.TabIndex = 18;
 		navPropGridCtl.NavPropertyEdit += navPropGridCtl_NavPropertyEdit;
 		// 
@@ -227,7 +227,7 @@ partial class EntityMainEditCtl
 		lkbAddNewNavProp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 		lkbAddNewNavProp.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		lkbAddNewNavProp.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-		lkbAddNewNavProp.Location = new System.Drawing.Point(568, 12);
+		lkbAddNewNavProp.Location = new System.Drawing.Point(570, 12);
 		lkbAddNewNavProp.Name = "lkbAddNewNavProp";
 		lkbAddNewNavProp.Size = new System.Drawing.Size(65, 19);
 		lkbAddNewNavProp.TabIndex = 17;
@@ -290,7 +290,6 @@ partial class EntityMainEditCtl
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		BackColor = System.Drawing.SystemColors.ActiveBorder;
-		BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		Controls.Add(lkbClassAttributes);
 		Controls.Add(lkbAddlUsings);
 		Controls.Add(splitContainer1);
@@ -305,7 +304,7 @@ partial class EntityMainEditCtl
 		Controls.Add(label1);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "EntityMainEditCtl";
-		Size = new System.Drawing.Size(669, 578);
+		Size = new System.Drawing.Size(671, 580);
 		Load += EntityMainEditCtl_Load;
 		((System.ComponentModel.ISupportInitialize)bindingSource).EndInit();
 		splitContainer1.Panel1.ResumeLayout(false);

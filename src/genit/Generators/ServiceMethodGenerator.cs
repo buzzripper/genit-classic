@@ -14,7 +14,7 @@ namespace Dyvenix.Genit.Generators;
 
 internal class ServiceMethodGenerator
 {
-	internal void GenerateCUDMethods(EntityModel entity, List<string> output, List<string> interfaceOutput)
+	internal void GenerateUpdateMethods(EntityModel entity, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		var className = entity.Name;
@@ -77,7 +77,7 @@ internal class ServiceMethodGenerator
 		output.AddLine(tc, "#endregion");
 	}
 
-	internal void GenerateReadMethod(EntityModel entity, ServiceMethodModel method, List<string> output, List<string> interfaceOutput)
+	internal void GenerateReadMethod(EntityModel entity, ReadMethodModel method, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		output.AddLine();
@@ -208,7 +208,7 @@ internal class ServiceMethodGenerator
 		}
 	}
 
-	internal void GenerateQueryMethod(EntityModel entity, ServiceMethodModel queryMethod, List<string> output, List<string> interfaceOutput)
+	internal void GenerateQueryMethod(EntityModel entity, ReadMethodModel queryMethod, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		output.AddLine();

@@ -7,12 +7,13 @@ using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls
 {
-	public partial class EntityContainerCtl : UserControl
+	public partial class EntityContainerCtl : UserControlBase
 	{
 		#region Fields
 
 		private const int cIdxMain = 0;
-		private const int cIdxSvcMethods = 1;
+		private const int cIdxReadMethods = 1;
+		private const int cIdxUpdateMethods = 2;
 
 		private readonly List<EntityEditorItem> _childEditors = new List<EntityEditorItem>();
 
@@ -32,8 +33,8 @@ namespace Dyvenix.Genit.UserControls
 			lblEntityName.Text = Entity.Name;
 			Entity.PropertyChanged += _entity_PropertyChanged;
 
-			_childEditors.Add(new EntityEditorItem(nbMain, new EntityMainEditCtl(Entity)));
-			_childEditors.Add(new EntityEditorItem(nbSvcMethods, new ServiceEditCtl(Entity)));
+			_childEditors.Add(new EntityEditorItem(nbEntity, new EntityMainEditCtl(Entity)));
+			_childEditors.Add(new EntityEditorItem(nbService, new SvcEditCtl(Entity)));
 
 			foreach (var childEditor in _childEditors) {
 				var ctl = childEditor.Ctl;
@@ -65,14 +66,19 @@ namespace Dyvenix.Genit.UserControls
 				lblEntityName.Text = Entity.Name;
 		}
 
-		private void nbMain_Click(object sender, EventArgs e)
+		private void nbEntity_Click(object sender, EventArgs e)
 		{
 			SelectControl(cIdxMain);
 		}
 
-		private void nbSvcMethods_Click(object sender, EventArgs e)
+		private void nbService_Click(object sender, EventArgs e)
 		{
-			SelectControl(cIdxSvcMethods);
+			SelectControl(cIdxReadMethods);
+		}
+
+		private void nbUpdateMethods_Click(object sender, EventArgs e)
+		{
+			SelectControl(cIdxReadMethods);
 		}
 
 		private void SelectControl(int idx)

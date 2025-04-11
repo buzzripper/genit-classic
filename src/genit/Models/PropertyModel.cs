@@ -212,6 +212,11 @@ public class PropertyModel : INotifyPropertyChanged
 		return (errs.Count == 0);
 	}
 
+	public bool IsString()
+	{
+		return this.PrimitiveType?.Id == PrimitiveType.String.Id;
+	}
+
 	public override string ToString()
 	{
 		return this.Name;

@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace Dyvenix.Genit.Models.Services;
 
-public class ServiceMethodModel : INotifyPropertyChanged
+public class ReadMethodModel : INotifyPropertyChanged
 {
-	public static ServiceMethodModel CreateNew(Guid id, string name)
+	public static ReadMethodModel CreateNew(Guid id, string name)
 	{
-		return new ServiceMethodModel() {
+		return new ReadMethodModel() {
 			Id = id,
 			Name = name,
 			InclSorting = false,
@@ -32,15 +31,14 @@ public class ServiceMethodModel : INotifyPropertyChanged
 	private ObservableCollection<string> _attributes = new ObservableCollection<string>();
 	private ObservableCollection<FilterPropertyModel> _filterProperties = new ObservableCollection<FilterPropertyModel>();
 	private ObservableCollection<NavPropertyModel> _inclNavProperties = new ObservableCollection<NavPropertyModel>();
-
-	protected bool _suspendUpdates;
+	private bool _suspendUpdates;
 
 	#endregion
 
 	#region Ctors / Initialization
 
 	[JsonConstructor]
-	public ServiceMethodModel()
+	public ReadMethodModel()
 	{
 	}
 

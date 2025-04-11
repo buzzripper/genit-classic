@@ -24,7 +24,7 @@ internal class ServiceQueryGenerator
 
 	internal void GenerateQueryClass(ServiceModel service, ServiceGenModel serviceGen, string template, string outputFolder)
 	{
-		foreach (var queryMethod in service.Methods.Where(m => m.UseQuery)) {
+		foreach (var queryMethod in service.ReadMethods.Where(m => m.UseQuery)) {
 			var className = $"{queryMethod.Name}Query";
 			string interfaceDecl = null;
 

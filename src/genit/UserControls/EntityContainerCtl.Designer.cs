@@ -30,8 +30,8 @@ partial class EntityContainerCtl
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EntityContainerCtl));
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
 		lblEntityName = new System.Windows.Forms.ToolStripLabel();
-		nbMain = new System.Windows.Forms.ToolStripButton();
-		nbSvcMethods = new System.Windows.Forms.ToolStripButton();
+		nbEntity = new System.Windows.Forms.ToolStripButton();
+		nbService = new System.Windows.Forms.ToolStripButton();
 		toolStrip1.SuspendLayout();
 		SuspendLayout();
 		// 
@@ -40,7 +40,7 @@ partial class EntityContainerCtl
 		toolStrip1.AutoSize = false;
 		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblEntityName, nbMain, nbSvcMethods });
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblEntityName, nbEntity, nbService });
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
 		toolStrip1.Size = new System.Drawing.Size(832, 34);
@@ -56,28 +56,29 @@ partial class EntityContainerCtl
 		lblEntityName.Text = "Entity";
 		lblEntityName.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 		// 
-		// nbMain
+		// nbEntity
 		// 
-		nbMain.BackColor = System.Drawing.SystemColors.Control;
-		nbMain.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-		nbMain.Image = (System.Drawing.Image)resources.GetObject("nbMain.Image");
-		nbMain.ImageTransparentColor = System.Drawing.Color.Magenta;
-		nbMain.Margin = new System.Windows.Forms.Padding(0, 1, 15, 2);
-		nbMain.Name = "nbMain";
-		nbMain.Padding = new System.Windows.Forms.Padding(0, 0, 25, 0);
-		nbMain.Size = new System.Drawing.Size(69, 31);
-		nbMain.Text = "Main";
-		nbMain.Click += nbMain_Click;
+		nbEntity.BackColor = System.Drawing.SystemColors.Control;
+		nbEntity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+		nbEntity.Image = (System.Drawing.Image)resources.GetObject("nbEntity.Image");
+		nbEntity.ImageTransparentColor = System.Drawing.Color.Magenta;
+		nbEntity.Margin = new System.Windows.Forms.Padding(0);
+		nbEntity.Name = "nbEntity";
+		nbEntity.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
+		nbEntity.Size = new System.Drawing.Size(68, 34);
+		nbEntity.Text = "Entity";
+		nbEntity.Click += nbEntity_Click;
 		// 
-		// nbSvcMethods
+		// nbService
 		// 
-		nbSvcMethods.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-		nbSvcMethods.Image = (System.Drawing.Image)resources.GetObject("nbSvcMethods.Image");
-		nbSvcMethods.ImageTransparentColor = System.Drawing.Color.Magenta;
-		nbSvcMethods.Name = "nbSvcMethods";
-		nbSvcMethods.Size = new System.Drawing.Size(114, 31);
-		nbSvcMethods.Text = "Service Methods";
-		nbSvcMethods.Click += nbSvcMethods_Click;
+		nbService.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+		nbService.Image = (System.Drawing.Image)resources.GetObject("nbService.Image");
+		nbService.ImageTransparentColor = System.Drawing.Color.Magenta;
+		nbService.Name = "nbService";
+		nbService.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
+		nbService.Size = new System.Drawing.Size(75, 31);
+		nbService.Text = "Service";
+		nbService.Click += nbService_Click;
 		// 
 		// EntityContainerCtl
 		// 
@@ -98,7 +99,7 @@ partial class EntityContainerCtl
 	private System.Windows.Forms.SplitContainer splitContainer1;
 	private System.Windows.Forms.ToolStrip toolStrip1;
 	private System.Windows.Forms.ToolStripLabel lblEntityName;
-	private System.Windows.Forms.ToolStripButton nbMain;
-	private System.Windows.Forms.ToolStripButton nbSvcMethods;
+	private System.Windows.Forms.ToolStripButton nbEntity;
+	private System.Windows.Forms.ToolStripButton nbService;
 	private System.Windows.Forms.Button button1;
 }

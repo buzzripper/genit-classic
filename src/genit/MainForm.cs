@@ -23,7 +23,7 @@ public partial class MainForm : Form
 
 	#region Constants
 
-	private const int cOuputMinHeight = 25;
+	private const int cOuputMinHeight = 45;
 
 	#endregion
 
@@ -651,6 +651,16 @@ public partial class MainForm : Form
 	}
 
 	private void btnShowOutput_Click(object sender, EventArgs e)
+	{
+		ToggleOutputVisibility();
+	}
+
+	private void tbOutput_DoubleClick(object sender, EventArgs e)
+	{
+		ToggleOutputVisibility();
+	}
+
+	private void ToggleOutputVisibility()
 	{
 		if (splOutput.Height > cOuputMinHeight) {
 			_outputHeight = splOutput.Height; // Cache the previous distance

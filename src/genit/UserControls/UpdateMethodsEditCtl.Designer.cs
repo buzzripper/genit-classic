@@ -1,6 +1,6 @@
 ﻿namespace Dyvenix.Genit.UserControls;
 
-partial class ServiceMethodsEditCtl
+partial class UpdateMethodsEditCtl
 {
 	/// <summary> 
 	/// Required designer variable.
@@ -29,23 +29,18 @@ partial class ServiceMethodsEditCtl
 	{
 		components = new System.ComponentModel.Container();
 		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ServiceMethodsEditCtl));
+		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UpdateMethodsEditCtl));
 		splMain = new System.Windows.Forms.SplitContainer();
 		grdMethods = new System.Windows.Forms.DataGridView();
 		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-		colInclPaging = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colUseQuery = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colInclSorting = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colAttrs = new System.Windows.Forms.DataGridViewLinkColumn();
+		colUseDto = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 		colDelete = new System.Windows.Forms.DataGridViewImageColumn();
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
 		btnAdd = new System.Windows.Forms.ToolStripButton();
-		toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-		splLists = new System.Windows.Forms.SplitContainer();
-		filterPropsCtl = new FilterPropsEditCtl();
-		clbNavProperties = new System.Windows.Forms.CheckedListBox();
+		btnUp = new System.Windows.Forms.ToolStripButton();
+		btnDown = new System.Windows.Forms.ToolStripButton();
+		clbUpdProperties = new System.Windows.Forms.CheckedListBox();
 		toolStrip2 = new System.Windows.Forms.ToolStrip();
 		toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
 		bindingSrc = new System.Windows.Forms.BindingSource(components);
@@ -55,10 +50,6 @@ partial class ServiceMethodsEditCtl
 		splMain.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)grdMethods).BeginInit();
 		toolStrip1.SuspendLayout();
-		((System.ComponentModel.ISupportInitialize)splLists).BeginInit();
-		splLists.Panel1.SuspendLayout();
-		splLists.Panel2.SuspendLayout();
-		splLists.SuspendLayout();
 		toolStrip2.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).BeginInit();
 		SuspendLayout();
@@ -66,7 +57,8 @@ partial class ServiceMethodsEditCtl
 		// splMain
 		// 
 		splMain.AllowDrop = true;
-		splMain.Location = new System.Drawing.Point(12, 8);
+		splMain.Dock = System.Windows.Forms.DockStyle.Fill;
+		splMain.Location = new System.Drawing.Point(0, 0);
 		splMain.Margin = new System.Windows.Forms.Padding(2);
 		splMain.Name = "splMain";
 		// 
@@ -78,33 +70,36 @@ partial class ServiceMethodsEditCtl
 		// 
 		// splMain.Panel2
 		// 
-		splMain.Panel2.Controls.Add(splLists);
-		splMain.Size = new System.Drawing.Size(995, 367);
-		splMain.SplitterDistance = 602;
+		splMain.Panel2.Controls.Add(clbUpdProperties);
+		splMain.Panel2.Controls.Add(toolStrip2);
+		splMain.Size = new System.Drawing.Size(1033, 537);
+		splMain.SplitterDistance = 590;
 		splMain.SplitterWidth = 6;
 		splMain.TabIndex = 0;
 		// 
 		// grdMethods
 		// 
 		grdMethods.AllowUserToAddRows = false;
+		grdMethods.AllowUserToDeleteRows = false;
 		grdMethods.AllowUserToResizeRows = false;
 		grdMethods.BackgroundColor = System.Drawing.SystemColors.Control;
 		grdMethods.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		grdMethods.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 		grdMethods.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-		grdMethods.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colInclPaging, colUseQuery, colInclSorting, colAttrs, colDelete });
+		grdMethods.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colId, colName, colUseDto, colDelete });
 		grdMethods.Dock = System.Windows.Forms.DockStyle.Fill;
 		grdMethods.Location = new System.Drawing.Point(0, 31);
 		grdMethods.Margin = new System.Windows.Forms.Padding(2);
 		grdMethods.MultiSelect = false;
 		grdMethods.Name = "grdMethods";
+		grdMethods.ReadOnly = true;
+		grdMethods.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
 		grdMethods.RowHeadersWidth = 62;
 		grdMethods.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdMethods.ShowEditingIcon = false;
-		grdMethods.Size = new System.Drawing.Size(602, 336);
+		grdMethods.Size = new System.Drawing.Size(590, 506);
 		grdMethods.TabIndex = 3;
 		grdMethods.CellClick += grdMethods_CellClick;
-		grdMethods.CellContentClick += grdMethods_CellContentClick;
 		grdMethods.CellMouseEnter += grdMethods_CellMouseEnter;
 		grdMethods.CellMouseLeave += grdMethods_CellMouseLeave;
 		grdMethods.DataError += grdMethods_DataError;
@@ -117,6 +112,7 @@ partial class ServiceMethodsEditCtl
 		colId.HeaderText = "Id";
 		colId.MinimumWidth = 40;
 		colId.Name = "colId";
+		colId.ReadOnly = true;
 		colId.Visible = false;
 		// 
 		// colName
@@ -126,63 +122,28 @@ partial class ServiceMethodsEditCtl
 		colName.HeaderText = "Name";
 		colName.MinimumWidth = 100;
 		colName.Name = "colName";
+		colName.ReadOnly = true;
 		// 
-		// colInclPaging
+		// colUseDto
 		// 
-		colInclPaging.DataPropertyName = "InclPaging";
-		colInclPaging.HeaderText = "Paging";
-		colInclPaging.MinimumWidth = 85;
-		colInclPaging.Name = "colInclPaging";
-		colInclPaging.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-		colInclPaging.Width = 85;
-		// 
-		// colUseQuery
-		// 
-		colUseQuery.DataPropertyName = "UseQuery";
-		colUseQuery.HeaderText = "Query";
-		colUseQuery.MinimumWidth = 85;
-		colUseQuery.Name = "colUseQuery";
-		colUseQuery.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-		colUseQuery.Width = 85;
-		// 
-		// colInclSorting
-		// 
-		colInclSorting.DataPropertyName = "InclSorting";
-		colInclSorting.HeaderText = "Sorting";
-		colInclSorting.MinimumWidth = 85;
-		colInclSorting.Name = "colInclSorting";
-		colInclSorting.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-		colInclSorting.Width = 85;
-		// 
-		// colAttrs
-		// 
-		colAttrs.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight;
-		colAttrs.DataPropertyName = "AttrCount";
-		dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
-		dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
-		colAttrs.DefaultCellStyle = dataGridViewCellStyle1;
-		colAttrs.HeaderText = "Attrs";
-		colAttrs.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-		colAttrs.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-		colAttrs.MinimumWidth = 75;
-		colAttrs.Name = "colAttrs";
-		colAttrs.ReadOnly = true;
-		colAttrs.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-		colAttrs.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-		colAttrs.VisitedLinkColor = System.Drawing.SystemColors.MenuHighlight;
-		colAttrs.Width = 75;
+		colUseDto.DataPropertyName = "UseDto";
+		colUseDto.HeaderText = "Use DTO";
+		colUseDto.MinimumWidth = 100;
+		colUseDto.Name = "colUseDto";
+		colUseDto.ReadOnly = true;
+		colUseDto.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 		// 
 		// colDelete
 		// 
-		dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle2.NullValue = resources.GetObject("dataGridViewCellStyle2.NullValue");
-		dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
-		colDelete.DefaultCellStyle = dataGridViewCellStyle2;
+		dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle1.NullValue = resources.GetObject("dataGridViewCellStyle1.NullValue");
+		dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
+		colDelete.DefaultCellStyle = dataGridViewCellStyle1;
 		colDelete.HeaderText = "";
 		colDelete.Image = (System.Drawing.Image)resources.GetObject("colDelete.Image");
 		colDelete.MinimumWidth = 75;
 		colDelete.Name = "colDelete";
+		colDelete.ReadOnly = true;
 		colDelete.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 		colDelete.Width = 75;
 		// 
@@ -191,12 +152,12 @@ partial class ServiceMethodsEditCtl
 		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
 		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, toolStripLabel1 });
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnUp, btnDown });
 		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
 		toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-		toolStrip1.Size = new System.Drawing.Size(602, 31);
+		toolStrip1.Size = new System.Drawing.Size(590, 31);
 		toolStrip1.TabIndex = 2;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -210,89 +171,72 @@ partial class ServiceMethodsEditCtl
 		btnAdd.Text = "toolStripButton1";
 		btnAdd.Click += btnAdd_Click;
 		// 
-		// toolStripLabel1
+		// btnUp
 		// 
-		toolStripLabel1.Name = "toolStripLabel1";
-		toolStripLabel1.Padding = new System.Windows.Forms.Padding(50, 0, 0, 0);
-		toolStripLabel1.Size = new System.Drawing.Size(114, 28);
-		toolStripLabel1.Text = "Methods";
+		btnUp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnUp.Image = (System.Drawing.Image)resources.GetObject("btnUp.Image");
+		btnUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnUp.Name = "btnUp";
+		btnUp.Size = new System.Drawing.Size(28, 28);
+		btnUp.Text = "toolStripButton1";
 		// 
-		// splLists
+		// btnDown
 		// 
-		splLists.Dock = System.Windows.Forms.DockStyle.Fill;
-		splLists.Location = new System.Drawing.Point(0, 0);
-		splLists.Margin = new System.Windows.Forms.Padding(2);
-		splLists.Name = "splLists";
-		splLists.Orientation = System.Windows.Forms.Orientation.Horizontal;
+		btnDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnDown.Image = (System.Drawing.Image)resources.GetObject("btnDown.Image");
+		btnDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnDown.Name = "btnDown";
+		btnDown.Size = new System.Drawing.Size(28, 28);
+		btnDown.Text = "toolStripButton1";
 		// 
-		// splLists.Panel1
+		// clbUpdProperties
 		// 
-		splLists.Panel1.Controls.Add(filterPropsCtl);
-		// 
-		// splLists.Panel2
-		// 
-		splLists.Panel2.Controls.Add(clbNavProperties);
-		splLists.Panel2.Controls.Add(toolStrip2);
-		splLists.Size = new System.Drawing.Size(387, 367);
-		splLists.SplitterDistance = 214;
-		splLists.SplitterWidth = 6;
-		splLists.TabIndex = 5;
-		// 
-		// filterPropsCtl
-		// 
-		filterPropsCtl.Dock = System.Windows.Forms.DockStyle.Fill;
-		filterPropsCtl.Location = new System.Drawing.Point(0, 0);
-		filterPropsCtl.Name = "filterPropsCtl";
-		filterPropsCtl.Size = new System.Drawing.Size(387, 214);
-		filterPropsCtl.TabIndex = 0;
-		// 
-		// clbNavProperties
-		// 
-		clbNavProperties.Dock = System.Windows.Forms.DockStyle.Fill;
-		clbNavProperties.FormattingEnabled = true;
-		clbNavProperties.Location = new System.Drawing.Point(0, 25);
-		clbNavProperties.Name = "clbNavProperties";
-		clbNavProperties.Size = new System.Drawing.Size(387, 122);
-		clbNavProperties.TabIndex = 8;
-		clbNavProperties.ItemCheck += clbNavProperties_ItemCheck;
+		clbUpdProperties.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+		clbUpdProperties.Dock = System.Windows.Forms.DockStyle.Fill;
+		clbUpdProperties.FormattingEnabled = true;
+		clbUpdProperties.Location = new System.Drawing.Point(0, 25);
+		clbUpdProperties.Name = "clbUpdProperties";
+		clbUpdProperties.Size = new System.Drawing.Size(437, 512);
+		clbUpdProperties.TabIndex = 8;
+		clbUpdProperties.ItemCheck += clbUpdProperties_ItemCheck;
 		// 
 		// toolStrip2
 		// 
 		toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel2 });
 		toolStrip2.Location = new System.Drawing.Point(0, 0);
 		toolStrip2.Name = "toolStrip2";
-		toolStrip2.Size = new System.Drawing.Size(387, 25);
+		toolStrip2.Size = new System.Drawing.Size(437, 25);
 		toolStrip2.TabIndex = 7;
 		toolStrip2.Text = "toolStrip2";
 		// 
 		// toolStripLabel2
 		// 
 		toolStripLabel2.Name = "toolStripLabel2";
-		toolStripLabel2.Size = new System.Drawing.Size(163, 22);
-		toolStripLabel2.Text = "Include Navigation Properties";
+		toolStripLabel2.Size = new System.Drawing.Size(101, 22);
+		toolStripLabel2.Text = "Update Properties";
 		// 
-		// ServiceMethodsEditCtl
+		// UpdateMethodsEditCtl
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 		Controls.Add(splMain);
+		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Margin = new System.Windows.Forms.Padding(2);
-		Name = "ServiceMethodsEditCtl";
-		Size = new System.Drawing.Size(1130, 395);
+		Name = "UpdateMethodsEditCtl";
+		Size = new System.Drawing.Size(1033, 537);
 		Load += ServiceMethodsEditCtl_Load;
 		splMain.Panel1.ResumeLayout(false);
 		splMain.Panel1.PerformLayout();
 		splMain.Panel2.ResumeLayout(false);
+		splMain.Panel2.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)splMain).EndInit();
 		splMain.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)grdMethods).EndInit();
 		toolStrip1.ResumeLayout(false);
 		toolStrip1.PerformLayout();
-		splLists.Panel1.ResumeLayout(false);
-		splLists.Panel2.ResumeLayout(false);
-		splLists.Panel2.PerformLayout();
-		((System.ComponentModel.ISupportInitialize)splLists).EndInit();
-		splLists.ResumeLayout(false);
 		toolStrip2.ResumeLayout(false);
 		toolStrip2.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).EndInit();
@@ -304,19 +248,20 @@ partial class ServiceMethodsEditCtl
 	private System.Windows.Forms.SplitContainer splMain;
 	private System.Windows.Forms.ToolStrip toolStrip1;
 	private System.Windows.Forms.ToolStripButton btnAdd;
-	private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 	private System.Windows.Forms.DataGridView grdMethods;
 	private System.Windows.Forms.BindingSource bindingSrc;
 	private System.Windows.Forms.SplitContainer splLists;
-	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
-	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colInclSorting;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colInclPaging;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colUseQuery;
 	private System.Windows.Forms.DataGridViewLinkColumn colAttrs;
-	private System.Windows.Forms.DataGridViewImageColumn colDelete;
-	private FilterPropsEditCtl filterPropsCtl;
 	private System.Windows.Forms.ToolStrip toolStrip2;
 	private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-	private System.Windows.Forms.CheckedListBox clbNavProperties;
+	private System.Windows.Forms.CheckedListBox clbUpdProperties;
+	private System.Windows.Forms.ToolStripButton btnUp;
+	private System.Windows.Forms.ToolStripButton btnDown;
+	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
+	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
+	private System.Windows.Forms.DataGridViewCheckBoxColumn colUseDto;
+	private System.Windows.Forms.DataGridViewImageColumn colDelete;
 }

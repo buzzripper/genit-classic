@@ -1,11 +1,12 @@
 ﻿using Dyvenix.Genit.Models;
 using Dyvenix.Genit.Models.Services;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls;
-
-public partial class ServiceEditCtl : EntityEditCtlBase
+public partial class SvcEditCtl : EntityEditCtlBase
 {
 	#region Constants
 
@@ -19,27 +20,34 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 	#region Fields
 
 	private ServiceModel _service;
+	private List<UserControlBase> _tabControls;
 
 	#endregion
 
 	#region Ctors / Init
 
-	public ServiceEditCtl()
+	public SvcEditCtl()
 	{
-		InitializeComponent();
 	}
 
-	public ServiceEditCtl(EntityModel entity) : base(entity)
+	public SvcEditCtl(EntityModel entity) : base(entity)
 	{
 		InitializeComponent();
 
 		_service = entity.Service;
-		entity.Properties.CollectionChanged += Properties_OnCollectionChanged;
 	}
 
-	private void ServiceEditCtl_Load(object sender, EventArgs e)
+	private void SvcEditCtl_Load(object sender, EventArgs e)
 	{
+		_tabControls = new List<UserControlBase> {
+			readMethodsEditCtl,
+			updMethodsEditCtl
+		};
+
 		this.PopulateControls();
+		this.PositionControls();
+
+		SelectTab(0);
 	}
 
 	private void PopulateControls()
@@ -58,24 +66,33 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 		SetControllerUsingsLabel();
 		SetControllerAttrsLabel();
 
-		svcMethodsEditCtl.SetData(_service.Methods, _entity.Properties, _entity.NavProperties);
+		readMethodsEditCtl.SetData(_service.ReadMethods, _entity.Properties, _entity.NavProperties);
 
 		_suspendUpdates = false;
 	}
 
-	#endregion
-
-	private void Properties_OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	private void PositionControls()
 	{
+		readMethodsEditCtl.Left = tsTabs.Left;
+		readMethodsEditCtl.Top = tsTabs.Top + tsTabs.Height;
+		readMethodsEditCtl.Width = this.Width - (2 * tsTabs.Left);
+		readMethodsEditCtl.Height = this.Height - (tsTabs.Top + tsTabs.Height);
+		updMethodsEditCtl.Visible = true;
 
+		updMethodsEditCtl.Left = readMethodsEditCtl.Left;
+		updMethodsEditCtl.Top = readMethodsEditCtl.Top;
+		updMethodsEditCtl.Width = readMethodsEditCtl.Width;
+		updMethodsEditCtl.Height = readMethodsEditCtl.Height;
+		updMethodsEditCtl.Visible = false;
 	}
+
+	#endregion
 
 	private void lkbAddlUsings_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 	{
 		this.StrListForm.Run(cSvcAddlUsingsLabel, _service.AddlServiceUsings);
 		SetSvcUsingsLabel();
 	}
-
 
 	private void SetSvcUsingsLabel()
 	{
@@ -115,7 +132,7 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 		lkbControllerClassAttributes.Text = $"{cControllerClassAttrsLabel} ({_service.ControllerClassAttributes?.Count})";
 	}
 
-	private void ckbInclSave_CheckedChanged(object sender, EventArgs e)
+	private void ckbInclCreate_CheckedChanged(object sender, EventArgs e)
 	{
 		if (!_suspendUpdates)
 			_service.InclCreate = ckbInclCreate.Checked;
@@ -150,4 +167,30 @@ public partial class ServiceEditCtl : EntityEditCtlBase
 		if (!_suspendUpdates)
 			_service.Enabled = ckbEnabled.Checked;
 	}
+
+	private void tabReadMethods_Click(object sender, EventArgs e)
+	{
+		SelectTab(0);
+	}
+
+	private void tabUpdateMethods_Click(object sender, EventArgs e)
+	{
+		SelectTab(1);
+	}
+
+	private void SelectTab(int idx)
+	{
+		this.SuspendLayout();
+		try {
+			for (var i = 0; i < tsTabs.Items.Count; i++) {
+				var selected = (i == idx);
+				var btn = tsTabs.Items[i];
+				btn.BackColor = selected ? SystemColors.ActiveCaption : Color.Transparent;
+				_tabControls[i].Visible = selected;
+			}
+		} finally {
+			this.ResumeLayout();
+		}
+	}
+
 }

@@ -42,12 +42,13 @@ partial class FilterPropsEditCtl
 		// 
 		// toolStrip1
 		// 
+		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tbTitle });
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
-		toolStrip1.Size = new System.Drawing.Size(589, 33);
+		toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+		toolStrip1.Size = new System.Drawing.Size(412, 25);
 		toolStrip1.TabIndex = 0;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -55,7 +56,7 @@ partial class FilterPropsEditCtl
 		// 
 		tbTitle.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		tbTitle.Name = "tbTitle";
-		tbTitle.Size = new System.Drawing.Size(150, 28);
+		tbTitle.Size = new System.Drawing.Size(100, 22);
 		tbTitle.Text = "Filter Properties";
 		// 
 		// grdProps
@@ -68,14 +69,15 @@ partial class FilterPropsEditCtl
 		grdProps.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 		grdProps.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colFilterPropId, colInclude, colProperty, colIsOptional, colIsInternal, colIntVal });
 		grdProps.Dock = System.Windows.Forms.DockStyle.Fill;
-		grdProps.Location = new System.Drawing.Point(0, 33);
+		grdProps.Location = new System.Drawing.Point(0, 25);
+		grdProps.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 		grdProps.MultiSelect = false;
 		grdProps.Name = "grdProps";
 		grdProps.RowHeadersVisible = false;
 		grdProps.RowHeadersWidth = 62;
 		grdProps.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdProps.ShowEditingIcon = false;
-		grdProps.Size = new System.Drawing.Size(589, 404);
+		grdProps.Size = new System.Drawing.Size(412, 237);
 		grdProps.TabIndex = 6;
 		grdProps.CellValueChanged += grdProps_CellValueChanged;
 		grdProps.CurrentCellDirtyStateChanged += grdProps_CurrentCellDirtyStateChanged;
@@ -130,13 +132,12 @@ partial class FilterPropsEditCtl
 		// 
 		// FilterPropsEditCtl
 		// 
-		AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
+		AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 		Controls.Add(grdProps);
 		Controls.Add(toolStrip1);
-		Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 		Name = "FilterPropsEditCtl";
-		Size = new System.Drawing.Size(589, 437);
+		Size = new System.Drawing.Size(412, 262);
 		toolStrip1.ResumeLayout(false);
 		toolStrip1.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)grdProps).EndInit();

@@ -38,7 +38,7 @@ internal class ApiClientGenerator
 		// Interface signatures
 		var interfaceOutput = new List<string>();
 
-		// Create/Update/Delete
+		// Update methods
 		var crudMethodsOutput = new List<string>();
 		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete) {
 			crudMethodsOutput.AddLine(1, "#region Create / Update / Delete");
@@ -47,31 +47,31 @@ internal class ApiClientGenerator
 			crudMethodsOutput.AddLine(1, "#endregion");
 		}
 
-		// GetSingle methods
+		// GetSingle read methods
 		var singleMethodsOutput = new List<string>();
-		if (entity.Service.Methods.Where(m => !m.IsList).Any()) {
+		if (entity.Service.ReadMethods.Where(m => !m.IsList).Any()) {
 			singleMethodsOutput.AddLine(1, "#region Single Methods");
-			foreach (ServiceMethodModel singleMethod in entity.Service.Methods.Where(m => !m.IsList))
+			foreach (ReadMethodModel singleMethod in entity.Service.ReadMethods.Where(m => !m.IsList))
 				this.GenerateReadMethod(entity, singleMethod, singleMethodsOutput, interfaceOutput);
 			singleMethodsOutput.AddLine();
 			singleMethodsOutput.AddLine(1, "#endregion");
 		}
 
-		// Get list methods
+		// Get list read methods
 		var listMethodsOutput = new List<string>();
-		if (entity.Service.Methods.Where(m => m.IsList).Any()) {
+		if (entity.Service.ReadMethods.Where(m => m.IsList).Any()) {
 			listMethodsOutput.AddLine(1, "#region List Methods");
-			foreach (ServiceMethodModel listMethod in entity.Service.Methods.Where(m => m.IsList))
+			foreach (ReadMethodModel listMethod in entity.Service.ReadMethods.Where(m => m.IsList))
 				this.GenerateReadMethod(entity, listMethod, listMethodsOutput, interfaceOutput);
 			listMethodsOutput.AddLine();
 			listMethodsOutput.AddLine(1, "#endregion");
 		}
 
-		// Query methods
+		// Query read methods
 		var queryMethodsOutput = new List<string>();
-		if (entity.Service.Methods.Where(m => m.UseQuery).Any()) {
+		if (entity.Service.ReadMethods.Where(m => m.UseQuery).Any()) {
 			queryMethodsOutput.AddLine(1, "#region Queries");
-			foreach (ServiceMethodModel queryMethod in entity.Service.Methods.Where(m => m.UseQuery))
+			foreach (ReadMethodModel queryMethod in entity.Service.ReadMethods.Where(m => m.UseQuery))
 				this.GenerateQueryMethod(entity, queryMethod, queryMethodsOutput, interfaceOutput);
 			queryMethodsOutput.AddLine(1, "#endregion");
 		}
@@ -132,7 +132,7 @@ internal class ApiClientGenerator
 		}
 	}
 
-	private void GenerateReadMethod(EntityModel entity, ServiceMethodModel method, List<string> output, List<string> interfaceOutput)
+	private void GenerateReadMethod(EntityModel entity, ReadMethodModel method, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		var className = entity.Name;
@@ -201,7 +201,7 @@ internal class ApiClientGenerator
 		output.AddLine(tc, "}");
 	}
 
-	private void GenerateQueryMethod(EntityModel entity, ServiceMethodModel queryMethod, List<string> output, List<string> interfaceOutput)
+	private void GenerateQueryMethod(EntityModel entity, ReadMethodModel queryMethod, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		var className = entity.Name;

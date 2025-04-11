@@ -8,50 +8,45 @@ using System.Windows.Forms;
 
 namespace Dyvenix.Genit.UserControls
 {
-	public partial class ServiceMethodsEditCtl : UserControlBase
+	public partial class UpdateMethodsEditCtl : UserControlBase
 	{
 		#region Constants
 
 		private const int cIdCol = 0;
 		private const int cNameCol = 1;
-		private const int cInclPagingCol = 2;
-		private const int cUseQueryCol = 3;
-		private const int cInclSortingCol = 4;
-		private const int cAttrsCol = 5;
-		private const int cDelCol = 6;
+		private const int cUseDtoCol = 2;
+		private const int cDelCol = 3;
 
 		#endregion
 
 		#region Fields
 
-		private ObservableCollection<ServiceMethodModel> _methods;
+		private ObservableCollection<UpdateMethodModel> _updateMethods;
 
 		#endregion
 
 		#region Ctors / Init
 
-		public ServiceMethodsEditCtl()
+		public UpdateMethodsEditCtl()
 		{
 			InitializeComponent();
 		}
 
 		private void ServiceMethodsEditCtl_Load(object sender, EventArgs e)
 		{
-			PositionControls();
 			grdMethods.AutoGenerateColumns = false;
 		}
 
-		public void SetData(ObservableCollection<ServiceMethodModel> methods, ObservableCollection<PropertyModel> properties, ObservableCollection<NavPropertyModel> navProperties)
+		public void SetData(ObservableCollection<UpdateMethodModel> updateMethods, ObservableCollection<PropertyModel> properties, ObservableCollection<NavPropertyModel> navProperties)
 		{
-			_methods = methods;
+			_updateMethods = updateMethods;
+			grdMethods.RowHeadersWidth = 40;
 
-			bindingSrc.DataSource = _methods;
+			bindingSrc.DataSource = _updateMethods;
 			grdMethods.DataSource = bindingSrc;
 
-			filterPropsCtl.SetProperties(properties);
-
-			clbNavProperties.Items.Clear();
-			clbNavProperties.Items.AddRange(navProperties.ToArray());
+			clbUpdProperties.Items.Clear();
+			clbUpdProperties.Items.AddRange(navProperties.ToArray());
 		}
 
 		#endregion
@@ -65,7 +60,7 @@ namespace Dyvenix.Genit.UserControls
 
 		private void Add()
 		{
-			var method = ServiceMethodModel.CreateNew(Guid.NewGuid(), "Query");
+			var method = UpdateMethodModel.CreateNew(Guid.NewGuid(), "Update");
 			bindingSrc.Add(method);
 		}
 
@@ -83,7 +78,7 @@ namespace Dyvenix.Genit.UserControls
 			if (grdMethods.SelectedCells.Count == 1) {
 				var rowIdx = grdMethods.SelectedCells[0].OwningRow.Index;
 				var idValStr = grdMethods.Rows[rowIdx].Cells[cIdCol].Value?.ToString();
-				var method = _methods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
+				var method = _updateMethods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
 
 				if (method != null) {
 					bindingSrc.Remove(method);
@@ -95,23 +90,19 @@ namespace Dyvenix.Genit.UserControls
 
 		#region Methods
 
-		private void PositionControls()
-		{
-			splMain.Dock = DockStyle.Fill;
-			splLists.Dock = DockStyle.Fill;
-		}
-
-		private void SetInclNavPropertiesList(ServiceMethodModel method)
+		private void SetUpdatePropertiesList(UpdateMethodModel method)
 		{
 			_suspendUpdates = true;
 
-			for (var i = 0; i < clbNavProperties.Items.Count; i++) {
-				if (method == null) {
-					clbNavProperties.SetItemChecked(i, false);
-					continue;
-				}
-				var navProp = clbNavProperties.Items[i] as NavPropertyModel;
-				clbNavProperties.SetItemChecked(i, method.InclNavProperties.Contains(navProp));
+			if (method == null) {
+				for (var i = 0; i < clbUpdProperties.Items.Count; i++)
+					clbUpdProperties.SetItemChecked(i, false);
+				return;
+			}
+
+			for (var i = 0; i < clbUpdProperties.Items.Count; i++) {
+				var updProp = clbUpdProperties.Items[i] as UpdatePropertyModel;
+				clbUpdProperties.SetItemChecked(i, method.UpdateProperties.Contains(updProp));
 			}
 
 			_suspendUpdates = false;
@@ -127,10 +118,10 @@ namespace Dyvenix.Genit.UserControls
 			}
 		}
 
-		private ServiceMethodModel GetMethodFromGridRow(int rowIndex)
+		private UpdateMethodModel GetMethodFromGridRow(int rowIndex)
 		{
 			var idValStr = grdMethods.Rows[rowIndex].Cells[cIdCol].Value?.ToString();
-			return _methods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
+			return _updateMethods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
 		}
 
 		#endregion
@@ -147,12 +138,7 @@ namespace Dyvenix.Genit.UserControls
 			if (e.RowIndex == -1)
 				return;
 
-			if (e.ColumnIndex == cAttrsCol) {
-				var method = GetMethodFromGridRow(e.RowIndex);
-				this.StrListForm.Run("Attributes", method.Attributes);
-				bindingSrc.ResetBindings(false);
-
-			} else if (e.ColumnIndex == cDelCol) {
+			if (e.ColumnIndex == cDelCol) {
 				if (MessageBox.Show("Confirm Delete", "Delete this item?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
 					var method = GetMethodFromGridRow(e.RowIndex);
 					bindingSrc.Remove(method);
@@ -162,7 +148,7 @@ namespace Dyvenix.Genit.UserControls
 
 		private void grdMethods_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
 		{
-			if ((e.ColumnIndex == this.grdMethods.Columns[cAttrsCol].Index || e.ColumnIndex == this.grdMethods.Columns[cDelCol].Index) && e.RowIndex > -1) {
+			if (e.ColumnIndex == this.grdMethods.Columns[cDelCol].Index && e.RowIndex > -1) {
 				this.grdMethods.Cursor = Cursors.Hand;
 			}
 		}
@@ -170,15 +156,16 @@ namespace Dyvenix.Genit.UserControls
 		private void grdMethods_SelectionChanged(object sender, EventArgs e)
 		{
 			_suspendUpdates = true;
+
 			if (grdMethods.SelectedCells.Count == 1) {
 				var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
-				filterPropsCtl.SetFilterProperties(method.FilterProperties);
-				SetInclNavPropertiesList(method);
-				clbNavProperties.Enabled = true;
+				SetUpdatePropertiesList(method);
+				clbUpdProperties.Enabled = true;
 			} else {
-				filterPropsCtl.SetFilterProperties(null);
-				SetInclNavPropertiesList(null);
+				SetUpdatePropertiesList(null);
+				clbUpdProperties.Enabled = false;
 			}
+
 			_suspendUpdates = false;
 		}
 
@@ -187,37 +174,26 @@ namespace Dyvenix.Genit.UserControls
 			this.grdMethods.Cursor = Cursors.Default;
 		}
 
-		private void clbNavProperties_ItemCheck(object sender, ItemCheckEventArgs e)
+		private void clbUpdProperties_ItemCheck(object sender, ItemCheckEventArgs e)
 		{
 			if (_suspendUpdates == true)
 				return;
 
 			if (e.NewValue == CheckState.Indeterminate)
-				return;	
+				return;
 
-			var navProp = clbNavProperties.Items[e.Index] as NavPropertyModel;
-			if (navProp == null)
+			var updProp = clbUpdProperties.Items[e.Index] as UpdatePropertyModel;
+			if (updProp == null)
 				return;
 
 			var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
 
 			if (e.NewValue == CheckState.Checked) {
-				if (!method.InclNavProperties.Contains(navProp))
-					method.InclNavProperties.Add(navProp);
+				if (!method.UpdateProperties.Contains(updProp))
+					method.UpdateProperties.Add(updProp);
 			} else {
-				if (method.InclNavProperties.Contains(navProp))
-					method.InclNavProperties.Remove(navProp);
-			}
-		}
-
-		private void grdMethods_CellContentClick(object sender, DataGridViewCellEventArgs e)
-		{
-			if (e.ColumnIndex == cUseQueryCol) {
-				bool isQuery = !(bool)grdMethods.Rows[e.RowIndex].Cells[cUseQueryCol].Value;
-				grdMethods.Rows[e.RowIndex].Cells[cInclSortingCol].ReadOnly = !isQuery;
-				grdMethods.Rows[e.RowIndex].Cells[cUseQueryCol].Value = isQuery;
-				if (isQuery == false)
-					grdMethods.Rows[e.RowIndex].Cells[cInclSortingCol].Value = false;
+				if (method.UpdateProperties.Contains(updProp))
+					method.UpdateProperties.Remove(updProp);
 			}
 		}
 

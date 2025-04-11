@@ -102,6 +102,8 @@ public partial class MultiPageCtl : UserControl
 		_items.Add(mpItem);
 
 		btn.Tag = mpItem;
+		
+		control.Dock = DockStyle.Fill;
 
 		AddControl(control);
 

@@ -375,32 +375,33 @@ partial class MainForm
 		// splOutput.Panel1
 		// 
 		splOutput.Panel1.Controls.Add(tbOutput);
+		splOutput.Panel1MinSize = 18;
 		// 
 		// splOutput.Panel2
 		// 
 		splOutput.Panel2.Controls.Add(outputCtl);
 		splOutput.Size = new System.Drawing.Size(855, 141);
-		splOutput.SplitterDistance = 30;
+		splOutput.SplitterDistance = 25;
 		splOutput.SplitterWidth = 1;
 		splOutput.TabIndex = 3;
 		// 
 		// tbOutput
 		// 
+		tbOutput.AutoSize = false;
 		tbOutput.BackColor = System.Drawing.SystemColors.ActiveCaption;
-		tbOutput.Dock = System.Windows.Forms.DockStyle.Fill;
 		tbOutput.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		tbOutput.ImageScalingSize = new System.Drawing.Size(24, 24);
 		tbOutput.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel1, btnShowOutput, btnClearOuput });
 		tbOutput.Location = new System.Drawing.Point(0, 0);
 		tbOutput.Name = "tbOutput";
-		tbOutput.Size = new System.Drawing.Size(855, 30);
+		tbOutput.Size = new System.Drawing.Size(855, 22);
 		tbOutput.TabIndex = 0;
 		tbOutput.Text = "Hey";
+		tbOutput.DoubleClick += tbOutput_DoubleClick;
 		// 
 		// toolStripLabel1
 		// 
 		toolStripLabel1.Name = "toolStripLabel1";
-		toolStripLabel1.Size = new System.Drawing.Size(45, 27);
+		toolStripLabel1.Size = new System.Drawing.Size(45, 19);
 		toolStripLabel1.Text = "Output";
 		// 
 		// btnShowOutput
@@ -410,8 +411,9 @@ partial class MainForm
 		btnShowOutput.Image = (System.Drawing.Image)resources.GetObject("btnShowOutput.Image");
 		btnShowOutput.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnShowOutput.Name = "btnShowOutput";
-		btnShowOutput.Size = new System.Drawing.Size(28, 27);
+		btnShowOutput.Size = new System.Drawing.Size(23, 19);
 		btnShowOutput.Text = "toolStripButton1";
+		btnShowOutput.ToolTipText = "Toggle Output";
 		btnShowOutput.Click += btnShowOutput_Click;
 		// 
 		// btnClearOuput
@@ -421,8 +423,9 @@ partial class MainForm
 		btnClearOuput.Image = (System.Drawing.Image)resources.GetObject("btnClearOuput.Image");
 		btnClearOuput.ImageTransparentColor = System.Drawing.Color.Magenta;
 		btnClearOuput.Name = "btnClearOuput";
-		btnClearOuput.Size = new System.Drawing.Size(28, 27);
+		btnClearOuput.Size = new System.Drawing.Size(23, 19);
 		btnClearOuput.Text = "toolStripButton1";
+		btnClearOuput.ToolTipText = "Clear Output";
 		btnClearOuput.Click += btnClearOuput_Click;
 		// 
 		// outputCtl
@@ -432,7 +435,7 @@ partial class MainForm
 		outputCtl.Location = new System.Drawing.Point(0, 0);
 		outputCtl.Margin = new System.Windows.Forms.Padding(5);
 		outputCtl.Name = "outputCtl";
-		outputCtl.Size = new System.Drawing.Size(855, 110);
+		outputCtl.Size = new System.Drawing.Size(855, 115);
 		outputCtl.TabIndex = 0;
 		// 
 		// tvImgList
@@ -490,7 +493,6 @@ partial class MainForm
 		((System.ComponentModel.ISupportInitialize)splContent).EndInit();
 		splContent.ResumeLayout(false);
 		splOutput.Panel1.ResumeLayout(false);
-		splOutput.Panel1.PerformLayout();
 		splOutput.Panel2.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)splOutput).EndInit();
 		splOutput.ResumeLayout(false);

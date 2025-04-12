@@ -13,7 +13,6 @@ namespace Dyvenix.Genit.Generators;
 
 internal class ServiceControllerGenerator
 {
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_AddlUsings = "ADDL_USINGS";
 	private const string cToken_ControllersNs = "CONTROLLERS_NS";
 	private const string cToken_ControllerAttrs = "CONTROLLER_ATTRS";
@@ -50,13 +49,19 @@ internal class ServiceControllerGenerator
 
 		// GetSingle methods
 		var singleMethodsOutput = new List<string>();
-		foreach (ReadMethodModel singleMethod in entity.Service.ReadMethods.Where(m => !m.IsList))
+		foreach (ReadMethodModel singleMethod in entity.Service.ReadMethods.Where(m => !m.IsList)) {
+			if (singleMethodsOutput.Count > 0)
+				singleMethodsOutput.AddLine();
 			this.GenerateSingleControllerMethod(entity, singleMethod, serviceVarName, singleMethodsOutput);
+		}
 
 		// Get list methods
 		var listMethodsOutput = new List<string>();
-		foreach (ReadMethodModel listMethod in entity.Service.ReadMethods.Where(m => m.IsList && !m.UseQuery))
+		foreach (ReadMethodModel listMethod in entity.Service.ReadMethods.Where(m => m.IsList && !m.UseQuery)) {
+			if (singleMethodsOutput.Count > 0)
+				singleMethodsOutput.AddLine();
 			this.GenerateListControllerMethod(entity, listMethod, serviceVarName, listMethodsOutput);
+		}
 
 		// Query methods
 		var queryMethodsOutput = new List<string>();
@@ -92,16 +97,15 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Create{className}({className} {varName})");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, "try {");
-			output.AddLine(tc + 2, "var svcResponse =new ServiceResponse();");
+			output.AddLine(tc + 1, "var apiResponse =new ApiResponse();");
 			output.AddLine();
+			output.AddLine(tc + 1, "try {");
 			output.AddLine(tc + 2, $"await _{svcVarName}.Create{className}({varName});");
 			output.AddLine();
-			output.AddLine(tc + 2, "svcResponse.Message = \"Success\";");
-			output.AddLine(tc + 2, "return Ok(svcResponse);");
+			output.AddLine(tc + 2, "return Ok(apiResponse);");
 			output.AddLine();
 			output.AddLine(tc + 1, "} catch (Exception ex) {");
-			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
 			output.AddLine(tc + 1, "}");
 			output.AddLine(tc, "}");
 		}
@@ -111,16 +115,21 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, $"[HttpPatch, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Update{className}({className} {varName})");
 			output.AddLine(tc, "{");
+			output.AddLine(tc + 1, $"var apiResponse =new ApiResponse<byte[]>();");
+			output.AddLine();
 			output.AddLine(tc + 1, "try {");
-			output.AddLine(tc + 2, "var svcResponse =new ServiceResponse();");
+			if (entity.InclRowVersion) {
+				output.AddLine(tc + 2, $"apiResponse.Data = await _{svcVarName}.Update{className}({varName});");
+			} else {
+				output.AddLine(tc + 2, $"var apiResponse =new ApiResponse();");
+				output.AddLine();
+				output.AddLine(tc + 2, $"await _{svcVarName}.Update{className}({varName});");
+			}
 			output.AddLine();
-			output.AddLine(tc + 2, $"await _{svcVarName}.Update{className}({varName});");
-			output.AddLine();
-			output.AddLine(tc + 2, "svcResponse.Message = \"Success\";");
-			output.AddLine(tc + 2, "return Ok(svcResponse);");
+			output.AddLine(tc + 2, "return Ok(apiResponse);");
 			output.AddLine();
 			output.AddLine(tc + 1, "} catch (Exception ex) {");
-			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
 			output.AddLine(tc + 1, "}");
 			output.AddLine(tc, "}");
 		}
@@ -130,16 +139,15 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Delete{className}(Guid id)");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, "try {");
-			output.AddLine(tc + 2, "var svcResponse =new ServiceResponse();");
+			output.AddLine(tc + 1, "var apiResponse =new ApiResponse();");
 			output.AddLine();
+			output.AddLine(tc + 1, "try {");
 			output.AddLine(tc + 2, $"await _{svcVarName}.Delete{className}(id);");
 			output.AddLine();
-			output.AddLine(tc + 2, "svcResponse.Message = \"Success\";");
-			output.AddLine(tc + 2, "return Ok(svcResponse);");
+			output.AddLine(tc + 2, "return Ok(apiResponse);");
 			output.AddLine();
 			output.AddLine(tc + 1, "} catch (Exception ex) {");
-			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
 			output.AddLine(tc + 1, "}");
 			output.AddLine(tc, "}");
 		}
@@ -148,7 +156,6 @@ internal class ServiceControllerGenerator
 	internal void GenerateSingleControllerMethod(EntityModel entity, ReadMethodModel method, string svcVarName, List<string> output)
 	{
 		var tc = 1;
-		output.AddLine();
 
 		// Attributes
 		if (method.Attributes.Any())
@@ -178,7 +185,6 @@ internal class ServiceControllerGenerator
 	internal void GenerateListControllerMethod(EntityModel entity, ReadMethodModel method, string svcVarName, List<string> output)
 	{
 		var tc = 1;
-		output.AddLine();
 
 		// Attributes
 		if (method.Attributes.Any())
@@ -270,9 +276,6 @@ internal class ServiceControllerGenerator
 
 	internal string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, List<string> attrsOutput, string controllerVersion, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput)
 	{
-		// Header
-		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
-
 		// Addl Usings
 		var sb = new StringBuilder();
 		addlUsings.ForEach(x => {

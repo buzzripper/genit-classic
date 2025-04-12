@@ -12,7 +12,6 @@ namespace Dyvenix.Genit.Generators;
 
 internal class ServiceQueryGenerator
 {
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_AddlUsings = "ADDL_USINGS";
 
 	private const string cToken_QueriesNs = "QUERIES_NS";
@@ -69,9 +68,6 @@ internal class ServiceQueryGenerator
 
 	internal string ReplaceQueryTemplateTokens(string template, string className, string interfaceDecl, List<string> addlUsings, string queriesNamespace, string sorting, string paging, List<string> propsOutput)
 	{
-		// Header
-		var fileContents = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
-
 		// Addl Usings
 		var sb = new StringBuilder();
 		addlUsings.ForEach(x => {
@@ -79,7 +75,7 @@ internal class ServiceQueryGenerator
 				sb.AppendLine();
 			sb.Append($"using {x};");
 		});
-		fileContents = fileContents.Replace(Utils.FmtToken(cToken_AddlUsings), sb.ToString());
+		var fileContents = template.Replace(Utils.FmtToken(cToken_AddlUsings), sb.ToString());
 
 		// Namespace
 		fileContents = fileContents.Replace(Utils.FmtToken(cToken_QueriesNs), queriesNamespace);

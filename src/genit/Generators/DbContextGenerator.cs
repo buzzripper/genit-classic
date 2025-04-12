@@ -17,7 +17,6 @@ public class DbContextGenerator
 
 	private const string cTemplateFilename = "DbContext.tmpl";
 
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_AddlUsings = "ADDL_USINGS";
 	private const string cToken_ContextNs = "CONTEXT_NS";
 	private const string cToken_DbContextName = "DBCONTEXT_NAME";
@@ -151,6 +150,12 @@ public class DbContextGenerator
 		}
 		outList.AddLine();
 
+		// RowVersion
+		if (entity.InclRowVersion) {
+			outList.AddLine(t + 1, $"entity.Property(e => e.RowVersion).IsRowVersion();");
+			outList.AddLine();
+		}
+
 		// Normal properties
 		outList.AddLine(t + 1, "// Properties");
 		foreach (var prop in entity.Properties.Where(p => !p.IsPrimaryKey)) {
@@ -198,13 +203,6 @@ public class DbContextGenerator
 	private string ReplaceTemplateTokens(string templateFilepath, DbContextModel dbContextModel, DbContextGenModel genModel, List<string> usings, List<string> propsList, List<string> onModelCreatingList)
 	{
 		var template = File.ReadAllText(templateFilepath);
-
-		// Header
-		var token = Utils.FmtToken(cToken_CurrTimestamp);
-		var idx = template.IndexOf(token);
-		if (idx == -1)
-			throw new ApplicationException($"Token '{token}' not found in template file.");
-		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
 
 		// Usings
 		var sb = new StringBuilder();

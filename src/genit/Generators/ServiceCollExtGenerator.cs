@@ -13,7 +13,6 @@ internal class ServiceCollExtGenerator
 	#region Constants
 
 	private const string cTemplateFilename = "ServiceCollExt.tmpl";
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_ServiceRegistrations = "SERVICE_REGISTRATIONS";
 
 	#endregion
@@ -39,7 +38,6 @@ internal class ServiceCollExtGenerator
 		var registrationsOutput = string.Join(Environment.NewLine, registrations);
 
 		// Replace tokens in template
-		templateContents = templateContents.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
 		templateContents = templateContents.Replace(Utils.FmtToken(cToken_ServiceRegistrations), registrationsOutput);
 
 		// Write output file

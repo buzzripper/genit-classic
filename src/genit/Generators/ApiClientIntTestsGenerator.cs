@@ -15,7 +15,6 @@ namespace Dyvenix.Genit.Generators;
 internal class ApiClientIntTestsGenerator
 {
 	private const string cTemplateFilename = "IntTests_ApiClients_Read.tmpl";
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_IntTestsNs = "INT_TESTS_NS";
 	private const string cToken_EntityName = "ENTITY_NAME";
 	private const string cToken_TestMethods = "TEST_METHODS";
@@ -353,9 +352,6 @@ internal class ApiClientIntTestsGenerator
 
 	private string ReplaceServiceTemplateTokens(string template, string entityName, string testsNamespace, List<string> output)
 	{
-		// Header
-		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
-
 		// Namespace
 		template = template.Replace(Utils.FmtToken(cToken_IntTestsNs), testsNamespace);
 

@@ -21,7 +21,6 @@ public class ServiceGenerator
 	private const string cControllersTemplateFilename = "Controllers.tmpl";
 	private const string cApiClientsTemplateFilename = "ApiClients.tmpl";
 
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_AddlUsings = "ADDL_USINGS";
 	private const string cToken_ServicesNs = "SERVICES_NS";
 	private const string cToken_ServiceAttrs = "SERVICE_ATTRS";
@@ -184,9 +183,6 @@ public class ServiceGenerator
 
 	private string ReplaceServiceTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> attrsOutput, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string servicesNamespace)
 	{
-		// Header
-		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
-
 		// Namespace
 		template = template.Replace(Utils.FmtToken(cToken_ServicesNs), servicesNamespace);
 

@@ -42,6 +42,7 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 		txtTableName.Text = _entity.TableName;
 		txtNamespace.Text = _entity.Namespace;
 		ckbEnabled.Checked = _entity.Enabled;
+		ckbInclRowVersion.Checked = _entity.InclRowVersion;
 
 		SetUsingsLabel();
 		SetAttrsLabel();
@@ -112,6 +113,12 @@ public partial class EntityMainEditCtl : EntityEditCtlBase
 	{
 		if (!_suspendUpdates)
 			_entity.Enabled = ckbEnabled.Checked;
+	}
+
+	private void ckbInclRowVersion_CheckedChanged(object sender, EventArgs e)
+	{
+		if (!_suspendUpdates)
+			_entity.InclRowVersion = ckbInclRowVersion.Checked;
 	}
 
 	private void lkbAddNewProp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

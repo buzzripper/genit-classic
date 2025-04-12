@@ -17,7 +17,6 @@ public class EnumGenerator
 
 	private const string cTemplateFilename = "Enums.tmpl";
 
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_EnumsNs = "ENUMS_NS";
 	private const string cToken_EnumName = "ENUM_NAME";
 	private const string cToken_Members = "MEMBERS";
@@ -76,9 +75,6 @@ public class EnumGenerator
 
 	private string ReplaceTemplateTokens(string template, string enumsNamespace, EnumModel enumMdl, List<string> output)
 	{
-		// Header
-		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
-
 		// Namespace 		
 		template = template.Replace(Utils.FmtToken(cToken_EnumsNs), enumsNamespace);
 

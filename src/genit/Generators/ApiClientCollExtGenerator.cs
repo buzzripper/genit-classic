@@ -13,7 +13,6 @@ internal class ApiClientCollExtGenerator
 	#region Constants
 
 	private const string cTemplateFilename = "ApiClientCollExt.tmpl";
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_ApiClientRegistrations = "API_CLIENT_REGISTRATIONS";
 
 	#endregion
@@ -39,7 +38,6 @@ internal class ApiClientCollExtGenerator
 		var registrationsOutput = string.Join(Environment.NewLine, registrations);
 
 		// Replace tokens in template
-		apiClientCollExtTemplate = apiClientCollExtTemplate.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
 		apiClientCollExtTemplate = apiClientCollExtTemplate.Replace(Utils.FmtToken(cToken_ApiClientRegistrations), registrationsOutput);
 
 		// Write output file

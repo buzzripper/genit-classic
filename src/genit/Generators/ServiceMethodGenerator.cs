@@ -1,12 +1,8 @@
 ﻿using Dyvenix.Genit.Extensions;
 using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
-using Dyvenix.Genit.Models.Generators;
 using Dyvenix.Genit.Models.Services;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -42,7 +38,8 @@ internal class ServiceMethodGenerator
 
 		if (entity.Service.InclUpdate) {
 			// Interface
-			var signature = $"Task Update{className}({className} {varName})";
+			var returnType = entity.InclRowVersion ? "Task<byte[]>" : "Task";
+			var signature = $"{returnType} Update{className}({className} {varName})";
 			interfaceOutput.Add(signature);
 
 			output.AddLine();
@@ -52,10 +49,18 @@ internal class ServiceMethodGenerator
 			output.AddLine();
 			output.AddLine(tc + 1, $"using var db = _dbContextFactory.CreateDbContext();");
 			output.AddLine();
-			output.AddLine(tc + 1, $"db.Attach({varName});");
-			output.AddLine(tc + 1, $"db.Entry({varName}).State = EntityState.Modified;");
+			output.AddLine(tc + 1, "try {");
+			output.AddLine(tc + 2, $"db.Attach({varName});");
+			output.AddLine(tc + 2, $"db.Entry({varName}).State = EntityState.Modified;");
+			output.AddLine(tc + 2, $"await db.SaveChangesAsync();");
 			output.AddLine();
-			output.AddLine(tc + 1, $"await db.SaveChangesAsync();");
+			if (entity.InclRowVersion) {
+				output.AddLine(tc + 2, $"return {varName}.RowVersion;");
+				output.AddLine();
+			}
+			output.AddLine(tc + 1, "} catch (DbUpdateConcurrencyException) {");
+			output.AddLine(tc + 2, $"throw new ConcurrencyApiException(\"The item was modified or deleted by another user.\", _logger.CorrelationId);");
+			output.AddLine(tc + 1, "}");
 			output.AddLine(tc, "}");
 		}
 
@@ -175,7 +180,7 @@ internal class ServiceMethodGenerator
 			output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({filterProp.Property.FilterArgName}))");
 			output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{filterProp.Property.Name}, {filterProp.Property.FilterArgName}));");
 
-		//} else if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.Int.Id || filterProp.Property.PrimitiveType?.Id == PrimitiveType.Bool.Id || filterProp.Property.PrimitiveType?.Id == PrimitiveType.Guid.Id) {
+			//} else if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.Int.Id || filterProp.Property.PrimitiveType?.Id == PrimitiveType.Bool.Id || filterProp.Property.PrimitiveType?.Id == PrimitiveType.Guid.Id) {
 		} else {
 			var indent = tc + 1;
 			if (filterProp.IsOptional) {

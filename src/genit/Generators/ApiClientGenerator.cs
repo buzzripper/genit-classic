@@ -15,7 +15,6 @@ namespace Dyvenix.Genit.Generators;
 
 internal class ApiClientGenerator
 {
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_AddlUsings = "ADDL_USINGS";
 	private const string cToken_ApiClientsNs = "API_CLIENTS_NS";
 	private const string cToken_ApiClientName = "API_CLIENT_NAME";
@@ -229,9 +228,6 @@ internal class ApiClientGenerator
 
 	private string ReplaceServiceTemplateTokens(string template, string apiClientName, string entityName, List<string> addlUsings, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string apiClientsNamespace)
 	{
-		// Header
-		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
-
 		// Namespace
 		template = template.Replace(Utils.FmtToken(cToken_ApiClientsNs), apiClientsNamespace);
 

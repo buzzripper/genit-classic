@@ -17,7 +17,6 @@ public class EntityGenerator
 
 	private const string cTemplateFilename = "Entities.tmpl";
 
-	private const string cToken_CurrTimestamp = "CURR_TIMESTAMP";
 	private const string cToken_AddlUsings = "ADDL_USINGS";
 	private const string cToken_EntitiesNs = "ENTITIES_NS";
 	private const string cToken_EntityName = "ENTITY_NAME";
@@ -73,6 +72,17 @@ public class EntityGenerator
 		foreach (var property in entity.Properties.Where(p => p.IsPrimaryKey))
 			this.GenerateProperty(property, propsOutput, usings);
 		propsOutput.AddLine();
+
+		// RowVersion
+		if (entity.InclRowVersion) {
+			var rowVerProp = new PropertyModel {
+				Id= Guid.NewGuid(),
+				Name="RowVersion",
+				PrimitiveType = PrimitiveType.ByteArray
+			};
+			this.GenerateProperty(rowVerProp, propsOutput, usings);
+			propsOutput.AddLine();
+		}
 
 		// FK properties
 		var fkProperties = entity.Properties.Where(p => p.IsForeignKey);
@@ -131,7 +141,7 @@ public class EntityGenerator
 
 		} else if (prop.EnumType != null) {
 			var nullStr = prop.Nullable ? "?" : string.Empty;
-			output.AddLine(tc, $"[JsonConverter(typeof(JsonStringEnumConverter))]");
+			//output.AddLine(tc, $"[JsonConverter(typeof(JsonStringEnumConverter))]");
 			output.AddLine(tc, $"public {prop.EnumType.Name}{nullStr} {prop.Name} {{ get; set; }}");
 			usings.AddIfNotExists("System.Text.Json.Serialization");
 			if (!string.IsNullOrWhiteSpace(prop.EnumType.Namespace))
@@ -177,9 +187,6 @@ public class EntityGenerator
 
 	private string ReplaceTemplateTokens(string template, List<string> usings, string entitiesNamespace, EntityModel entity, List<string> propsOutput, List<string> navPropsOutput, string propNames)
 	{
-		// Header
-		template = template.Replace(Utils.FmtToken(cToken_CurrTimestamp), DateTime.Now.ToString("g"));
-
 		// Usings
 		var sb = new StringBuilder();
 		usings.ForEach(x => sb.AppendLine($"using {x};"));

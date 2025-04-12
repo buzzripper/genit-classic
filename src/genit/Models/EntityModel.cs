@@ -15,19 +15,20 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 {
 	public static EntityModel CreateNew()
 	{
+		var entityModel = new EntityModel(Guid.NewGuid()) {
+			Enabled = true,
+			InclRowVersion = true
+		};
+
 		var idProperty = new PropertyModel(Guid.NewGuid()) {
 			Name = "Id",
 			PrimitiveType = PrimitiveType.Guid,
 			IsPrimaryKey = true,
 			IsIndexed = true,
-			IsIndexUnique = true,
+			IsIndexUnique = true
 		};
-
-		var entityModel = new EntityModel(Guid.NewGuid()) {
-			Enabled = true
-		};
-
 		entityModel.Properties.Add(idProperty);
+
 		entityModel.Service = ServiceModel.CreateNew(Guid.NewGuid(), entityModel);
 
 		return entityModel;
@@ -49,6 +50,7 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 	private string _tableName;
 	private bool _enabled;
 	private string _namespace;
+	private bool _inclRowVersion;
 
 	#endregion
 
@@ -77,6 +79,12 @@ public class EntityModel : INotifyPropertyChanged, IDeserializationCallback
 	{
 		get => _id;
 		set => SetProperty(ref _id, value);
+	}
+
+	public bool InclRowVersion
+	{
+		get => _inclRowVersion;
+		set => SetProperty(ref _inclRowVersion, value);
 	}
 
 	public string Name

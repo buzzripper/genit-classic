@@ -130,6 +130,7 @@ partial class NavPropGridCtl
 		// 
 		AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 		AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+		BackColor = System.Drawing.Color.FromArgb(64, 64, 64);
 		Controls.Add(splMain);
 		Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		Name = "NavPropGridCtl";

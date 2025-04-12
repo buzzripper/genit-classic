@@ -25,11 +25,14 @@ public partial class FilterPropsEditCtl : UserControlBase
 
 	private ObservableCollection<PropertyModel> _properties;
 	private ObservableCollection<FilterPropertyModel> _filterProps;
+	private Color _highlightColor;
+
 
 	public FilterPropsEditCtl()
 	{
 		InitializeComponent();
 		grdProps.RowsDefaultCellStyle.SelectionBackColor = grdProps.RowsDefaultCellStyle.BackColor;
+		_highlightColor = grdProps.DefaultCellStyle.SelectionBackColor;
 	}
 
 	public void SetProperties(ObservableCollection<PropertyModel> properties)
@@ -53,7 +56,6 @@ public partial class FilterPropsEditCtl : UserControlBase
 	{
 		_suspendUpdates = true;
 		try {
-
 			_filterProps = filterProps;
 
 			if (filterProps == null || filterProps.Count == 0) {
@@ -100,22 +102,23 @@ public partial class FilterPropsEditCtl : UserControlBase
 
 		var col = grdProps.CurrentCell.OwningColumn;
 
-		// If it's one of the checkbox columns, we need to commit the edit
-		//if (col.Index == cFPInclCol || col.Index == cFPIsIntCol || col.Index == cFPIsIntCol) {
-		if (grdProps.IsCurrentCellDirty) {
-			// This commits the value immediately
+		if (grdProps.IsCurrentCellDirty)
 			grdProps.CommitEdit(DataGridViewDataErrorContexts.Commit);
-		}
-		//}
 	}
 
 	private void grdProps_CellValueChanged(object sender, DataGridViewCellEventArgs e)
 	{
+		if (e.RowIndex == -1)
+			return;
+
+		var row = grdProps.Rows[e.RowIndex];
+		bool isIncl = (bool)row.Cells[cFPInclCol].Value;
+		row.DefaultCellStyle.BackColor = isIncl ? _highlightColor : grdProps.DefaultCellStyle.BackColor;
+
 		if (_suspendUpdates || grdProps.CurrentCell == null)
 			return;
 
 		var col = grdProps.CurrentCell.OwningColumn;
-		var row = grdProps.Rows[e.RowIndex];
 		var prop = row.Tag as PropertyModel;
 		if (prop == null)
 			MessageBox.Show("Error: Property not found for this row.");

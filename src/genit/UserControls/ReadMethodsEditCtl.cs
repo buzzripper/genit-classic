@@ -26,8 +26,7 @@ namespace Dyvenix.Genit.UserControls
 		#region Fields
 
 		private ObservableCollection<ReadMethodModel> _readMethods;
-		//private int _dragDropSrcIdx;
-		//private int _dragDropDestIdx;
+		private Color _highlightColor;
 
 		#endregion
 
@@ -36,13 +35,14 @@ namespace Dyvenix.Genit.UserControls
 		public ReadMethodsEditCtl()
 		{
 			InitializeComponent();
+			_highlightColor = grdMethods.DefaultCellStyle.SelectionBackColor;
 		}
 
 		private void ServiceMethodsEditCtl_Load(object sender, EventArgs e)
 		{
 			PositionControls();
-			grdMethods.AutoGenerateColumns = false;
 
+			grdMethods.AutoGenerateColumns = false;
 			grdMethods.RowHeadersWidth = 40;
 			grdMethods.AllowDrop = true;
 			grdMethods.MouseDown += grdMethods_MouseDown;
@@ -50,10 +50,14 @@ namespace Dyvenix.Genit.UserControls
 			grdMethods.DragDrop += grdMethods_DragDrop;
 			grdMethods.DefaultCellStyle.SelectionBackColor = grdMethods.DefaultCellStyle.BackColor;
 			grdMethods.DefaultCellStyle.SelectionForeColor = grdMethods.DefaultCellStyle.ForeColor;
+			grdMethods.MultiSelect = false;
+			grdMethods.ClearSelection();
 		}
 
 		public void SetData(ObservableCollection<ReadMethodModel> readMethods, ObservableCollection<PropertyModel> properties, ObservableCollection<NavPropertyModel> navProperties)
 		{
+			_suspendUpdates = true;
+
 			_readMethods = readMethods;
 
 			bindingSrc.DataSource = _readMethods.OrderBy(m => m.DisplayOrder);
@@ -61,8 +65,9 @@ namespace Dyvenix.Genit.UserControls
 
 			filterPropsCtl.SetProperties(properties);
 
-			clbNavProperties.Items.Clear();
-			clbNavProperties.Items.AddRange(navProperties.ToArray());
+			inclNavPropEditCtl.SetNavProperties(navProperties);
+
+			_suspendUpdates = false;
 		}
 
 		#endregion
@@ -116,14 +121,14 @@ namespace Dyvenix.Genit.UserControls
 		{
 			_suspendUpdates = true;
 
-			for (var i = 0; i < clbNavProperties.Items.Count; i++) {
-				if (method == null) {
-					clbNavProperties.SetItemChecked(i, false);
-					continue;
-				}
-				var navProp = clbNavProperties.Items[i] as NavPropertyModel;
-				clbNavProperties.SetItemChecked(i, method.InclNavProperties.Contains(navProp));
-			}
+			//for (var i = 0; i < clbNavProperties.Items.Count; i++) {
+			//	if (method == null) {
+			//		clbNavProperties.SetItemChecked(i, false);
+			//		continue;
+			//	}
+			//	var navProp = clbNavProperties.Items[i] as NavPropertyModel;
+			//	clbNavProperties.SetItemChecked(i, method.InclNavProperties.Contains(navProp));
+			//}
 
 			_suspendUpdates = false;
 		}
@@ -180,17 +185,25 @@ namespace Dyvenix.Genit.UserControls
 
 		private void grdMethods_SelectionChanged(object sender, EventArgs e)
 		{
-			_suspendUpdates = true;
-			if (grdMethods.SelectedCells.Count == 1) {
-				var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
+			if (_suspendUpdates)
+				return;
+
+			if (grdMethods.SelectedRows.Count != 1)
+				return;
+
+			var rowIdx = grdMethods.SelectedRows[0].Index;
+
+			if (rowIdx > -1) {
+				var method = GetMethodFromGridRow(rowIdx);
 				filterPropsCtl.SetFilterProperties(method.FilterProperties);
+				inclNavPropEditCtl.SetInclNavProperties(method.InclNavProperties);
 				SetInclNavPropertiesList(method);
-				clbNavProperties.Enabled = true;
+
 			} else {
 				filterPropsCtl.SetFilterProperties(null);
 				SetInclNavPropertiesList(null);
+				inclNavPropEditCtl.SetInclNavProperties(null);
 			}
-			_suspendUpdates = false;
 		}
 
 		private void grdMethods_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
@@ -198,28 +211,28 @@ namespace Dyvenix.Genit.UserControls
 			this.grdMethods.Cursor = Cursors.Default;
 		}
 
-		private void clbNavProperties_ItemCheck(object sender, ItemCheckEventArgs e)
-		{
-			if (_suspendUpdates == true)
-				return;
+		//private void clbNavProperties_ItemCheck(object sender, ItemCheckEventArgs e)
+		//{
+		//	if (_suspendUpdates == true)
+		//		return;
 
-			if (e.NewValue == CheckState.Indeterminate)
-				return;
+		//	if (e.NewValue == CheckState.Indeterminate)
+		//		return;
 
-			var navProp = clbNavProperties.Items[e.Index] as NavPropertyModel;
-			if (navProp == null)
-				return;
+		//	//var navProp = clbNavProperties.Items[e.Index] as NavPropertyModel;
+		//	//if (navProp == null)
+		//	//	return;
 
-			var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
+		//	var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
 
-			if (e.NewValue == CheckState.Checked) {
-				if (!method.InclNavProperties.Contains(navProp))
-					method.InclNavProperties.Add(navProp);
-			} else {
-				if (method.InclNavProperties.Contains(navProp))
-					method.InclNavProperties.Remove(navProp);
-			}
-		}
+		//	//if (e.NewValue == CheckState.Checked) {
+		//	//	if (!method.InclNavProperties.Contains(navProp))
+		//	//		method.InclNavProperties.Add(navProp);
+		//	//} else {
+		//	//	if (method.InclNavProperties.Contains(navProp))
+		//	//		method.InclNavProperties.Remove(navProp);
+		//	//}
+		//}
 
 		private void grdMethods_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{
@@ -231,6 +244,29 @@ namespace Dyvenix.Genit.UserControls
 					grdMethods.Rows[e.RowIndex].Cells[cInclSortingCol].Value = false;
 			}
 		}
+
+		//private void ClbNavProperties_DrawItem(object sender, DrawItemEventArgs e)
+		//{
+		//	if (e.Index < 0) return;
+
+		//	var clb = sender as CheckedListBox;
+		//	bool isChecked = clb.GetItemChecked(e.Index);
+
+		//	// Background
+		//	Color backColor = isChecked ? _highlightColor : clb.BackColor;
+		//	using (Brush backgroundBrush = new SolidBrush(backColor)) {
+		//		e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+		//	}
+
+		//	// Text
+		//	string text = clb.Items[e.Index].ToString();
+		//	TextRenderer.DrawText(e.Graphics, text, e.Font, e.Bounds, clb.ForeColor, TextFormatFlags.Left);
+
+		//	// Draw focus rectangle if selected
+		//	e.DrawFocusRectangle();
+		//}
+
+		#region Drag/Drop
 
 		private void grdMethods_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -274,4 +310,6 @@ namespace Dyvenix.Genit.UserControls
 
 		#endregion
 	}
+
+	#endregion
 }

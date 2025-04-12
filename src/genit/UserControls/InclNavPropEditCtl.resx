@@ -117,79 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="colId.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="colUpdPropId.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="colName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="colInclude.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="colUseDto.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colDelete.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="colProperty.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <metadata name="colId.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colUseDto.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="colDelete.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="dataGridViewCellStyle2.NullValue" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="toolStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAALVJREFUOE+lkrENwjAURDObp/ASpCY1qUJLdgBKUoYFPAMwAAQEadweOku2guwY
-        G4onfZ3vv9+4APAXwTAHN2itkYMnUEpBCJEEu7OC3XaP13MMwreooFyU6PsjukPnLTPjGztRAcssNs3a
-        LXNmxjlJQM6nC9pNa+Bs82TBfXigWlYGzlkCu8zLZCr5KmCxXtUfV6dZVCClNNdu18EtW5jxjZ1ZwfSz
-        xAgKQt81hif4lWCYDoo36LISoP/H0rIAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADaSURBVDhPYxgFCHD//v3/eHABVBlucO/evVCgwihs+OHD
+        h8pQZbjBnTt3dO7evauHDT969EgIqgw3ANqEzelgDHRdKVQZ8QCokQPoKlWinA8CQA0rgHgjDANtrYFK
+        geSC/v//zwJiA8X1Hzx4kAyWQAZAvz4BKvyIhDeCxJ89eyYKZP8Hyu8HukYbxL5+/fp7sCZiAVCjEtRQ
+        sEFXrlxhg0oRD4DOfgF0PihQF0OFiANA26VANgPxYyDbF+qKq1BpwgCoQQBocxswRsRAfKAhbkCxJrAk
+        5YCBAQBTPOvh5FYd4gAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="colDelete.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
-        DAAACwwBP0AiyAAAAK9JREFUOE/t0DEKwkAQheFAOskZrLxDsA3aWloJ3izgXSwsRCzEdncP4BVc3w+T
-        NBk1amvxwcvM5BFS5Jx/4g4/0YcQQi1raWQjd8mGzIwdN7VX0Er3wjutV1DKVS7CMyame2bHTekV4CxH
-        yzuZGjIzdtz073kFB8t8Kv8FZGbs/gUjCk6WF1IZMjN2Lwv2cpO5zGRlyMzYcTMsiDFiqSWf+5Rutiml
-        YcG33OF4uXgA0o8OH6wYZ0YAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="btnAdd.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADmSURBVHhe7ZRBCsMwEAP91PysD0r+1FqgixcTaKA2FTOw
-        BKQcJB3cAAAAAAAAAABWcF3X0e9d7rCdj8qW8gwgzXY+KlvKM4A02/mobCnPANJs56OypTwDSLOdj8qW
-        8gwgzXY+KlvKM4A02/+Fgn9753m++ncYwNr0/7tzjH30EEOR1ecY+5iFWnmOsY9ZqJXnGPuYhVp5jrGP
-        HmL6ON1d1CP4BIcfBpBmOx+VLeUZQJrtfFS2lGcAabbzUdlSngGk2c5HZUt5BpBmOx+VLeUZQJrtfFS2
-        lGcAabYBAAAAAAAAAH5Iax93z1itYeXEZgAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="btnUp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABiSURBVEhLYxgFo2AUkAZu3rzZf+PGjXool7oAZDgQ/wdh
-        qluCbDjVLUE2/MqVKwYgTDVL0A2HCjNQxRJchsMAxZaANOEyHAZglgDVFkCFSANAAySgTJyAGDWjYBSM
-        bMDAAACBeYwWCDdgYQAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="btnDown.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABVSURBVEhL7c0xDgAhCERRyr3/xaipOIalZhJJtljRuNrN
-        64j4ESIac/dHVUsfh8ysYreP6xDH5+wI3mc7qezI73j4OnIsHt5HjsfD1XhA+FqciHaJNAlbdAV4hyc+
-        AAAAAElFTkSuQmCC
-</value>
-  </data>
-  <metadata name="bindingSrc.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>201, 20</value>
-  </metadata>
 </root>

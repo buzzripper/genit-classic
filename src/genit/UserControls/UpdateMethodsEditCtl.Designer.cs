@@ -28,7 +28,7 @@ partial class UpdateMethodsEditCtl
 	private void InitializeComponent()
 	{
 		components = new System.ComponentModel.Container();
-		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UpdateMethodsEditCtl));
 		splMain = new System.Windows.Forms.SplitContainer();
 		grdMethods = new System.Windows.Forms.DataGridView();
@@ -40,9 +40,7 @@ partial class UpdateMethodsEditCtl
 		btnAdd = new System.Windows.Forms.ToolStripButton();
 		btnUp = new System.Windows.Forms.ToolStripButton();
 		btnDown = new System.Windows.Forms.ToolStripButton();
-		clbUpdProperties = new System.Windows.Forms.CheckedListBox();
-		toolStrip2 = new System.Windows.Forms.ToolStrip();
-		toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+		updPropsEditCtl = new UpdPropsEditCtl();
 		bindingSrc = new System.Windows.Forms.BindingSource(components);
 		((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
 		splMain.Panel1.SuspendLayout();
@@ -50,7 +48,6 @@ partial class UpdateMethodsEditCtl
 		splMain.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)grdMethods).BeginInit();
 		toolStrip1.SuspendLayout();
-		toolStrip2.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).BeginInit();
 		SuspendLayout();
 		// 
@@ -70,8 +67,7 @@ partial class UpdateMethodsEditCtl
 		// 
 		// splMain.Panel2
 		// 
-		splMain.Panel2.Controls.Add(clbUpdProperties);
-		splMain.Panel2.Controls.Add(toolStrip2);
+		splMain.Panel2.Controls.Add(updPropsEditCtl);
 		splMain.Size = new System.Drawing.Size(1033, 537);
 		splMain.SplitterDistance = 590;
 		splMain.SplitterWidth = 6;
@@ -80,7 +76,6 @@ partial class UpdateMethodsEditCtl
 		// grdMethods
 		// 
 		grdMethods.AllowUserToAddRows = false;
-		grdMethods.AllowUserToDeleteRows = false;
 		grdMethods.AllowUserToResizeRows = false;
 		grdMethods.BackgroundColor = System.Drawing.SystemColors.Control;
 		grdMethods.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -92,7 +87,6 @@ partial class UpdateMethodsEditCtl
 		grdMethods.Margin = new System.Windows.Forms.Padding(2);
 		grdMethods.MultiSelect = false;
 		grdMethods.Name = "grdMethods";
-		grdMethods.ReadOnly = true;
 		grdMethods.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
 		grdMethods.RowHeadersWidth = 62;
 		grdMethods.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
@@ -112,7 +106,6 @@ partial class UpdateMethodsEditCtl
 		colId.HeaderText = "Id";
 		colId.MinimumWidth = 40;
 		colId.Name = "colId";
-		colId.ReadOnly = true;
 		colId.Visible = false;
 		// 
 		// colName
@@ -122,7 +115,6 @@ partial class UpdateMethodsEditCtl
 		colName.HeaderText = "Name";
 		colName.MinimumWidth = 100;
 		colName.Name = "colName";
-		colName.ReadOnly = true;
 		// 
 		// colUseDto
 		// 
@@ -130,20 +122,18 @@ partial class UpdateMethodsEditCtl
 		colUseDto.HeaderText = "Use DTO";
 		colUseDto.MinimumWidth = 100;
 		colUseDto.Name = "colUseDto";
-		colUseDto.ReadOnly = true;
 		colUseDto.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 		// 
 		// colDelete
 		// 
-		dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle1.NullValue = resources.GetObject("dataGridViewCellStyle1.NullValue");
-		dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
-		colDelete.DefaultCellStyle = dataGridViewCellStyle1;
+		dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle2.NullValue = resources.GetObject("dataGridViewCellStyle2.NullValue");
+		dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
+		colDelete.DefaultCellStyle = dataGridViewCellStyle2;
 		colDelete.HeaderText = "";
 		colDelete.Image = (System.Drawing.Image)resources.GetObject("colDelete.Image");
 		colDelete.MinimumWidth = 75;
 		colDelete.Name = "colDelete";
-		colDelete.ReadOnly = true;
 		colDelete.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 		colDelete.Width = 75;
 		// 
@@ -191,31 +181,14 @@ partial class UpdateMethodsEditCtl
 		btnDown.Size = new System.Drawing.Size(28, 28);
 		btnDown.Text = "toolStripButton1";
 		// 
-		// clbUpdProperties
+		// updPropsEditCtl
 		// 
-		clbUpdProperties.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		clbUpdProperties.Dock = System.Windows.Forms.DockStyle.Fill;
-		clbUpdProperties.FormattingEnabled = true;
-		clbUpdProperties.Location = new System.Drawing.Point(0, 25);
-		clbUpdProperties.Name = "clbUpdProperties";
-		clbUpdProperties.Size = new System.Drawing.Size(437, 512);
-		clbUpdProperties.TabIndex = 8;
-		clbUpdProperties.ItemCheck += clbUpdProperties_ItemCheck;
-		// 
-		// toolStrip2
-		// 
-		toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel2 });
-		toolStrip2.Location = new System.Drawing.Point(0, 0);
-		toolStrip2.Name = "toolStrip2";
-		toolStrip2.Size = new System.Drawing.Size(437, 25);
-		toolStrip2.TabIndex = 7;
-		toolStrip2.Text = "toolStrip2";
-		// 
-		// toolStripLabel2
-		// 
-		toolStripLabel2.Name = "toolStripLabel2";
-		toolStripLabel2.Size = new System.Drawing.Size(101, 22);
-		toolStripLabel2.Text = "Update Properties";
+		updPropsEditCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+		updPropsEditCtl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+		updPropsEditCtl.Location = new System.Drawing.Point(0, 0);
+		updPropsEditCtl.Name = "updPropsEditCtl";
+		updPropsEditCtl.Size = new System.Drawing.Size(437, 537);
+		updPropsEditCtl.TabIndex = 0;
 		// 
 		// UpdateMethodsEditCtl
 		// 
@@ -231,14 +204,11 @@ partial class UpdateMethodsEditCtl
 		splMain.Panel1.ResumeLayout(false);
 		splMain.Panel1.PerformLayout();
 		splMain.Panel2.ResumeLayout(false);
-		splMain.Panel2.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)splMain).EndInit();
 		splMain.ResumeLayout(false);
 		((System.ComponentModel.ISupportInitialize)grdMethods).EndInit();
 		toolStrip1.ResumeLayout(false);
 		toolStrip1.PerformLayout();
-		toolStrip2.ResumeLayout(false);
-		toolStrip2.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).EndInit();
 		ResumeLayout(false);
 	}
@@ -255,13 +225,11 @@ partial class UpdateMethodsEditCtl
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colInclPaging;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colUseQuery;
 	private System.Windows.Forms.DataGridViewLinkColumn colAttrs;
-	private System.Windows.Forms.ToolStrip toolStrip2;
-	private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-	private System.Windows.Forms.CheckedListBox clbUpdProperties;
 	private System.Windows.Forms.ToolStripButton btnUp;
 	private System.Windows.Forms.ToolStripButton btnDown;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colUseDto;
 	private System.Windows.Forms.DataGridViewImageColumn colDelete;
+	private UpdPropsEditCtl updPropsEditCtl;
 }

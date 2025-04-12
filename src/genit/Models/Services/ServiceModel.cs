@@ -111,8 +111,8 @@ public class ServiceModel : INotifyPropertyChanged
 		set => SetProperty(ref _controllerAttributes, value);
 	}
 
-	public ObservableCollection<ReadMethodModel> ReadMethods { get; set; } = new ObservableCollection<ReadMethodModel>();
-	public ObservableCollection<UpdateMethodModel> UpdateMethods { get; set; } = new ObservableCollection<UpdateMethodModel>();
+	public ObservableCollection<ReadMethodModel> ReadMethods { get; set; }
+	public ObservableCollection<UpdateMethodModel> UpdateMethods { get; set; }
 
 	#endregion
 

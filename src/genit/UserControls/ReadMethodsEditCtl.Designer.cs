@@ -28,8 +28,8 @@ partial class ReadMethodsEditCtl
 	private void InitializeComponent()
 	{
 		components = new System.ComponentModel.Container();
-		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReadMethodsEditCtl));
 		splMain = new System.Windows.Forms.SplitContainer();
 		grdMethods = new System.Windows.Forms.DataGridView();
@@ -46,10 +46,8 @@ partial class ReadMethodsEditCtl
 		btnUp = new System.Windows.Forms.ToolStripButton();
 		splLists = new System.Windows.Forms.SplitContainer();
 		filterPropsCtl = new FilterPropsEditCtl();
-		clbNavProperties = new System.Windows.Forms.CheckedListBox();
-		toolStrip2 = new System.Windows.Forms.ToolStrip();
-		toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
 		bindingSrc = new System.Windows.Forms.BindingSource(components);
+		inclNavPropEditCtl = new InclNavPropEditCtl();
 		((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
 		splMain.Panel1.SuspendLayout();
 		splMain.Panel2.SuspendLayout();
@@ -60,7 +58,6 @@ partial class ReadMethodsEditCtl
 		splLists.Panel1.SuspendLayout();
 		splLists.Panel2.SuspendLayout();
 		splLists.SuspendLayout();
-		toolStrip2.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).BeginInit();
 		SuspendLayout();
 		// 
@@ -160,10 +157,10 @@ partial class ReadMethodsEditCtl
 		// 
 		colAttrs.ActiveLinkColor = System.Drawing.SystemColors.MenuHighlight;
 		colAttrs.DataPropertyName = "AttrCount";
-		dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
-		dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
-		colAttrs.DefaultCellStyle = dataGridViewCellStyle1;
+		dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
+		dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Transparent;
+		colAttrs.DefaultCellStyle = dataGridViewCellStyle3;
 		colAttrs.HeaderText = "Attrs";
 		colAttrs.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 		colAttrs.LinkColor = System.Drawing.SystemColors.MenuHighlight;
@@ -177,10 +174,10 @@ partial class ReadMethodsEditCtl
 		// 
 		// colDelete
 		// 
-		dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle2.NullValue = resources.GetObject("dataGridViewCellStyle2.NullValue");
-		dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
-		colDelete.DefaultCellStyle = dataGridViewCellStyle2;
+		dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle4.NullValue = resources.GetObject("dataGridViewCellStyle4.NullValue");
+		dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.Transparent;
+		colDelete.DefaultCellStyle = dataGridViewCellStyle4;
 		colDelete.HeaderText = "";
 		colDelete.Image = (System.Drawing.Image)resources.GetObject("colDelete.Image");
 		colDelete.MinimumWidth = 75;
@@ -248,8 +245,7 @@ partial class ReadMethodsEditCtl
 		// 
 		// splLists.Panel2
 		// 
-		splLists.Panel2.Controls.Add(clbNavProperties);
-		splLists.Panel2.Controls.Add(toolStrip2);
+		splLists.Panel2.Controls.Add(inclNavPropEditCtl);
 		splLists.Size = new System.Drawing.Size(435, 449);
 		splLists.SplitterDistance = 261;
 		splLists.SplitterWidth = 6;
@@ -263,32 +259,14 @@ partial class ReadMethodsEditCtl
 		filterPropsCtl.Size = new System.Drawing.Size(435, 261);
 		filterPropsCtl.TabIndex = 0;
 		// 
-		// clbNavProperties
+		// inclNavPropEditCtl
 		// 
-		clbNavProperties.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-		clbNavProperties.Dock = System.Windows.Forms.DockStyle.Fill;
-		clbNavProperties.FormattingEnabled = true;
-		clbNavProperties.Location = new System.Drawing.Point(0, 25);
-		clbNavProperties.Name = "clbNavProperties";
-		clbNavProperties.Size = new System.Drawing.Size(435, 157);
-		clbNavProperties.TabIndex = 8;
-		clbNavProperties.ItemCheck += clbNavProperties_ItemCheck;
-		// 
-		// toolStrip2
-		// 
-		toolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripLabel2 });
-		toolStrip2.Location = new System.Drawing.Point(0, 0);
-		toolStrip2.Name = "toolStrip2";
-		toolStrip2.Size = new System.Drawing.Size(435, 25);
-		toolStrip2.TabIndex = 7;
-		toolStrip2.Text = "toolStrip2";
-		// 
-		// toolStripLabel2
-		// 
-		toolStripLabel2.Name = "toolStripLabel2";
-		toolStripLabel2.Size = new System.Drawing.Size(163, 22);
-		toolStripLabel2.Text = "Include Navigation Properties";
+		inclNavPropEditCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+		inclNavPropEditCtl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+		inclNavPropEditCtl.Location = new System.Drawing.Point(0, 0);
+		inclNavPropEditCtl.Name = "inclNavPropEditCtl";
+		inclNavPropEditCtl.Size = new System.Drawing.Size(435, 182);
+		inclNavPropEditCtl.TabIndex = 0;
 		// 
 		// ReadMethodsEditCtl
 		// 
@@ -309,11 +287,8 @@ partial class ReadMethodsEditCtl
 		toolStrip1.PerformLayout();
 		splLists.Panel1.ResumeLayout(false);
 		splLists.Panel2.ResumeLayout(false);
-		splLists.Panel2.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)splLists).EndInit();
 		splLists.ResumeLayout(false);
-		toolStrip2.ResumeLayout(false);
-		toolStrip2.PerformLayout();
 		((System.ComponentModel.ISupportInitialize)bindingSrc).EndInit();
 		ResumeLayout(false);
 	}
@@ -334,9 +309,7 @@ partial class ReadMethodsEditCtl
 	private System.Windows.Forms.DataGridViewLinkColumn colAttrs;
 	private System.Windows.Forms.DataGridViewImageColumn colDelete;
 	private FilterPropsEditCtl filterPropsCtl;
-	private System.Windows.Forms.ToolStrip toolStrip2;
-	private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-	private System.Windows.Forms.CheckedListBox clbNavProperties;
 	private System.Windows.Forms.ToolStripButton btnDown;
 	private System.Windows.Forms.ToolStripButton btnUp;
+	private InclNavPropEditCtl inclNavPropEditCtl;
 }

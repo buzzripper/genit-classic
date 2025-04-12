@@ -9,11 +9,12 @@ namespace Dyvenix.Genit.Models.Services;
 
 public class UpdateMethodModel : INotifyPropertyChanged
 {
-	public static UpdateMethodModel CreateNew(Guid id, string name)
+	public static UpdateMethodModel CreateNew(Guid id, string name, int displayOrder)
 	{
 		return new UpdateMethodModel() {
 			Id = id,
-			Name = name
+			Name = name, 
+			DisplayOrder = displayOrder
 		};
 	}
 
@@ -36,7 +37,7 @@ public class UpdateMethodModel : INotifyPropertyChanged
 	public Guid Id { get; init; }
 	public string Name { get; set; }
 	public bool UseDto { get; set; }
-	public ObservableCollection<UpdatePropertyModel> UpdateProperties = new ObservableCollection<UpdatePropertyModel>();
+	public ObservableCollection<UpdatePropertyModel> UpdateProperties {  get; set; } = new ObservableCollection<UpdatePropertyModel>();
 
 	public int DisplayOrder
 	{

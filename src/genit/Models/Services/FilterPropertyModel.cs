@@ -1,17 +1,20 @@
-﻿namespace Dyvenix.Genit.Models.Services;
+﻿
+namespace Dyvenix.Genit.Models.Services;
 
-public class UpdatePropertyModel
+public class FilterPropertyModel
 {
-	public static UpdatePropertyModel CreateNew(PropertyModel property)
+	public static FilterPropertyModel CreateNew(PropertyModel property, bool isOptional = false, bool isInternal = false)
 	{
-		return new UpdatePropertyModel {
-			Property = property
+		return new FilterPropertyModel {
+			Property = property,
+			IsOptional = isOptional,
+			IsInternal = isInternal
 		};
 	}
 
 	#region Ctors / Init
 
-	public UpdatePropertyModel()
+	public FilterPropertyModel()
 	{
 	}
 
@@ -20,6 +23,9 @@ public class UpdatePropertyModel
 	#region Properties
 
 	public PropertyModel Property { get; set; }
+	public bool IsOptional { get; set; }
+	public bool IsInternal { get; set; }
+	public string InternalValue { get; set; }
 
 	#endregion
 }

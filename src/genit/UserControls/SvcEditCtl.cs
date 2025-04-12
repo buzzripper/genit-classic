@@ -67,6 +67,7 @@ public partial class SvcEditCtl : EntityEditCtlBase
 		SetControllerAttrsLabel();
 
 		readMethodsEditCtl.SetData(_service.ReadMethods, _entity.Properties, _entity.NavProperties);
+		updMethodsEditCtl.SetData(_service.UpdateMethods, _entity.Properties);
 
 		_suspendUpdates = false;
 	}

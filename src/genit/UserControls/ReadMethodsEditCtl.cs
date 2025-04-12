@@ -44,6 +44,7 @@ namespace Dyvenix.Genit.UserControls
 
 			grdMethods.AutoGenerateColumns = false;
 			grdMethods.RowHeadersWidth = 40;
+			grdMethods.AllowUserToAddRows = false;
 			grdMethods.AllowDrop = true;
 			grdMethods.MouseDown += grdMethods_MouseDown;
 			grdMethods.DragOver += grdMethods_DragOver;

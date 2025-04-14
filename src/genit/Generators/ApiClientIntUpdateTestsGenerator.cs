@@ -115,11 +115,13 @@ internal class ApiClientIntUpdateTestsGenerator : ApiClientIntTestsGenBase
 		output.AddLine(tc + 1, $"return new {entity.Name} {{");
 		var c = 0;
 		var props = entity.Properties.Where(p => !p.Nullable && !p.IsPrimaryKey).ToList();
+		var cm = props.Count > 0 ? "," : string.Empty;
+		output.AddLine(tc + 2, $"Id = Guid.NewGuid(){cm}");
 		foreach (var prop in props) {
-			var cm = (c++ < (props.Count - 1)) ? "," : string.Empty;
+			cm = (c++ < (props.Count - 1)) ? "," : string.Empty;
 			if (prop.IsForeignKey) {
 				var fkEntityName = prop.Assoc.FKEntity.Name;
-				output.AddLine(tc + 2, $"{prop.Name} = GetRnd{prop.Assoc.FKEntity.Name}Pk(){cm}");
+				output.AddLine(tc + 2, $"{prop.Name} = GetRnd{prop.Assoc.PrimaryEntity.Name}Pk(){cm}");
 			} else {
 				if (prop.PrimitiveType?.Id == PrimitiveType.String.Id) {
 					output.AddLine(tc + 2, $"{prop.Name} = RndStr({prop.MaxLength}){cm}");

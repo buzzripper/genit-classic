@@ -100,7 +100,7 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, "var apiResponse = CreateApiResponse<Guid>();");
 			output.AddLine(tc + 1, "try {");
-			output.AddLine(tc + 2, $"await _{svcVarName}.Create{className}({varName});");
+			output.AddLine(tc + 2, $"apiResponse.Data = await _{svcVarName}.Create{className}({varName});");
 			output.AddLine();
 			output.AddLine(tc + 2, "return Ok(apiResponse);");
 			output.AddLine();

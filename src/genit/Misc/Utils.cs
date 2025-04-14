@@ -48,7 +48,6 @@ namespace Dyvenix.Genit.Misc
 
 			var firstChar = input.Substring(0, 1).ToLower();
 			return $"{firstChar}{input.Substring(1)}";
-
 		}
 
 		public static List<string> BuildAddlUsingsList(ObservableCollection<string> attrs)

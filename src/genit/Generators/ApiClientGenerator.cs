@@ -78,7 +78,7 @@ internal class ApiClientGenerator
 		// Replace tokens in template
 		var fileContents = ReplaceServiceTemplateTokens(template, apiClientName, entity.Name, addlUsings, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ApiClientsNamespace);
 
-		var outputFile = Path.Combine(outputFolder, $"{apiClientName}.cs");
+		var outputFile = Path.Combine(outputFolder, $"{apiClientName}.g.cs");
 		if (File.Exists(outputFile))
 			File.Delete(outputFile);
 		File.WriteAllText(outputFile, fileContents);
@@ -92,7 +92,7 @@ internal class ApiClientGenerator
 
 		if (entity.Service.InclCreate) {
 			// Interface
-			var signature = $"Task<{className}> Create{className}({className} {varName})";
+			var signature = $"Task<Guid> Create{className}({className} {varName})";
 			interfaceOutput.Add(signature);
 
 			output.AddLine();
@@ -100,7 +100,7 @@ internal class ApiClientGenerator
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
 			output.AddLine();
-			output.AddLine(tc + 1, $"return await PostAsync<{className}>(\"api/v1/{className}/Create{className}\", {varName});");
+			output.AddLine(tc + 1, $"return await PostAsync<Guid>(\"api/v1/{className}/Create{className}\", {varName});");
 			output.AddLine(tc, "}");
 		}
 
@@ -126,6 +126,8 @@ internal class ApiClientGenerator
 			output.AddLine();
 			output.AddLine(tc, $"public async {signature}");
 			output.AddLine(tc, "{");
+			output.AddLine(tc + 1, "if (id == Guid.Empty)");
+			output.AddLine(tc + 2, "throw new ArgumentNullException(nameof(id));");
 			output.AddLine(tc + 1, $"await PostAsync<string>($\"api/v1/{className}/Delete{className}/{{id}}\", null);");
 			output.AddLine(tc, "}");
 		}

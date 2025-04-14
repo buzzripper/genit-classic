@@ -23,8 +23,9 @@ public class IntTestGenerator
 		if (!intTestsGenModel.Enabled)
 			return;
 
-		foreach (var entity in entities.Where(e => e.Service.Enabled)) {
-			new ApiClientIntTestsGenerator().Run(entity, intTestsGenModel, templatesFolderpath);
+		foreach (var entity in entities.Where(e => e.Service.Enabled && e.Service.InclController)) {
+			new ApiClientIntReadTestsGenerator().Run(entity, intTestsGenModel, templatesFolderpath);
+			new ApiClientIntUpdateTestsGenerator().Run(entity, intTestsGenModel, templatesFolderpath);
 		}
 	}
 }

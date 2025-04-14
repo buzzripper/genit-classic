@@ -175,7 +175,7 @@ public class ServiceGenerator
 		// Replace tokens in template
 		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ServicesNamespace);
 
-		var outputFile = Path.Combine(outputFolder, $"{serviceName}.cs");
+		var outputFile = Path.Combine(outputFolder, $"{serviceName}.g.cs");
 		if (File.Exists(outputFile))
 			File.Delete(outputFile);
 		File.WriteAllText(outputFile, fileContents);

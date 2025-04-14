@@ -20,7 +20,7 @@ internal class ServiceMethodGenerator
 
 		if (entity.Service.InclCreate) {
 			// Interface
-			var signature = $"Task Create{className}({className} {varName})";
+			var signature = $"Task<Guid> Create{className}({className} {varName})";
 			interfaceOutput.Add(signature);
 
 			output.AddLine();
@@ -28,11 +28,16 @@ internal class ServiceMethodGenerator
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
 			output.AddLine();
-			output.AddLine(tc + 1, $"using var db = _dbContextFactory.CreateDbContext();");
+			output.AddLine(tc + 1, "try {");
+			output.AddLine(tc + 2, $"using var db = _dbContextFactory.CreateDbContext();");
+			output.AddLine(tc + 2, $"db.Add({varName});");
+			output.AddLine(tc + 2, "await db.SaveChangesAsync();");
 			output.AddLine();
-			output.AddLine(tc + 1, $"db.Add({varName});");
+			output.AddLine(tc + 2, $"return {varName}.Id;");
 			output.AddLine();
-			output.AddLine(tc + 1, $"await db.SaveChangesAsync();");
+			output.AddLine(tc + 1, "} catch (DbUpdateConcurrencyException) {");
+			output.AddLine(tc + 2, "throw new ConcurrencyApiException(\"The item was modified or deleted by another user.\", _logger.CorrelationId);");
+			output.AddLine(tc + 1, "}");
 			output.AddLine(tc, "}");
 		}
 

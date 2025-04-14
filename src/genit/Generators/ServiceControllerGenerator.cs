@@ -19,6 +19,7 @@ internal class ServiceControllerGenerator
 	private const string cToken_ControllerVersion = "CONTROLLER_VERSION";
 	private const string cToken_ControllerName = "CONTROLLER_NAME";
 	private const string cToken_ServiceName = "SERVICE_NAME";
+	private const string cToken_EntityName = "SERVICE_NAME";
 	private const string cToken_ServiceVarName = "SERVICE_VAR_NAME";
 	private const string cToken_CudControllerMethods = "CUD_METHODS";
 	private const string cToken_SingleMethods = "SINGLE_METHODS";
@@ -76,9 +77,9 @@ internal class ServiceControllerGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, entity.Service.ControllerVersion, serviceGen.ControllersNamespace, controllerName, serviceName, serviceVarName, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput);
+		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, entity.Service.ControllerVersion, serviceGen.ControllersNamespace, controllerName, serviceName, serviceVarName, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, entity.Name);
 
-		var outputFile = Path.Combine(outputFolder, $"{controllerName}.cs");
+		var outputFile = Path.Combine(outputFolder, $"{controllerName}.g.cs");
 		if (File.Exists(outputFile))
 			File.Delete(outputFile);
 		File.WriteAllText(outputFile, fileContents);
@@ -97,8 +98,7 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Create{className}({className} {varName})");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, "var apiResponse =new ApiResponse();");
-			output.AddLine();
+			output.AddLine(tc + 1, "var apiResponse = CreateApiResponse<Guid>();");
 			output.AddLine(tc + 1, "try {");
 			output.AddLine(tc + 2, $"await _{svcVarName}.Create{className}({varName});");
 			output.AddLine();
@@ -115,8 +115,7 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, $"[HttpPatch, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Update{className}({className} {varName})");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"var apiResponse =new ApiResponse<byte[]>();");
-			output.AddLine();
+			output.AddLine(tc + 1, $"var apiResponse = CreateApiResponse<byte[]>();");
 			output.AddLine(tc + 1, "try {");
 			if (entity.InclRowVersion) {
 				output.AddLine(tc + 2, $"apiResponse.Data = await _{svcVarName}.Update{className}({varName});");
@@ -139,8 +138,7 @@ internal class ServiceControllerGenerator
 			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Delete{className}(Guid id)");
 			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, "var apiResponse =new ApiResponse();");
-			output.AddLine();
+			output.AddLine(tc + 1, "var apiResponse = CreateApiResponse();");
 			output.AddLine(tc + 1, "try {");
 			output.AddLine(tc + 2, $"await _{svcVarName}.Delete{className}(id);");
 			output.AddLine();
@@ -174,10 +172,13 @@ internal class ServiceControllerGenerator
 		output.AddLine(tc, $"[HttpGet, Route(\"[action]{filterRoute}\")]");
 		output.AddLine(tc, $"public async Task<ActionResult<{entity.Name}>> {method.Name}({filterParams})");
 		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, $"var apiResponse = CreateApiResponse<{entity.Name}>();");
 		output.AddLine(tc + 1, "try {");
-		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({filterArg});");
+		output.AddLine(tc + 2, $"apiResponse.Data =  await _{svcVarName}.{method.Name}({filterArg});");
+		output.AddLine(tc + 2, $"return Ok(apiResponse);");
+		output.AddLine();
 		output.AddLine(tc + 1, "} catch (Exception ex) {");
-		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
 		output.AddLine(tc + 1, "}");
 		output.AddLine(tc, "}");
 	}
@@ -242,10 +243,13 @@ internal class ServiceControllerGenerator
 		output.AddLine(tc, $"[HttpGet, Route(\"[action]{sbRoute}\")]");
 		output.AddLine(tc, $"public async Task<ActionResult<List<{entity.Name}>>> {method.Name}({sbArgs})");
 		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, $"var apiResponse = CreateApiResponse<List<{entity.Name}>>();");
 		output.AddLine(tc + 1, "try {");
-		output.AddLine(tc + 2, $"return await _{svcVarName}.{method.Name}({sbVars});");
+		output.AddLine(tc + 2, $"apiResponse.Data =  await _{svcVarName}.{method.Name}({sbVars});");
+		output.AddLine(tc + 2, $"return Ok(apiResponse);");
+		output.AddLine();
 		output.AddLine(tc + 1, "} catch (Exception ex) {");
-		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(ex);");
+		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
 		output.AddLine(tc + 1, "}");
 		output.AddLine(tc, "}");
 	}
@@ -274,7 +278,7 @@ internal class ServiceControllerGenerator
 		output.AddLine(tc, "}");
 	}
 
-	internal string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, List<string> attrsOutput, string controllerVersion, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput)
+	internal string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, List<string> attrsOutput, string controllerVersion, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, string entityName)
 	{
 		// Addl Usings
 		var sb = new StringBuilder();
@@ -301,6 +305,7 @@ internal class ServiceControllerGenerator
 		template = template.Replace(Utils.FmtToken(cToken_ControllerName), controllerName);
 		template = template.Replace(Utils.FmtToken(cToken_ServiceName), serviceName);
 		template = template.Replace(Utils.FmtToken(cToken_ServiceVarName), serviceVarName);
+		template = template.Replace(Utils.FmtToken(cToken_EntityName), entityName);
 
 		// CUD Methods
 		sb = new StringBuilder();

@@ -28,20 +28,20 @@ partial class UpdateMethodsEditCtl
 	private void InitializeComponent()
 	{
 		components = new System.ComponentModel.Container();
-		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+		System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UpdateMethodsEditCtl));
 		splMain = new System.Windows.Forms.SplitContainer();
 		grdMethods = new System.Windows.Forms.DataGridView();
+		toolStrip1 = new System.Windows.Forms.ToolStrip();
+		btnAdd = new System.Windows.Forms.ToolStripButton();
+		btnDown = new System.Windows.Forms.ToolStripButton();
+		btnUp = new System.Windows.Forms.ToolStripButton();
+		updPropsEditCtl = new UpdPropsEditCtl();
+		bindingSrc = new System.Windows.Forms.BindingSource(components);
 		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colUseDto = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 		colDelete = new System.Windows.Forms.DataGridViewImageColumn();
-		toolStrip1 = new System.Windows.Forms.ToolStrip();
-		btnAdd = new System.Windows.Forms.ToolStripButton();
-		btnUp = new System.Windows.Forms.ToolStripButton();
-		btnDown = new System.Windows.Forms.ToolStripButton();
-		updPropsEditCtl = new UpdPropsEditCtl();
-		bindingSrc = new System.Windows.Forms.BindingSource(components);
 		((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
 		splMain.Panel1.SuspendLayout();
 		splMain.Panel2.SuspendLayout();
@@ -88,6 +88,7 @@ partial class UpdateMethodsEditCtl
 		grdMethods.MultiSelect = false;
 		grdMethods.Name = "grdMethods";
 		grdMethods.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+		grdMethods.RowHeadersVisible = false;
 		grdMethods.RowHeadersWidth = 62;
 		grdMethods.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdMethods.ShowEditingIcon = false;
@@ -98,6 +99,61 @@ partial class UpdateMethodsEditCtl
 		grdMethods.CellMouseLeave += grdMethods_CellMouseLeave;
 		grdMethods.DataError += grdMethods_DataError;
 		grdMethods.SelectionChanged += grdMethods_SelectionChanged;
+		// 
+		// toolStrip1
+		// 
+		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
+		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnDown, btnUp });
+		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+		toolStrip1.Location = new System.Drawing.Point(0, 0);
+		toolStrip1.Name = "toolStrip1";
+		toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+		toolStrip1.Size = new System.Drawing.Size(590, 31);
+		toolStrip1.TabIndex = 2;
+		toolStrip1.Text = "toolStrip1";
+		// 
+		// btnAdd
+		// 
+		btnAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnAdd.Image = (System.Drawing.Image)resources.GetObject("btnAdd.Image");
+		btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnAdd.Name = "btnAdd";
+		btnAdd.Size = new System.Drawing.Size(28, 28);
+		btnAdd.Text = "toolStripButton1";
+		btnAdd.Click += btnAdd_Click;
+		// 
+		// btnDown
+		// 
+		btnDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnDown.Image = (System.Drawing.Image)resources.GetObject("btnDown.Image");
+		btnDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnDown.Name = "btnDown";
+		btnDown.Size = new System.Drawing.Size(28, 28);
+		btnDown.Text = "toolStripButton1";
+		btnDown.Click += btnDown_Click;
+		// 
+		// btnUp
+		// 
+		btnUp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnUp.Image = (System.Drawing.Image)resources.GetObject("btnUp.Image");
+		btnUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnUp.Name = "btnUp";
+		btnUp.Size = new System.Drawing.Size(28, 28);
+		btnUp.Text = "toolStripButton1";
+		btnUp.Click += btnUp_Click;
+		// 
+		// updPropsEditCtl
+		// 
+		updPropsEditCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+		updPropsEditCtl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+		updPropsEditCtl.Location = new System.Drawing.Point(0, 0);
+		updPropsEditCtl.Name = "updPropsEditCtl";
+		updPropsEditCtl.Size = new System.Drawing.Size(437, 537);
+		updPropsEditCtl.TabIndex = 0;
 		// 
 		// colId
 		// 
@@ -126,69 +182,16 @@ partial class UpdateMethodsEditCtl
 		// 
 		// colDelete
 		// 
-		dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-		dataGridViewCellStyle2.NullValue = resources.GetObject("dataGridViewCellStyle2.NullValue");
-		dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Transparent;
-		colDelete.DefaultCellStyle = dataGridViewCellStyle2;
+		dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+		dataGridViewCellStyle1.NullValue = resources.GetObject("dataGridViewCellStyle1.NullValue");
+		dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
+		colDelete.DefaultCellStyle = dataGridViewCellStyle1;
 		colDelete.HeaderText = "";
 		colDelete.Image = (System.Drawing.Image)resources.GetObject("colDelete.Image");
 		colDelete.MinimumWidth = 75;
 		colDelete.Name = "colDelete";
 		colDelete.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 		colDelete.Width = 75;
-		// 
-		// toolStrip1
-		// 
-		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
-		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnUp, btnDown });
-		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-		toolStrip1.Location = new System.Drawing.Point(0, 0);
-		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-		toolStrip1.Size = new System.Drawing.Size(590, 31);
-		toolStrip1.TabIndex = 2;
-		toolStrip1.Text = "toolStrip1";
-		// 
-		// btnAdd
-		// 
-		btnAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		btnAdd.Image = (System.Drawing.Image)resources.GetObject("btnAdd.Image");
-		btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
-		btnAdd.Name = "btnAdd";
-		btnAdd.Size = new System.Drawing.Size(28, 28);
-		btnAdd.Text = "toolStripButton1";
-		btnAdd.Click += btnAdd_Click;
-		// 
-		// btnUp
-		// 
-		btnUp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-		btnUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		btnUp.Image = (System.Drawing.Image)resources.GetObject("btnUp.Image");
-		btnUp.ImageTransparentColor = System.Drawing.Color.Magenta;
-		btnUp.Name = "btnUp";
-		btnUp.Size = new System.Drawing.Size(28, 28);
-		btnUp.Text = "toolStripButton1";
-		// 
-		// btnDown
-		// 
-		btnDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-		btnDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		btnDown.Image = (System.Drawing.Image)resources.GetObject("btnDown.Image");
-		btnDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-		btnDown.Name = "btnDown";
-		btnDown.Size = new System.Drawing.Size(28, 28);
-		btnDown.Text = "toolStripButton1";
-		// 
-		// updPropsEditCtl
-		// 
-		updPropsEditCtl.Dock = System.Windows.Forms.DockStyle.Fill;
-		updPropsEditCtl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		updPropsEditCtl.Location = new System.Drawing.Point(0, 0);
-		updPropsEditCtl.Name = "updPropsEditCtl";
-		updPropsEditCtl.Size = new System.Drawing.Size(437, 537);
-		updPropsEditCtl.TabIndex = 0;
 		// 
 		// UpdateMethodsEditCtl
 		// 
@@ -227,9 +230,9 @@ partial class UpdateMethodsEditCtl
 	private System.Windows.Forms.DataGridViewLinkColumn colAttrs;
 	private System.Windows.Forms.ToolStripButton btnUp;
 	private System.Windows.Forms.ToolStripButton btnDown;
+	private UpdPropsEditCtl updPropsEditCtl;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colId;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colName;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colUseDto;
 	private System.Windows.Forms.DataGridViewImageColumn colDelete;
-	private UpdPropsEditCtl updPropsEditCtl;
 }

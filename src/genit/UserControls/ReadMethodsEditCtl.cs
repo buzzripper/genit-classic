@@ -1,4 +1,5 @@
-﻿using Dyvenix.Genit.Models;
+﻿using Dyvenix.Genit.Misc;
+using Dyvenix.Genit.Models;
 using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.ObjectModel;
@@ -26,7 +27,6 @@ namespace Dyvenix.Genit.UserControls
 		#region Fields
 
 		private ObservableCollection<ReadMethodModel> _readMethods;
-		private Color _highlightColor;
 
 		#endregion
 
@@ -35,23 +35,14 @@ namespace Dyvenix.Genit.UserControls
 		public ReadMethodsEditCtl()
 		{
 			InitializeComponent();
-			_highlightColor = grdMethods.DefaultCellStyle.SelectionBackColor;
 		}
 
 		private void ServiceMethodsEditCtl_Load(object sender, EventArgs e)
 		{
 			PositionControls();
 
-			grdMethods.AutoGenerateColumns = false;
-			grdMethods.RowHeadersWidth = 40;
-			grdMethods.AllowUserToAddRows = false;
-			grdMethods.AllowDrop = true;
-			grdMethods.MouseDown += grdMethods_MouseDown;
-			grdMethods.DragOver += grdMethods_DragOver;
-			grdMethods.DragDrop += grdMethods_DragDrop;
-			grdMethods.DefaultCellStyle.SelectionBackColor = grdMethods.DefaultCellStyle.BackColor;
-			grdMethods.DefaultCellStyle.SelectionForeColor = grdMethods.DefaultCellStyle.ForeColor;
-			grdMethods.MultiSelect = false;
+			Utils.FormatDataGrid(grdMethods);
+
 			grdMethods.ClearSelection();
 		}
 
@@ -61,14 +52,31 @@ namespace Dyvenix.Genit.UserControls
 
 			_readMethods = readMethods;
 
-			bindingSrc.DataSource = _readMethods.OrderBy(m => m.DisplayOrder);
 			grdMethods.DataSource = bindingSrc;
+			SetBindings();
+
+			grdMethods.AllowUserToAddRows = false;
 
 			filterPropsCtl.SetProperties(properties);
 
 			inclNavPropEditCtl.SetNavProperties(navProperties);
 
 			_suspendUpdates = false;
+
+			if (readMethods?.Count > 0) {
+				grdMethods.Rows[0].Selected = true;
+				grdMethods.CurrentCell = grdMethods.Rows[0].Cells[cNameCol];
+			}
+		}
+
+		private void SetBindings()
+		{
+			SuspendLayout();
+
+			bindingSrc.DataSource = _readMethods.OrderBy(m => m.DisplayOrder);
+			bindingSrc.ResetBindings(false);
+
+			ResumeLayout();
 		}
 
 		#endregion
@@ -82,8 +90,8 @@ namespace Dyvenix.Genit.UserControls
 
 		private void Add()
 		{
-			var method = ReadMethodModel.CreateNew(Guid.NewGuid(), "Query");
-			bindingSrc.Add(method);
+			_readMethods.Add(ReadMethodModel.CreateNew(Guid.NewGuid(), "GetSomething", _readMethods.Count));
+			SetBindings();
 		}
 
 		#endregion
@@ -92,19 +100,18 @@ namespace Dyvenix.Genit.UserControls
 
 		private void btnDelete_Click(object sender, EventArgs e)
 		{
-			this.Delete();
+			if (grdMethods.CurrentRow == null)
+				return;
+
+			this.Delete(grdMethods.CurrentRow.Index);
 		}
 
-		private void Delete()
+		private void Delete(int rowIdx)
 		{
-			if (grdMethods.SelectedCells.Count == 1) {
-				var rowIdx = grdMethods.SelectedCells[0].OwningRow.Index;
-				var idValStr = grdMethods.Rows[rowIdx].Cells[cIdCol].Value?.ToString();
-				var method = _readMethods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
-
-				if (method != null) {
-					bindingSrc.Remove(method);
-				}
+			if (MessageBox.Show("Confirm Delete", "Delete this item?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
+				var method = GetMethodFromGridRow(rowIdx);
+				_readMethods.Remove(method);
+				bindingSrc.Remove(method);
 			}
 		}
 
@@ -118,35 +125,26 @@ namespace Dyvenix.Genit.UserControls
 			splLists.Dock = DockStyle.Fill;
 		}
 
-		private void SetInclNavPropertiesList(ReadMethodModel method)
-		{
-			_suspendUpdates = true;
-
-			//for (var i = 0; i < clbNavProperties.Items.Count; i++) {
-			//	if (method == null) {
-			//		clbNavProperties.SetItemChecked(i, false);
-			//		continue;
-			//	}
-			//	var navProp = clbNavProperties.Items[i] as NavPropertyModel;
-			//	clbNavProperties.SetItemChecked(i, method.InclNavProperties.Contains(navProp));
-			//}
-
-			_suspendUpdates = false;
-		}
-
 		private void grdItems_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Shift && e.KeyCode == Keys.Insert) {
 				this.Add();
 
 			} else if (e.Shift && e.KeyCode == Keys.Delete) {
-				this.Delete();
+				if (grdMethods.CurrentRow != null) 
+					this.Delete(grdMethods.CurrentRow.Index);
 			}
 		}
 
 		private ReadMethodModel GetMethodFromGridRow(int rowIndex)
 		{
+			if (rowIndex == -1)
+				return null;
+
 			var idValStr = grdMethods.Rows[rowIndex].Cells[cIdCol].Value?.ToString();
+			if (idValStr == null)
+				return null;
+
 			return _readMethods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
 		}
 
@@ -170,10 +168,7 @@ namespace Dyvenix.Genit.UserControls
 				bindingSrc.ResetBindings(false);
 
 			} else if (e.ColumnIndex == cDelCol) {
-				if (MessageBox.Show("Confirm Delete", "Delete this item?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
-					var method = GetMethodFromGridRow(e.RowIndex);
-					bindingSrc.Remove(method);
-				}
+				Delete(e.RowIndex);
 			}
 		}
 
@@ -186,54 +181,32 @@ namespace Dyvenix.Genit.UserControls
 
 		private void grdMethods_SelectionChanged(object sender, EventArgs e)
 		{
-			if (_suspendUpdates)
-				return;
-
-			if (grdMethods.SelectedRows.Count != 1)
-				return;
-
-			var rowIdx = grdMethods.SelectedRows[0].Index;
-
-			if (rowIdx > -1) {
-				var method = GetMethodFromGridRow(rowIdx);
-				filterPropsCtl.SetFilterProperties(method.FilterProperties);
-				inclNavPropEditCtl.SetInclNavProperties(method.InclNavProperties);
-				SetInclNavPropertiesList(method);
-
-			} else {
+			if (grdMethods.CurrentRow == null) {
+				btnUp.Enabled = false;
+				btnDown.Enabled = false;
 				filterPropsCtl.SetFilterProperties(null);
-				SetInclNavPropertiesList(null);
+				filterPropsCtl.Readonly = true;
 				inclNavPropEditCtl.SetInclNavProperties(null);
+				inclNavPropEditCtl.Readonly = true;
+				return;
 			}
+
+			var rowIdx = grdMethods.CurrentRow.Index;
+
+			var method = GetMethodFromGridRow(rowIdx);
+			filterPropsCtl.SetFilterProperties(method?.FilterProperties);
+			filterPropsCtl.Readonly = false;
+			inclNavPropEditCtl.SetInclNavProperties(method?.InclNavProperties);
+			inclNavPropEditCtl.Readonly = false;
+
+			btnUp.Enabled = rowIdx > 0;
+			btnDown.Enabled = rowIdx < (grdMethods.RowCount - 1);
 		}
 
 		private void grdMethods_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
 		{
 			this.grdMethods.Cursor = Cursors.Default;
 		}
-
-		//private void clbNavProperties_ItemCheck(object sender, ItemCheckEventArgs e)
-		//{
-		//	if (_suspendUpdates == true)
-		//		return;
-
-		//	if (e.NewValue == CheckState.Indeterminate)
-		//		return;
-
-		//	//var navProp = clbNavProperties.Items[e.Index] as NavPropertyModel;
-		//	//if (navProp == null)
-		//	//	return;
-
-		//	var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
-
-		//	//if (e.NewValue == CheckState.Checked) {
-		//	//	if (!method.InclNavProperties.Contains(navProp))
-		//	//		method.InclNavProperties.Add(navProp);
-		//	//} else {
-		//	//	if (method.InclNavProperties.Contains(navProp))
-		//	//		method.InclNavProperties.Remove(navProp);
-		//	//}
-		//}
 
 		private void grdMethods_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{
@@ -246,70 +219,35 @@ namespace Dyvenix.Genit.UserControls
 			}
 		}
 
-		//private void ClbNavProperties_DrawItem(object sender, DrawItemEventArgs e)
-		//{
-		//	if (e.Index < 0) return;
+		// Reordering
 
-		//	var clb = sender as CheckedListBox;
-		//	bool isChecked = clb.GetItemChecked(e.Index);
-
-		//	// Background
-		//	Color backColor = isChecked ? _highlightColor : clb.BackColor;
-		//	using (Brush backgroundBrush = new SolidBrush(backColor)) {
-		//		e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
-		//	}
-
-		//	// Text
-		//	string text = clb.Items[e.Index].ToString();
-		//	TextRenderer.DrawText(e.Graphics, text, e.Font, e.Bounds, clb.ForeColor, TextFormatFlags.Left);
-
-		//	// Draw focus rectangle if selected
-		//	e.DrawFocusRectangle();
-		//}
-
-		#region Drag/Drop
-
-		private void grdMethods_MouseDown(object sender, MouseEventArgs e)
+		private void btnUp_Click(object sender, EventArgs e)
 		{
-			var hitTest = grdMethods.HitTest(e.X, e.Y);
-			if (hitTest.ColumnIndex == -1 && hitTest.RowIndex > -1) {
-				grdMethods.DoDragDrop(hitTest.RowIndex, DragDropEffects.Move);
-			}
+			var rowIdx = grdMethods.CurrentRow.Index;
+			SwapOrder(rowIdx, rowIdx - 1);
 		}
 
-		private void grdMethods_DragOver(object sender, DragEventArgs e)
+		private void btnDown_Click(object sender, EventArgs e)
 		{
-			e.Effect = DragDropEffects.Move;
+			var rowIdx = grdMethods.CurrentRow.Index;
+			SwapOrder(rowIdx, rowIdx + 1);
 		}
 
-		private void grdMethods_DragDrop(object sender, DragEventArgs e)
+		private void SwapOrder(int srcIdx, int targetIdx)
 		{
-			Point clientPoint = grdMethods.PointToClient(new Point(e.X, e.Y));
-			var destRowIdx = grdMethods.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
-			if (!e.Data.GetDataPresent(typeof(int)))
-				return;
-			var srcRowIdx = (int)e.Data.GetData(typeof(int));
+			var srcMethod = _readMethods.First(m => m.DisplayOrder == srcIdx);
+			var targetMethod = _readMethods.First(m => m.DisplayOrder == targetIdx);
 
-			if (e.Effect == DragDropEffects.Move && destRowIdx > -1 && destRowIdx != srcRowIdx) {
-				var srcMethod = _readMethods.FirstOrDefault(m => m.DisplayOrder == srcRowIdx);
-				if (srcRowIdx < destRowIdx) {
-					foreach (var readMethod in _readMethods.ToList().Where(m => m.DisplayOrder > srcRowIdx && m.DisplayOrder <= destRowIdx))
-						readMethod.DisplayOrder--;
-					srcMethod.DisplayOrder = destRowIdx;
-				} else {
-					foreach (var readMethod in _readMethods.ToList().Where(m => m.DisplayOrder >= destRowIdx && m.DisplayOrder < srcRowIdx))
-						readMethod.DisplayOrder++;
-					srcMethod.DisplayOrder = destRowIdx;
-				}
+			srcMethod.DisplayOrder = targetIdx;
+			targetMethod.DisplayOrder = srcIdx;
 
-				SuspendLayout();
-				bindingSrc.DataSource = _readMethods.OrderBy(m => m.DisplayOrder);
-				grdMethods.ResetBindings();
-				ResumeLayout();
-			}
+			SetBindings();
+
+			grdMethods.Rows[srcIdx].Selected = false;
+			grdMethods.Rows[targetIdx].Selected = true;
+			grdMethods.CurrentCell = grdMethods.Rows[targetIdx].Cells[cNameCol];
+			grdMethods_SelectionChanged(null, null);
 		}
-
-		#endregion
 	}
 
 	#endregion

@@ -1,6 +1,8 @@
-﻿using Dyvenix.Genit.Models;
+﻿using Dyvenix.Genit.Misc;
+using Dyvenix.Genit.Models;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -23,31 +25,32 @@ public partial class InclNavPropEditCtl : UserControlBase
 	{
 		InitializeComponent();
 
+		Utils.FormatDataGrid(grdNavProps);
 		_highlightColor = grdNavProps.DefaultCellStyle.SelectionBackColor;
 
-		grdNavProps.RowsDefaultCellStyle.SelectionBackColor = grdNavProps.RowsDefaultCellStyle.BackColor;
+		grdNavProps.SelectionMode = DataGridViewSelectionMode.CellSelect;
 		grdNavProps.DefaultCellStyle.SelectionBackColor = grdNavProps.DefaultCellStyle.BackColor;
 		grdNavProps.DefaultCellStyle.SelectionForeColor = grdNavProps.DefaultCellStyle.ForeColor;
-		grdNavProps.AutoGenerateColumns = false;
+		grdNavProps.RowHeadersVisible = false;
+		grdNavProps.MultiSelect = false;
+		grdNavProps.ClearSelection();
 	}
 
 	public void SetNavProperties(ObservableCollection<NavPropertyModel> navProperties)
 	{
 		_suspendUpdates = true;
-
+		SuspendLayout();
 		try {
 			_navProperties = navProperties;
 
-			SuspendLayout();
 			grdNavProps.Rows.Clear();
 			foreach (var navProp in _navProperties) {
 				var idx = grdNavProps.Rows.Add(navProp.Id, false, navProp.Name, false, false, null);
 				grdNavProps.Rows[idx].Tag = navProp;
 			}
-			ResumeLayout();
-
 		} finally {
 			_suspendUpdates = false;
+			ResumeLayout();
 		}
 	}
 
@@ -60,9 +63,11 @@ public partial class InclNavPropEditCtl : UserControlBase
 
 			if (_inclNavProps == null || _inclNavProps.Count == 0) {
 				ClearSelections();
+				grdNavProps.Enabled = false;
 				return;
 			}
 
+			grdNavProps.Enabled = true;
 			for (var i = 0; i < grdNavProps.Rows.Count; i++) {
 				var row = grdNavProps.Rows[i];
 				var grdNavProp = row.Tag as NavPropertyModel;
@@ -79,6 +84,13 @@ public partial class InclNavPropEditCtl : UserControlBase
 			_suspendUpdates = false;
 			ResumeLayout();
 		}
+	}
+
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+	public bool Readonly
+	{
+		get { return !grdNavProps.Enabled; }
+		set { grdNavProps.Enabled = !value; }
 	}
 
 	private void ClearSelections()
@@ -127,5 +139,16 @@ public partial class InclNavPropEditCtl : UserControlBase
 		} else if (!isChecked && navProp != null) {
 			_inclNavProps.Remove(navProp);
 		}
+
+		UpdateRowHighlight(row);
+	}
+
+	private void UpdateRowHighlight(DataGridViewRow row)
+	{
+		bool isChecked = Convert.ToBoolean(row.Cells[cInclCol].Value);
+
+		row.DefaultCellStyle.BackColor = isChecked
+			? _highlightColor
+			: grdNavProps.DefaultCellStyle.BackColor;
 	}
 }

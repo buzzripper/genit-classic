@@ -1,21 +1,19 @@
-﻿using Dyvenix.Genit.Models;
+﻿using Dyvenix.Genit.Misc;
+using Dyvenix.Genit.Models;
 using Dyvenix.Genit.Models.Services;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Dyvenix.Genit.UserControls;
 
 public partial class FilterPropsEditCtl : UserControlBase
 {
+	#region Constants
+
 	private const int cFPIdCol = 0;
 	private const int cFPInclCol = 1;
 	private const int cFPNameCol = 2;
@@ -23,24 +21,36 @@ public partial class FilterPropsEditCtl : UserControlBase
 	private const int cFPIsIntCol = 4;
 	private const int cFPIntValCol = 5;
 
-	private ObservableCollection<PropertyModel> _properties;
+	#endregion
+
+	#region Fields
+
 	private ObservableCollection<FilterPropertyModel> _filterProps;
 	private Color _highlightColor;
 
+	#endregion
+
+	#region Ctors / Init
 
 	public FilterPropsEditCtl()
 	{
 		InitializeComponent();
-		grdProps.RowsDefaultCellStyle.SelectionBackColor = grdProps.RowsDefaultCellStyle.BackColor;
+
+		Utils.FormatDataGrid(grdProps);
 		_highlightColor = grdProps.DefaultCellStyle.SelectionBackColor;
+
+		grdProps.SelectionMode = DataGridViewSelectionMode.CellSelect;
+		grdProps.DefaultCellStyle.SelectionBackColor = grdProps.DefaultCellStyle.BackColor;
+		grdProps.DefaultCellStyle.SelectionForeColor = grdProps.DefaultCellStyle.ForeColor;
+		grdProps.RowHeadersVisible = false;
+		grdProps.MultiSelect = false;
+		grdProps.ClearSelection();
 	}
 
 	public void SetProperties(ObservableCollection<PropertyModel> properties)
 	{
 		_suspendUpdates = true;
 		try {
-			_properties = properties;
-
 			grdProps.AutoGenerateColumns = false;
 			grdProps.Rows.Clear();
 			foreach (var prop in properties) {
@@ -56,10 +66,11 @@ public partial class FilterPropsEditCtl : UserControlBase
 	{
 		_suspendUpdates = true;
 		try {
-			_filterProps = filterProps;
+			ClearSelections();
 
+			_filterProps = filterProps;
 			if (filterProps == null || filterProps.Count == 0) {
-				ClearSelections();
+				ClearAllHighlights();
 				return;
 			}
 
@@ -67,6 +78,7 @@ public partial class FilterPropsEditCtl : UserControlBase
 				var row = grdProps.Rows[i];
 				var grdProp = row.Tag as PropertyModel;
 				var filterProp = filterProps.FirstOrDefault(fp => fp.Property == grdProp);
+
 				if (filterProp != null) {
 					row.Cells[cFPInclCol].Value = true;
 					row.Cells[cFPIsOptCol].Value = filterProp.IsOptional;
@@ -77,7 +89,10 @@ public partial class FilterPropsEditCtl : UserControlBase
 					row.Cells[cFPIsOptCol].Value = false;
 					row.Cells[cFPIsIntCol].Value = false;
 					row.Cells[cFPIntValCol].Value = string.Empty;
+					grdProps.ClearSelection();
 				}
+				UpdateRowHighlight(row);
+				//grdProps.Enabled = true;
 			}
 		} finally {
 			_suspendUpdates = false;
@@ -93,6 +108,15 @@ public partial class FilterPropsEditCtl : UserControlBase
 			row.Cells[cFPIsIntCol].Value = false;
 			row.Cells[cFPIntValCol].Value = string.Empty;
 		}
+	}
+
+	#endregion
+
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+	public bool Readonly
+	{
+		get { return !grdProps.Enabled; }
+		set { grdProps.Enabled = !value; }
 	}
 
 	private void grdProps_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -111,60 +135,68 @@ public partial class FilterPropsEditCtl : UserControlBase
 		if (e.RowIndex == -1)
 			return;
 
-		var row = grdProps.Rows[e.RowIndex];
-		bool isIncl = (bool)row.Cells[cFPInclCol].Value;
-		row.DefaultCellStyle.BackColor = isIncl ? _highlightColor : grdProps.DefaultCellStyle.BackColor;
+		try {
+			var row = grdProps.Rows[e.RowIndex];
+			bool isIncl = (bool)row.Cells[cFPInclCol].Value;
+			//row.DefaultCellStyle.BackColor = isIncl ? _highlightColor : grdProps.DefaultCellStyle.BackColor;
 
-		if (_suspendUpdates || grdProps.CurrentCell == null)
-			return;
+			if (_suspendUpdates || grdProps.CurrentCell == null)
+				return;
 
-		var col = grdProps.CurrentCell.OwningColumn;
-		var prop = row.Tag as PropertyModel;
-		if (prop == null)
-			MessageBox.Show("Error: Property not found for this row.");
-		var filterProp = _filterProps.FirstOrDefault(fp => fp.Property == prop);
+			var col = grdProps.CurrentCell.OwningColumn;
+			var prop = row.Tag as PropertyModel;
+			if (prop == null)
+				MessageBox.Show("Error: Property not found for this row.");
+			var filterProp = _filterProps.FirstOrDefault(fp => fp.Property == prop);
 
-		if (col.Index == cFPIntValCol) {
-			filterProp.InternalValue = row.Cells[col.Index].Value.ToString();
+			if (col.Index == cFPIntValCol) {
+				filterProp.InternalValue = row.Cells[col.Index].Value.ToString();
 
-		} else {
-			// Now we know it's a checkbox column
-			bool isChecked = (bool)row.Cells[col.Index].Value;
+			} else {
+				// Now we know it's a checkbox column
+				bool isChecked = (bool)row.Cells[col.Index].Value;
 
-			if (col.Index == cFPInclCol) {
-				if (isChecked && filterProp == null) {
-					_filterProps.Add(FilterPropertyModel.CreateNew(prop));
-				} else if (!isChecked && filterProp != null) {
-					_filterProps.Remove(filterProp);
+				if (col.Index == cFPInclCol) {
+					if (isChecked && filterProp == null) {
+						_filterProps.Add(FilterPropertyModel.CreateNew(prop));
+					} else if (!isChecked && filterProp != null) {
+						_filterProps.Remove(filterProp);
+					}
+
+					row.Cells[cFPIsOptCol].ReadOnly = !isChecked;
+					row.Cells[cFPIsIntCol].ReadOnly = !isChecked;
+					UpdateRowHighlight(row);
+
+					if (!isChecked) {
+						row.Cells[cFPIsOptCol].Value = false;
+						row.Cells[cFPIsIntCol].Value = false;
+					}
+
+				} else if (col.Index == cFPIsOptCol) {
+					filterProp.IsOptional = isChecked;
+
+				} else if (col.Index == cFPIsIntCol) {
+					filterProp.IsInternal = isChecked;
 				}
-
-				row.Cells[cFPIsOptCol].ReadOnly = !isChecked;
-				row.Cells[cFPIsIntCol].ReadOnly = !isChecked;
-				//HighlightRow(row, isChecked);
-
-				if (!isChecked) {
-					row.Cells[cFPIsOptCol].Value = false;
-					row.Cells[cFPIsIntCol].Value = false;
-				}
-
-			} else if (col.Index == cFPIsOptCol) {
-				filterProp.IsOptional = isChecked;
-
-			} else if (col.Index == cFPIsIntCol) {
-				filterProp.IsInternal = isChecked;
 			}
+
+		} catch (Exception ex) {
+			MessageBox.Show(ex.Message);
 		}
 	}
 
-	//private void HighlightRow(DataGridViewRow row, bool isHighlighted)
-	//{
-	//	if (isHighlighted) {
-	//		row.DefaultCellStyle.BackColor = grdProps.DefaultCellStyle.SelectionBackColor; // or 
-	//		//row.DefaultCellStyle.ForeColor = grdProps.DefaultCellStyle.SelectionBackColor;
-	//	} else {
-	//		// Reset to default (optional: customize your base style)
-	//		row.DefaultCellStyle.BackColor = grdProps.DefaultCellStyle.BackColor;
-	//		//row.DefaultCellStyle.ForeColor = grdProps.DefaultCellStyle.ForeColor;
-	//	}
-	//}
+	private void UpdateRowHighlight(DataGridViewRow row)
+	{
+		bool isChecked = Convert.ToBoolean(row.Cells[cFPInclCol].Value);
+
+		row.DefaultCellStyle.BackColor = isChecked
+			? _highlightColor
+			: grdProps.DefaultCellStyle.BackColor;
+	}
+
+	private void ClearAllHighlights()
+	{
+		foreach(DataGridViewRow row in grdProps.Rows)
+			row.DefaultCellStyle.BackColor = grdProps.DefaultCellStyle.BackColor;
+	}
 }

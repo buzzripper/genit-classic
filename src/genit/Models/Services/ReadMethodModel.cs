@@ -9,11 +9,12 @@ namespace Dyvenix.Genit.Models.Services;
 
 public class ReadMethodModel : INotifyPropertyChanged
 {
-	public static ReadMethodModel CreateNew(Guid id, string name)
+	public static ReadMethodModel CreateNew(Guid id, string name, int displayOrder)
 	{
 		return new ReadMethodModel() {
 			Id = id,
 			Name = name,
+			DisplayOrder = displayOrder,
 			InclSorting = false,
 			InclPaging = false,
 			UseQuery = false

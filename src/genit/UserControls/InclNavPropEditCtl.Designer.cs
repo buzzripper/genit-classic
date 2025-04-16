@@ -27,14 +27,12 @@ partial class InclNavPropEditCtl
 	/// </summary>
 	private void InitializeComponent()
 	{
-		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InclNavPropEditCtl));
 		grdNavProps = new System.Windows.Forms.DataGridView();
 		colUpdPropId = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		colInclude = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 		colProperty = new System.Windows.Forms.DataGridViewTextBoxColumn();
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
 		tbTitle = new System.Windows.Forms.ToolStripLabel();
-		toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 		((System.ComponentModel.ISupportInitialize)grdNavProps).BeginInit();
 		toolStrip1.SuspendLayout();
 		SuspendLayout();
@@ -44,13 +42,13 @@ partial class InclNavPropEditCtl
 		grdNavProps.AllowUserToAddRows = false;
 		grdNavProps.AllowUserToDeleteRows = false;
 		grdNavProps.AllowUserToResizeRows = false;
-		grdNavProps.BackgroundColor = System.Drawing.Color.FromArgb(64, 64, 64);
+		grdNavProps.BackgroundColor = System.Drawing.SystemColors.Control;
 		grdNavProps.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		grdNavProps.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 		grdNavProps.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 		grdNavProps.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colUpdPropId, colInclude, colProperty });
 		grdNavProps.Dock = System.Windows.Forms.DockStyle.Fill;
-		grdNavProps.Location = new System.Drawing.Point(0, 31);
+		grdNavProps.Location = new System.Drawing.Point(0, 25);
 		grdNavProps.Margin = new System.Windows.Forms.Padding(2);
 		grdNavProps.MultiSelect = false;
 		grdNavProps.Name = "grdNavProps";
@@ -58,7 +56,7 @@ partial class InclNavPropEditCtl
 		grdNavProps.RowHeadersWidth = 62;
 		grdNavProps.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdNavProps.ShowEditingIcon = false;
-		grdNavProps.Size = new System.Drawing.Size(326, 423);
+		grdNavProps.Size = new System.Drawing.Size(326, 429);
 		grdNavProps.TabIndex = 10;
 		grdNavProps.CellValueChanged += grdProps_CellValueChanged;
 		grdNavProps.CurrentCellDirtyStateChanged += grdProps_CurrentCellDirtyStateChanged;
@@ -92,11 +90,11 @@ partial class InclNavPropEditCtl
 		// 
 		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tbTitle, toolStripButton1 });
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { tbTitle });
 		toolStrip1.Location = new System.Drawing.Point(0, 0);
 		toolStrip1.Name = "toolStrip1";
 		toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-		toolStrip1.Size = new System.Drawing.Size(326, 31);
+		toolStrip1.Size = new System.Drawing.Size(326, 25);
 		toolStrip1.TabIndex = 9;
 		toolStrip1.Text = "toolStrip1";
 		// 
@@ -104,18 +102,8 @@ partial class InclNavPropEditCtl
 		// 
 		tbTitle.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
 		tbTitle.Name = "tbTitle";
-		tbTitle.Size = new System.Drawing.Size(196, 28);
+		tbTitle.Size = new System.Drawing.Size(196, 22);
 		tbTitle.Text = "Navigation Properties to Include";
-		// 
-		// toolStripButton1
-		// 
-		toolStripButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-		toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		toolStripButton1.Image = (System.Drawing.Image)resources.GetObject("toolStripButton1.Image");
-		toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-		toolStripButton1.Name = "toolStripButton1";
-		toolStripButton1.Size = new System.Drawing.Size(28, 28);
-		toolStripButton1.Text = "toolStripButton1";
 		// 
 		// InclNavPropEditCtl
 		// 
@@ -138,7 +126,6 @@ partial class InclNavPropEditCtl
 	private System.Windows.Forms.DataGridView grdNavProps;
 	private System.Windows.Forms.ToolStrip toolStrip1;
 	private System.Windows.Forms.ToolStripLabel tbTitle;
-	private System.Windows.Forms.ToolStripButton toolStripButton1;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colUpdPropId;
 	private System.Windows.Forms.DataGridViewCheckBoxColumn colInclude;
 	private System.Windows.Forms.DataGridViewTextBoxColumn colProperty;

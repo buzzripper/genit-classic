@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Dyvenix.Genit.Misc;
+using System.ComponentModel;
 
 namespace Dyvenix.Genit.UserControls;
 
@@ -25,11 +27,15 @@ public partial class UpdPropsEditCtl : UserControlBase
 	{
 		InitializeComponent();
 
+		Utils.FormatDataGrid(grdProps);
 		_highlightColor = grdProps.DefaultCellStyle.SelectionBackColor;
 
-		grdProps.RowsDefaultCellStyle.SelectionBackColor = grdProps.RowsDefaultCellStyle.BackColor;
+		grdProps.SelectionMode = DataGridViewSelectionMode.CellSelect;
 		grdProps.DefaultCellStyle.SelectionBackColor = grdProps.DefaultCellStyle.BackColor;
 		grdProps.DefaultCellStyle.SelectionForeColor = grdProps.DefaultCellStyle.ForeColor;
+		grdProps.RowHeadersVisible = false;
+		grdProps.MultiSelect = false;
+		grdProps.ClearSelection();
 	}
 
 	public void SetProperties(ObservableCollection<PropertyModel> properties)
@@ -42,6 +48,8 @@ public partial class UpdPropsEditCtl : UserControlBase
 			grdProps.AutoGenerateColumns = false;
 			grdProps.Rows.Clear();
 			foreach (var prop in _properties) {
+				if (prop.IsPrimaryKey)
+					continue;
 				var idx = grdProps.Rows.Add(prop.Id, false, prop.Name, false, false, null);
 				grdProps.Rows[idx].Tag = prop;
 			}
@@ -55,14 +63,17 @@ public partial class UpdPropsEditCtl : UserControlBase
 	{
 		_suspendUpdates = true;
 		try {
+			ClearSelections();
+
 			_updateProps = updateProperties;
 
 			if (_updateProps == null || _updateProps.Count == 0) {
-				ClearSelections();
+				ClearAllHighlights();
 				return;
 			}
 
 			for (var i = 0; i < grdProps.Rows.Count; i++) {
+
 				var row = grdProps.Rows[i];
 				var grdProp = row.Tag as PropertyModel;
 				var updProp = _updateProps.FirstOrDefault(fp => fp.Property == grdProp);
@@ -74,11 +85,24 @@ public partial class UpdPropsEditCtl : UserControlBase
 					row.Cells[cInclCol].Value = false;
 					row.Cells[cIsOptCol].Value = false;
 				}
+				UpdateRowHighlight(row);
 			}
 
 		} finally {
 			_suspendUpdates = false;
 		}
+	}
+
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+	public bool Readonly
+	{
+		get { return !grdProps.Enabled; }
+		set { grdProps.Enabled = !value; }
+	}
+
+	public void Clear()
+	{
+		grdProps.ClearSelection();
 	}
 
 	private void ClearSelections()
@@ -109,11 +133,11 @@ public partial class UpdPropsEditCtl : UserControlBase
 
 		var row = grdProps.Rows[e.RowIndex];
 		bool isChecked = (bool)row.Cells[cInclCol].Value;
-		row.DefaultCellStyle.BackColor = isChecked ? _highlightColor : grdProps.DefaultCellStyle.BackColor;
+		//row.DefaultCellStyle.BackColor = isChecked ? _highlightColor : grdProps.DefaultCellStyle.BackColor;
 
 		if (_suspendUpdates || grdProps.CurrentCell == null)
 			return;
-		
+
 		var colIdx = e.ColumnIndex;
 
 		var prop = row.Tag as PropertyModel;
@@ -134,11 +158,30 @@ public partial class UpdPropsEditCtl : UserControlBase
 			if (!isChecked)
 				row.Cells[cIsOptCol].Value = false;
 
+			UpdateRowHighlight(row);
+
 		} else if (colIdx == cIsOptCol) {
 			if (updProp == null)
 				throw new ApplicationException("Error: no update property found.");
 
 			updProp.IsOptional = isChecked;
 		}
+		grdProps.ClearSelection();
+
+	}
+
+	private void UpdateRowHighlight(DataGridViewRow row)
+	{
+		bool isChecked = Convert.ToBoolean(row.Cells[cInclCol].Value);
+
+		row.DefaultCellStyle.BackColor = isChecked
+			? _highlightColor
+			: grdProps.DefaultCellStyle.BackColor;
+	}
+
+	private void ClearAllHighlights()
+	{
+		foreach (DataGridViewRow row in grdProps.Rows)
+			row.DefaultCellStyle.BackColor = grdProps.DefaultCellStyle.BackColor;
 	}
 }

@@ -84,6 +84,7 @@ namespace Dyvenix.Genit.UserControls
 		private void SelectControl(int idx)
 		{
 			this.SuspendLayout();
+			_suspendUpdates = true;
 
 			for (var i = 0; i < _childEditors.Count; i++) {
 				var selected = (i == idx);
@@ -100,6 +101,7 @@ namespace Dyvenix.Genit.UserControls
 			}
 
 			this.ResumeLayout();
+			_suspendUpdates = false;
 
 			//foreach (var ce in _childEditors)
 			//	if (ce.Ctl is EntityMainEditCtl)

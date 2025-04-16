@@ -1,4 +1,5 @@
-﻿using Dyvenix.Genit.Models;
+﻿using Dyvenix.Genit.Misc;
+using Dyvenix.Genit.Models;
 using Dyvenix.Genit.Models.Services;
 using System;
 using System.Collections.ObjectModel;
@@ -35,16 +36,11 @@ public partial class UpdateMethodsEditCtl : UserControlBase
 
 	private void ServiceMethodsEditCtl_Load(object sender, EventArgs e)
 	{
-		grdMethods.AutoGenerateColumns = false;
-		grdMethods.RowHeadersWidth = 40;
-		grdMethods.AllowUserToAddRows = false;
-		grdMethods.AllowDrop = true;
-		grdMethods.MouseDown += grdMethods_MouseDown;
-		grdMethods.DragOver += grdMethods_DragOver;
-		grdMethods.DragDrop += grdMethods_DragDrop;
-		grdMethods.DefaultCellStyle.SelectionBackColor = grdMethods.DefaultCellStyle.BackColor;
-		grdMethods.DefaultCellStyle.SelectionForeColor = grdMethods.DefaultCellStyle.ForeColor;
-		grdMethods.MultiSelect = false;
+		Utils.FormatDataGrid(grdMethods);
+
+		Utils.FormatDataGrid(grdMethods);
+
+		grdMethods.ClearSelection();
 	}
 
 	public void SetData(ObservableCollection<UpdateMethodModel> updateMethods, ObservableCollection<PropertyModel> properties)
@@ -53,12 +49,17 @@ public partial class UpdateMethodsEditCtl : UserControlBase
 
 		_updateMethods = updateMethods;
 
-		bindingSrc.DataSource = _updateMethods.OrderBy(m => m.DisplayOrder).ToList();
 		grdMethods.DataSource = bindingSrc;
+		SetBindings();
 
 		updPropsEditCtl.SetProperties(properties);
 
 		_suspendUpdates = false;
+
+		if (updateMethods?.Count > 0) {
+			grdMethods.Rows[0].Selected = true;
+			grdMethods.CurrentCell = grdMethods.Rows[0].Cells[cNameCol];
+		}
 	}
 
 	#endregion
@@ -86,20 +87,15 @@ public partial class UpdateMethodsEditCtl : UserControlBase
 
 	#region Delete
 
-	private void btnDelete_Click(object sender, EventArgs e)
-	{
-		this.Delete();
-	}
-
 	private void Delete()
 	{
-		if (grdMethods.SelectedCells.Count == 1) {
-			var rowIdx = grdMethods.SelectedCells[0].OwningRow.Index;
-			var idValStr = grdMethods.Rows[rowIdx].Cells[cIdCol].Value?.ToString();
-			var method = _updateMethods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
-
-			if (method != null) {
+		var rowIdx = grdMethods.SelectedCells[0].OwningRow.Index;
+		if (rowIdx > -1) {
+			if (MessageBox.Show("Confirm Delete", "Delete this item?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
+				var method = GetMethodFromGridRow(rowIdx);
+				_updateMethods.Remove(method);
 				bindingSrc.Remove(method);
+				//bindingSrc.ResetBindings(false);
 			}
 		}
 	}
@@ -108,28 +104,15 @@ public partial class UpdateMethodsEditCtl : UserControlBase
 
 	#region Methods
 
-	private void SetUpdatePropertiesList(UpdateMethodModel method)
+	private UpdateMethodModel GetMethodFromGridRow(int? rowIndex)
 	{
-		_suspendUpdates = true;
+		if (!rowIndex.HasValue)
+			return null;
 
-		if (method == null) {
-			//for (var i = 0; i < updPropsEditCtl.Items.Count; i++)
-			//	updPropsEditCtl.SetItemChecked(i, false);
-			updPropsEditCtl.SetUpdateProperties(null);
-			return;
-		}
+		var idValStr = grdMethods.Rows[rowIndex.Value].Cells[cIdCol].Value?.ToString();
+		if (idValStr == null)
+			return null;
 
-		//for (var i = 0; i < updPropsEditCtl.Items.Count; i++) {
-		//	var updProp = updPropsEditCtl.Items[i] as UpdatePropertyModel;
-		//	updPropsEditCtl.SetItemChecked(i, method.UpdateProperties.Contains(updProp));
-		//}
-
-		_suspendUpdates = false;
-	}
-
-	private UpdateMethodModel GetMethodFromGridRow(int rowIndex)
-	{
-		var idValStr = grdMethods.Rows[rowIndex].Cells[cIdCol].Value?.ToString();
 		return _updateMethods.FirstOrDefault(m => m.Id == Guid.Parse(idValStr));
 	}
 
@@ -157,12 +140,8 @@ public partial class UpdateMethodsEditCtl : UserControlBase
 		if (e.RowIndex == -1)
 			return;
 
-		if (e.ColumnIndex == cDelCol) {
-			if (MessageBox.Show("Confirm Delete", "Delete this item?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
-				var method = GetMethodFromGridRow(e.RowIndex);
-				bindingSrc.Remove(method);
-			}
-		}
+		if (e.ColumnIndex == cDelCol)
+			this.Delete();
 	}
 
 	private void grdMethods_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
@@ -173,18 +152,23 @@ public partial class UpdateMethodsEditCtl : UserControlBase
 
 	private void grdMethods_SelectionChanged(object sender, EventArgs e)
 	{
-		if (_suspendUpdates)
+		if (grdMethods.CurrentRow == null) {
+			btnUp.Enabled = false;
+			btnDown.Enabled = false;
+			updPropsEditCtl.SetUpdateProperties(null);
+			updPropsEditCtl.Readonly = true;
+			updPropsEditCtl.Clear();
 			return;
+		}
 
-		//if (grdMethods.SelectedCells.Count == 1) {
-			var method = GetMethodFromGridRow(grdMethods.CurrentCell.RowIndex);
-			updPropsEditCtl.SetUpdateProperties(method.UpdateProperties);
+		var rowIdx = grdMethods.CurrentRow.Index;
 
-		//} else {
-			//updPropsEditCtl.SetUpdateProperties(null);
-		//}
+		var method = GetMethodFromGridRow(rowIdx);
+		updPropsEditCtl.SetUpdateProperties(method?.UpdateProperties);
+		updPropsEditCtl.Readonly = false;
 
-		_suspendUpdates = false;
+		btnUp.Enabled = rowIdx > 0;
+		btnDown.Enabled = rowIdx < (grdMethods.RowCount - 1);
 	}
 
 	private void grdMethods_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
@@ -194,47 +178,41 @@ public partial class UpdateMethodsEditCtl : UserControlBase
 
 	#endregion
 
-	#region Drag/Drop
-
-	private void grdMethods_MouseDown(object sender, MouseEventArgs e)
+	private void btnUp_Click(object sender, EventArgs e)
 	{
-		var hitTest = grdMethods.HitTest(e.X, e.Y);
-		if (hitTest.ColumnIndex == -1 && hitTest.RowIndex > -1) {
-			grdMethods.DoDragDrop(hitTest.RowIndex, DragDropEffects.Move);
-		}
+		var rowIdx = grdMethods.CurrentRow.Index;
+		SwapOrder(rowIdx, rowIdx - 1);
 	}
 
-	private void grdMethods_DragOver(object sender, DragEventArgs e)
+	private void btnDown_Click(object sender, EventArgs e)
 	{
-		e.Effect = DragDropEffects.Move;
+		var rowIdx = grdMethods.CurrentRow.Index;
+		SwapOrder(rowIdx, rowIdx + 1);
 	}
 
-	private void grdMethods_DragDrop(object sender, DragEventArgs e)
+	private void SwapOrder(int srcIdx, int targetIdx)
 	{
-		Point clientPoint = grdMethods.PointToClient(new Point(e.X, e.Y));
-		var destRowIdx = grdMethods.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
-		if (!e.Data.GetDataPresent(typeof(int)))
-			return;
-		var srcRowIdx = (int)e.Data.GetData(typeof(int));
+		var srcMethod = _updateMethods.First(m => m.DisplayOrder == srcIdx);
+		var targetMethod = _updateMethods.First(m => m.DisplayOrder == targetIdx);
 
-		if (e.Effect == DragDropEffects.Move && destRowIdx > -1 && destRowIdx != srcRowIdx) {
-			var srcMethod = _updateMethods.FirstOrDefault(m => m.DisplayOrder == srcRowIdx);
-			if (srcRowIdx < destRowIdx) {
-				foreach (var readMethod in _updateMethods.ToList().Where(m => m.DisplayOrder > srcRowIdx && m.DisplayOrder <= destRowIdx))
-					readMethod.DisplayOrder--;
-				srcMethod.DisplayOrder = destRowIdx;
-			} else {
-				foreach (var readMethod in _updateMethods.ToList().Where(m => m.DisplayOrder >= destRowIdx && m.DisplayOrder < srcRowIdx))
-					readMethod.DisplayOrder++;
-				srcMethod.DisplayOrder = destRowIdx;
-			}
+		srcMethod.DisplayOrder = targetIdx;
+		targetMethod.DisplayOrder = srcIdx;
 
-			SuspendLayout();
-			bindingSrc.DataSource = _updateMethods.OrderBy(m => m.DisplayOrder);
-			grdMethods.ResetBindings();
-			ResumeLayout();
-		}
+		SetBindings();
+
+		grdMethods.Rows[srcIdx].Selected = false;
+		grdMethods.Rows[targetIdx].Selected = true;
+		grdMethods.CurrentCell = grdMethods.Rows[targetIdx].Cells[cNameCol];
+		grdMethods_SelectionChanged(null, null);
 	}
 
-	#endregion
+	private void SetBindings()
+	{
+		SuspendLayout();
+
+		bindingSrc.DataSource = _updateMethods.OrderBy(m => m.DisplayOrder);
+		bindingSrc.ResetBindings(false);
+
+		ResumeLayout();
+	}
 }

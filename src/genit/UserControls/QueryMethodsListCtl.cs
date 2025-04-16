@@ -65,8 +65,8 @@ public partial class QueryMethodsListCtl : UserControlBase
 
 	private void Add()
 	{
-		var method = ReadMethodModel.CreateNew(Guid.NewGuid(), "Query");
-		bindingSrc.Add(method);
+		_readMethods.Add(ReadMethodModel.CreateNew(Guid.NewGuid(), "Query", _readMethods.Count));
+		bindingSrc.ResetBindings(false);
 	}
 
 	#endregion

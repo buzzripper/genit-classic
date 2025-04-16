@@ -45,7 +45,7 @@ partial class UpdPropsEditCtl
 		grdProps.AllowUserToAddRows = false;
 		grdProps.AllowUserToDeleteRows = false;
 		grdProps.AllowUserToResizeRows = false;
-		grdProps.BackgroundColor = System.Drawing.Color.FromArgb(64, 64, 64);
+		grdProps.BackgroundColor = System.Drawing.SystemColors.Control;
 		grdProps.BorderStyle = System.Windows.Forms.BorderStyle.None;
 		grdProps.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 		grdProps.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;

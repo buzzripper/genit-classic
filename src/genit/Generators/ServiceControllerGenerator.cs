@@ -49,7 +49,7 @@ internal class ServiceControllerGenerator
 		// Create/Update/Delete
 		var cudMethodsOutput = new List<string>();
 		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete)
-			this.GenerateCUDControllerMethods(entity, serviceVarName, cudMethodsOutput);
+			this.GenerateCDControllerMethods(entity, serviceVarName, cudMethodsOutput);
 
 		// Update methods
 		var updMethodsOutput = new List<string>();
@@ -96,7 +96,7 @@ internal class ServiceControllerGenerator
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	internal void GenerateCUDControllerMethods(EntityModel entity, string svcVarName, List<string> output)
+	internal void GenerateCDControllerMethods(EntityModel entity, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		var className = entity.Name;
@@ -146,7 +146,7 @@ internal class ServiceControllerGenerator
 
 		if (entity.Service.InclDelete) {
 			output.AddLine();
-			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
+			output.AddLine(tc, $"[HttpPost, Route(\"[action]/{{id}}\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Delete{className}(Guid id)");
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, "var apiResponse = CreateApiResponse();");

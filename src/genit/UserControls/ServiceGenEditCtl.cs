@@ -43,6 +43,9 @@ namespace Dyvenix.Genit.UserControls
 			txtQueriesNamespace.Text = _serviceGenMdl.QueriesNamespace;
 			txtControllersNamespace.Text = _serviceGenMdl.ControllersNamespace;
 			txtApiClientsNamespace.Text = _serviceGenMdl.ApiClientsNamespace;
+			txtDtoNamespace.Text = _serviceGenMdl.DtoNamespace;
+			txtDtoOutputFolder.Text = _serviceGenMdl.DtoOutputFolder;
+
 			ckbInclHeader.Checked = _serviceGenMdl.InclHeader;
 			ckbEnabled.Checked = _serviceGenMdl.Enabled;
 
@@ -111,6 +114,18 @@ namespace Dyvenix.Genit.UserControls
 				_serviceGenMdl.ApiClientsNamespace = txtApiClientsNamespace.Text;
 		}
 
+		private void txtDtoOutputFolder_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.DtoOutputFolder = txtDtoOutputFolder.Text;
+		}
+
+		private void txtDtoNamespace_TextChanged(object sender, EventArgs e)
+		{
+			if (!_suspendUpdates)
+				_serviceGenMdl.DtoNamespace = txtDtoNamespace.Text;
+		}
+
 		private void btnBrowseFolder_Click(object sender, EventArgs e)
 		{
 			folderDlg.InitialDirectory = txtOutputFolder.Text;
@@ -151,6 +166,13 @@ namespace Dyvenix.Genit.UserControls
 			fileDlg.InitialDirectory = txtServiceExtOutputFile.Text;
 			if (fileDlg.ShowDialog() == DialogResult.OK)
 				txtServiceExtOutputFile.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, fileDlg.FileName);
+		}
+
+		private void btnBrowseDtoOutputFolder_Click(object sender, EventArgs e)
+		{
+			folderDlg.InitialDirectory = txtDtoOutputFolder.Text;
+			if (folderDlg.ShowDialog() == DialogResult.OK)
+				txtDtoOutputFolder.Text = Utils.ConvertToRelative(Globals.CurrDocFilepath, folderDlg.SelectedPath);
 		}
 
 		private void ckbEnabled_CheckedChanged(object sender, EventArgs e)

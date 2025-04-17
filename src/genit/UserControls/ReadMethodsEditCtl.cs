@@ -39,10 +39,7 @@ namespace Dyvenix.Genit.UserControls
 
 		private void ServiceMethodsEditCtl_Load(object sender, EventArgs e)
 		{
-			PositionControls();
-
 			Utils.FormatDataGrid(grdMethods);
-
 			grdMethods.ClearSelection();
 		}
 
@@ -118,12 +115,6 @@ namespace Dyvenix.Genit.UserControls
 		#endregion
 
 		#region Methods
-
-		private void PositionControls()
-		{
-			splMain.Dock = DockStyle.Fill;
-			splLists.Dock = DockStyle.Fill;
-		}
 
 		private void grdItems_KeyDown(object sender, KeyEventArgs e)
 		{

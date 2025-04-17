@@ -22,6 +22,7 @@ internal class ServiceControllerGenerator
 	private const string cToken_EntityName = "SERVICE_NAME";
 	private const string cToken_ServiceVarName = "SERVICE_VAR_NAME";
 	private const string cToken_CudControllerMethods = "CUD_METHODS";
+	private const string cToken_UpdControllerMethods = "UPDATE_METHODS";
 	private const string cToken_SingleMethods = "SINGLE_METHODS";
 	private const string cToken_ListMethods = "LIST_METHODS";
 	private const string cToken_QueryMethods = "QUERY_METHODS";
@@ -37,6 +38,8 @@ internal class ServiceControllerGenerator
 		addlUsings.AddIfNotExists(serviceGen.ServicesNamespace);
 		addlUsings.AddIfNotExists(serviceGen.QueriesNamespace);
 		addlUsings.AddIfNotExists(entitiesNamespace);
+		if (entity.Service.UpdateMethods.Any())
+			addlUsings.AddIfNotExists(serviceGen.DtoNamespace);
 
 		// Attributes
 		var attrsOutput = new List<string>();
@@ -44,11 +47,19 @@ internal class ServiceControllerGenerator
 			attrsOutput.Add($"[{attr}]");
 
 		// Create/Update/Delete
-		var crudMethodsOutput = new List<string>();
+		var cudMethodsOutput = new List<string>();
 		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete)
-			this.GenerateUpdateControllerMethods(entity, serviceVarName, crudMethodsOutput);
+			this.GenerateCUDControllerMethods(entity, serviceVarName, cudMethodsOutput);
 
-		// GetSingle methods
+		// Update methods
+		var updMethodsOutput = new List<string>();
+		foreach (UpdateMethodModel updMethod in entity.Service.UpdateMethods) {
+			if (updMethodsOutput.Count > 0)
+				updMethodsOutput.AddLine();
+			this.GenerateUpdateMethod(entity, updMethod, serviceVarName, updMethodsOutput);
+		}
+
+		// Read methods - single
 		var singleMethodsOutput = new List<string>();
 		foreach (ReadMethodModel singleMethod in entity.Service.ReadMethods.Where(m => !m.IsList)) {
 			if (singleMethodsOutput.Count > 0)
@@ -56,7 +67,7 @@ internal class ServiceControllerGenerator
 			this.GenerateSingleControllerMethod(entity, singleMethod, serviceVarName, singleMethodsOutput);
 		}
 
-		// Get list methods
+		// Read methods - list
 		var listMethodsOutput = new List<string>();
 		foreach (ReadMethodModel listMethod in entity.Service.ReadMethods.Where(m => m.IsList && !m.UseQuery)) {
 			if (singleMethodsOutput.Count > 0)
@@ -64,7 +75,7 @@ internal class ServiceControllerGenerator
 			this.GenerateListControllerMethod(entity, listMethod, serviceVarName, listMethodsOutput);
 		}
 
-		// Query methods
+		// Read methods - query
 		var queryMethodsOutput = new List<string>();
 		var sortingMethodOutput = new List<string>();
 		if (entity.Service.ReadMethods.Any(m => m.UseQuery)) {
@@ -77,7 +88,7 @@ internal class ServiceControllerGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, entity.Service.ControllerVersion, serviceGen.ControllersNamespace, controllerName, serviceName, serviceVarName, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, entity.Name);
+		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, entity.Service.ControllerVersion, serviceGen.ControllersNamespace, controllerName, serviceName, serviceVarName, cudMethodsOutput, updMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, entity.Name);
 
 		var outputFile = Path.Combine(outputFolder, $"{controllerName}.g.cs");
 		if (File.Exists(outputFile))
@@ -85,7 +96,7 @@ internal class ServiceControllerGenerator
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	internal void GenerateUpdateControllerMethods(EntityModel entity, string svcVarName, List<string> output)
+	internal void GenerateCUDControllerMethods(EntityModel entity, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		var className = entity.Name;
@@ -112,7 +123,7 @@ internal class ServiceControllerGenerator
 
 		if (entity.Service.InclUpdate) {
 			output.AddLine();
-			output.AddLine(tc, $"[HttpPatch, Route(\"[action]\")]");
+			output.AddLine(tc, $"[HttpPut, Route(\"[action]\")]");
 			output.AddLine(tc, $"public async Task<ActionResult> Update{className}({className} {varName})");
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"var apiResponse = CreateApiResponse<byte[]>();");
@@ -151,6 +162,38 @@ internal class ServiceControllerGenerator
 		}
 	}
 
+	internal void GenerateUpdateMethod(EntityModel entity, UpdateMethodModel method, string svcVarName, List<string> output)
+	{
+		var tc = 1;
+
+		var updateProps = new List<UpdatePropertyModel>();
+		foreach (var updProp in method.UpdateProperties.Where(p => !p.IsOptional))
+			updateProps.Add(updProp);
+		foreach (var updProp in method.UpdateProperties.Where(p => p.IsOptional))
+			updateProps.Add(updProp);
+
+		var args = new StringBuilder();
+		args.Append("request.Id");
+		if (entity.InclRowVersion)
+			args.Append(", request.RowVersion");
+		foreach (var updProp in updateProps)
+			args.Append($", request.{updProp.Property.Name}");
+
+		output.AddLine(tc, "[HttpPatch, Route(\"[action]\")]");
+		output.AddLine(tc, $"public async Task<ActionResult> {method.Name}({method.Name}Req request)");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, $"var apiResponse = CreateApiResponse();");
+		output.AddLine(tc + 1, "try {");
+		output.AddLine(tc + 2, $"await _{svcVarName}.{method.Name}({args});");
+		output.AddLine();
+		output.AddLine(tc + 2, $"return Ok(apiResponse);");
+		output.AddLine();
+		output.AddLine(tc + 1, "} catch (Exception ex) {");
+		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
+		output.AddLine(tc + 1, "}");
+		output.AddLine(tc, "}");
+	}
+
 	internal void GenerateSingleControllerMethod(EntityModel entity, ReadMethodModel method, string svcVarName, List<string> output)
 	{
 		var tc = 1;
@@ -164,9 +207,9 @@ internal class ServiceControllerGenerator
 		var filterRoute = string.Empty;
 		var filterParams = string.Empty;
 		if (method.FilterProperties.Count > 0) {
-			filterArg = method.FilterProperties[0].Property.FilterArgName;
+			filterArg = method.FilterProperties[0].Property.ArgName;
 			filterRoute = $"/{{{filterArg}}}";
-			filterParams = $"{method.FilterProperties[0].Property.DatatypeName} {method.FilterProperties[0].Property.FilterArgName}";
+			filterParams = $"{method.FilterProperties[0].Property.DatatypeName} {method.FilterProperties[0].Property.ArgName}";
 		}
 
 		output.AddLine(tc, $"[HttpGet, Route(\"[action]{filterRoute}\")]");
@@ -201,10 +244,10 @@ internal class ServiceControllerGenerator
 		// Required
 		foreach (var filterProp in reqFilterProps) {
 			// Required arguments go in the route
-			sbRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
+			sbRoute.Append($"/{{{filterProp.Property.ArgName}}}");
 			if (sbArgs.Length > 0)
 				sbArgs.Append(", ");
-			sbArgs.Append($"[FromRoute] {filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
+			sbArgs.Append($"[FromRoute] {filterProp.Property.DatatypeName} {filterProp.Property.ArgName}");
 		}
 
 		// Optional
@@ -212,7 +255,7 @@ internal class ServiceControllerGenerator
 			if (sbArgs.Length > 0)
 				sbArgs.Append(", ");
 			var nullChar = filterProp.Property.PrimitiveType?.Id != PrimitiveType.String.Id ? "?" : string.Empty;
-			sbArgs.Append($"[FromQuery] {filterProp.Property.DatatypeName}{nullChar} {filterProp.Property.FilterArgName} = null");
+			sbArgs.Append($"[FromQuery] {filterProp.Property.DatatypeName}{nullChar} {filterProp.Property.ArgName} = null");
 		}
 
 		// Paging is always optional
@@ -227,12 +270,12 @@ internal class ServiceControllerGenerator
 		foreach (var filterProp in reqFilterProps) {
 			if (sbVars.Length > 0)
 				sbVars.Append(", ");
-			sbVars.Append(filterProp.Property.FilterArgName);
+			sbVars.Append(filterProp.Property.ArgName);
 		}
 		foreach (var filterProp in optFilterProps) {
 			if (sbVars.Length > 0)
 				sbVars.Append(", ");
-			sbVars.Append(filterProp.Property.FilterArgName);
+			sbVars.Append(filterProp.Property.ArgName);
 		}
 		if (method.InclPaging) {
 			if (sbVars.Length > 0)
@@ -278,7 +321,7 @@ internal class ServiceControllerGenerator
 		output.AddLine(tc, "}");
 	}
 
-	internal string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, List<string> attrsOutput, string controllerVersion, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, string entityName)
+	internal string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, List<string> attrsOutput, string controllerVersion, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> cudMethodsOutput, List<string> updMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, string entityName)
 	{
 		// Addl Usings
 		var sb = new StringBuilder();
@@ -309,8 +352,13 @@ internal class ServiceControllerGenerator
 
 		// CUD Methods
 		sb = new StringBuilder();
-		crudMethodsOutput.ForEach(x => sb.AppendLine(x));
+		cudMethodsOutput.ForEach(x => sb.AppendLine(x));
 		template = template.Replace(Utils.FmtToken(cToken_CudControllerMethods), sb.ToString());
+
+		// Update Methods
+		sb = new StringBuilder();
+		updMethodsOutput.ForEach(x => sb.AppendLine(x));
+		template = template.Replace(Utils.FmtToken(cToken_UpdControllerMethods), sb.ToString());
 
 		// Single Methods
 		sb = new StringBuilder();

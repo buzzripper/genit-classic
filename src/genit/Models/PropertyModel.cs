@@ -180,7 +180,7 @@ public class PropertyModel : INotifyPropertyChanged
 	}
 
 	[JsonIgnore]
-	public string FilterArgName => Utils.ToCamelCase(Name);
+	public string ArgName => Utils.ToCamelCase(Name);
 
 	#endregion
 

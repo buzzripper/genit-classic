@@ -33,6 +33,13 @@ partial class ReadMethodsEditCtl
 		System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReadMethodsEditCtl));
 		splMain = new System.Windows.Forms.SplitContainer();
 		grdMethods = new System.Windows.Forms.DataGridView();
+		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+		colInclPaging = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colUseQuery = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colInclSorting = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+		colAttrs = new System.Windows.Forms.DataGridViewLinkColumn();
+		colDelete = new System.Windows.Forms.DataGridViewImageColumn();
 		toolStrip1 = new System.Windows.Forms.ToolStrip();
 		btnAdd = new System.Windows.Forms.ToolStripButton();
 		btnDown = new System.Windows.Forms.ToolStripButton();
@@ -41,13 +48,6 @@ partial class ReadMethodsEditCtl
 		filterPropsCtl = new FilterPropsEditCtl();
 		inclNavPropEditCtl = new InclNavPropEditCtl();
 		bindingSrc = new System.Windows.Forms.BindingSource(components);
-		colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-		colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-		colInclPaging = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colUseQuery = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colInclSorting = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-		colAttrs = new System.Windows.Forms.DataGridViewLinkColumn();
-		colDelete = new System.Windows.Forms.DataGridViewImageColumn();
 		((System.ComponentModel.ISupportInitialize)splMain).BeginInit();
 		splMain.Panel1.SuspendLayout();
 		splMain.Panel2.SuspendLayout();
@@ -79,7 +79,7 @@ partial class ReadMethodsEditCtl
 		// 
 		splMain.Panel2.Controls.Add(splLists);
 		splMain.Size = new System.Drawing.Size(1113, 449);
-		splMain.SplitterDistance = 672;
+		splMain.SplitterDistance = 618;
 		splMain.SplitterWidth = 6;
 		splMain.TabIndex = 0;
 		// 
@@ -103,7 +103,7 @@ partial class ReadMethodsEditCtl
 		grdMethods.RowHeadersWidth = 62;
 		grdMethods.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
 		grdMethods.ShowEditingIcon = false;
-		grdMethods.Size = new System.Drawing.Size(672, 418);
+		grdMethods.Size = new System.Drawing.Size(618, 418);
 		grdMethods.TabIndex = 3;
 		grdMethods.CellClick += grdMethods_CellClick;
 		grdMethods.CellContentClick += grdMethods_CellContentClick;
@@ -111,92 +111,6 @@ partial class ReadMethodsEditCtl
 		grdMethods.CellMouseLeave += grdMethods_CellMouseLeave;
 		grdMethods.DataError += grdMethods_DataError;
 		grdMethods.SelectionChanged += grdMethods_SelectionChanged;
-		// 
-		// toolStrip1
-		// 
-		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
-		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnDown, btnUp });
-		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-		toolStrip1.Location = new System.Drawing.Point(0, 0);
-		toolStrip1.Name = "toolStrip1";
-		toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-		toolStrip1.Size = new System.Drawing.Size(672, 31);
-		toolStrip1.TabIndex = 2;
-		toolStrip1.Text = "toolStrip1";
-		// 
-		// btnAdd
-		// 
-		btnAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		btnAdd.Image = (System.Drawing.Image)resources.GetObject("btnAdd.Image");
-		btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
-		btnAdd.Name = "btnAdd";
-		btnAdd.Size = new System.Drawing.Size(28, 28);
-		btnAdd.Text = "toolStripButton1";
-		btnAdd.Click += btnAdd_Click;
-		// 
-		// btnDown
-		// 
-		btnDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-		btnDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		btnDown.Image = (System.Drawing.Image)resources.GetObject("btnDown.Image");
-		btnDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-		btnDown.Name = "btnDown";
-		btnDown.Size = new System.Drawing.Size(28, 28);
-		btnDown.Text = "toolStripButton1";
-		btnDown.ToolTipText = "Move Down";
-		btnDown.Click += btnDown_Click;
-		// 
-		// btnUp
-		// 
-		btnUp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-		btnUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-		btnUp.Enabled = false;
-		btnUp.Image = (System.Drawing.Image)resources.GetObject("btnUp.Image");
-		btnUp.ImageTransparentColor = System.Drawing.Color.Magenta;
-		btnUp.Name = "btnUp";
-		btnUp.Size = new System.Drawing.Size(28, 28);
-		btnUp.Text = "toolStripButton1";
-		btnUp.ToolTipText = "Move Up";
-		btnUp.Click += btnUp_Click;
-		// 
-		// splLists
-		// 
-		splLists.Dock = System.Windows.Forms.DockStyle.Fill;
-		splLists.Location = new System.Drawing.Point(0, 0);
-		splLists.Margin = new System.Windows.Forms.Padding(2);
-		splLists.Name = "splLists";
-		splLists.Orientation = System.Windows.Forms.Orientation.Horizontal;
-		// 
-		// splLists.Panel1
-		// 
-		splLists.Panel1.Controls.Add(filterPropsCtl);
-		// 
-		// splLists.Panel2
-		// 
-		splLists.Panel2.Controls.Add(inclNavPropEditCtl);
-		splLists.Size = new System.Drawing.Size(435, 449);
-		splLists.SplitterDistance = 261;
-		splLists.SplitterWidth = 6;
-		splLists.TabIndex = 5;
-		// 
-		// filterPropsCtl
-		// 
-		filterPropsCtl.Dock = System.Windows.Forms.DockStyle.Fill;
-		filterPropsCtl.Location = new System.Drawing.Point(0, 0);
-		filterPropsCtl.Name = "filterPropsCtl";
-		filterPropsCtl.Size = new System.Drawing.Size(435, 261);
-		filterPropsCtl.TabIndex = 0;
-		// 
-		// inclNavPropEditCtl
-		// 
-		inclNavPropEditCtl.Dock = System.Windows.Forms.DockStyle.Fill;
-		inclNavPropEditCtl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-		inclNavPropEditCtl.Location = new System.Drawing.Point(0, 0);
-		inclNavPropEditCtl.Name = "inclNavPropEditCtl";
-		inclNavPropEditCtl.Size = new System.Drawing.Size(435, 182);
-		inclNavPropEditCtl.TabIndex = 0;
 		// 
 		// colId
 		// 
@@ -273,6 +187,94 @@ partial class ReadMethodsEditCtl
 		colDelete.Name = "colDelete";
 		colDelete.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 		colDelete.Width = 75;
+		// 
+		// toolStrip1
+		// 
+		toolStrip1.Font = new System.Drawing.Font("Segoe UI", 10F);
+		toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+		toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+		toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnDown, btnUp });
+		toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+		toolStrip1.Location = new System.Drawing.Point(0, 0);
+		toolStrip1.Name = "toolStrip1";
+		toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+		toolStrip1.Size = new System.Drawing.Size(618, 31);
+		toolStrip1.TabIndex = 2;
+		toolStrip1.Text = "toolStrip1";
+		// 
+		// btnAdd
+		// 
+		btnAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnAdd.Image = (System.Drawing.Image)resources.GetObject("btnAdd.Image");
+		btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnAdd.Name = "btnAdd";
+		btnAdd.Size = new System.Drawing.Size(28, 28);
+		btnAdd.Text = "toolStripButton1";
+		btnAdd.Click += btnAdd_Click;
+		// 
+		// btnDown
+		// 
+		btnDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnDown.Image = (System.Drawing.Image)resources.GetObject("btnDown.Image");
+		btnDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnDown.Name = "btnDown";
+		btnDown.Size = new System.Drawing.Size(28, 28);
+		btnDown.Text = "toolStripButton1";
+		btnDown.ToolTipText = "Move Down";
+		btnDown.Click += btnDown_Click;
+		// 
+		// btnUp
+		// 
+		btnUp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+		btnUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+		btnUp.Enabled = false;
+		btnUp.Image = (System.Drawing.Image)resources.GetObject("btnUp.Image");
+		btnUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+		btnUp.Name = "btnUp";
+		btnUp.Size = new System.Drawing.Size(28, 28);
+		btnUp.Text = "toolStripButton1";
+		btnUp.ToolTipText = "Move Up";
+		btnUp.Click += btnUp_Click;
+		// 
+		// splLists
+		// 
+		splLists.Dock = System.Windows.Forms.DockStyle.Fill;
+		splLists.Location = new System.Drawing.Point(0, 0);
+		splLists.Margin = new System.Windows.Forms.Padding(2);
+		splLists.Name = "splLists";
+		splLists.Orientation = System.Windows.Forms.Orientation.Horizontal;
+		// 
+		// splLists.Panel1
+		// 
+		splLists.Panel1.Controls.Add(filterPropsCtl);
+		splLists.Panel1MinSize = 100;
+		// 
+		// splLists.Panel2
+		// 
+		splLists.Panel2.Controls.Add(inclNavPropEditCtl);
+		splLists.Panel2MinSize = 100;
+		splLists.Size = new System.Drawing.Size(489, 449);
+		splLists.SplitterDistance = 180;
+		splLists.SplitterWidth = 6;
+		splLists.TabIndex = 5;
+		// 
+		// filterPropsCtl
+		// 
+		filterPropsCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+		filterPropsCtl.Location = new System.Drawing.Point(0, 0);
+		filterPropsCtl.Name = "filterPropsCtl";
+		filterPropsCtl.Size = new System.Drawing.Size(489, 180);
+		filterPropsCtl.TabIndex = 0;
+		// 
+		// inclNavPropEditCtl
+		// 
+		inclNavPropEditCtl.Dock = System.Windows.Forms.DockStyle.Fill;
+		inclNavPropEditCtl.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+		inclNavPropEditCtl.Location = new System.Drawing.Point(0, 0);
+		inclNavPropEditCtl.Name = "inclNavPropEditCtl";
+		inclNavPropEditCtl.Size = new System.Drawing.Size(489, 263);
+		inclNavPropEditCtl.TabIndex = 0;
 		// 
 		// ReadMethodsEditCtl
 		// 

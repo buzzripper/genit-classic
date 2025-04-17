@@ -21,6 +21,7 @@ internal class ApiClientGenerator
 	private const string cToken_IntfSignatures = "INTERFACE_SIGNATURES";
 	private const string cToken_EntityName = "ENTITY_NAME";
 	private const string cToken_CudMethods = "CUD_METHODS";
+	private const string cToken_UpdateMethods = "UDPATE_METHODS";
 	private const string cToken_SingleMethods = "SINGLE_METHODS";
 	private const string cToken_ListMethods = "LIST_METHODS";
 	private const string cToken_QueryMethods = "QUERY_METHODS";
@@ -33,17 +34,29 @@ internal class ApiClientGenerator
 		var addlUsings = Utils.BuildAddlUsingsList(entity.Service.AddlServiceUsings);
 		addlUsings.AddIfNotExists(serviceGen.QueriesNamespace);
 		addlUsings.AddIfNotExists(entitiesNamespace);
+		if (entity.Service.UpdateMethods.Any())
+			addlUsings.AddIfNotExists(serviceGen.DtoNamespace);
 
 		// Interface signatures
 		var interfaceOutput = new List<string>();
 
-		// Update methods
+		// CUD methods
 		var crudMethodsOutput = new List<string>();
 		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete) {
 			crudMethodsOutput.AddLine(1, "#region Create / Update / Delete");
 			this.GenerateCUDMethods(entity, crudMethodsOutput, interfaceOutput);
 			crudMethodsOutput.AddLine();
 			crudMethodsOutput.AddLine(1, "#endregion");
+		}
+
+		// Update methods
+		var updMethodsOutput = new List<string>();
+		if (entity.Service.UpdateMethods.Any()) {
+			updMethodsOutput.AddLine(1, "#region Update Methods");
+			foreach (UpdateMethodModel method in entity.Service.UpdateMethods)
+				this.GenerateUpdateMethod(entity, method, updMethodsOutput, interfaceOutput);
+			updMethodsOutput.AddLine();
+			updMethodsOutput.AddLine(1, "#endregion");
 		}
 
 		// GetSingle read methods
@@ -76,7 +89,7 @@ internal class ApiClientGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceServiceTemplateTokens(template, apiClientName, entity.Name, addlUsings, crudMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ApiClientsNamespace);
+		var fileContents = ReplaceServiceTemplateTokens(template, apiClientName, entity.Name, addlUsings, crudMethodsOutput, updMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ApiClientsNamespace);
 
 		var outputFile = Path.Combine(outputFolder, $"{apiClientName}.g.cs");
 		if (File.Exists(outputFile))
@@ -133,6 +146,23 @@ internal class ApiClientGenerator
 		}
 	}
 
+	private void GenerateUpdateMethod(EntityModel entity, UpdateMethodModel method, List<string> output, List<string> interfaceOutput)
+	{
+		var tc = 1;
+
+		var signature = $"Task {method.Name}({method.Name}Req request)";
+
+		// Interface
+		interfaceOutput.Add(signature);
+
+		// Method
+		output.AddLine();
+		output.AddLine(tc, $"public async {signature}");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, $"await PatchAsync<Task>($\"api/v1/{entity.Name}/{method.Name}\", request);");
+		output.AddLine(tc, "}");
+	}
+
 	private void GenerateReadMethod(EntityModel entity, ReadMethodModel method, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
@@ -158,9 +188,9 @@ internal class ApiClientGenerator
 		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsInternal && !fp.IsOptional)) {
 			if (c++ > 0)
 				sbSigArgs.Append(", ");
-			sbSigArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
+			sbSigArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.ArgName}");
 
-			sbRoute.Append($"/{{{filterProp.Property.FilterArgName}}}");
+			sbRoute.Append($"/{{{filterProp.Property.ArgName}}}");
 		}
 
 		// Optional properties next
@@ -168,13 +198,13 @@ internal class ApiClientGenerator
 			if (c++ > 0)
 				sbSigArgs.Append(", ");
 			var nullChar = filterProp.Property.PrimitiveType?.Id != PrimitiveType.String.Id ? "?" : string.Empty;
-			sbSigArgs.Append($"{filterProp.Property.DatatypeName}{nullChar} {filterProp.Property.FilterArgName} = null");
+			sbSigArgs.Append($"{filterProp.Property.DatatypeName}{nullChar} {filterProp.Property.ArgName} = null");
 
 			if (sbQry.Length == 0)
 				sbQry.Append("?");
 			else
 				sbQry.Append("&");
-			sbQry.Append($"{filterProp.Property.FilterArgName}={{{filterProp.Property.FilterArgName}}}");
+			sbQry.Append($"{filterProp.Property.ArgName}={{{filterProp.Property.ArgName}}}");
 		}
 
 		// Finally paging
@@ -228,7 +258,7 @@ internal class ApiClientGenerator
 		output.AddLine(tc, "}");
 	}
 
-	private string ReplaceServiceTemplateTokens(string template, string apiClientName, string entityName, List<string> addlUsings, List<string> crudMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string apiClientsNamespace)
+	private string ReplaceServiceTemplateTokens(string template, string apiClientName, string entityName, List<string> addlUsings, List<string> crudMethodsOutput, List<string> updateMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string apiClientsNamespace)
 	{
 		// Namespace
 		template = template.Replace(Utils.FmtToken(cToken_ApiClientsNs), apiClientsNamespace);
@@ -257,10 +287,16 @@ internal class ApiClientGenerator
 		// Entity name
 		template = template.Replace(Utils.FmtToken(cToken_EntityName), entityName);
 
-		// CRUD Methods
+		// CUD Methods
 		sb = new StringBuilder();
 		crudMethodsOutput.ForEach(x => sb.AppendLine(x));
 		template = template.Replace(Utils.FmtToken(cToken_CudMethods), sb.ToString());
+
+
+		// Update Methods
+		sb = new StringBuilder();
+		updateMethodsOutput.ForEach(x => sb.AppendLine(x));
+		template = template.Replace(Utils.FmtToken(cToken_UpdateMethods), sb.ToString());
 
 		// Single Methods
 		sb = new StringBuilder();

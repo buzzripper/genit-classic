@@ -1,6 +1,7 @@
 ﻿using Dyvenix.Genit.Extensions;
 using Dyvenix.Genit.Misc;
 using Dyvenix.Genit.Models;
+using Dyvenix.Genit.Models.Generators;
 using Dyvenix.Genit.Models.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Dyvenix.Genit.Generators;
 
 internal class ServiceMethodGenerator
 {
-	internal void GenerateUpdateMethods(EntityModel entity, List<string> output, List<string> interfaceOutput)
+	internal void GenerateCUDMethods(EntityModel entity, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		var className = entity.Name;
@@ -87,6 +88,65 @@ internal class ServiceMethodGenerator
 		output.AddLine(tc, "#endregion");
 	}
 
+	internal void GenerateUpdateMethod(ServiceGenModel serviceGen, EntityModel entity, UpdateMethodModel method, List<string> output, List<string> interfaceOutput)
+	{
+		var tc = 1;
+		var varName = Utils.ToCamelCase(entity.Name);
+		output.AddLine();
+
+		// Build the list of update properties, required first then optional
+		var updateProps = new List<UpdatePropertyModel>();
+		foreach (var updProp in method.UpdateProperties.Where(p => !p.IsOptional))
+			updateProps.Add(updProp);
+		foreach (var updProp in method.UpdateProperties.Where(p => p.IsOptional))
+			updateProps.Add(updProp);
+
+		// Build signature
+		var sbSigArgs = new StringBuilder();
+		sbSigArgs.Append("Guid id");
+		if (entity.InclRowVersion)
+			sbSigArgs.Append(", byte[] rowVersion");
+		foreach (var updProp in updateProps) {
+			//var nullChar = updProp.Property.PrimitiveType?.Id != PrimitiveType.String.Id ? "?" : string.Empty;
+			sbSigArgs.Append($", {updProp.Property.DatatypeName} {updProp.Property.ArgName}");
+		}
+
+		var signature = $"Task {method.Name}({sbSigArgs.ToString()})";
+
+		// Interface
+		interfaceOutput.Add(signature);
+
+		// Method
+		output.AddLine(tc, $"public async {signature}");
+		output.AddLine(tc, "{");
+		if (entity.InclRowVersion)
+			output.AddLine(tc + 1, "ArgumentNullException.ThrowIfNull(rowVersion);");
+		foreach (var updProp in method.UpdateProperties.Where(p => !p.IsOptional && p.Property.PrimitiveType?.Id != PrimitiveType.String.Id))
+			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({updProp.Property.ArgName});");
+		output.AddLine();
+		output.AddLine(tc + 1, "try {");
+		output.AddLine(tc + 2, $"var {varName} = new {entity.Name} {{");
+		output.AddLine(tc + 3, $"Id = id,");
+		if (entity.InclRowVersion)
+			output.AddLine(tc + 3, $"RowVersion = rowVersion,");
+		foreach (var updProp in updateProps)
+			output.AddLine(tc + 3, $"{updProp.Property.Name} = {updProp.Property.ArgName},");
+		output.AddLine(tc + 2, "};");
+		output.AddLine();
+
+		output.AddLine(tc + 2, "using var db = _dbContextFactory.CreateDbContext();");
+		output.AddLine(tc + 2, $"db.Attach({varName});");
+		foreach (var updProp in updateProps)
+			output.AddLine(tc + 2, $"db.Entry({varName}).Property(u => u.{updProp.Property.Name}).IsModified = true;");
+		output.AddLine();
+		output.AddLine(tc + 2, "await db.SaveChangesAsync();");
+		output.AddLine();
+		output.AddLine(tc + 1, "} catch (DbUpdateConcurrencyException) {");
+		output.AddLine(tc + 2, "throw new ConcurrencyApiException(\"The item was modified or deleted by another user.\", _logger.CorrelationId);");
+		output.AddLine(tc + 1, "}");
+		output.AddLine(tc, "}");
+	}
+
 	internal void GenerateReadMethod(EntityModel entity, ReadMethodModel method, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
@@ -107,7 +167,7 @@ internal class ServiceMethodGenerator
 		foreach (var filterProp in method.FilterProperties.Where(fp => !fp.IsInternal && !fp.IsOptional)) {
 			if (c++ > 0)
 				sbSigArgs.Append(", ");
-			sbSigArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.FilterArgName}");
+			sbSigArgs.Append($"{filterProp.Property.DatatypeName} {filterProp.Property.ArgName}");
 		}
 
 		// Optional properties next
@@ -115,7 +175,7 @@ internal class ServiceMethodGenerator
 			if (c++ > 0)
 				sbSigArgs.Append(", ");
 			var nullChar = filterProp.Property.PrimitiveType?.Id != PrimitiveType.String.Id ? "?" : string.Empty;
-			sbSigArgs.Append($"{filterProp.Property.DatatypeName}{nullChar} {filterProp.Property.FilterArgName} = null");
+			sbSigArgs.Append($"{filterProp.Property.DatatypeName}{nullChar} {filterProp.Property.ArgName} = null");
 		}
 
 		// Finally paging
@@ -182,17 +242,17 @@ internal class ServiceMethodGenerator
 	private void GenerateFilter(FilterPropertyModel filterProp, List<string> output, int tc)
 	{
 		if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.String.Id) {
-			output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({filterProp.Property.FilterArgName}))");
-			output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{filterProp.Property.Name}, {filterProp.Property.FilterArgName}));");
+			output.AddLine(tc + 1, $"if (!string.IsNullOrWhiteSpace({filterProp.Property.ArgName}))");
+			output.AddLine(tc + 2, $"dbQuery = dbQuery.Where(x => EF.Functions.Like(x.{filterProp.Property.Name}, {filterProp.Property.ArgName}));");
 
 			//} else if (filterProp.Property.PrimitiveType?.Id == PrimitiveType.Int.Id || filterProp.Property.PrimitiveType?.Id == PrimitiveType.Bool.Id || filterProp.Property.PrimitiveType?.Id == PrimitiveType.Guid.Id) {
 		} else {
 			var indent = tc + 1;
 			if (filterProp.IsOptional) {
-				output.AddLine(indent, $"if ({filterProp.Property.FilterArgName}.HasValue)");
+				output.AddLine(indent, $"if ({filterProp.Property.ArgName}.HasValue)");
 				indent++;
 			}
-			output.AddLine(indent, $"dbQuery = dbQuery.Where(x => x.{filterProp.Property.Name} == {filterProp.Property.FilterArgName});");
+			output.AddLine(indent, $"dbQuery = dbQuery.Where(x => x.{filterProp.Property.Name} == {filterProp.Property.ArgName});");
 		}
 	}
 
@@ -205,7 +265,7 @@ internal class ServiceMethodGenerator
 
 		} else {
 			if (filterProp.IsOptional) {
-				output.AddLine(indent, $"if ({filterProp.Property.FilterArgName}.HasValue)");
+				output.AddLine(indent, $"if ({filterProp.Property.ArgName}.HasValue)");
 				indent++;
 			}
 

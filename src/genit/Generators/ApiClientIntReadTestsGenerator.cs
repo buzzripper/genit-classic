@@ -270,7 +270,7 @@ internal class ApiClientIntReadTestsGenerator : ApiClientIntTestsGenBase
 			return "EF.Functions.Like(x.{filterProp.Property.Name}, \"{filterProp.InternalValue}\"";
 		} else {
 			if (filterProp.IsOptional)
-				return $"x.{filterProp.Property.FilterArgName}.HasValue)";
+				return $"x.{filterProp.Property.ArgName}.HasValue)";
 			else if (filterProp.Property.EnumType != null)
 				return $"x.{filterProp.Property.Name} == {filterProp.Property.EnumType.Name}.{filterProp.InternalValue}";
 			else
@@ -301,7 +301,7 @@ internal class ApiClientIntReadTestsGenerator : ApiClientIntTestsGenBase
 						FilterProperty = argDef.FilterProperty,
 						ArgType = argDef.ArgItemType,
 						ArgVal = argVal,
-						VarName = argDef.FilterProperty.Property.FilterArgName,
+						VarName = argDef.FilterProperty.Property.ArgName,
 						PropName = argDef.FilterProperty.Property.Name,
 						Nullable = argDef.FilterProperty.Property.Nullable
 					};

@@ -459,6 +459,13 @@ public partial class MainForm : Form
 				svcGenerator.Run(svcGenMdl, dbContextMdl.Entities, entityGenMdl.EntitiesNamespace, templatesFolderpath);
 			}
 
+			// DTOs
+			if (svcGenMdl.Enabled) {
+				var dtoGenerator = new DtoGenerator();
+				outputCtl.WriteInfo("Running DTO generator...");
+				dtoGenerator.Run(svcGenMdl, dbContextMdl.Entities, entityGenMdl.EntitiesNamespace, templatesFolderpath);
+			}
+
 			// Integration Tests
 			var intTestsGenMdl = dbContextMdl.Generators.IntTestsGen;
 			if (intTestsGenMdl == null)
@@ -523,15 +530,6 @@ public partial class MainForm : Form
 
 	private void treeNav_ServiceModelSelected(object sender, NavTreeNodeSelectedEventArgs e)
 	{
-		//if (SelectTabPageById(e.Id))
-		//	return;
-
-		//if (!multiPageCtl.Select(e.Id)) {
-		//	var svcMdl = this.Doc.DbContexts[0].Services.First(s => s.Id == e.Id);
-		//	var svcEditCtl = new ServiceEditCtl(svcMdl);
-		//	multiPageCtl.Add(svcMdl.Id, svcMdl.EntityName, svcEditCtl);
-		//	multiPageCtl.Select(svcMdl.Id);
-		//}
 	}
 
 	private void treeNav_GeneratorsModelSelected(object sender, NavTreeNodeSelectedEventArgs e)

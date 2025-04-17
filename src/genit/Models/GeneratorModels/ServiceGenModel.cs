@@ -37,6 +37,8 @@ public class ServiceGenModel : GenModelBase
 	public string QueriesNamespace { get; set; }
 	public string ControllersNamespace { get; set; }
 	public string ApiClientsNamespace { get; set; }
+	public string DtoOutputFolder { get; set; }
+	public string DtoNamespace { get; set; }
 
 	protected override string GetName() => "Service Generator";
 

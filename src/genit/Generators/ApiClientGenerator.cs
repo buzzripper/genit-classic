@@ -159,15 +159,14 @@ internal class ApiClientGenerator
 		var varName = Utils.ToCamelCase(className);
 
 		// Interface
-		var signature = $"Task Update{className}({className} {varName})";
+		var signature = $"Task<byte[]> Update{className}({className} {varName})";
 		interfaceOutput.Add(signature);
 
 		output.AddLine();
 		output.AddLine(tc, $"public async {signature}");
 		output.AddLine(tc, "{");
 		output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
-		output.AddLine();
-		output.AddLine(tc + 1, $"await PostAsync<{className}>(\"api/v1/{className}/Update{className}\", {varName});");
+		output.AddLine(tc + 1, $"return await PutAsync<byte[]>(\"api/v1/{className}/Update{className}\", {varName});");
 		output.AddLine(tc, "}");
 	}
 

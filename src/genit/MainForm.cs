@@ -473,7 +473,7 @@ public partial class MainForm : Form
 			if (intTestsGenMdl.Enabled) {
 				var intTestsGenerator = new IntTestGenerator();
 				outputCtl.WriteInfo("Running Integration Tests generator...");
-				intTestsGenerator.Run(intTestsGenMdl, dbContextMdl.Entities, templatesFolderpath);
+				intTestsGenerator.Run(dbContextMdl, templatesFolderpath);
 			}
 
 			ShowSuccessDlg("Files generated.");

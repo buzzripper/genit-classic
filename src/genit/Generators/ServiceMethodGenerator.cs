@@ -131,7 +131,7 @@ internal class ServiceMethodGenerator
 			sbSigArgs.Append($", {updProp.Property.DatatypeName} {updProp.Property.ArgName}");
 		}
 
-		var signature = $"Task {method.Name}({sbSigArgs.ToString()})";
+		var signature = $"Task<byte[]> {method.Name}({sbSigArgs.ToString()})";
 
 		// Interface
 		interfaceOutput.Add(signature);
@@ -160,6 +160,8 @@ internal class ServiceMethodGenerator
 			output.AddLine(tc + 2, $"db.Entry({varName}).Property(u => u.{updProp.Property.Name}).IsModified = true;");
 		output.AddLine();
 		output.AddLine(tc + 2, "await db.SaveChangesAsync();");
+		output.AddLine();
+		output.AddLine(tc + 2, $"return {varName}.RowVersion;");
 		output.AddLine();
 		output.AddLine(tc + 1, "} catch (DbUpdateConcurrencyException) {");
 		output.AddLine(tc + 2, "throw new ConcurrencyApiException(\"The item was modified or deleted by another user.\", _logger.CorrelationId);");

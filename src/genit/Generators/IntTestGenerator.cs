@@ -1,7 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Linq;
 using Dyvenix.Genit.Models;
-using Dyvenix.Genit.Models.Generators;
 
 namespace Dyvenix.Genit.Generators;
 
@@ -18,14 +16,14 @@ public class IntTestGenerator
 
 	#endregion
 
-	public void Run(IntTestsGenModel intTestsGenModel, ObservableCollection<EntityModel> entities, string templatesFolderpath)
+	public void Run(DbContextModel dbContextMdl, string templatesFolderpath)
 	{
-		if (!intTestsGenModel.Enabled)
+		if (!dbContextMdl.Generators.IntTestsGen.Enabled)
 			return;
 
-		foreach (var entity in entities.Where(e => e.Service.Enabled && e.Service.InclController)) {
-			new ApiClientIntReadTestsGenerator().Run(entity, intTestsGenModel, templatesFolderpath);
-			new ApiClientIntUpdateTestsGenerator().Run(entity, intTestsGenModel, templatesFolderpath);
+		foreach (var entity in dbContextMdl.Entities.Where(e => e.Service.Enabled && e.Service.InclController)) {
+			new ApiClientIntReadTestsGenerator().Run(entity, dbContextMdl, templatesFolderpath);
+			new ApiClientIntUpdateTestsGenerator().Run(entity, dbContextMdl, templatesFolderpath);
 		}
 	}
 }

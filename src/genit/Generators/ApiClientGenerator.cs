@@ -174,7 +174,7 @@ internal class ApiClientGenerator
 	{
 		var tc = 1;
 
-		var signature = $"Task {method.Name}({method.Name}Req request)";
+		var signature = $"Task<byte[]> {method.Name}({method.Name}Req request)";
 
 		// Interface
 		interfaceOutput.Add(signature);
@@ -183,7 +183,7 @@ internal class ApiClientGenerator
 		output.AddLine();
 		output.AddLine(tc, $"public async {signature}");
 		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"await PatchAsync<Task>($\"api/v1/{entity.Name}/{method.Name}\", request);");
+		output.AddLine(tc + 1, $"return await PatchAsync<byte[]>($\"api/v1/{entity.Name}/{method.Name}\", request);");
 		output.AddLine(tc, "}");
 	}
 

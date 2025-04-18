@@ -213,9 +213,9 @@ internal class ServiceControllerGenerator
 		output.AddLine(tc, "[HttpPatch, Route(\"[action]\")]");
 		output.AddLine(tc, $"public async Task<ActionResult> {method.Name}({method.Name}Req request)");
 		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"var apiResponse = CreateApiResponse();");
+		output.AddLine(tc + 1, $"var apiResponse = CreateApiResponse<byte[]>();");
 		output.AddLine(tc + 1, "try {");
-		output.AddLine(tc + 2, $"await _{svcVarName}.{method.Name}({args});");
+		output.AddLine(tc + 2, $"apiResponse.Data = await _{svcVarName}.{method.Name}({args});");
 		output.AddLine();
 		output.AddLine(tc + 2, $"return Ok(apiResponse);");
 		output.AddLine();

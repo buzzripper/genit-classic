@@ -19,8 +19,9 @@ internal class ApiClientIntReadTestsGenerator : ApiClientIntTestsGenBase
 	private const string cToken_EntityName = "ENTITY_NAME";
 	private const string cToken_TestMethods = "TEST_METHODS";
 
-	public void Run(EntityModel entity, IntTestsGenModel intTestsGenModel, string templatesFolderpath)
+	public void Run(EntityModel entity, DbContextModel dbContextMdl, string templatesFolderpath)
 	{
+		var intTestsGenModel = dbContextMdl.Generators.IntTestsGen;
 		var templateFilepath = Path.Combine(templatesFolderpath, cTemplateFilename);
 		var outputFolder = Utils.ResolveRelativePath(Globals.CurrDocFilepath, intTestsGenModel.OutputFolder);
 		Validate(templateFilepath, outputFolder);

@@ -383,8 +383,6 @@ public partial class TreeNav : UserControl
 		var entityToDelete = _dbContextModel.Entities.FirstOrDefault(e => e.Id == Guid.Parse(treeView1.SelectedNode.Name));
 		_dbContextModel.Entities.Remove(entityToDelete);
 
-		_entitiesNode.Nodes.Remove(treeView1.SelectedNode);
-
 		EntityDeleted?.Invoke(this, new EntityDeletedEventArgs(entityToDelete));
 	}
 

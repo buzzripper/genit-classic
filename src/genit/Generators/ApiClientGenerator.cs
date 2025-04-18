@@ -21,7 +21,6 @@ internal class ApiClientGenerator
 	private const string cToken_IntfSignatures = "INTERFACE_SIGNATURES";
 	private const string cToken_EntityName = "ENTITY_NAME";
 	private const string cToken_CudMethods = "CUD_METHODS";
-	private const string cToken_UpdateMethods = "UDPATE_METHODS";
 	private const string cToken_SingleMethods = "SINGLE_METHODS";
 	private const string cToken_ListMethods = "LIST_METHODS";
 	private const string cToken_QueryMethods = "QUERY_METHODS";
@@ -40,21 +39,39 @@ internal class ApiClientGenerator
 		// Interface signatures
 		var interfaceOutput = new List<string>();
 
-		// CUD methods
-		var crudMethodsOutput = new List<string>();
-		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete) {
-			crudMethodsOutput.AddLine(1, "#region Create / Update / Delete");
-			this.GenerateCUDMethods(entity, crudMethodsOutput, interfaceOutput);
-			crudMethodsOutput.AddLine();
-			crudMethodsOutput.AddLine(1, "#endregion");
+		// Create
+		var createMethodsOutput = new List<string>();
+		if (entity.Service.InclCreate) {
+			createMethodsOutput.AddLine(1, "#region Create");
+			this.GenerateCreateMethod(entity, createMethodsOutput, interfaceOutput);
+			createMethodsOutput.AddLine();
+			createMethodsOutput.AddLine(1, "#endregion");
+		}
+
+		// Delete
+		var deleteMethodsOutput = new List<string>();
+		if (entity.Service.InclDelete) {
+			deleteMethodsOutput.AddLine();
+			deleteMethodsOutput.AddLine(1, "#region Delete");
+			this.GenerateDeleteMethod(entity, deleteMethodsOutput, interfaceOutput);
+			deleteMethodsOutput.AddLine();
+			deleteMethodsOutput.AddLine(1, "#endregion");
 		}
 
 		// Update methods
 		var updMethodsOutput = new List<string>();
-		if (entity.Service.UpdateMethods.Any()) {
-			updMethodsOutput.AddLine(1, "#region Update Methods");
+		if (entity.Service.InclUpdate || entity.Service.UpdateMethods.Any()) {
+			updMethodsOutput.AddLine();
+			updMethodsOutput.AddLine(1, "#region Update");
+
+			// Full udpate
+			if (entity.Service.InclUpdate)
+				this.GenerateFullUpdateMethod(entity, updMethodsOutput, interfaceOutput);
+
+			// Normal updates
 			foreach (UpdateMethodModel method in entity.Service.UpdateMethods)
 				this.GenerateUpdateMethod(entity, method, updMethodsOutput, interfaceOutput);
+
 			updMethodsOutput.AddLine();
 			updMethodsOutput.AddLine(1, "#endregion");
 		}
@@ -89,7 +106,7 @@ internal class ApiClientGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceServiceTemplateTokens(template, apiClientName, entity.Name, addlUsings, crudMethodsOutput, updMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ApiClientsNamespace);
+		var fileContents = ReplaceServiceTemplateTokens(template, apiClientName, entity.Name, addlUsings, createMethodsOutput, deleteMethodsOutput, updMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ApiClientsNamespace);
 
 		var outputFile = Path.Combine(outputFolder, $"{apiClientName}.g.cs");
 		if (File.Exists(outputFile))
@@ -97,53 +114,61 @@ internal class ApiClientGenerator
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	private void GenerateCUDMethods(EntityModel entity, List<string> output, List<string> interfaceOutput)
+	private void GenerateCreateMethod(EntityModel entity, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		var className = entity.Name;
 		var varName = Utils.ToCamelCase(className);
 
-		if (entity.Service.InclCreate) {
-			// Interface
-			var signature = $"Task<Guid> Create{className}({className} {varName})";
-			interfaceOutput.Add(signature);
+		// Interface
+		var signature = $"Task<Guid> Create{className}({className} {varName})";
+		interfaceOutput.Add(signature);
 
-			output.AddLine();
-			output.AddLine(tc, $"public async {signature}");
-			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
-			output.AddLine();
-			output.AddLine(tc + 1, $"return await PostAsync<Guid>(\"api/v1/{className}/Create{className}\", {varName});");
-			output.AddLine(tc, "}");
-		}
+		output.AddLine();
+		output.AddLine(tc, $"public async {signature}");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
+		output.AddLine();
+		output.AddLine(tc + 1, $"return await PostAsync<Guid>(\"api/v1/{className}/Create{className}\", {varName});");
+		output.AddLine(tc, "}");
+	}
 
-		if (entity.Service.InclUpdate) {
-			// Interface
-			var signature = $"Task Update{className}({className} {varName})";
-			interfaceOutput.Add(signature);
+	private void GenerateDeleteMethod(EntityModel entity, List<string> output, List<string> interfaceOutput)
+	{
+		var tc = 1;
+		var className = entity.Name;
+		var varName = Utils.ToCamelCase(className);
 
-			output.AddLine();
-			output.AddLine(tc, $"public async {signature}");
-			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
-			output.AddLine();
-			output.AddLine(tc + 1, $"await PostAsync<{className}>(\"api/v1/{className}/Update{className}\", {varName});");
-			output.AddLine(tc, "}");
-		}
+		// Interface
+		var signature = $"Task<bool> Delete{className}(Guid id)";
+		interfaceOutput.Add(signature);
 
-		if (entity.Service.InclDelete) {
-			// Interface
-			var signature = $"Task Delete{className}(Guid id)";
-			interfaceOutput.Add(signature);
+		output.AddLine();
+		output.AddLine(tc, $"public async {signature}");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, "if (id == Guid.Empty)");
+		output.AddLine(tc + 2, "throw new ArgumentNullException(nameof(id));");
+		output.AddLine(tc + 1, $"return await PostAsync<bool>($\"api/v1/{className}/Delete{className}/{{id}}\", null);");
+		output.AddLine(tc, "}");
+	}
 
-			output.AddLine();
-			output.AddLine(tc, $"public async {signature}");
-			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, "if (id == Guid.Empty)");
-			output.AddLine(tc + 2, "throw new ArgumentNullException(nameof(id));");
-			output.AddLine(tc + 1, $"await PostAsync<string>($\"api/v1/{className}/Delete{className}/{{id}}\", null);");
-			output.AddLine(tc, "}");
-		}
+	private void GenerateFullUpdateMethod(EntityModel entity, List<string> output, List<string> interfaceOutput)
+	{
+		var tc = 1;
+		var className = entity.Name;
+		var varName = Utils.ToCamelCase(className);
+
+		// Interface
+		var signature = $"Task Update{className}({className} {varName})";
+		interfaceOutput.Add(signature);
+
+		output.AddLine();
+		output.AddLine(tc, $"public async {signature}");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
+		output.AddLine();
+		output.AddLine(tc + 1, $"await PostAsync<{className}>(\"api/v1/{className}/Update{className}\", {varName});");
+		output.AddLine(tc, "}");
 	}
 
 	private void GenerateUpdateMethod(EntityModel entity, UpdateMethodModel method, List<string> output, List<string> interfaceOutput)
@@ -258,7 +283,7 @@ internal class ApiClientGenerator
 		output.AddLine(tc, "}");
 	}
 
-	private string ReplaceServiceTemplateTokens(string template, string apiClientName, string entityName, List<string> addlUsings, List<string> crudMethodsOutput, List<string> updateMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string apiClientsNamespace)
+	private string ReplaceServiceTemplateTokens(string template, string apiClientName, string entityName, List<string> addlUsings, List<string> createMethodsOutput, List<string> deleteMethodsOutput, List<string> updateMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string apiClientsNamespace)
 	{
 		// Namespace
 		template = template.Replace(Utils.FmtToken(cToken_ApiClientsNs), apiClientsNamespace);
@@ -289,14 +314,10 @@ internal class ApiClientGenerator
 
 		// CUD Methods
 		sb = new StringBuilder();
-		crudMethodsOutput.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(Utils.FmtToken(cToken_CudMethods), sb.ToString());
-
-
-		// Update Methods
-		sb = new StringBuilder();
+		createMethodsOutput.ForEach(x => sb.AppendLine(x));
+		deleteMethodsOutput.ForEach(x => sb.AppendLine(x));
 		updateMethodsOutput.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(Utils.FmtToken(cToken_UpdateMethods), sb.ToString());
+		template = template.Replace(Utils.FmtToken(cToken_CudMethods), sb.ToString());
 
 		// Single Methods
 		sb = new StringBuilder();

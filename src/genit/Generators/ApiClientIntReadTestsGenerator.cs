@@ -32,7 +32,7 @@ internal class ApiClientIntReadTestsGenerator : ApiClientIntTestsGenBase
 		var singleMethods = entity.Service.ReadMethods.Where(m => !m.IsList).ToList();
 		if (singleMethods.Any()) {
 			output.AddLine();
-			output.AddLine(1, "#region Single Methods");
+			output.AddLine(1, "#region Read - Single");
 			foreach (var serviceMethod in singleMethods)
 				GenerateReadTestsSingle(entity, intTestsGenModel, serviceMethod, output);
 			output.AddLine();
@@ -43,7 +43,7 @@ internal class ApiClientIntReadTestsGenerator : ApiClientIntTestsGenBase
 		var listMethods = entity.Service.ReadMethods.Where(m => m.IsList).ToList();
 		if (listMethods.Any()) {
 			output.AddLine();
-			output.AddLine(1, "#region List Methods");
+			output.AddLine(1, "#region Read - List");
 			foreach (var serviceMethod in listMethods)
 				GenerateReadTestsList(entity, intTestsGenModel, serviceMethod, output);
 			output.AddLine();
@@ -66,7 +66,7 @@ internal class ApiClientIntReadTestsGenerator : ApiClientIntTestsGenBase
 	{
 		var tc = 1;
 		var dsVarName = $"ds{entity.Name}";
-		var dbCollName = $"{entity.Name}s";
+		var dbCollName = $"{entity.Name}";
 		var varName = Utils.ToCamelCase(entity.Name);
 
 		// Single read methods always have 1 arg
@@ -100,7 +100,7 @@ internal class ApiClientIntReadTestsGenerator : ApiClientIntTestsGenBase
 		var tc = 1;
 		var dsSingleVarName = $"ds{entity.Name}";
 		var dsListVarName = $"ds{entity.Name}s";
-		var entCollName = $"{entity.Name}s";
+		var entCollName = entity.Name;
 		var varName = Utils.ToCamelCase(entity.Name);
 		var listVarName = $"{Utils.ToCamelCase(entity.Name)}s";
 

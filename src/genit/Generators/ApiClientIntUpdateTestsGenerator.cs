@@ -31,25 +31,25 @@ internal class ApiClientIntUpdateTestsGenerator : ApiClientIntTestsGenBase
 		// Create Tests
 		if (entity.Service.InclCreate) {
 			output.AddLine();
-			output.AddLine(1, "#region Create Tests");
+			output.AddLine(1, "#region Create");
 			GenerateCreateTests(entity, intTestsGenModel, output);
 			output.AddLine();
-			GenerateHelperMethods(entity, output);
 			output.AddLine(1, "#endregion");
 		}
 
-		//// Delete Tests
-		//if (entity.Service.InclDelete) {
-		//	output.AddLine();
-		//	output.AddLine(1, "#region Delete Tests");
-		//	GenerateDeleteTests(entity, intTestsGenModel, output);
-		//	output.AddLine();
-		//	GenerateHelperMethods(entity, output);
-		//	output.AddLine(1, "#endregion");
-		//}
+		// Delete Tests
+		if (entity.Service.InclDelete) {
+			output.AddLine();
+			output.AddLine(1, "#region Delete");
+			GenerateDeleteTests(entity, intTestsGenModel, output);
+			output.AddLine();
+			output.AddLine(1, "#endregion");
+		}
 
 		if (output.Count == 0)
 			return;
+
+		GenerateHelperMethods(entity, output);
 
 		// Replace tokens in template
 		var fileContents = ReplaceServiceTemplateTokens(template, entity.Name, intTestsGenModel.Namespace, output);
@@ -121,50 +121,21 @@ internal class ApiClientIntUpdateTestsGenerator : ApiClientIntTestsGenBase
 		var dbCollName = $"{entity.Name}s";
 		var varName = Utils.ToCamelCase(entity.Name);
 
-		// Valid Id - success
+		// Success
 		output.AddLine();
 		output.AddLine(tc, "[Fact]");
-		output.AddLine(tc, $"public async Task Create_ValidId()");
+		output.AddLine(tc, "public async Task Delete_Success()");
 		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"// Arrange");
-		output.AddLine(tc + 1, $"var {varName} = Create{entity.Name}();");
-
-		output.AddLine(tc + 1, $"// Act");
-		output.AddLine(tc + 1, $"var newId = await _apiClient.Create{entity.Name}({varName});");
-
-		output.AddLine(tc + 1, $"// Assert");
-		output.AddLine(tc + 1, $"Assert.Equal({varName}.Id, newId);");
-		output.AddLine(tc + 1, $"var ret{entity.Name} = await _db.{entity.Name}.FindAsync(newId);");
-		output.AddLine(tc + 1, $"Assert.NotNull(ret{entity.Name});");
-		output.AddLine(tc + 1, $"Assert.Equal(newId, ret{entity.Name}.Id);");
-		output.AddLine(tc, "}");
-
-		// Id not provided - should create one server-side
+		output.AddLine(tc + 1, "// Arrange");
+		output.AddLine(tc + 1, $"var {varName} = _db.{entity.Name}.Skip(RndInt(0, _db.{entity.Name}.ToList().Count)).First();");
+		output.AddLine(tc + 1, $"var id = {varName}.Id;");
 		output.AddLine();
-		output.AddLine(tc, "[Fact]");
-		output.AddLine(tc, $"public async Task Create_InvalidId()");
-		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"// Arrange");
-		output.AddLine(tc + 1, $"var {varName} = Create{entity.Name}();");
-		output.AddLine(tc + 1, $"{varName}.Id = Guid.Empty;");
+		output.AddLine(tc + 1, "// Act");
+		output.AddLine(tc + 1, $"var result = await _apiClient.Delete{entity.Name}(id);");
 		output.AddLine();
-		output.AddLine(tc + 1, $"// Act");
-		output.AddLine(tc + 1, $"var newId = await _apiClient.Create{entity.Name}({varName});");
-		output.AddLine();
-		output.AddLine(tc + 1, $"// Assert");
-		output.AddLine(tc + 1, "Assert.NotEqual(Guid.Empty, newId);");
-		output.AddLine(tc + 1, $"var ret{entity.Name} = await _db.{entity.Name}.FindAsync(newId);");
-		output.AddLine(tc + 1, $"Assert.NotNull(ret{entity.Name});");
-		output.AddLine(tc + 1, $"Assert.Equal(newId, ret{entity.Name}.Id);");
-		output.AddLine(tc, "}");
-
-		// Null entity - should throw
-		output.AddLine();
-		output.AddLine(tc, "[Fact]");
-		output.AddLine(tc, $"public async Task Create_Null{entity.Name}()");
-		output.AddLine(tc, "{");
-		output.AddLine(tc + 1, $"// Act / Assert");
-		output.AddLine(tc + 1, $"await Assert.ThrowsAsync<ArgumentNullException>(async () => await _apiClient.Create{entity.Name}(null));");
+		output.AddLine(tc + 1, "// Assert");
+		output.AddLine(tc + 1, "_db.ChangeTracker.Clear();");
+		output.AddLine(tc + 1, "Assert.True(result);");
 		output.AddLine(tc, "}");
 	}
 

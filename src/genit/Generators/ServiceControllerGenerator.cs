@@ -22,7 +22,6 @@ internal class ServiceControllerGenerator
 	private const string cToken_EntityName = "SERVICE_NAME";
 	private const string cToken_ServiceVarName = "SERVICE_VAR_NAME";
 	private const string cToken_CudControllerMethods = "CUD_METHODS";
-	private const string cToken_UpdControllerMethods = "UPDATE_METHODS";
 	private const string cToken_SingleMethods = "SINGLE_METHODS";
 	private const string cToken_ListMethods = "LIST_METHODS";
 	private const string cToken_QueryMethods = "QUERY_METHODS";
@@ -46,17 +45,35 @@ internal class ServiceControllerGenerator
 		foreach (var attr in entity.Service.ServiceClassAttributes)
 			attrsOutput.Add($"[{attr}]");
 
-		// Create/Update/Delete
-		var cudMethodsOutput = new List<string>();
-		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete)
-			this.GenerateCDControllerMethods(entity, serviceVarName, cudMethodsOutput);
+		// Create
+		var createMethodsOutput = new List<string>();
+		if (entity.Service.InclCreate)
+			this.GenerateCreateControllerMethod(entity, serviceVarName, createMethodsOutput);
+
+		// Delete
+		var deleteMethodsOutput = new List<string>();
+		if (entity.Service.InclDelete)
+			this.GenerateDeleteControllerMethod(entity, serviceVarName, deleteMethodsOutput);
 
 		// Update methods
 		var updMethodsOutput = new List<string>();
-		foreach (UpdateMethodModel updMethod in entity.Service.UpdateMethods) {
-			if (updMethodsOutput.Count > 0)
-				updMethodsOutput.AddLine();
-			this.GenerateUpdateMethod(entity, updMethod, serviceVarName, updMethodsOutput);
+		if (entity.Service.InclUpdate || entity.Service.UpdateMethods.Any()) {
+			updMethodsOutput.AddLine();
+			updMethodsOutput.AddLine(1, "#region Update");
+
+			// Full update method
+			if (entity.Service.InclUpdate)
+				this.GenerateFullUpdateControllerMethod(entity, serviceVarName, updMethodsOutput);
+
+			// Normal update methods
+			foreach (UpdateMethodModel updMethod in entity.Service.UpdateMethods) {
+				if (updMethodsOutput.Count > 0)
+					updMethodsOutput.AddLine();
+				this.GenerateUpdateMethod(entity, updMethod, serviceVarName, updMethodsOutput);
+			}
+
+			updMethodsOutput.AddLine();
+			updMethodsOutput.AddLine(1, "#endregion");
 		}
 
 		// Read methods - single
@@ -88,7 +105,7 @@ internal class ServiceControllerGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, entity.Service.ControllerVersion, serviceGen.ControllersNamespace, controllerName, serviceName, serviceVarName, cudMethodsOutput, updMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, entity.Name);
+		var fileContents = ReplaceControllerTemplateTokens(template, addlUsings, attrsOutput, entity.Service.ControllerVersion, serviceGen.ControllersNamespace, controllerName, serviceName, serviceVarName, createMethodsOutput, deleteMethodsOutput, updMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, entity.Name);
 
 		var outputFile = Path.Combine(outputFolder, $"{controllerName}.g.cs");
 		if (File.Exists(outputFile))
@@ -96,70 +113,84 @@ internal class ServiceControllerGenerator
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	internal void GenerateCDControllerMethods(EntityModel entity, string svcVarName, List<string> output)
+	internal void GenerateCreateControllerMethod(EntityModel entity, string svcVarName, List<string> output)
 	{
 		var tc = 1;
 		var className = entity.Name;
 		var varName = Utils.ToCamelCase(className);
 
-		output.AddLine(tc, "// Update methods");
+		output.AddLine();
+		output.AddLine(tc, "#region Create");
+		output.AddLine();
+		output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
+		output.AddLine(tc, $"public async Task<ActionResult> Create{className}({className} {varName})");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, "var apiResponse = CreateApiResponse<Guid>();");
+		output.AddLine(tc + 1, "try {");
+		output.AddLine(tc + 2, $"apiResponse.Data = await _{svcVarName}.Create{className}({varName});");
+		output.AddLine();
+		output.AddLine(tc + 2, "return Ok(apiResponse);");
+		output.AddLine();
+		output.AddLine(tc + 1, "} catch (Exception ex) {");
+		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
+		output.AddLine(tc + 1, "}");
+		output.AddLine(tc, "}");
+		output.AddLine();
+		output.AddLine(tc, "#endregion");
+	}
 
-		if (entity.Service.InclCreate) {
-			output.AddLine();
-			output.AddLine(tc, $"[HttpPost, Route(\"[action]\")]");
-			output.AddLine(tc, $"public async Task<ActionResult> Create{className}({className} {varName})");
-			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, "var apiResponse = CreateApiResponse<Guid>();");
-			output.AddLine(tc + 1, "try {");
-			output.AddLine(tc + 2, $"apiResponse.Data = await _{svcVarName}.Create{className}({varName});");
-			output.AddLine();
-			output.AddLine(tc + 2, "return Ok(apiResponse);");
-			output.AddLine();
-			output.AddLine(tc + 1, "} catch (Exception ex) {");
-			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
-			output.AddLine(tc + 1, "}");
-			output.AddLine(tc, "}");
-		}
+	internal void GenerateDeleteControllerMethod(EntityModel entity, string svcVarName, List<string> output)
+	{
+		var tc = 1;
+		var className = entity.Name;
+		var varName = Utils.ToCamelCase(className);
 
-		if (entity.Service.InclUpdate) {
-			output.AddLine();
-			output.AddLine(tc, $"[HttpPut, Route(\"[action]\")]");
-			output.AddLine(tc, $"public async Task<ActionResult> Update{className}({className} {varName})");
-			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"var apiResponse = CreateApiResponse<byte[]>();");
-			output.AddLine(tc + 1, "try {");
-			if (entity.InclRowVersion) {
-				output.AddLine(tc + 2, $"apiResponse.Data = await _{svcVarName}.Update{className}({varName});");
-			} else {
-				output.AddLine(tc + 2, $"var apiResponse =new ApiResponse();");
-				output.AddLine();
-				output.AddLine(tc + 2, $"await _{svcVarName}.Update{className}({varName});");
-			}
-			output.AddLine();
-			output.AddLine(tc + 2, "return Ok(apiResponse);");
-			output.AddLine();
-			output.AddLine(tc + 1, "} catch (Exception ex) {");
-			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
-			output.AddLine(tc + 1, "}");
-			output.AddLine(tc, "}");
-		}
+		output.AddLine();
+		output.AddLine(tc, "#region Delete");
+		output.AddLine();
+		output.AddLine(tc, $"[HttpPost, Route(\"[action]/{{id}}\")]");
+		output.AddLine(tc, $"public async Task<ActionResult> Delete{className}(Guid id)");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, "var apiResponse = CreateApiResponse<bool>();");
+		output.AddLine(tc + 1, "try {");
+		output.AddLine(tc + 2, $"apiResponse.Data = await _{svcVarName}.Delete{className}(id);");
+		output.AddLine();
+		output.AddLine(tc + 2, "return Ok(apiResponse);");
+		output.AddLine();
+		output.AddLine(tc + 1, "} catch (Exception ex) {");
+		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
+		output.AddLine(tc + 1, "}");
+		output.AddLine(tc, "}");
+		output.AddLine();
+		output.AddLine(tc, "#endregion");
+	}
 
-		if (entity.Service.InclDelete) {
+	internal void GenerateFullUpdateControllerMethod(EntityModel entity, string svcVarName, List<string> output)
+	{
+		var tc = 1;
+		var className = entity.Name;
+		var varName = Utils.ToCamelCase(className);
+
+		output.AddLine();
+		output.AddLine(tc, $"[HttpPut, Route(\"[action]\")]");
+		output.AddLine(tc, $"public async Task<ActionResult> Update{className}({className} {varName})");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, $"var apiResponse = CreateApiResponse<byte[]>();");
+		output.AddLine(tc + 1, "try {");
+		if (entity.InclRowVersion) {
+			output.AddLine(tc + 2, $"apiResponse.Data = await _{svcVarName}.Update{className}({varName});");
+		} else {
+			output.AddLine(tc + 2, $"var apiResponse =new ApiResponse();");
 			output.AddLine();
-			output.AddLine(tc, $"[HttpPost, Route(\"[action]/{{id}}\")]");
-			output.AddLine(tc, $"public async Task<ActionResult> Delete{className}(Guid id)");
-			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, "var apiResponse = CreateApiResponse();");
-			output.AddLine(tc + 1, "try {");
-			output.AddLine(tc + 2, $"await _{svcVarName}.Delete{className}(id);");
-			output.AddLine();
-			output.AddLine(tc + 2, "return Ok(apiResponse);");
-			output.AddLine();
-			output.AddLine(tc + 1, "} catch (Exception ex) {");
-			output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
-			output.AddLine(tc + 1, "}");
-			output.AddLine(tc, "}");
+			output.AddLine(tc + 2, $"await _{svcVarName}.Update{className}({varName});");
 		}
+		output.AddLine();
+		output.AddLine(tc + 2, "return Ok(apiResponse);");
+		output.AddLine();
+		output.AddLine(tc + 1, "} catch (Exception ex) {");
+		output.AddLine(tc + 2, "return LogErrorAndReturnErrorResponse(apiResponse, ex);");
+		output.AddLine(tc + 1, "}");
+		output.AddLine(tc, "}");
 	}
 
 	internal void GenerateUpdateMethod(EntityModel entity, UpdateMethodModel method, string svcVarName, List<string> output)
@@ -321,7 +352,7 @@ internal class ServiceControllerGenerator
 		output.AddLine(tc, "}");
 	}
 
-	internal string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, List<string> attrsOutput, string controllerVersion, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> cudMethodsOutput, List<string> updMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, string entityName)
+	internal string ReplaceControllerTemplateTokens(string template, List<string> addlUsings, List<string> attrsOutput, string controllerVersion, string controllersNamespace, string controllerName, string serviceName, string serviceVarName, List<string> createMethodsOutput, List<string> deleteMethodsOutput, List<string> updMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, string entityName)
 	{
 		// Addl Usings
 		var sb = new StringBuilder();
@@ -352,13 +383,10 @@ internal class ServiceControllerGenerator
 
 		// CUD Methods
 		sb = new StringBuilder();
-		cudMethodsOutput.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(Utils.FmtToken(cToken_CudControllerMethods), sb.ToString());
-
-		// Update Methods
-		sb = new StringBuilder();
+		createMethodsOutput.ForEach(x => sb.AppendLine(x));
+		deleteMethodsOutput.ForEach(x => sb.AppendLine(x));
 		updMethodsOutput.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(Utils.FmtToken(cToken_UpdControllerMethods), sb.ToString());
+		template = template.Replace(Utils.FmtToken(cToken_CudControllerMethods), sb.ToString());
 
 		// Single Methods
 		sb = new StringBuilder();

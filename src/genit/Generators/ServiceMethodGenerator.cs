@@ -11,13 +11,14 @@ namespace Dyvenix.Genit.Generators;
 
 internal class ServiceMethodGenerator
 {
-	internal void GenerateCUDMethods(EntityModel entity, List<string> output, List<string> interfaceOutput)
+	internal void GenerateCreateMethod(EntityModel entity, List<string> output, List<string> interfaceOutput)
 	{
 		var tc = 1;
 		var className = entity.Name;
 		var varName = Utils.ToCamelCase(className);
 
-		output.AddLine(tc, "#region Create / Update / Delete");
+		output.AddLine();
+		output.AddLine(tc, "#region Create");
 
 		if (entity.Service.InclCreate) {
 			// Interface
@@ -42,37 +43,22 @@ internal class ServiceMethodGenerator
 			output.AddLine(tc, "}");
 		}
 
-		if (entity.Service.InclUpdate) {
-			// Interface
-			var returnType = entity.InclRowVersion ? "Task<byte[]>" : "Task";
-			var signature = $"{returnType} Update{className}({className} {varName})";
-			interfaceOutput.Add(signature);
+		output.AddLine();
+		output.AddLine(tc, "#endregion");
+	}
 
-			output.AddLine();
-			output.AddLine(tc, $"public async {signature}");
-			output.AddLine(tc, "{");
-			output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
-			output.AddLine();
-			output.AddLine(tc + 1, $"using var db = _dbContextFactory.CreateDbContext();");
-			output.AddLine();
-			output.AddLine(tc + 1, "try {");
-			output.AddLine(tc + 2, $"db.Attach({varName});");
-			output.AddLine(tc + 2, $"db.Entry({varName}).State = EntityState.Modified;");
-			output.AddLine(tc + 2, $"await db.SaveChangesAsync();");
-			output.AddLine();
-			if (entity.InclRowVersion) {
-				output.AddLine(tc + 2, $"return {varName}.RowVersion;");
-				output.AddLine();
-			}
-			output.AddLine(tc + 1, "} catch (DbUpdateConcurrencyException) {");
-			output.AddLine(tc + 2, $"throw new ConcurrencyApiException(\"The item was modified or deleted by another user.\", _logger.CorrelationId);");
-			output.AddLine(tc + 1, "}");
-			output.AddLine(tc, "}");
-		}
+	internal void GenerateDeleteMethod(EntityModel entity, List<string> output, List<string> interfaceOutput)
+	{
+		var tc = 1;
+		var className = entity.Name;
+		var varName = Utils.ToCamelCase(className);
+
+		output.AddLine();
+		output.AddLine(tc, "#region Delete");
 
 		if (entity.Service.InclDelete) {
 			// Interface
-			var signature = $"Task Delete{className}(Guid id)";
+			var signature = $"Task<bool> Delete{className}(Guid id)";
 			interfaceOutput.Add(signature);
 
 			output.AddLine();
@@ -80,12 +66,46 @@ internal class ServiceMethodGenerator
 			output.AddLine(tc, "{");
 			output.AddLine(tc + 1, $"using var db = _dbContextFactory.CreateDbContext();");
 			output.AddLine();
-			output.AddLine(tc + 1, $"await db.{className}.Where(a => a.Id == id).ExecuteDeleteAsync();");
+			output.AddLine(tc + 1, $"var result = await db.{className}.Where(a => a.Id == id).ExecuteDeleteAsync();");
+			output.AddLine(tc + 1, $"return result == 1;");
 			output.AddLine(tc, "}");
 		}
 
 		output.AddLine();
 		output.AddLine(tc, "#endregion");
+	}
+
+	internal void GenerateFullUpdateMethod(EntityModel entity, List<string> output, List<string> interfaceOutput)
+	{
+		var tc = 1;
+		var className = entity.Name;
+		var varName = Utils.ToCamelCase(className);
+
+		// Interface
+		var returnType = entity.InclRowVersion ? "Task<byte[]>" : "Task";
+		var signature = $"{returnType} Update{className}({className} {varName})";
+		interfaceOutput.Add(signature);
+
+		output.AddLine();
+		output.AddLine(tc, $"public async {signature}");
+		output.AddLine(tc, "{");
+		output.AddLine(tc + 1, $"ArgumentNullException.ThrowIfNull({varName});");
+		output.AddLine();
+		output.AddLine(tc + 1, $"using var db = _dbContextFactory.CreateDbContext();");
+		output.AddLine();
+		output.AddLine(tc + 1, "try {");
+		output.AddLine(tc + 2, $"db.Attach({varName});");
+		output.AddLine(tc + 2, $"db.Entry({varName}).State = EntityState.Modified;");
+		output.AddLine(tc + 2, $"await db.SaveChangesAsync();");
+		output.AddLine();
+		if (entity.InclRowVersion) {
+			output.AddLine(tc + 2, $"return {varName}.RowVersion;");
+			output.AddLine();
+		}
+		output.AddLine(tc + 1, "} catch (DbUpdateConcurrencyException) {");
+		output.AddLine(tc + 2, $"throw new ConcurrencyApiException(\"The item was modified or deleted by another user.\", _logger.CorrelationId);");
+		output.AddLine(tc + 1, "}");
+		output.AddLine(tc, "}");
 	}
 
 	internal void GenerateUpdateMethod(ServiceGenModel serviceGen, EntityModel entity, UpdateMethodModel method, List<string> output, List<string> interfaceOutput)

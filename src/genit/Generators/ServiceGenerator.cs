@@ -27,7 +27,6 @@ public class ServiceGenerator
 	private const string cToken_ServiceName = "SERVICE_NAME";
 	private const string cToken_IntfSignatures = "INTERFACE_SIGNATURES";
 	private const string cToken_CudMethods = "CUD_METHODS";
-	private const string cToken_UpdateMethods = "UPDATE_METHODS";
 	private const string cToken_SingleMethods = "SINGLE_METHODS";
 	private const string cToken_ListMethods = "LIST_METHODS";
 	private const string cToken_QueryMethods = "QUERY_METHODS";
@@ -126,21 +125,34 @@ public class ServiceGenerator
 
 		var serviceMethodGenerator = new ServiceMethodGenerator();
 
-		// Create/Update/Delete
-		var crudMethodsOutput = new List<string>();
-		if (entity.Service.InclCreate || entity.Service.InclUpdate || entity.Service.InclDelete)
-			serviceMethodGenerator.GenerateCUDMethods(entity, crudMethodsOutput, interfaceOutput);
+		// Create
+		var createMethodsOutput = new List<string>();
+		if (entity.Service.InclCreate)
+			serviceMethodGenerator.GenerateCreateMethod(entity, createMethodsOutput, interfaceOutput);
 
-		// Update methods
+		// Delete
+		var deleteMethodsOutput = new List<string>();
+		if (entity.Service.InclDelete)
+			serviceMethodGenerator.GenerateDeleteMethod(entity, deleteMethodsOutput, interfaceOutput);
+
+		// Update 
 		var updMethodsOutput = new List<string>();
-		foreach (var updMethod in entity.Service.UpdateMethods) {
-			if (updMethodsOutput.Count == 0) {
-				updMethodsOutput.AddLine(1, "#region Update Methods");
+		if (entity.Service.InclUpdate || entity.Service.UpdateMethods.Any()) {
+			updMethodsOutput.AddLine();
+			updMethodsOutput.AddLine(1, "#region Update");
+
+			// Full update method
+			if (entity.Service.InclUpdate)
+				serviceMethodGenerator.GenerateFullUpdateMethod(entity, updMethodsOutput, interfaceOutput);
+
+			// Normal update methods
+			foreach (var updMethod in entity.Service.UpdateMethods) {
+				serviceMethodGenerator.GenerateUpdateMethod(serviceGen, entity, updMethod, updMethodsOutput, interfaceOutput);
 			}
-			serviceMethodGenerator.GenerateUpdateMethod(serviceGen, entity, updMethod, updMethodsOutput, interfaceOutput);
-		}
-		if (updMethodsOutput.Count > 0)
+
+			updMethodsOutput.AddLine();
 			updMethodsOutput.AddLine(1, "#endregion");
+		}
 
 		// Read methods - single
 		var singleMethodsOutput = new List<string>();
@@ -185,7 +197,7 @@ public class ServiceGenerator
 		}
 
 		// Replace tokens in template
-		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, crudMethodsOutput, updMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ServicesNamespace);
+		var fileContents = ReplaceServiceTemplateTokens(template, serviceName, addlUsings, attrsOutput, createMethodsOutput, deleteMethodsOutput, updMethodsOutput, singleMethodsOutput, listMethodsOutput, queryMethodsOutput, interfaceOutput, serviceGen.ServicesNamespace);
 
 		var outputFile = Path.Combine(outputFolder, $"{serviceName}.g.cs");
 		if (File.Exists(outputFile))
@@ -193,7 +205,7 @@ public class ServiceGenerator
 		File.WriteAllText(outputFile, fileContents);
 	}
 
-	private string ReplaceServiceTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> attrsOutput, List<string> crudMethodsOutput, List<string> updMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string servicesNamespace)
+	private string ReplaceServiceTemplateTokens(string template, string serviceName, List<string> addlUsings, List<string> attrsOutput, List<string> createMethodsOutput, List<string> deleteMethodsOutput, List<string> updMethodsOutput, List<string> singleMethodsOutput, List<string> listMethodsOutput, List<string> queryMethodsOutput, List<string> interfaceOutput, string servicesNamespace)
 	{
 		// Namespace
 		template = template.Replace(Utils.FmtToken(cToken_ServicesNs), servicesNamespace);
@@ -230,15 +242,12 @@ public class ServiceGenerator
 
 		// cToken_IntfSignatures
 
-		// CRUD Methods
+		// Create / Delete / Update
 		sb = new StringBuilder();
-		crudMethodsOutput.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(Utils.FmtToken(cToken_CudMethods), sb.ToString());
-
-		// Update Methods
-		sb = new StringBuilder();
+		createMethodsOutput.ForEach(x => sb.AppendLine(x));
+		deleteMethodsOutput.ForEach(x => sb.AppendLine(x));
 		updMethodsOutput.ForEach(x => sb.AppendLine(x));
-		template = template.Replace(Utils.FmtToken(cToken_UpdateMethods), sb.ToString());
+		template = template.Replace(Utils.FmtToken(cToken_CudMethods), sb.ToString());
 
 		// Single Methods
 		sb = new StringBuilder();

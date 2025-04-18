@@ -185,10 +185,10 @@ public partial class MultiPageCtl : UserControl
 	private void RemoveItem(MultiPageItem item)
 	{
 		this.Controls.Remove(item.Ctl);
-		item.Ctl.Dispose();
+		//item.Ctl.Dispose();
 
 		toolStrip.Items.Remove(item.Button);
-		item.Button.Dispose();
+		//item.Button.Dispose();
 
 		_items.Remove(item);
 	}

@@ -114,7 +114,7 @@ public partial class MainForm : Form
 			if (ctl is EntityContainerCtl entityCtl) {
 				if (entityCtl.Entity.Id == e.Entity.Id) {
 					multiPageCtl.Remove(entityCtl.Entity.Id);
-					entityCtl.Dispose();
+					//entityCtl.Dispose();
 					break;
 				}
 			}

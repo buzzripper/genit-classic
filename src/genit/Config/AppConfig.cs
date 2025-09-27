@@ -12,9 +12,9 @@ namespace Dyvenix.Genit.Config
 		public Point WindowPosition { get; set; }
 		public Size WindowSize { get; set; }
 		public int OutputHeight { get; set; }
-		public List<string> MruFilepaths { get; set; }
+		public List<string> MruFilepaths { get; set; } = new List<string>();
 
-		public void AddMruFilepath(string filepath)
+        public void AddMruFilepath(string filepath)
 		{
 			if (MruFilepaths == null)
 				MruFilepaths = new List<string>();

@@ -92,7 +92,8 @@ public partial class MainForm : Form
 		// Clear any tabs
 		multiPageCtl.Clear();
 
-		UpdateMruFilesMenu(appConfig.MruFilepaths);
+		if (appConfig?.MruFilepaths != null)
+			UpdateMruFilesMenu(appConfig.MruFilepaths);
 	}
 
 	private void PopulateForm(Doc doc)
